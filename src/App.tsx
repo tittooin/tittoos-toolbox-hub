@@ -19,6 +19,18 @@ import QRGenerator from "./pages/tools/QRGenerator";
 import ColorPicker from "./pages/tools/ColorPicker";
 import ImageConverter from "./pages/tools/ImageConverter";
 import TextAnalyzer from "./pages/tools/TextAnalyzer";
+import VideoConverter from "./pages/tools/VideoConverter";
+import AudioConverter from "./pages/tools/AudioConverter";
+import UnitConverter from "./pages/tools/UnitConverter";
+import CurrencyConverter from "./pages/tools/CurrencyConverter";
+import TemperatureConverter from "./pages/tools/TemperatureConverter";
+import Base64Converter from "./pages/tools/Base64Converter";
+import UUIDGenerator from "./pages/tools/UUIDGenerator";
+import LoremGenerator from "./pages/tools/LoremGenerator";
+import HashGenerator from "./pages/tools/HashGenerator";
+import BarcodeGenerator from "./pages/tools/BarcodeGenerator";
+import SEOAnalyzer from "./pages/tools/SEOAnalyzer";
+import WebsiteAnalyzer from "./pages/tools/WebsiteAnalyzer";
 
 const queryClient = new QueryClient();
 
@@ -37,12 +49,33 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/blog" element={<Blog />} />
+          
+          {/* Converter Tools */}
           <Route path="/tools/pdf-converter" element={<PDFConverter />} />
+          <Route path="/tools/image-converter" element={<ImageConverter />} />
+          <Route path="/tools/video-converter" element={<VideoConverter />} />
+          <Route path="/tools/audio-converter" element={<AudioConverter />} />
+          <Route path="/tools/unit-converter" element={<UnitConverter />} />
+          <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
+          <Route path="/tools/temperature-converter" element={<TemperatureConverter />} />
+          <Route path="/tools/base64-converter" element={<Base64Converter />} />
+          
+          {/* Generator Tools */}
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
           <Route path="/tools/qr-generator" element={<QRGenerator />} />
-          <Route path="/tools/color-picker" element={<ColorPicker />} />
-          <Route path="/tools/image-converter" element={<ImageConverter />} />
+          <Route path="/tools/uuid-generator" element={<UUIDGenerator />} />
+          <Route path="/tools/lorem-generator" element={<LoremGenerator />} />
+          <Route path="/tools/hash-generator" element={<HashGenerator />} />
+          <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
+          
+          {/* Analyzer Tools */}
+          <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
+          <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
           <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
+          
+          {/* Editor Tools */}
+          <Route path="/tools/color-picker" element={<ColorPicker />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
