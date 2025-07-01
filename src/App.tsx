@@ -10,6 +10,7 @@ import PDFConverter from "./pages/tools/PDFConverter";
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
 import QRGenerator from "./pages/tools/QRGenerator";
 import ColorPicker from "./pages/tools/ColorPicker";
+import ImageConverter from "./pages/tools/ImageConverter";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
           <Route path="/tools/qr-generator" element={<QRGenerator />} />
           <Route path="/tools/color-picker" element={<ColorPicker />} />
+          <Route path="/tools/image-converter" element={<ImageConverter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
