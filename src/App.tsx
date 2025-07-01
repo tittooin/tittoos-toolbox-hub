@@ -31,6 +31,11 @@ import HashGenerator from "./pages/tools/HashGenerator";
 import BarcodeGenerator from "./pages/tools/BarcodeGenerator";
 import SEOAnalyzer from "./pages/tools/SEOAnalyzer";
 import WebsiteAnalyzer from "./pages/tools/WebsiteAnalyzer";
+import Calculator from "./pages/tools/Calculator";
+import PercentageCalculator from "./pages/tools/PercentageCalculator";
+import BMICalculator from "./pages/tools/BMICalculator";
+import LoanCalculator from "./pages/tools/LoanCalculator";
+import AgeCalculator from "./pages/tools/AgeCalculator";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +77,13 @@ const App = () => (
           <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
           <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
           <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
+          
+          {/* Calculator Tools */}
+          <Route path="/tools/calculator" element={<Calculator />} />
+          <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
+          <Route path="/tools/bmi-calculator" element={<BMICalculator />} />
+          <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+          <Route path="/tools/age-calculator" element={<AgeCalculator />} />
           
           {/* Editor Tools */}
           <Route path="/tools/color-picker" element={<ColorPicker />} />
