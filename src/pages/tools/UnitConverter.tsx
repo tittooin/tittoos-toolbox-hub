@@ -8,14 +8,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import ToolTemplate from "@/components/ToolTemplate";
 
+interface UnitData {
+  name: string;
+  factor: number;
+}
+
+interface UnitsConfig {
+  length: Record<string, UnitData>;
+  weight: Record<string, UnitData>;
+}
+
 const UnitConverter = () => {
   const [inputValue, setInputValue] = useState("");
   const [fromUnit, setFromUnit] = useState("");
   const [toUnit, setToUnit] = useState("");
   const [result, setResult] = useState("");
-  const [category, setCategory] = useState("length");
+  const [category, setCategory] = useState<keyof UnitsConfig>("length");
 
-  const units = {
+  const units: UnitsConfig = {
     length: {
       meter: { name: "Meter (m)", factor: 1 },
       kilometer: { name: "Kilometer (km)", factor: 1000 },
@@ -62,7 +72,7 @@ const UnitConverter = () => {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>Category</Label>
-            <Select value={category} onValueChange={setCategory}>
+            <Select value={category} onValueChange={(value: keyof UnitsConfig) => setCategory(value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
