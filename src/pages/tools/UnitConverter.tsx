@@ -91,7 +91,7 @@ const UnitConverter = () => {
                   <SelectValue placeholder="Select unit" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(units[category]).map(([key, unit]) => (
+                  {(Object.entries(units[category]) as [string, UnitData][]).map(([key, unit]) => (
                     <SelectItem key={key} value={key}>
                       {unit.name}
                     </SelectItem>
@@ -107,7 +107,7 @@ const UnitConverter = () => {
                   <SelectValue placeholder="Select unit" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(units[category]).map(([key, unit]) => (
+                  {(Object.entries(units[category]) as [string, UnitData][]).map(([key, unit]) => (
                     <SelectItem key={key} value={key}>
                       {unit.name}
                     </SelectItem>
