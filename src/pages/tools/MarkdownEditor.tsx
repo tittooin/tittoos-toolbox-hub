@@ -64,7 +64,7 @@ function hello() {
       .replace(/^\* (.*$)/gim, '<li>$1</li>')
       .replace(/\n/gim, '<br />');
 
-    // Wrap consecutive <li> elements in <ul> tags
+    // Wrap consecutive li elements in ul tags
     html = html.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
     html = html.replace(/<\/ul>\s*<ul>/g, '');
 
