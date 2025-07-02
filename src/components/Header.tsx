@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const Header = () => {
@@ -40,7 +39,7 @@ const Header = () => {
           </nav>
 
           {/* Search Bar */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
@@ -48,9 +47,6 @@ const Header = () => {
                 className="pl-10 w-64"
               />
             </div>
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -107,9 +103,6 @@ const Header = () => {
               </Link>
               <div className="pt-4 border-t">
                 <Input placeholder="Search tools..." className="mb-3" />
-                <Button variant="outline" size="sm" className="w-full">
-                  Sign In
-                </Button>
               </div>
             </nav>
           </div>

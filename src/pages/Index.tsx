@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, Filter, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -21,6 +20,13 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const scrollToTools = () => {
+    const toolsSection = document.getElementById('tools-section');
+    if (toolsSection) {
+      toolsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header />
@@ -36,19 +42,16 @@ const Index = () => {
             Your complete toolkit for online productivity. 35+ essential utilities including converters, 
             generators, analyzers, and editors - all in one place.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+          <div className="flex justify-center animate-fade-in">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" onClick={scrollToTools}>
               Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              Learn More
             </Button>
           </div>
         </div>
       </section>
 
       {/* Search and Filter Section */}
-      <section className="container mx-auto px-4 py-8">
+      <section id="tools-section" className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <div className="relative flex-1">
