@@ -55,6 +55,11 @@ const UnitConverter = () => {
     return units[category as keyof typeof units] || {};
   };
 
+  const getUnitName = (unitKey: string) => {
+    const currentUnits = getCurrentUnits();
+    return (currentUnits[unitKey as keyof typeof currentUnits] as any)?.name || unitKey;
+  };
+
   const features = [
     "Convert between different units of measurement",
     "Support for length, weight, and volume",
@@ -140,7 +145,7 @@ const UnitConverter = () => {
               <CardContent className="p-4">
                 <div className="text-center">
                   <p className="text-lg font-medium">
-                    {value} {(getCurrentUnits()[fromUnit as keyof typeof getCurrentUnits()] as any)?.name} = {result} {(getCurrentUnits()[toUnit as keyof typeof getCurrentUnits()] as any)?.name}
+                    {value} {getUnitName(fromUnit)} = {result} {getUnitName(toUnit)}
                   </p>
                 </div>
               </CardContent>
