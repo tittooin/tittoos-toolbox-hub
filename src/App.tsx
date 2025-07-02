@@ -51,6 +51,11 @@ import CSSFormatter from "./pages/tools/CSSFormatter";
 import TimestampConverter from "./pages/tools/TimestampConverter";
 import URLEncoder from "./pages/tools/URLEncoder";
 import MarkdownEditor from "./pages/tools/MarkdownEditor";
+import TextToImage from "./pages/tools/TextToImage";
+import TextToVideo from "./pages/tools/TextToVideo";
+import AIPromptAssistant from "./pages/tools/AIPromptAssistant";
+import AIWebsiteGenerator from "./pages/tools/AIWebsiteGenerator";
+import AIToolGenerator from "./pages/tools/AIToolGenerator";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +124,13 @@ const App = () => (
           <Route path="/tools/html-formatter" element={<HTMLFormatter />} />
           <Route path="/tools/css-formatter" element={<CSSFormatter />} />
           <Route path="/tools/url-encoder" element={<URLEncoder />} />
+          
+          {/* AI Tools */}
+          <Route path="/tools/text-to-image" element={<TextToImage />} />
+          <Route path="/tools/text-to-video" element={<TextToVideo />} />
+          <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
+          <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
+          <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

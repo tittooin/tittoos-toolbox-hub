@@ -6,7 +6,8 @@ import {
   BarChart, PieChart, TrendingUp, Globe, Mail,
   Phone, MapPin, CreditCard, Calendar, Timer,
   Ruler, Thermometer, DollarSign, Percent, Scale,
-  Binary, FileImage, FileVideo, Music, Archive
+  Binary, FileImage, FileVideo, Music, Archive,
+  Bot, Video, Wand2, Sparkles, Brain
 } from "lucide-react";
 
 export const categories = [
@@ -16,6 +17,7 @@ export const categories = [
   { id: "editor", name: "Editors" },
   { id: "calculator", name: "Calculators" },
   { id: "formatter", name: "Formatters" },
+  { id: "ai", name: "AI Tools" },
 ];
 
 export const tools = [
@@ -335,5 +337,47 @@ export const tools = [
     category: "editor",
     icon: Type,
     path: "/tools/markdown-editor"
+  },
+
+  // AI Tools
+  {
+    id: "text-to-image",
+    name: "AI Text to Image",
+    description: "Generate stunning images from text descriptions using AI.",
+    category: "ai",
+    icon: Image,
+    path: "/tools/text-to-image"
+  },
+  {
+    id: "text-to-video",
+    name: "AI Text to Video",
+    description: "Create videos from text prompts with AI generation.",
+    category: "ai",
+    icon: Video,
+    path: "/tools/text-to-video"
+  },
+  {
+    id: "ai-prompt-assistant",
+    name: "AI Prompt Assistant",
+    description: "Get help crafting perfect prompts for AI tools and chatbots.",
+    category: "ai",
+    icon: Bot,
+    path: "/tools/ai-prompt-assistant"
+  },
+  {
+    id: "ai-website-generator",
+    name: "AI Website Generator",
+    description: "Generate complete website layouts and content using AI.",
+    category: "ai",
+    icon: Wand2,
+    path: "/tools/ai-website-generator"
+  },
+  {
+    id: "ai-tool-generator",
+    name: "AI Tool Generator",
+    description: "Create custom AI-powered tools and utilities on demand.",
+    category: "ai",
+    icon: Sparkles,
+    path: "/tools/ai-tool-generator"
   }
 ];
