@@ -14,10 +14,10 @@ const TemperatureConverter = () => {
   const [toUnit, setToUnit] = useState("fahrenheit");
   const [result, setResult] = useState("");
 
-  const convert = () => {
-    if (!temperature) return;
-    
+  const convertTemperature = () => {
     const temp = parseFloat(temperature);
+    if (isNaN(temp)) return;
+
     let celsius = temp;
     
     // Convert to Celsius first
@@ -26,24 +26,24 @@ const TemperatureConverter = () => {
     } else if (fromUnit === "kelvin") {
       celsius = temp - 273.15;
     }
-    
+
     // Convert from Celsius to target unit
-    let result = celsius;
+    let converted = celsius;
     if (toUnit === "fahrenheit") {
-      result = celsius * 9/5 + 32;
+      converted = (celsius * 9/5) + 32;
     } else if (toUnit === "kelvin") {
-      result = celsius + 273.15;
+      converted = celsius + 273.15;
     }
-    
-    setResult(result.toFixed(2));
+
+    setResult(converted.toFixed(2));
   };
 
   const features = [
     "Convert between Celsius, Fahrenheit, and Kelvin",
     "Accurate temperature calculations",
-    "Real-time conversion",
-    "Easy-to-use interface",
-    "Scientific precision"
+    "Quick conversion",
+    "Easy unit selection",
+    "Real-time results"
   ];
 
   return (
@@ -95,7 +95,7 @@ const TemperatureConverter = () => {
             </div>
           </div>
 
-          <Button onClick={convert} className="w-full">
+          <Button onClick={convertTemperature} className="w-full">
             <ArrowRightLeft className="h-4 w-4 mr-2" />
             Convert Temperature
           </Button>

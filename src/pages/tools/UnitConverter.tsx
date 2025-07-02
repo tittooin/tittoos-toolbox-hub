@@ -8,57 +8,59 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import ToolTemplate from "@/components/ToolTemplate";
 
-interface UnitData {
-  name: string;
-  factor: number;
-}
-
-interface UnitsConfig {
-  length: Record<string, UnitData>;
-  weight: Record<string, UnitData>;
-}
-
 const UnitConverter = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [fromUnit, setFromUnit] = useState("");
-  const [toUnit, setToUnit] = useState("");
+  const [value, setValue] = useState("");
+  const [category, setCategory] = useState("length");
+  const [fromUnit, setFromUnit] = useState("meter");
+  const [toUnit, setToUnit] = useState("feet");
   const [result, setResult] = useState("");
-  const [category, setCategory] = useState<keyof UnitsConfig>("length");
 
-  const units: UnitsConfig = {
+  const units = {
     length: {
-      meter: { name: "Meter (m)", factor: 1 },
-      kilometer: { name: "Kilometer (km)", factor: 1000 },
-      centimeter: { name: "Centimeter (cm)", factor: 0.01 },
-      inch: { name: "Inch (in)", factor: 0.0254 },
-      foot: { name: "Foot (ft)", factor: 0.3048 },
-      yard: { name: "Yard (yd)", factor: 0.9144 }
+      meter: { name: "Meter", factor: 1 },
+      feet: { name: "Feet", factor: 3.28084 },
+      inch: { name: "Inch", factor: 39.3701 },
+      centimeter: { name: "Centimeter", factor: 100 },
+      kilometer: { name: "Kilometer", factor: 0.001 }
     },
     weight: {
-      kilogram: { name: "Kilogram (kg)", factor: 1 },
-      gram: { name: "Gram (g)", factor: 0.001 },
-      pound: { name: "Pound (lb)", factor: 0.453592 },
-      ounce: { name: "Ounce (oz)", factor: 0.0283495 }
+      kilogram: { name: "Kilogram", factor: 1 },
+      pound: { name: "Pound", factor: 2.20462 },
+      gram: { name: "Gram", factor: 1000 },
+      ounce: { name: "Ounce", factor: 35.274 }
+    },
+    volume: {
+      liter: { name: "Liter", factor: 1 },
+      gallon: { name: "Gallon", factor: 0.264172 },
+      milliliter: { name: "Milliliter", factor: 1000 },
+      cup: { name: "Cup", factor: 4.22675 }
     }
   };
 
-  const convert = () => {
-    if (!inputValue || !fromUnit || !toUnit) return;
+  const convertUnit = () => {
+    const val = parseFloat(value);
+    if (isNaN(val)) return;
+
+    const categoryUnits = units[category as keyof typeof units];
+    const fromFactor = (categoryUnits[fromUnit as keyof typeof categoryUnits] as any)?.factor || 1;
+    const toFactor = (categoryUnits[toUnit as keyof typeof categoryUnits] as any)?.factor || 1;
     
-    const value = parseFloat(inputValue);
-    const fromFactor = units[category][fromUnit]?.factor || 1;
-    const toFactor = units[category][toUnit]?.factor || 1;
+    const baseValue = val / fromFactor;
+    const converted = baseValue * toFactor;
     
-    const converted = (value * fromFactor) / toFactor;
-    setResult(converted.toString());
+    setResult(converted.toFixed(6));
+  };
+
+  const getCurrentUnits = () => {
+    return units[category as keyof typeof units] || {};
   };
 
   const features = [
     "Convert between different units of measurement",
-    "Support for length, weight, and more",
-    "Accurate conversion factors",
-    "Easy-to-use interface",
-    "Real-time conversion"
+    "Support for length, weight, and volume",
+    "Accurate calculations",
+    "Multiple unit categories",
+    "Easy unit selection"
   ];
 
   return (
@@ -72,15 +74,26 @@ const UnitConverter = () => {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>Category</Label>
-            <Select value={category} onValueChange={(value: keyof UnitsConfig) => setCategory(value)}>
+            <Select value={category} onValueChange={setCategory}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="length">Length</SelectItem>
                 <SelectItem value="weight">Weight</SelectItem>
+                <SelectItem value="volume">Volume</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Value</Label>
+            <Input
+              type="number"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="Enter value"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,10 +101,10 @@ const UnitConverter = () => {
               <Label>From</Label>
               <Select value={fromUnit} onValueChange={setFromUnit}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select unit" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {(Object.entries(units[category]) as [string, UnitData][]).map(([key, unit]) => (
+                  {Object.entries(getCurrentUnits()).map(([key, unit]: [string, any]) => (
                     <SelectItem key={key} value={key}>
                       {unit.name}
                     </SelectItem>
@@ -104,10 +117,10 @@ const UnitConverter = () => {
               <Label>To</Label>
               <Select value={toUnit} onValueChange={setToUnit}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select unit" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {(Object.entries(units[category]) as [string, UnitData][]).map(([key, unit]) => (
+                  {Object.entries(getCurrentUnits()).map(([key, unit]: [string, any]) => (
                     <SelectItem key={key} value={key}>
                       {unit.name}
                     </SelectItem>
@@ -117,26 +130,18 @@ const UnitConverter = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Value</Label>
-            <Input
-              type="number"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter value to convert"
-            />
-          </div>
-
-          <Button onClick={convert} className="w-full">
+          <Button onClick={convertUnit} className="w-full">
             <ArrowRightLeft className="h-4 w-4 mr-2" />
-            Convert
+            Convert Units
           </Button>
 
           {result && (
             <Card>
               <CardContent className="p-4">
                 <div className="text-center">
-                  <p className="text-lg font-medium">Result: {result}</p>
+                  <p className="text-lg font-medium">
+                    {value} {(getCurrentUnits()[fromUnit as keyof typeof getCurrentUnits()] as any)?.name} = {result} {(getCurrentUnits()[toUnit as keyof typeof getCurrentUnits()] as any)?.name}
+                  </p>
                 </div>
               </CardContent>
             </Card>
