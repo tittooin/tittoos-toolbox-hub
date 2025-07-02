@@ -50,19 +50,31 @@ function hello() {
 
   // Simple markdown to HTML converter
   const convertToHTML = (markdown: string) => {
-    let html = markdown
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-      .replace(/!\[([^\]]*)\]\(([^)]*)\)/gim, '<img alt="$1" src="$2" style="max-width: 100%;" />')
-      .replace(/\[([^\]]*)\]\(([^)]*)\)/gim, '<a href="$2">$1</a>')
-      .replace(/```([^`]*)```/gim, '<pre><code>$1</code></pre>')
-      .replace(/`([^`]*)`/gim, '<code>$1</code>')
-      .replace(/^- (.*$)/gim, '<li>$1</li>')
-      .replace(/^\* (.*$)/gim, '<li>$1</li>')
-      .replace(/\n/gim, '<br />');
+    let html = markdown;
+    
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    
+    // Bold and italic
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+    
+    // Images and links
+    html = html.replace(/!\[([^\]]*)\]\(([^)]*)\)/gim, '<img alt="$1" src="$2" style="max-width: 100%;" />');
+    html = html.replace(/\[([^\]]*)\]\(([^)]*)\)/gim, '<a href="$2">$1</a>');
+    
+    // Code blocks and inline code
+    html = html.replace(/```([^`]*)```/gim, '<pre><code>$1</code></pre>');
+    html = html.replace(/`([^`]*)`/gim, '<code>$1</code>');
+    
+    // Lists
+    html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+    
+    // Line breaks
+    html = html.replace(/\n/gim, '<br />');
 
     // Wrap consecutive li elements in ul tags
     html = html.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
