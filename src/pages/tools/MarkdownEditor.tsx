@@ -48,37 +48,39 @@ function hello() {
     toast.success("Editor cleared!");
   };
 
-  // Simple markdown to HTML converter
-  const convertToHTML = (markdown: string) => {
+  const convertToHTML = (markdown: string): string => {
     let html = markdown;
     
-    // Headers
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    // Convert headers
+    html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
     
-    // Bold and italic
-    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-    html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+    // Convert bold and italic
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-    // Images and links
-    html = html.replace(/!\[([^\]]*)\]\(([^)]*)\)/gim, '<img alt="$1" src="$2" style="max-width: 100%;" />');
-    html = html.replace(/\[([^\]]*)\]\(([^)]*)\)/gim, '<a href="$2">$1</a>');
+    // Convert images (must come before links)
+    html = html.replace(/!\[([^\]]*)\]\(([^)]*)\)/g, '<img alt="$1" src="$2" style="max-width: 100%;" />');
     
-    // Code blocks and inline code
-    html = html.replace(/```([^`]*)```/gim, '<pre><code>$1</code></pre>');
-    html = html.replace(/`([^`]*)`/gim, '<code>$1</code>');
+    // Convert links
+    html = html.replace(/\[([^\]]*)\]\(([^)]*)\)/g, '<a href="$2">$1</a>');
     
-    // Lists
-    html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+    // Convert code blocks
+    html = html.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>');
     
-    // Line breaks
-    html = html.replace(/\n/gim, '<br />');
-
-    // Wrap consecutive li elements in ul tags
-    html = html.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
-    html = html.replace(/<\/ul>\s*<ul>/g, '');
+    // Convert inline code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Convert list items
+    html = html.replace(/^- (.*$)/gm, '<li>$1</li>');
+    html = html.replace(/^\* (.*$)/gm, '<li>$1</li>');
+    
+    // Wrap consecutive list items in ul tags
+    html = html.replace(/(<li>.*<\/li>(\s*<li>.*<\/li>)*)/gs, '<ul>$1</ul>');
+    
+    // Convert line breaks
+    html = html.replace(/\n/g, '<br />');
 
     return html;
   };
