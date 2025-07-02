@@ -60,9 +60,11 @@ function hello() {
       .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2">$1</a>')
       .replace(/```([^`]*)```/gim, '<pre><code>$1</code></pre>')
       .replace(/`([^`]*)`/gim, '<code>$1</code>')
-      .replace(/^\- (.*$)/gim, '<ul><li>$1</li></ul>')
-      .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>')
-      .replace(/</ul>\s*<ul>/g, '')
+      .replace(/^\- (.*$)/gim, '<li>$1</li>')
+      .replace(/^\* (.*$)/gim, '<li>$1</li>')
+      .replace(/<li>/g, '<ul><li>')
+      .replace(/<\/li>/g, '</li></ul>')
+      .replace(/<\/ul>\s*<ul>/g, '')
       .replace(/\n/gim, '<br />');
   };
 
