@@ -36,6 +36,21 @@ import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import BMICalculator from "./pages/tools/BMICalculator";
 import LoanCalculator from "./pages/tools/LoanCalculator";
 import AgeCalculator from "./pages/tools/AgeCalculator";
+import ImageAnalyzer from "./pages/tools/ImageAnalyzer";
+import ColorAnalyzer from "./pages/tools/ColorAnalyzer";
+import TextEditor from "./pages/tools/TextEditor";
+import JSONEditor from "./pages/tools/JSONEditor";
+import CSVEditor from "./pages/tools/CSVEditor";
+import HTMLEditor from "./pages/tools/HTMLEditor";
+import CSSEditor from "./pages/tools/CSSEditor";
+import JSONFormatter from "./pages/tools/JSONFormatter";
+import XMLFormatter from "./pages/tools/XMLFormatter";
+import SQLFormatter from "./pages/tools/SQLFormatter";
+import HTMLFormatter from "./pages/tools/HTMLFormatter";
+import CSSFormatter from "./pages/tools/CSSFormatter";
+import TimestampConverter from "./pages/tools/TimestampConverter";
+import URLEncoder from "./pages/tools/URLEncoder";
+import MarkdownEditor from "./pages/tools/MarkdownEditor";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +79,7 @@ const App = () => (
           <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
           <Route path="/tools/temperature-converter" element={<TemperatureConverter />} />
           <Route path="/tools/base64-converter" element={<Base64Converter />} />
+          <Route path="/tools/timestamp-converter" element={<TimestampConverter />} />
           
           {/* Generator Tools */}
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
@@ -77,6 +93,17 @@ const App = () => (
           <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
           <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
           <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
+          <Route path="/tools/color-analyzer" element={<ColorAnalyzer />} />
+          <Route path="/tools/image-analyzer" element={<ImageAnalyzer />} />
+          
+          {/* Editor Tools */}
+          <Route path="/tools/color-picker" element={<ColorPicker />} />
+          <Route path="/tools/text-editor" element={<TextEditor />} />
+          <Route path="/tools/json-editor" element={<JSONEditor />} />
+          <Route path="/tools/csv-editor" element={<CSVEditor />} />
+          <Route path="/tools/html-editor" element={<HTMLEditor />} />
+          <Route path="/tools/css-editor" element={<CSSEditor />} />
+          <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
           
           {/* Calculator Tools */}
           <Route path="/tools/calculator" element={<Calculator />} />
@@ -85,8 +112,13 @@ const App = () => (
           <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
           <Route path="/tools/age-calculator" element={<AgeCalculator />} />
           
-          {/* Editor Tools */}
-          <Route path="/tools/color-picker" element={<ColorPicker />} />
+          {/* Formatter Tools */}
+          <Route path="/tools/json-formatter" element={<JSONFormatter />} />
+          <Route path="/tools/xml-formatter" element={<XMLFormatter />} />
+          <Route path="/tools/sql-formatter" element={<SQLFormatter />} />
+          <Route path="/tools/html-formatter" element={<HTMLFormatter />} />
+          <Route path="/tools/css-formatter" element={<CSSFormatter />} />
+          <Route path="/tools/url-encoder" element={<URLEncoder />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
