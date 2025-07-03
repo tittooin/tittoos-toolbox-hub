@@ -7,7 +7,8 @@ import {
   Phone, MapPin, CreditCard, Calendar, Timer,
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
-  Bot, Video, Wand2, Sparkles, Brain
+  Bot, Video, Wand2, Sparkles, Brain, Youtube,
+  Facebook, Twitter
 } from "lucide-react";
 
 export const categories = [
@@ -18,6 +19,7 @@ export const categories = [
   { id: "calculator", name: "Calculators" },
   { id: "formatter", name: "Formatters" },
   { id: "ai", name: "AI Tools" },
+  { id: "downloader", name: "Downloaders" },
 ];
 
 export const tools = [
@@ -85,6 +87,14 @@ export const tools = [
     category: "converter",
     icon: Binary,
     path: "/tools/base64-converter"
+  },
+  {
+    id: "timestamp-converter",
+    name: "Timestamp Converter",
+    description: "Convert between Unix timestamps and human-readable dates.",
+    category: "converter",
+    icon: Clock,
+    path: "/tools/timestamp-converter"
   },
 
   // Generators
@@ -220,6 +230,22 @@ export const tools = [
     icon: Palette,
     path: "/tools/css-editor"
   },
+  {
+    id: "color-picker",
+    name: "Color Picker",
+    description: "Pick colors from images or use the color wheel to find perfect colors.",
+    category: "editor",
+    icon: Palette,
+    path: "/tools/color-picker"
+  },
+  {
+    id: "markdown-editor",
+    name: "Markdown Editor",
+    description: "Write and preview Markdown with live rendering.",
+    category: "editor",
+    icon: Type,
+    path: "/tools/markdown-editor"
+  },
 
   // Calculators
   {
@@ -304,24 +330,6 @@ export const tools = [
     icon: Palette,
     path: "/tools/css-formatter"
   },
-
-  // Additional utilities
-  {
-    id: "color-picker",
-    name: "Color Picker",
-    description: "Pick colors from images or use the color wheel to find perfect colors.",
-    category: "editor",
-    icon: Palette,
-    path: "/tools/color-picker"
-  },
-  {
-    id: "timestamp-converter",
-    name: "Timestamp Converter",
-    description: "Convert between Unix timestamps and human-readable dates.",
-    category: "converter",
-    icon: Clock,
-    path: "/tools/timestamp-converter"
-  },
   {
     id: "url-encoder",
     name: "URL Encoder/Decoder",
@@ -329,14 +337,6 @@ export const tools = [
     category: "formatter",
     icon: Globe,
     path: "/tools/url-encoder"
-  },
-  {
-    id: "markdown-editor",
-    name: "Markdown Editor",
-    description: "Write and preview Markdown with live rendering.",
-    category: "editor",
-    icon: Type,
-    path: "/tools/markdown-editor"
   },
 
   // AI Tools
@@ -379,5 +379,39 @@ export const tools = [
     category: "ai",
     icon: Sparkles,
     path: "/tools/ai-tool-generator"
+  },
+
+  // Downloaders
+  {
+    id: "youtube-downloader",
+    name: "YouTube Video Downloader",
+    description: "Download YouTube videos in multiple formats and qualities.",
+    category: "downloader",
+    icon: Youtube,
+    path: "/tools/youtube-downloader"
+  },
+  {
+    id: "facebook-downloader",
+    name: "Facebook Video Downloader",
+    description: "Download Facebook videos and save them to your device.",
+    category: "downloader",
+    icon: Facebook,
+    path: "/tools/facebook-downloader"
+  },
+  {
+    id: "twitter-downloader",
+    name: "X (Twitter) Video Downloader",
+    description: "Download videos and GIFs from X (formerly Twitter).",
+    category: "downloader",
+    icon: Twitter,
+    path: "/tools/twitter-downloader"
+  },
+  {
+    id: "linkedin-downloader",
+    name: "LinkedIn Video Downloader",
+    description: "Download LinkedIn videos for offline viewing.",
+    category: "downloader",
+    icon: Linkedin,
+    path: "/tools/linkedin-downloader"
   }
 ];

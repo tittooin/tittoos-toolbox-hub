@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Search, Filter, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,26 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  useEffect(() => {
+    // Set SEO meta tags
+    document.title = "TittoosTools - 40+ Essential Online Utilities | Free Web Tools";
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more. No registration required.');
+    }
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'TittoosTools - 40+ Essential Online Utilities | Free Web Tools');
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', 'Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more.');
+    }
+  }, []);
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -39,8 +60,8 @@ const Index = () => {
             TittoosTools
           </h1>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 animate-fade-in">
-            Your complete toolkit for online productivity. 35+ essential utilities including converters, 
-            generators, analyzers, and editors - all in one place.
+            Your complete toolkit for online productivity. 40+ essential utilities including converters, 
+            generators, analyzers, editors, and social media downloaders - all in one place.
           </p>
           <div className="flex justify-center animate-fade-in">
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" onClick={scrollToTools}>

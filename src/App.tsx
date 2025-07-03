@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -56,6 +55,10 @@ import TextToVideo from "./pages/tools/TextToVideo";
 import AIPromptAssistant from "./pages/tools/AIPromptAssistant";
 import AIWebsiteGenerator from "./pages/tools/AIWebsiteGenerator";
 import AIToolGenerator from "./pages/tools/AIToolGenerator";
+import YoutubeDownloader from "./pages/tools/YoutubeDownloader";
+import FacebookDownloader from "./pages/tools/FacebookDownloader";
+import TwitterDownloader from "./pages/tools/TwitterDownloader";
+import LinkedinDownloader from "./pages/tools/LinkedinDownloader";
 
 const queryClient = new QueryClient();
 
@@ -131,6 +134,12 @@ const App = () => (
           <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
           <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
           <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
+          
+          {/* Downloader Tools */}
+          <Route path="/tools/youtube-downloader" element={<YoutubeDownloader />} />
+          <Route path="/tools/facebook-downloader" element={<FacebookDownloader />} />
+          <Route path="/tools/twitter-downloader" element={<TwitterDownloader />} />
+          <Route path="/tools/linkedin-downloader" element={<LinkedinDownloader />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
