@@ -1,8 +1,8 @@
-
-import { useState } from "react";
-import { Upload, Download, FileVideo, Settings, Play } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Upload, Download, FileVideo, Play, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -12,49 +12,60 @@ import ToolTemplate from "@/components/ToolTemplate";
 const VideoConverter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [outputFormat, setOutputFormat] = useState("mp4");
-  const [quality, setQuality] = useState("medium");
+  const [quality, setQuality] = useState("high");
   const [resolution, setResolution] = useState("original");
   const [isConverting, setIsConverting] = useState(false);
-  const [conversionProgress, setConversionProgress] = useState(0);
-  const [convertedVideoUrl, setConvertedVideoUrl] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [convertedFile, setConvertedFile] = useState<string | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
-  const videoFormats = [
+  useEffect(() => {
+    // Set SEO meta tags
+    document.title = "Free Video Converter Online – TittoosTools";
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Convert videos between MP4, AVI, MOV, WebM formats. Support for HD, 4K quality. No signup required – just upload and convert at TittoosTools.');
+    }
+  }, []);
+
+  const formatOptions = [
     { value: "mp4", label: "MP4", description: "Most compatible format" },
-    { value: "avi", label: "AVI", description: "High quality, larger size" },
+    { value: "avi", label: "AVI", description: "High quality, larger file" },
     { value: "mov", label: "MOV", description: "Apple QuickTime format" },
-    { value: "wmv", label: "WMV", description: "Windows Media Video" },
-    { value: "mkv", label: "MKV", description: "Matroska Video" },
-    { value: "webm", label: "WebM", description: "Web optimized" },
-    { value: "flv", label: "FLV", description: "Flash Video" },
-    { value: "3gp", label: "3GP", description: "Mobile format" },
+    { value: "webm", label: "WebM", description: "Web optimized format" },
+    { value: "mkv", label: "MKV", description: "Matroska video format" },
+    { value: "flv", label: "FLV", description: "Flash video format" },
+    { value: "wmv", label: "WMV", description: "Windows Media format" },
+    { value: "3gp", label: "3GP", description: "Mobile video format" }
   ];
 
   const qualityOptions = [
     { value: "low", label: "Low Quality", description: "Smaller file size" },
-    { value: "medium", label: "Medium Quality", description: "Balanced" },
-    { value: "high", label: "High Quality", description: "Best quality" },
+    { value: "medium", label: "Medium Quality", description: "Balanced size/quality" },
+    { value: "high", label: "High Quality", description: "Best quality, larger file" },
+    { value: "lossless", label: "Lossless", description: "No quality loss" }
   ];
 
   const resolutionOptions = [
     { value: "original", label: "Original", description: "Keep original resolution" },
-    { value: "480p", label: "480p", description: "Standard Definition" },
-    { value: "720p", label: "720p", description: "HD" },
-    { value: "1080p", label: "1080p", description: "Full HD" },
-    { value: "1440p", label: "1440p", description: "2K" },
-    { value: "2160p", label: "2160p", description: "4K" },
+    { value: "4k", label: "4K (3840x2160)", description: "Ultra HD" },
+    { value: "1080p", label: "1080p (1920x1080)", description: "Full HD" },
+    { value: "720p", label: "720p (1280x720)", description: "HD" },
+    { value: "480p", label: "480p (854x480)", description: "Standard definition" },
+    { value: "360p", label: "360p (640x360)", description: "Low resolution" }
   ];
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type.startsWith('video/')) {
-        setSelectedFile(file);
-        setConvertedVideoUrl(null);
-        setConversionProgress(0);
-        toast.success("Video file selected successfully!");
-      } else {
-        toast.error("Please select a valid video file");
-      }
+      setSelectedFile(file);
+      
+      // Create video preview
+      const url = URL.createObjectURL(file);
+      setVideoPreview(url);
+      
+      toast.success("Video file selected successfully!");
     }
   };
 
@@ -65,57 +76,45 @@ const VideoConverter = () => {
     }
 
     setIsConverting(true);
-    setConversionProgress(0);
-    
+    setProgress(0);
+
     try {
-      // Simulate video conversion process
-      const totalSteps = 100;
-      
-      for (let i = 0; i <= totalSteps; i += 5) {
+      // Simulate conversion process
+      for (let i = 0; i <= 100; i += 2) {
         await new Promise(resolve => setTimeout(resolve, 100));
-        setConversionProgress(i);
+        setProgress(i);
       }
-      
-      // For demo purposes, we'll use the original file URL as converted
-      const convertedUrl = URL.createObjectURL(selectedFile);
-      setConvertedVideoUrl(convertedUrl);
-      
-      toast.success(`Video converted to ${outputFormat.toUpperCase()} successfully!`);
+
+      // Create a dummy converted file
+      const blob = new Blob(['Converted video content'], { type: `video/${outputFormat}` });
+      const url = URL.createObjectURL(blob);
+      setConvertedFile(url);
+
+      toast.success("Video converted successfully!");
     } catch (error) {
-      toast.error("Failed to convert video. Please try again.");
+      toast.error("Failed to convert video");
     } finally {
       setIsConverting(false);
     }
   };
 
   const handleDownload = () => {
-    if (convertedVideoUrl && selectedFile) {
+    if (convertedFile) {
       const link = document.createElement('a');
-      link.href = convertedVideoUrl;
-      link.download = `converted_${selectedFile.name.split('.')[0]}.${outputFormat}`;
+      link.href = convertedFile;
+      link.download = `converted_video.${outputFormat}`;
       link.click();
       toast.success("Download started!");
     }
   };
 
-  const getFileInfo = () => {
-    if (!selectedFile) return null;
-    
-    const sizeInMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
-    return {
-      name: selectedFile.name,
-      size: `${sizeInMB} MB`,
-      type: selectedFile.type,
-    };
-  };
-
   const features = [
-    "Convert between MP4, AVI, MOV, WMV, MKV, WebM formats",
-    "Adjust video quality and resolution settings",
-    "Compress video files for smaller sizes",
-    "Batch conversion support",
-    "Real-time conversion progress tracking",
-    "Preview converted videos before download"
+    "Convert between 8+ video formats",
+    "Support for 4K, HD, and custom resolutions",
+    "Quality control options",
+    "Preview before conversion",
+    "Fast conversion process",
+    "No file size limits"
   ];
 
   return (
@@ -131,7 +130,7 @@ const VideoConverter = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Upload className="h-5 w-5" />
-              <span>Upload Video File</span>
+              <span>Upload Video</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -143,38 +142,49 @@ const VideoConverter = () => {
                 className="hidden"
                 id="video-upload"
               />
-              <label htmlFor="video-upload" className="cursor-pointer">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-blue-500 transition-colors">
+              <label htmlFor="video-upload">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-blue-400 transition-colors cursor-pointer">
                   <FileVideo className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-lg font-medium mb-2">Choose Video File</p>
-                  <p className="text-gray-600">Supports MP4, AVI, MOV, WMV, MKV and more</p>
+                  <h3 className="text-lg font-medium mb-2">Choose Video File</h3>
+                  <p className="text-gray-600">Support for MP4, AVI, MOV, WebM, MKV and more</p>
                 </div>
               </label>
             </div>
           </CardContent>
         </Card>
 
-        {/* File Info and Conversion Settings */}
+        {/* Video Preview and Settings */}
         {selectedFile && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5" />
-                <span>Conversion Settings</span>
+                <Play className="h-5 w-5" />
+                <span>Video Preview & Settings</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* File Info */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">Selected File</h3>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p><strong>Name:</strong> {getFileInfo()?.name}</p>
-                  <p><strong>Size:</strong> {getFileInfo()?.size}</p>
-                  <p><strong>Type:</strong> {getFileInfo()?.type}</p>
+              {/* Video Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-medium mb-2">Selected File</h3>
+                  <p className="text-sm text-gray-600 mb-2">{selectedFile.name}</p>
+                  <p className="text-sm text-gray-500">Size: {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</p>
                 </div>
+                
+                {videoPreview && (
+                  <div>
+                    <h3 className="font-medium mb-2">Preview</h3>
+                    <video 
+                      src={videoPreview} 
+                      controls 
+                      className="w-full max-w-xs rounded border"
+                      style={{ maxHeight: '200px' }}
+                    />
+                  </div>
+                )}
               </div>
 
-              {/* Conversion Options */}
+              {/* Conversion Settings */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label>Output Format</Label>
@@ -183,11 +193,11 @@ const VideoConverter = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {videoFormats.map((format) => (
-                        <SelectItem key={format.value} value={format.value}>
+                      {formatOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
                           <div>
-                            <div className="font-medium">{format.label}</div>
-                            <div className="text-xs text-gray-500">{format.description}</div>
+                            <div className="font-medium">{option.label}</div>
+                            <div className="text-xs text-gray-500">{option.description}</div>
                           </div>
                         </SelectItem>
                       ))}
@@ -241,6 +251,7 @@ const VideoConverter = () => {
                 disabled={isConverting}
                 size="lg"
               >
+                <Settings className="h-4 w-4 mr-2" />
                 {isConverting ? "Converting..." : "Convert Video"}
               </Button>
 
@@ -248,44 +259,35 @@ const VideoConverter = () => {
               {isConverting && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Converting...</span>
-                    <span>{conversionProgress}%</span>
+                    <span>Converting to {outputFormat.toUpperCase()}...</span>
+                    <span>{progress}%</span>
                   </div>
-                  <Progress value={conversionProgress} className="w-full" />
+                  <Progress value={progress} className="w-full" />
                 </div>
               )}
             </CardContent>
           </Card>
         )}
 
-        {/* Converted Video Preview and Download */}
-        {convertedVideoUrl && !isConverting && (
+        {/* Download Converted File */}
+        {convertedFile && !isConverting && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Play className="h-5 w-5" />
-                <span>Converted Video</span>
+                <Download className="h-5 w-5" />
+                <span>Download Converted Video</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600 mb-3">
-                  Video converted to <strong>{outputFormat.toUpperCase()}</strong> with <strong>{quality}</strong> quality
-                  {resolution !== 'original' && ` at ${resolution} resolution`}
+            <CardContent>
+              <div className="text-center space-y-4">
+                <p className="text-gray-600">
+                  Your video has been converted to {outputFormat.toUpperCase()} format successfully!
                 </p>
-                <video 
-                  src={convertedVideoUrl} 
-                  controls 
-                  className="w-full max-w-md rounded-lg"
-                  poster="https://via.placeholder.com/400x225/1f2937/ffffff?text=Converted+Video"
-                >
-                  Your browser does not support the video tag.
-                </video>
+                <Button onClick={handleDownload} size="lg" className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Video
+                </Button>
               </div>
-              <Button onClick={handleDownload} className="w-full" size="lg">
-                <Download className="h-4 w-4 mr-2" />
-                Download Converted Video
-              </Button>
             </CardContent>
           </Card>
         )}

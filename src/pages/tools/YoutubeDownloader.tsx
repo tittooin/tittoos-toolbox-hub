@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Download, Youtube, Play, FileVideo, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +17,16 @@ const YoutubeDownloader = () => {
   const [progress, setProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState<any>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Set SEO meta tags
+    document.title = "Free YouTube Video Downloader Online – TittoosTools";
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Download YouTube videos in HD quality for free. Support for 4K, 1080p, 720p formats. No signup required – just paste URL and download at TittoosTools.');
+    }
+  }, []);
 
   const qualityOptions = [
     { value: "2160p", label: "4K (2160p)", description: "Ultra HD" },

@@ -1,11 +1,12 @@
 
-import { useState } from "react";
-import { Copy, RefreshCw, Key } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Lock, Copy, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
 
@@ -16,7 +17,16 @@ const PasswordGenerator = () => {
   const [includeLowercase, setIncludeLowercase] = useState(true);
   const [includeNumbers, setIncludeNumbers] = useState(true);
   const [includeSymbols, setIncludeSymbols] = useState(false);
-  const [excludeSimilar, setExcludeSimilar] = useState(false);
+
+  useEffect(() => {
+    // Set SEO meta tags
+    document.title = "Free Strong Password Generator Online – TittoosTools";
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Generate secure, strong passwords instantly. Customize length, symbols, numbers. Free password generator with no signup required at TittoosTools.');
+    }
+  }, []);
 
   const generatePassword = () => {
     let charset = "";
@@ -24,140 +34,120 @@ const PasswordGenerator = () => {
     if (includeLowercase) charset += "abcdefghijklmnopqrstuvwxyz";
     if (includeNumbers) charset += "0123456789";
     if (includeSymbols) charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
-    
-    if (excludeSimilar) {
-      charset = charset.replace(/[il1Lo0O]/g, "");
-    }
 
-    if (!charset) {
+    if (charset === "") {
       toast.error("Please select at least one character type");
       return;
     }
 
-    let result = "";
+    let newPassword = "";
     for (let i = 0; i < length[0]; i++) {
-      result += charset.charAt(Math.floor(Math.random() * charset.length));
+      newPassword += charset.charAt(Math.floor(Math.random() * charset.length));
     }
     
-    setPassword(result);
+    setPassword(newPassword);
     toast.success("Password generated successfully!");
   };
 
   const copyToClipboard = () => {
-    if (!password) {
-      toast.error("No password to copy");
-      return;
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast.success("Password copied to clipboard!");
     }
-    
-    navigator.clipboard.writeText(password);
-    toast.success("Password copied to clipboard!");
   };
 
   const features = [
-    "Customizable password length (4-128 characters)",
-    "Multiple character sets support",
-    "Exclude similar looking characters option",
-    "Instant copy to clipboard",
-    "Secure random generation"
+    "Generate strong, secure passwords",
+    "Customizable length (4-128 characters)",
+    "Include/exclude uppercase, lowercase, numbers, symbols",
+    "One-click copy to clipboard",
+    "No passwords stored or logged"
   ];
 
   return (
     <ToolTemplate
       title="Password Generator"
       description="Generate strong, secure passwords with customizable options"
-      icon={Key}
+      icon={Lock}
       features={features}
     >
       <div className="space-y-6">
-        {/* Generated Password */}
-        <div className="space-y-2">
-          <Label>Generated Password</Label>
-          <div className="flex space-x-2">
-            <Input
-              value={password}
-              readOnly
-              placeholder="Click 'Generate Password' to create a password"
-              className="font-mono"
-            />
-            <Button onClick={copyToClipboard} variant="outline" size="icon">
-              <Copy className="h-4 w-4" />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Generated Password</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex space-x-2">
+              <Input
+                value={password}
+                readOnly
+                placeholder="Click generate to create a password"
+                className="font-mono"
+              />
+              <Button onClick={copyToClipboard} disabled={!password} variant="outline">
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button onClick={generatePassword} className="w-full">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Generate Password
             </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Password Length */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <Label>Password Length</Label>
-            <span className="text-sm text-gray-600">{length[0]} characters</span>
-          </div>
-          <Slider
-            value={length}
-            onValueChange={setLength}
-            min={4}
-            max={128}
-            step={1}
-            className="w-full"
-          />
-        </div>
-
-        {/* Character Options */}
-        <div className="space-y-4">
-          <Label className="text-base font-medium">Character Types</Label>
-          
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="uppercase"
-                checked={includeUppercase}
-                onCheckedChange={(checked) => setIncludeUppercase(checked === true)}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Options</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label>Password Length: {length[0]}</Label>
+              <Slider
+                value={length}
+                onValueChange={setLength}
+                max={128}
+                min={4}
+                step={1}
+                className="w-full"
               />
-              <Label htmlFor="uppercase">Uppercase Letters (A-Z)</Label>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="lowercase"
-                checked={includeLowercase}
-                onCheckedChange={(checked) => setIncludeLowercase(checked === true)}
-              />
-              <Label htmlFor="lowercase">Lowercase Letters (a-z)</Label>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="uppercase">Include Uppercase Letters</Label>
+                <Switch
+                  id="uppercase"
+                  checked={includeUppercase}
+                  onCheckedChange={setIncludeUppercase}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="lowercase">Include Lowercase Letters</Label>
+                <Switch
+                  id="lowercase"
+                  checked={includeLowercase}
+                  onCheckedChange={setIncludeLowercase}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="numbers">Include Numbers</Label>
+                <Switch
+                  id="numbers"
+                  checked={includeNumbers}
+                  onCheckedChange={setIncludeNumbers}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="symbols">Include Symbols</Label>
+                <Switch
+                  id="symbols"
+                  checked={includeSymbols}
+                  onCheckedChange={setIncludeSymbols}
+                />
+              </div>
             </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="numbers"
-                checked={includeNumbers}
-                onCheckedChange={(checked) => setIncludeNumbers(checked === true)}
-              />
-              <Label htmlFor="numbers">Numbers (0-9)</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="symbols"
-                checked={includeSymbols}
-                onCheckedChange={(checked) => setIncludeSymbols(checked === true)}
-              />
-              <Label htmlFor="symbols">Symbols (!@#$%^&*)</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="exclude-similar"
-                checked={excludeSimilar}
-                onCheckedChange={(checked) => setExcludeSimilar(checked === true)}
-              />
-              <Label htmlFor="exclude-similar">Exclude Similar Characters (i, l, 1, L, o, 0, O)</Label>
-            </div>
-          </div>
-        </div>
-
-        {/* Generate Button */}
-        <Button onClick={generatePassword} className="w-full" size="lg">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Generate Password
-        </Button>
+          </CardContent>
+        </Card>
       </div>
     </ToolTemplate>
   );
