@@ -1,15 +1,20 @@
-
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BlogSubmissionForm from "@/components/BlogSubmissionForm";
+import AIBlogGenerator from "@/components/AIBlogGenerator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
+import { toast } from 'sonner';
 
 const Blog = () => {
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
+  const [showSubmissionForm, setShowSubmissionForm] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [userBlogs, setUserBlogs] = useState<any[]>([]);
 
-  const blogPosts = [
+  const defaultBlogPosts = [
     {
       id: 1,
       title: "10 Essential Online Tools for Digital Productivity in 2024",
@@ -301,7 +306,14 @@ const Blog = () => {
     }
   ];
 
-  const selectedPostData = selectedPost ? blogPosts.find(post => post.id === selectedPost) : null;
+  const allBlogPosts = [...userBlogs, ...defaultBlogPosts];
+
+  const handleSaveBlog = (blog: any) => {
+    setUserBlogs(prev => [blog, ...prev]);
+    toast.success('Blog post saved successfully!');
+  };
+
+  const selectedPostData = selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null;
 
   if (selectedPostData) {
     return (
@@ -338,6 +350,11 @@ const Blog = () => {
                     <Clock className="h-4 w-4 mr-2" />
                     {selectedPostData.readTime}
                   </div>
+                  {selectedPostData.isAIGenerated && (
+                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
+                      AI Generated
+                    </span>
+                  )}
                 </div>
               </header>
 
@@ -360,25 +377,45 @@ const Blog = () => {
       
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-            TittoosTools Blog
-          </h1>
-          <p className="text-xl text-gray-600 text-center mb-12">
-            Tips, tutorials, and insights to help you make the most of our tools.
-          </p>
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4 text-gray-800">
+              TittoosTools Blog
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Tips, tutorials, and insights to help you make the most of our tools.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button onClick={() => setShowSubmissionForm(true)} className="flex items-center">
+                <Plus className="h-4 w-4 mr-2" />
+                Submit Your Blog
+              </Button>
+              <Button onClick={() => setShowAIGenerator(true)} variant="outline" className="flex items-center">
+                <Wand2 className="h-4 w-4 mr-2" />
+                AI Blog Generator
+              </Button>
+            </div>
+          </div>
 
           <div className="space-y-8">
-            {blogPosts.map((post) => (
+            {allBlogPosts.map((post) => (
               <Card key={post.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle 
-                        className="text-2xl mb-2 hover:text-blue-600 transition-colors cursor-pointer"
-                        onClick={() => setSelectedPost(post.id)}
-                      >
-                        {post.title}
-                      </CardTitle>
+                      <div className="flex items-center gap-2 mb-2">
+                        <CardTitle 
+                          className="text-2xl hover:text-blue-600 transition-colors cursor-pointer"
+                          onClick={() => setSelectedPost(post.id)}
+                        >
+                          {post.title}
+                        </CardTitle>
+                        {post.isAIGenerated && (
+                          <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
+                            AI Generated
+                          </span>
+                        )}
+                      </div>
                       <CardDescription className="text-base mb-4">
                         {post.excerpt}
                       </CardDescription>
@@ -403,13 +440,27 @@ const Blog = () => {
 
           <div className="text-center mt-12">
             <p className="text-gray-600">
-              More articles coming soon! Stay tuned for helpful tips and tutorials.
+              Share your expertise with our community! Submit your blog or generate one with AI.
             </p>
           </div>
         </div>
       </div>
 
       <Footer />
+
+      {showSubmissionForm && (
+        <BlogSubmissionForm
+          onClose={() => setShowSubmissionForm(false)}
+          onSave={handleSaveBlog}
+        />
+      )}
+
+      {showAIGenerator && (
+        <AIBlogGenerator
+          onClose={() => setShowAIGenerator(false)}
+          onSave={handleSaveBlog}
+        />
+      )}
     </div>
   );
 };
