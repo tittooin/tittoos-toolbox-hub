@@ -8,7 +8,7 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
-  Facebook, Twitter
+  Facebook, Twitter, Linkedin
 } from "lucide-react";
 
 export const categories = [
