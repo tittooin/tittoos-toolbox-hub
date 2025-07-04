@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -59,6 +60,8 @@ import YoutubeDownloader from "./pages/tools/YoutubeDownloader";
 import FacebookDownloader from "./pages/tools/FacebookDownloader";
 import TwitterDownloader from "./pages/tools/TwitterDownloader";
 import LinkedinDownloader from "./pages/tools/LinkedinDownloader";
+import ImageBackgroundRemover from "./pages/tools/ImageBackgroundRemover";
+import WebsiteSpeedChecker from "./pages/tools/WebsiteSpeedChecker";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +103,7 @@ const App = () => (
           {/* Analyzer Tools */}
           <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
           <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
+          <Route path="/tools/website-speed-checker" element={<WebsiteSpeedChecker />} />
           <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
           <Route path="/tools/color-analyzer" element={<ColorAnalyzer />} />
           <Route path="/tools/image-analyzer" element={<ImageAnalyzer />} />
@@ -112,6 +116,7 @@ const App = () => (
           <Route path="/tools/html-editor" element={<HTMLEditor />} />
           <Route path="/tools/css-editor" element={<CSSEditor />} />
           <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
+          <Route path="/tools/image-background-remover" element={<ImageBackgroundRemover />} />
           
           {/* Calculator Tools */}
           <Route path="/tools/calculator" element={<Calculator />} />

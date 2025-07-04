@@ -48,6 +48,18 @@ const Index = () => {
     }
   };
 
+  // Group tools by category for organized display
+  const toolsByCategory = categories.reduce((acc, category) => {
+    const categoryTools = filteredTools.filter(tool => tool.category === category.id);
+    if (categoryTools.length > 0) {
+      acc[category.id] = {
+        name: category.name,
+        tools: categoryTools
+      };
+    }
+    return acc;
+  }, {} as Record<string, { name: string; tools: typeof tools }>);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header />
@@ -102,44 +114,93 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Tools Grid */}
+      {/* Tools by Category */}
       <section className="container mx-auto px-4 pb-16">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            Discover Our Tools
-          </h2>
-          
-          {filteredTools.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No tools found matching your criteria.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredTools.map((tool) => (
-                <Link key={tool.id} to={tool.path}>
-                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                          <tool.icon className="h-6 w-6 text-white" />
-                        </div>
-                        <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                          {categories.find(c => c.id === tool.category)?.name}
-                        </span>
-                      </div>
-                      <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
-                        {tool.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="text-sm leading-relaxed">
-                        {tool.description}
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
+          {selectedCategory === "all" ? (
+            // Show tools grouped by category
+            <div className="space-y-12">
+              {Object.entries(toolsByCategory).map(([categoryId, categoryData]) => (
+                <div key={categoryId}>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-4"></span>
+                    {categoryData.name}
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {categoryData.tools.map((tool) => (
+                      <Link key={tool.id} to={tool.path}>
+                        <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                                <tool.icon className="h-6 w-6 text-white" />
+                              </div>
+                              <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                                {categories.find(c => c.id === tool.category)?.name}
+                              </span>
+                            </div>
+                            <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                              {tool.name}
+                            </CardTitle>
+                            <p className="text-sm text-blue-600 font-medium">
+                              {tool.subheading}
+                            </p>
+                          </CardHeader>
+                          <CardContent>
+                            <CardDescription className="text-sm leading-relaxed">
+                              {tool.description}
+                            </CardDescription>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
+          ) : (
+            // Show filtered tools in a single grid when category is selected
+            <>
+              <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+                {categories.find(c => c.id === selectedCategory)?.name || "Filtered Tools"}
+              </h2>
+              
+              {filteredTools.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 text-lg">No tools found matching your criteria.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredTools.map((tool) => (
+                    <Link key={tool.id} to={tool.path}>
+                      <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                              <tool.icon className="h-6 w-6 text-white" />
+                            </div>
+                            <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                              {categories.find(c => c.id === tool.category)?.name}
+                            </span>
+                          </div>
+                          <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                            {tool.name}
+                          </CardTitle>
+                          <p className="text-sm text-blue-600 font-medium">
+                            {tool.subheading}
+                          </p>
+                        </CardHeader>
+                        <CardContent>
+                          <CardDescription className="text-sm leading-relaxed">
+                            {tool.description}
+                          </CardDescription>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
