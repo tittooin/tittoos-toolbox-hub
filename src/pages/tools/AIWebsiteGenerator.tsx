@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import ToolTemplate from "@/components/ToolTemplate";
 import { Globe, Wand2, Download, Eye, Settings, Palette, Layout, Code, Rocket } from "lucide-react";
 import { generateWebsiteFromPrompt } from "@/utils/websiteGenerator";
 import { toast } from "sonner";
+import JSZip from "jszip";
 
 const AIWebsiteGenerator = () => {
   const [prompt, setPrompt] = useState("");
