@@ -12,7 +12,7 @@ import {
   Image, Upload, Download, Layers, Palette, Brush, 
   Eraser, Type, Square, Circle, MousePointer, 
   RotateCcw, RotateCw, FlipHorizontal, FlipVertical,
-  Blur, Contrast, Sun, Eye, EyeOff, Plus, Trash2,
+  Focus, Contrast, Sun, Eye, EyeOff, Plus, Trash2,
   Move, ZoomIn, ZoomOut, Undo, Redo, Save, Filter
 } from "lucide-react";
 import { toast } from "sonner";
@@ -199,6 +199,7 @@ const AIImageEditor = () => {
     const dataURL = fabricCanvas.toDataURL({
       format: "png",
       quality: 1,
+      multiplier: 1,
     });
 
     const link = document.createElement("a");
@@ -454,7 +455,7 @@ const AIImageEditor = () => {
                   className="w-full justify-start"
                   onClick={() => applyFilter("blur")}
                 >
-                  <Blur className="h-4 w-4 mr-2" />
+                  <Focus className="h-4 w-4 mr-2" />
                   Blur
                 </Button>
                 <Button
