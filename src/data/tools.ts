@@ -1,4 +1,3 @@
-
 import { 
   FileText, Download, Upload, Image, File, Palette, 
   Lock, Key, Calculator, Hash, Clock, QrCode,
@@ -8,7 +7,7 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
-  Facebook, Twitter, Linkedin, Scissors, Gauge
+  Facebook, Twitter, Linkedin, Scissors, Gauge, Edit
 } from "lucide-react";
 
 export const categories = [
@@ -290,6 +289,15 @@ export const tools = [
     category: "editor",
     icon: Scissors,
     path: "/tools/image-background-remover"
+  },
+  {
+    id: "ai-image-editor",
+    name: "AI Image Editor",
+    subheading: "Professional image editing",
+    description: "Professional image editor with layers, filters, drawing tools, and AI-powered features.",
+    category: "editor",
+    icon: Edit,
+    path: "/tools/ai-image-editor"
   },
 
   // Calculators
