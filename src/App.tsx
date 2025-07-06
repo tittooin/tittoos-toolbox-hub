@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -63,6 +62,7 @@ import LinkedinDownloader from "./pages/tools/LinkedinDownloader";
 import ImageBackgroundRemover from "./pages/tools/ImageBackgroundRemover";
 import WebsiteSpeedChecker from "./pages/tools/WebsiteSpeedChecker";
 import AIImageEditor from "./pages/tools/AIImageEditor";
+import VideoEditor from "./pages/tools/VideoEditor";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +119,7 @@ const App = () => (
           <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
           <Route path="/tools/image-background-remover" element={<ImageBackgroundRemover />} />
           <Route path="/tools/ai-image-editor" element={<AIImageEditor />} />
+          <Route path="/tools/video-editor" element={<VideoEditor />} />
           
           {/* Calculator Tools */}
           <Route path="/tools/calculator" element={<Calculator />} />

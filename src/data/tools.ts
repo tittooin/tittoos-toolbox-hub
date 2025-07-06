@@ -299,6 +299,15 @@ export const tools = [
     icon: Edit,
     path: "/tools/ai-image-editor"
   },
+  {
+    id: "video-editor",
+    name: "Video Editor",
+    subheading: "Professional video editing",
+    description: "Professional video editor with timeline, effects, transitions, and multiple export formats.",
+    category: "editor",
+    icon: Video,
+    path: "/tools/video-editor"
+  },
 
   // Calculators
   {
