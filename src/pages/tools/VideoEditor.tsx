@@ -13,7 +13,7 @@ import {
   ZoomIn, ZoomOut, Layers, Filter, Type, Square, Circle,
   Move, Maximize, Music, Image, Settings, Save, FileVideo,
   Wand2, Sparkles, Eye, EyeOff, Lock, Unlock, AudioLines,
-  Mic, MicOff, Headphones, Equalizer, SlidersHorizontal
+  Mic, MicOff, Headphones, SlidersHorizontal
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -824,7 +824,7 @@ const VideoEditor = () => {
                       />
                     </div>
                     <Button size="sm" className="w-full">
-                      <Equalizer className="h-4 w-4 mr-2" />
+                      <SlidersHorizontal className="h-4 w-4 mr-2" />
                       Open EQ
                     </Button>
                   </div>
