@@ -51,11 +51,20 @@ const AIImageEditor = () => {
       backgroundColor: "#ffffff",
     });
 
-    canvas.freeDrawingBrush.width = brushSize;
-    canvas.freeDrawingBrush.color = brushColor;
+    // Properly initialize the drawing brush
+    if (canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush.width = brushSize;
+      canvas.freeDrawingBrush.color = brushColor;
+    }
 
     setFabricCanvas(canvas);
-    saveState(canvas);
+    
+    // Save initial state
+    const initialState = JSON.stringify(canvas.toJSON());
+    setHistory([initialState]);
+    setHistoryIndex(0);
+
+    console.log("Canvas initialized successfully");
 
     return () => {
       canvas.dispose();
@@ -69,37 +78,49 @@ const AIImageEditor = () => {
     fabricCanvas.isDrawingMode = activeTool === "brush";
     fabricCanvas.selection = activeTool === "select";
 
-    if (activeTool === "brush") {
+    if (activeTool === "brush" && fabricCanvas.freeDrawingBrush) {
       fabricCanvas.freeDrawingBrush.width = brushSize;
       fabricCanvas.freeDrawingBrush.color = brushColor;
     }
   }, [activeTool, brushSize, brushColor, fabricCanvas]);
 
   const saveState = (canvas: FabricCanvas) => {
-    const state = JSON.stringify(canvas.toJSON());
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(state);
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
+    try {
+      const state = JSON.stringify(canvas.toJSON());
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push(state);
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    } catch (error) {
+      console.error("Error saving state:", error);
+    }
   };
 
   const undo = () => {
     if (historyIndex > 0 && fabricCanvas) {
       const previousState = history[historyIndex - 1];
-      fabricCanvas.loadFromJSON(previousState, () => {
-        fabricCanvas.renderAll();
-        setHistoryIndex(historyIndex - 1);
-      });
+      try {
+        fabricCanvas.loadFromJSON(previousState, () => {
+          fabricCanvas.renderAll();
+          setHistoryIndex(historyIndex - 1);
+        });
+      } catch (error) {
+        console.error("Error during undo:", error);
+      }
     }
   };
 
   const redo = () => {
     if (historyIndex < history.length - 1 && fabricCanvas) {
       const nextState = history[historyIndex + 1];
-      fabricCanvas.loadFromJSON(nextState, () => {
-        fabricCanvas.renderAll();
-        setHistoryIndex(historyIndex + 1);
-      });
+      try {
+        fabricCanvas.loadFromJSON(nextState, () => {
+          fabricCanvas.renderAll();
+          setHistoryIndex(historyIndex + 1);
+        });
+      } catch (error) {
+        console.error("Error during redo:", error);
+      }
     }
   };
 
@@ -111,10 +132,23 @@ const AIImageEditor = () => {
     reader.onload = (e) => {
       const imgUrl = e.target?.result as string;
       FabricImage.fromURL(imgUrl).then((img) => {
+        // Scale image to fit canvas if it's too large
+        const canvasWidth = fabricCanvas.width || 800;
+        const canvasHeight = fabricCanvas.height || 600;
+        
+        if (img.width && img.height) {
+          const scale = Math.min(canvasWidth / img.width, canvasHeight / img.height, 1);
+          img.scale(scale);
+        }
+        
         fabricCanvas.add(img);
+        fabricCanvas.centerObject(img);
         fabricCanvas.renderAll();
         saveState(fabricCanvas);
         toast.success("Image uploaded successfully!");
+      }).catch(error => {
+        console.error("Error loading image:", error);
+        toast.error("Failed to load image");
       });
     };
     reader.readAsDataURL(file);
@@ -177,8 +211,21 @@ const AIImageEditor = () => {
       return;
     }
 
-    // Note: Fabric.js v6 has different filter APIs
-    // This is a simplified implementation
+    // Simple filter implementation for demonstration
+    switch (filterType) {
+      case "grayscale":
+        activeObject.set('saturation', -1);
+        break;
+      case "brightness":
+        activeObject.set('brightness', 0.3);
+        break;
+      case "contrast":
+        activeObject.set('contrast', 0.3);
+        break;
+      default:
+        break;
+    }
+    
     fabricCanvas.renderAll();
     saveState(fabricCanvas);
     toast.success(`${filterType} filter applied!`);
@@ -196,17 +243,22 @@ const AIImageEditor = () => {
   const downloadImage = () => {
     if (!fabricCanvas) return;
 
-    const dataURL = fabricCanvas.toDataURL({
-      format: "png",
-      quality: 1,
-      multiplier: 1,
-    });
+    try {
+      const dataURL = fabricCanvas.toDataURL({
+        format: "png",
+        quality: 1,
+        multiplier: 1,
+      });
 
-    const link = document.createElement("a");
-    link.download = "edited-image.png";
-    link.href = dataURL;
-    link.click();
-    toast.success("Image downloaded!");
+      const link = document.createElement("a");
+      link.download = "edited-image.png";
+      link.href = dataURL;
+      link.click();
+      toast.success("Image downloaded!");
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      toast.error("Failed to download image");
+    }
   };
 
   const toggleLayerVisibility = (layerId: string) => {
@@ -234,6 +286,34 @@ const AIImageEditor = () => {
       if (activeLayer === layerId) {
         setActiveLayer(layers[0].id);
       }
+    }
+  };
+
+  const deleteSelected = () => {
+    if (!fabricCanvas) return;
+    const activeObject = fabricCanvas.getActiveObject();
+    if (activeObject) {
+      fabricCanvas.remove(activeObject);
+      fabricCanvas.renderAll();
+      saveState(fabricCanvas);
+      toast.success("Object deleted!");
+    }
+  };
+
+  const duplicateSelected = () => {
+    if (!fabricCanvas) return;
+    const activeObject = fabricCanvas.getActiveObject();
+    if (activeObject) {
+      activeObject.clone((cloned: FabricObject) => {
+        cloned.set({
+          left: (cloned.left || 0) + 10,
+          top: (cloned.top || 0) + 10,
+        });
+        fabricCanvas.add(cloned);
+        fabricCanvas.renderAll();
+        saveState(fabricCanvas);
+        toast.success("Object duplicated!");
+      });
     }
   };
 
@@ -278,6 +358,16 @@ const AIImageEditor = () => {
             <Redo className="h-4 w-4" />
           </Button>
           
+          <Button onClick={duplicateSelected} variant="outline" size="sm">
+            <Square className="h-4 w-4 mr-2" />
+            Duplicate
+          </Button>
+          
+          <Button onClick={deleteSelected} variant="outline" size="sm">
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete
+          </Button>
+          
           <Button onClick={downloadImage} variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Download
@@ -285,7 +375,7 @@ const AIImageEditor = () => {
           
           <Button onClick={clearCanvas} variant="outline" size="sm">
             <Trash2 className="h-4 w-4 mr-2" />
-            Clear
+            Clear All
           </Button>
         </div>
 
