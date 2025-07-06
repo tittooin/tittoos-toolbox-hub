@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,13 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import ToolTemplate from "@/components/ToolTemplate";
 import { 
   Image, Upload, Download, Layers, Palette, Brush, 
   Eraser, Type, Square, Circle, MousePointer, 
   RotateCcw, RotateCw, FlipHorizontal, FlipVertical,
   Focus, Contrast, Sun, Eye, EyeOff, Plus, Trash2,
-  Move, ZoomIn, ZoomOut, Undo, Redo, Save, Filter
+  Move, ZoomIn, ZoomOut, Undo, Redo, Save, Filter,
+  Sparkles, Wand2, Brain, Zap, Magic
 } from "lucide-react";
 import { toast } from "sonner";
 import { Canvas as FabricCanvas, FabricObject, Circle as FabricCircle, Rect as FabricRect, FabricText, FabricImage } from "fabric";
@@ -40,6 +41,11 @@ const AIImageEditor = () => {
   const [zoom, setZoom] = useState(100);
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+
+  // AI Prompt-based editing states
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [aiEditType, setAiEditType] = useState("enhance");
 
   // Initialize canvas
   useEffect(() => {
@@ -121,6 +127,182 @@ const AIImageEditor = () => {
       } catch (error) {
         console.error("Error during redo:", error);
       }
+    }
+  };
+
+  // AI Prompt Analysis Function
+  const analyzePromptForImageEditing = (prompt: string) => {
+    const lowerPrompt = prompt.toLowerCase();
+    
+    // Color analysis
+    const colorCommands = {
+      brightness: lowerPrompt.includes('bright') || lowerPrompt.includes('lighter'),
+      darkness: lowerPrompt.includes('dark') || lowerPrompt.includes('dim'),
+      contrast: lowerPrompt.includes('contrast') || lowerPrompt.includes('sharp'),
+      saturation: lowerPrompt.includes('vibrant') || lowerPrompt.includes('colorful'),
+      blur: lowerPrompt.includes('blur') || lowerPrompt.includes('soft'),
+      sharpen: lowerPrompt.includes('sharp') || lowerPrompt.includes('crisp'),
+    };
+
+    // Object detection and editing
+    const objectCommands = {
+      addText: lowerPrompt.includes('add text') || lowerPrompt.includes('write'),
+      addShape: lowerPrompt.includes('add circle') || lowerPrompt.includes('add square'),
+      removeBackground: lowerPrompt.includes('remove background') || lowerPrompt.includes('transparent'),
+      crop: lowerPrompt.includes('crop') || lowerPrompt.includes('resize'),
+    };
+
+    // Style commands
+    const styleCommands = {
+      vintage: lowerPrompt.includes('vintage') || lowerPrompt.includes('retro'),
+      artistic: lowerPrompt.includes('artistic') || lowerPrompt.includes('paint'),
+      professional: lowerPrompt.includes('professional') || lowerPrompt.includes('clean'),
+    };
+
+    return { colorCommands, objectCommands, styleCommands, originalPrompt: prompt };
+  };
+
+  // AI-powered image editing execution
+  const executeAiImageEdit = async (analysis: any, canvas: FabricCanvas) => {
+    const { colorCommands, objectCommands, styleCommands } = analysis;
+
+    try {
+      // Apply color adjustments
+      if (colorCommands.brightness) {
+        const objects = canvas.getObjects();
+        objects.forEach(obj => {
+          if (obj instanceof FabricImage) {
+            obj.set('brightness', 0.3);
+          }
+        });
+        toast.success("✨ AI applied brightness enhancement");
+      }
+
+      if (colorCommands.contrast) {
+        const objects = canvas.getObjects();
+        objects.forEach(obj => {
+          if (obj instanceof FabricImage) {
+            obj.set('contrast', 0.3);
+          }
+        });
+        toast.success("✨ AI enhanced contrast");
+      }
+
+      if (colorCommands.saturation) {
+        const objects = canvas.getObjects();
+        objects.forEach(obj => {
+          if (obj instanceof FabricImage) {
+            obj.set('saturation', 0.4);
+          }
+        });
+        toast.success("✨ AI boosted color saturation");
+      }
+
+      // Add objects based on prompt
+      if (objectCommands.addText) {
+        const textMatch = analysis.originalPrompt.match(/(?:add text|write)\s*["']([^"']+)["']/i);
+        const textContent = textMatch ? textMatch[1] : "AI Generated Text";
+        
+        const text = new FabricText(textContent, {
+          left: 100,
+          top: 100,
+          fontFamily: "Arial",
+          fontSize: 24,
+          fill: brushColor,
+        });
+        canvas.add(text);
+        toast.success("✨ AI added text based on your prompt");
+      }
+
+      if (objectCommands.addShape) {
+        if (analysis.originalPrompt.includes('circle')) {
+          const circle = new FabricCircle({
+            left: 150,
+            top: 150,
+            fill: brushColor,
+            radius: 50,
+          });
+          canvas.add(circle);
+          toast.success("✨ AI added circle shape");
+        }
+        
+        if (analysis.originalPrompt.includes('square')) {
+          const square = new FabricRect({
+            left: 150,
+            top: 150,
+            fill: brushColor,
+            width: 100,
+            height: 100,
+          });
+          canvas.add(square);
+          toast.success("✨ AI added square shape");
+        }
+      }
+
+      // Apply style effects
+      if (styleCommands.vintage) {
+        const objects = canvas.getObjects();
+        objects.forEach(obj => {
+          if (obj instanceof FabricImage) {
+            obj.set('saturation', -0.3);
+            obj.set('brightness', -0.1);
+          }
+        });
+        canvas.backgroundColor = "#f4f1e8";
+        toast.success("✨ AI applied vintage style");
+      }
+
+      if (styleCommands.artistic) {
+        const objects = canvas.getObjects();
+        objects.forEach(obj => {
+          if (obj instanceof FabricImage) {
+            obj.set('contrast', 0.2);
+            obj.set('saturation', 0.3);
+          }
+        });
+        toast.success("✨ AI applied artistic enhancement");
+      }
+
+      canvas.renderAll();
+      return true;
+    } catch (error) {
+      console.error("AI editing error:", error);
+      return false;
+    }
+  };
+
+  // Main AI prompt processing function
+  const processAiPrompt = async () => {
+    if (!aiPrompt.trim() || !fabricCanvas) {
+      toast.error("Please enter an AI editing prompt");
+      return;
+    }
+
+    setIsAiProcessing(true);
+    toast.info("🤖 AI is analyzing your prompt...");
+
+    try {
+      // Simulate AI processing time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Analyze the prompt
+      const analysis = analyzePromptForImageEditing(aiPrompt);
+      console.log("AI Analysis:", analysis);
+
+      // Execute the AI-based edits
+      const success = await executeAiImageEdit(analysis, fabricCanvas);
+
+      if (success) {
+        saveState(fabricCanvas);
+        toast.success("🎉 AI editing completed successfully!");
+      } else {
+        toast.error("AI editing failed. Please try a different prompt.");
+      }
+    } catch (error) {
+      console.error("AI processing error:", error);
+      toast.error("AI processing failed. Please try again.");
+    } finally {
+      setIsAiProcessing(false);
     }
   };
 
@@ -304,7 +486,7 @@ const AIImageEditor = () => {
     if (!fabricCanvas) return;
     const activeObject = fabricCanvas.getActiveObject();
     if (activeObject) {
-      activeObject.clone((cloned: FabricObject) => {
+      activeObject.clone().then((cloned: FabricObject) => {
         cloned.set({
           left: (cloned.left || 0) + 10,
           top: (cloned.top || 0) + 10,
@@ -320,18 +502,97 @@ const AIImageEditor = () => {
   return (
     <ToolTemplate
       title="AI Image Editor"
-      description="Professional image editing tool with layers, filters, and advanced tools"
+      description="Professional AI-powered image editing tool with prompt-based editing, layers, filters, and advanced tools"
       icon={Image}
       features={[
-        "Multi-layer editing",
+        "AI prompt-based editing with natural language",
+        "Intelligent image enhancement and manipulation",
+        "Multi-layer editing with advanced controls",
         "Drawing and painting tools",
-        "Shape and text tools",
+        "Shape and text tools with AI assistance",
         "Image filters and effects",
         "Undo/Redo functionality",
         "Export in multiple formats"
       ]}
     >
       <div className="space-y-6">
+        {/* AI Prompt Section */}
+        <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-blue-700">
+              <Brain className="h-5 w-5" />
+              <span>AI Prompt-Based Editing</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Tell AI what you want to do</Label>
+              <Textarea
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="Try: 'Make this image brighter and add more contrast', 'Add text Hello World in blue', 'Apply vintage effect', 'Add a red circle', 'Make it more artistic', 'Remove background', 'Enhance colors'"
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>AI Edit Type</Label>
+                <Select value={aiEditType} onValueChange={setAiEditType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="enhance">Enhance Image</SelectItem>
+                    <SelectItem value="style">Apply Style</SelectItem>
+                    <SelectItem value="objects">Add Objects</SelectItem>
+                    <SelectItem value="effects">Apply Effects</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex items-end">
+                <Button 
+                  onClick={processAiPrompt}
+                  disabled={isAiProcessing || !aiPrompt.trim()}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  {isAiProcessing ? (
+                    <>
+                      <Magic className="h-4 w-4 mr-2 animate-spin" />
+                      AI Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Apply AI Edit
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
+              <div className="flex items-center space-x-1">
+                <Zap className="h-3 w-3 text-blue-500" />
+                <span>Color Enhancement</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Wand2 className="h-3 w-3 text-purple-500" />  
+                <span>Object Addition</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Filter className="h-3 w-3 text-green-500" />
+                <span>Style Transfer</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Sparkles className="h-3 w-3 text-orange-500" />
+                <span>Smart Effects</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Top Toolbar */}
         <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg">
           <input

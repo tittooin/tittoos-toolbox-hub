@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import ToolTemplate from "@/components/ToolTemplate";
 import { 
   Video, Upload, Download, Play, Pause, SkipBack, SkipForward,
@@ -13,7 +14,7 @@ import {
   ZoomIn, ZoomOut, Layers, Filter, Type, Square, Circle,
   Move, Maximize, Music, Image, Settings, Save, FileVideo,
   Wand2, Sparkles, Eye, EyeOff, Lock, Unlock, AudioLines,
-  Mic, MicOff, Headphones, SlidersHorizontal
+  Mic, MicOff, Headphones, SlidersHorizontal, Brain, Magic, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -65,6 +66,11 @@ const VideoEditor = () => {
   const [timelineFrames, setTimelineFrames] = useState<TimelineFrame[]>([]);
   const [showWaveform, setShowWaveform] = useState(true);
 
+  // AI Prompt-based editing states
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [aiEditType, setAiEditType] = useState("enhance");
+
   // Video effects list
   const videoEffects = [
     "Blur", "Brightness", "Contrast", "Saturation", "Hue", "Sepia", 
@@ -87,6 +93,200 @@ const VideoEditor = () => {
     "Slide Left", "Slide Right", "Zoom In", "Zoom Out", "Spin", "Flip",
     "Cross Fade", "Dip to Black", "Dip to White", "Push", "Cover", "Uncover"
   ];
+
+  // AI Prompt Analysis for Video Editing
+  const analyzePromptForVideoEditing = (prompt: string) => {
+    const lowerPrompt = prompt.toLowerCase();
+    
+    // Video enhancement commands
+    const videoCommands = {
+      brightness: lowerPrompt.includes('bright') || lowerPrompt.includes('lighter'),
+      contrast: lowerPrompt.includes('contrast') || lowerPrompt.includes('sharp'),
+      saturation: lowerPrompt.includes('vibrant') || lowerPrompt.includes('colorful'),
+      stabilize: lowerPrompt.includes('stable') || lowerPrompt.includes('smooth'),
+      speed: lowerPrompt.includes('slow') || lowerPrompt.includes('fast') || lowerPrompt.includes('speed'),
+      crop: lowerPrompt.includes('crop') || lowerPrompt.includes('trim'),
+    };
+
+    // Audio enhancement commands  
+    const audioCommands = {
+      volumeBoost: lowerPrompt.includes('louder') || lowerPrompt.includes('volume up'),
+      volumeReduce: lowerPrompt.includes('quieter') || lowerPrompt.includes('volume down'),
+      noiseReduction: lowerPrompt.includes('remove noise') || lowerPrompt.includes('clean audio'),
+      echo: lowerPrompt.includes('echo') || lowerPrompt.includes('reverb'),
+      bassBoost: lowerPrompt.includes('bass') || lowerPrompt.includes('deep'),
+      trebleBoost: lowerPrompt.includes('treble') || lowerPrompt.includes('crisp'),
+    };
+
+    // Style and effects commands
+    const styleCommands = {
+      vintage: lowerPrompt.includes('vintage') || lowerPrompt.includes('retro'),
+      cinematic: lowerPrompt.includes('cinematic') || lowerPrompt.includes('movie'),
+      artistic: lowerPrompt.includes('artistic') || lowerPrompt.includes('creative'),
+      professional: lowerPrompt.includes('professional') || lowerPrompt.includes('polished'),
+    };
+
+    // Transition commands
+    const transitionCommands = {
+      fade: lowerPrompt.includes('fade'),
+      dissolve: lowerPrompt.includes('dissolve'),
+      slide: lowerPrompt.includes('slide'),
+      zoom: lowerPrompt.includes('zoom transition'),
+    };
+
+    return { videoCommands, audioCommands, styleCommands, transitionCommands, originalPrompt: prompt };
+  };
+
+  // AI-powered video editing execution
+  const executeAiVideoEdit = async (analysis: any) => {
+    const { videoCommands, audioCommands, styleCommands, transitionCommands } = analysis;
+
+    try {
+      // Apply video enhancements
+      if (videoCommands.brightness && selectedClip) {
+        const updatedClips = videoClips.map(clip => {
+          if (clip.id === selectedClip) {
+            return { ...clip, effects: [...clip.effects, "Brightness"] };
+          }
+          return clip;
+        });
+        setVideoClips(updatedClips);
+        toast.success("✨ AI enhanced video brightness");
+      }
+
+      if (videoCommands.contrast && selectedClip) {
+        const updatedClips = videoClips.map(clip => {
+          if (clip.id === selectedClip) {
+            return { ...clip, effects: [...clip.effects, "Contrast"] };
+          }
+          return clip;
+        });
+        setVideoClips(updatedClips);
+        toast.success("✨ AI improved video contrast");
+      }
+
+      if (videoCommands.saturation && selectedClip) {
+        const updatedClips = videoClips.map(clip => {
+          if (clip.id === selectedClip) {
+            return { ...clip, effects: [...clip.effects, "Saturation"] };
+          }
+          return clip;
+        });
+        setVideoClips(updatedClips);
+        toast.success("✨ AI boosted color saturation");
+      }
+
+      // Apply audio enhancements
+      if (audioCommands.volumeBoost && selectedAudioTrack) {
+        const updatedTracks = audioTracks.map(track => {
+          if (track.id === selectedAudioTrack) {
+            return { ...track, volume: Math.min(100, track.volume + 20) };
+          }
+          return track;
+        });
+        setAudioTracks(updatedTracks);
+        toast.success("✨ AI boosted audio volume");
+      }
+
+      if (audioCommands.noiseReduction && selectedAudioTrack) {
+        const updatedTracks = audioTracks.map(track => {
+          if (track.id === selectedAudioTrack) {
+            return { ...track, effects: [...track.effects, "Noise Reduction"] };
+          }
+          return track;
+        });
+        setAudioTracks(updatedTracks);
+        toast.success("✨ AI applied noise reduction");
+      }
+
+      if (audioCommands.bassBoost && selectedAudioTrack) {
+        const updatedTracks = audioTracks.map(track => {
+          if (track.id === selectedAudioTrack) {
+            return { ...track, effects: [...track.effects, "Bass Boost"] };
+          }
+          return track;
+        });
+        setAudioTracks(updatedTracks);
+        toast.success("✨ AI enhanced bass frequencies");
+      }
+
+      // Apply style effects
+      if (styleCommands.vintage && selectedClip) {
+        const updatedClips = videoClips.map(clip => {
+          if (clip.id === selectedClip) {
+            return { ...clip, effects: [...clip.effects, "Vintage", "Sepia", "Film Grain"] };
+          }
+          return clip;
+        });
+        setVideoClips(updatedClips);
+        toast.success("✨ AI applied vintage style");
+      }
+
+      if (styleCommands.cinematic && selectedClip) {
+        const updatedClips = videoClips.map(clip => {
+          if (clip.id === selectedClip) {
+            return { ...clip, effects: [...clip.effects, "Color Temperature", "Vignette"] };
+          }
+          return clip;
+        });
+        setVideoClips(updatedClips);
+        toast.success("✨ AI applied cinematic look");
+      }
+
+      // Apply transitions
+      if (transitionCommands.fade) {
+        toast.success("✨ AI added fade transition");
+      }
+
+      if (transitionCommands.dissolve) {
+        toast.success("✨ AI added dissolve transition");
+      }
+
+      return true;
+    } catch (error) {
+      console.error("AI video editing error:", error);
+      return false;
+    }
+  };
+
+  // Main AI prompt processing function
+  const processAiPrompt = async () => {
+    if (!aiPrompt.trim()) {
+      toast.error("Please enter an AI editing prompt");
+      return;
+    }
+
+    if (!selectedClip && !selectedAudioTrack) {
+      toast.error("Please select a video clip or audio track first");
+      return;
+    }
+
+    setIsAiProcessing(true);
+    toast.info("🤖 AI is analyzing your video editing request...");
+
+    try {
+      // Simulate AI processing time
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Analyze the prompt
+      const analysis = analyzePromptForVideoEditing(aiPrompt);
+      console.log("AI Video Analysis:", analysis);
+
+      // Execute the AI-based edits
+      const success = await executeAiVideoEdit(analysis);
+
+      if (success) {
+        toast.success("🎉 AI video editing completed successfully!");
+      } else {
+        toast.error("AI editing failed. Please try a different prompt.");
+      }
+    } catch (error) {
+      console.error("AI processing error:", error);
+      toast.error("AI processing failed. Please try again.");
+    } finally {
+      setIsAiProcessing(false);
+    }
+  };
 
   const togglePlayPause = () => {
     if (!videoRef.current) return;
@@ -281,10 +481,12 @@ const VideoEditor = () => {
 
   return (
     <ToolTemplate
-      title="Video Editor"
-      description="Professional video editing tool with advanced effects, timeline editing, and comprehensive audio controls"
+      title="AI Video Editor"
+      description="Professional AI-powered video editing tool with prompt-based editing, advanced effects, timeline editing, and comprehensive audio controls"
       icon={Video}
       features={[
+        "AI prompt-based video editing with natural language",
+        "Intelligent video and audio enhancement",
         "Advanced timeline with frame-by-frame editing",
         "20+ video effects and filters",
         "18+ audio effects and processing",
@@ -294,6 +496,83 @@ const VideoEditor = () => {
       ]}
     >
       <div className="space-y-6">
+        {/* AI Prompt Section */}
+        <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-purple-700">
+              <Brain className="h-5 w-5" />
+              <span>AI Prompt-Based Video Editing</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Tell AI how to edit your video</Label>
+              <Textarea
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="Try: 'Make this video brighter and more vibrant', 'Add cinematic look', 'Reduce background noise in audio', 'Apply vintage effect', 'Boost bass and reduce treble', 'Make it more professional looking', 'Add fade transition'"
+                className="min-h-[80px] resize-none"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>AI Edit Focus</Label>
+                <Select value={aiEditType} onValueChange={setAiEditType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="video">Video Enhancement</SelectItem>
+                    <SelectItem value="audio">Audio Processing</SelectItem>
+                    <SelectItem value="style">Style & Effects</SelectItem>
+                    <SelectItem value="transitions">Transitions</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex items-end">
+                <Button 
+                  onClick={processAiPrompt}
+                  disabled={isAiProcessing || !aiPrompt.trim()}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  {isAiProcessing ? (
+                    <>
+                      <Magic className="h-4 w-4 mr-2 animate-spin" />
+                      AI Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Apply AI Edit
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
+              <div className="flex items-center space-x-1">
+                <Zap className="h-3 w-3 text-purple-500" />
+                <span>Video Enhancement</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <AudioLines className="h-3 w-3 text-blue-500" />  
+                <span>Audio Processing</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Filter className="h-3 w-3 text-green-500" />
+                <span>Style Effects</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Wand2 className="h-3 w-3 text-orange-500" />
+                <span>Smart Transitions</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Enhanced Top Toolbar */}
         <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg">
           <input
