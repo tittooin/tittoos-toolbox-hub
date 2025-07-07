@@ -14,7 +14,7 @@ import {
   RotateCcw, RotateCw, FlipHorizontal, FlipVertical,
   Focus, Contrast, Sun, Eye, EyeOff, Plus, Trash2,
   Move, ZoomIn, ZoomOut, Undo, Redo, Save, Filter,
-  Sparkles, Wand2, Brain, Zap, Magic
+  Sparkles, Wand2, Brain, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 import { Canvas as FabricCanvas, FabricObject, Circle as FabricCircle, Rect as FabricRect, FabricText, FabricImage } from "fabric";
@@ -559,7 +559,7 @@ const AIImageEditor = () => {
                 >
                   {isAiProcessing ? (
                     <>
-                      <Magic className="h-4 w-4 mr-2 animate-spin" />
+                      <Wand2 className="h-4 w-4 mr-2 animate-spin" />
                       AI Processing...
                     </>
                   ) : (

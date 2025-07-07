@@ -14,7 +14,7 @@ import {
   ZoomIn, ZoomOut, Layers, Filter, Type, Square, Circle,
   Move, Maximize, Music, Image, Settings, Save, FileVideo,
   Wand2, Sparkles, Eye, EyeOff, Lock, Unlock, AudioLines,
-  Mic, MicOff, Headphones, SlidersHorizontal, Brain, Magic, Zap
+  Mic, MicOff, Headphones, SlidersHorizontal, Brain, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -539,7 +539,7 @@ const VideoEditor = () => {
                 >
                   {isAiProcessing ? (
                     <>
-                      <Magic className="h-4 w-4 mr-2 animate-spin" />
+                      <Wand2 className="h-4 w-4 mr-2 animate-spin" />
                       AI Processing...
                     </>
                   ) : (
