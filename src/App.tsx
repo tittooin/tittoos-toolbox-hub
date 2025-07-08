@@ -63,6 +63,8 @@ import ImageBackgroundRemover from "./pages/tools/ImageBackgroundRemover";
 import WebsiteSpeedChecker from "./pages/tools/WebsiteSpeedChecker";
 import AIImageEditor from "./pages/tools/AIImageEditor";
 import VideoEditor from "./pages/tools/VideoEditor";
+import OCRConverter from "./pages/tools/OCRConverter";
+import ResumeBuilder from "./pages/tools/ResumeBuilder";
 
 const queryClient = new QueryClient();
 
@@ -148,6 +150,10 @@ const App = () => (
           <Route path="/tools/facebook-downloader" element={<FacebookDownloader />} />
           <Route path="/tools/twitter-downloader" element={<TwitterDownloader />} />
           <Route path="/tools/linkedin-downloader" element={<LinkedinDownloader />} />
+          
+          {/* Utility Tools */}
+          <Route path="/tools/ocr-converter" element={<OCRConverter />} />
+          <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

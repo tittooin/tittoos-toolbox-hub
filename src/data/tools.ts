@@ -7,7 +7,8 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
-  Facebook, Twitter, Linkedin, Scissors, Gauge, Edit
+  Facebook, Twitter, Linkedin, Scissors, Gauge, Edit,
+  Eye, UserCircle
 } from "lucide-react";
 
 export const categories = [
@@ -19,6 +20,7 @@ export const categories = [
   { id: "formatter", name: "Formatters" },
   { id: "ai", name: "AI Tools" },
   { id: "downloader", name: "Downloaders" },
+  { id: "utility", name: "Utilities" },
 ];
 
 export const tools = [
@@ -495,5 +497,25 @@ export const tools = [
     category: "downloader",
     icon: Linkedin,
     path: "/tools/linkedin-downloader"
+  },
+
+  // Utility Tools
+  {
+    id: "ocr-converter",
+    name: "OCR Converter",
+    subheading: "Extract text from images",
+    description: "Extract text from images and documents using OCR technology.",
+    category: "utility",
+    icon: Eye,
+    path: "/tools/ocr-converter"
+  },
+  {
+    id: "resume-builder",
+    name: "Resume Builder",
+    subheading: "Create professional resumes",
+    description: "Build professional resumes with multiple templates and export options.",
+    category: "utility",
+    icon: UserCircle,
+    path: "/tools/resume-builder"
   }
 ];
