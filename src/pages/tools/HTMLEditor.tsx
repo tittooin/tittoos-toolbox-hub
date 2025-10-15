@@ -76,7 +76,7 @@ const HTMLEditor = () => {
               <CardTitle className="text-lg">Live Preview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="border rounded-lg p-4 min-h-[400px] bg-white">
+              <div className="border rounded-lg p-4 min-h-[400px] bg-card">
                 <iframe
                   srcDoc={htmlCode}
                   className="w-full h-[380px] border-0"

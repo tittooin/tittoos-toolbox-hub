@@ -1,46 +1,38 @@
-import { useState, useEffect, Fragment } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import BlogSubmissionForm from "@/components/BlogSubmissionForm";
-import AIBlogGenerator from "@/components/AIBlogGenerator";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
-import { toast } from 'sonner';
-import AdSense from "@/components/AdSense";
-import { setSEO, injectJsonLd } from "@/utils/seoUtils";
-import { Link, useParams } from "react-router-dom";
-import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
+export interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: string;
+  author: string;
+  authorSlug: string;
+  slug: string;
+  content: string;
+  isAIGenerated?: boolean;
+  tags?: string[];
+  metaDescription?: string;
+}
 
-const Blog = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [selectedPost, setSelectedPost] = useState<number | null>(null);
-  const [showSubmissionForm, setShowSubmissionForm] = useState(false);
-  const [showAIGenerator, setShowAIGenerator] = useState(false);
-  const [userBlogs, setUserBlogs] = useState<any[]>([]);
-
-  // Helper to slugify user-submitted titles
-  const slugify = (str: string) =>
-    (str || 'blog')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-  const defaultBlogPosts = [
-    {
-      id: 1,
-      title: "10 Essential Online Tools for Digital Productivity in 2024",
-      excerpt: "Discover the most useful online tools that can boost your productivity and streamline your digital workflow in the modern era.",
-      date: "2024-01-15",
-      readTime: "8 min read",
-      author: "TittoosTools Team",
-      content: `
+// Helper: precomputed slugs for default posts for stability
+export const DEFAULT_BLOG_POSTS: BlogPost[] = [
+  {
+    id: 1,
+    title: "10 Essential Online Tools for Digital Productivity in 2024",
+    excerpt:
+      "Discover the most useful online tools that can boost your productivity and streamline your digital workflow in the modern era.",
+    date: "2024-01-15",
+    readTime: "8 min read",
+    author: "TittoosTools Team",
+    authorSlug: "tittoostools-team",
+    slug: "10-essential-online-tools-for-digital-productivity-2024",
+    content: `
         <p>In today's fast-paced digital world, having the right tools at your fingertips can make the difference between struggling with daily tasks and completing them efficiently. Whether you're a professional, student, or entrepreneur, these essential online tools will revolutionize how you work and manage your digital life.</p>
 
         <h2>1. Password Managers: Your Digital Security Foundation</h2>
         <p>Password security remains one of the most critical aspects of digital safety. With cyber threats evolving constantly, using weak or repeated passwords is no longer an option. Modern password managers not only generate complex, unique passwords for each account but also store them securely and auto-fill login forms across devices.</p>
         
         <p>The benefits extend beyond security. A good password manager saves countless hours by eliminating the need to remember or reset passwords. Many also include features like secure note storage, two-factor authentication backup, and breach monitoring.</p>
+        <p>Need help generating strong credentials? Use our <a href="/tools/password-generator">Password Generator</a> to create unique, high-entropy passwords instantly.</p>
 
         <h2>2. File Conversion Tools: Breaking Format Barriers</h2>
         <p>Gone are the days when incompatible file formats could halt your workflow. Modern online converters handle everything from documents and images to videos and audio files. These tools are particularly valuable for:</p>
@@ -51,45 +43,57 @@ const Blog = () => {
         <li>Converting videos for social media</li>
         <li>Extracting audio from video files</li>
         </ul>
+        <p>Try our <a href="/tools/pdf-converter">PDF Converter</a>, <a href="/tools/image-converter">Image Converter</a>, <a href="/tools/video-converter">Video Converter</a>, and <a href="/tools/audio-converter">Audio Converter</a> for seamless format management.</p>
 
         <h2>3. Code Formatters and Validators</h2>
         <p>For developers and anyone working with structured data, code formatters are indispensable. JSON, XML, HTML, and CSS formatters not only make code readable but also help identify syntax errors before they cause problems in production environments.</p>
+        <p>Clean up your code quickly using <a href="/tools/json-formatter">JSON Formatter</a>, <a href="/tools/xml-formatter">XML Formatter</a>, <a href="/tools/sql-formatter">SQL Formatter</a>, <a href="/tools/html-formatter">HTML Formatter</a>, and <a href="/tools/css-formatter">CSS Formatter</a>.</p>
 
         <h2>4. QR Code Generators: Bridging Physical and Digital</h2>
         <p>QR codes have experienced a renaissance, especially post-pandemic. They're now essential for restaurant menus, event management, contact sharing, and marketing campaigns. Modern QR generators offer customization options, analytics, and dynamic content updates.</p>
+        <p>Create scannable links in seconds with our <a href="/tools/qr-generator">QR Code Generator</a>.</p>
 
         <h2>5. Text Analysis Tools: Understanding Your Content</h2>
         <p>Whether you're writing blog posts, academic papers, or marketing copy, text analysis tools provide insights into readability, keyword density, and overall quality. These tools help ensure your content resonates with your intended audience.</p>
+        <p>Optimize your writing with the <a href="/tools/text-analyzer">Text Analyzer</a>.</p>
 
         <h2>6. Image Optimization and Analysis</h2>
         <p>Visual content dominates digital communication. Image optimization tools reduce file sizes without sacrificing quality, while analysis tools extract metadata and provide technical details essential for web development and digital asset management.</p>
+        <p>Inspect and improve visuals using the <a href="/tools/image-analyzer">Image Analyzer</a> and <a href="/tools/color-analyzer">Color Analyzer</a>.</p>
 
         <h2>7. Calculators Beyond Basic Math</h2>
         <p>Specialized calculators for loans, BMI, percentages, and unit conversions eliminate guesswork from important decisions. These tools are particularly valuable for financial planning, health monitoring, and international business.</p>
+        <p>Quickly compute with the <a href="/tools/percentage-calculator">Percentage Calculator</a> and <a href="/tools/bmi-calculator">BMI Calculator</a>.</p>
 
         <h2>8. Color Tools for Design Excellence</h2>
         <p>Color picking and palette generation tools are essential for maintaining brand consistency and creating visually appealing designs. They help both professionals and amateurs make informed color choices.</p>
+        <p>Choose perfect shades using the <a href="/tools/color-picker">Color Picker</a>.</p>
 
         <h2>9. AI-Powered Content Creation</h2>
         <p>Artificial intelligence has democratized content creation. AI tools can generate images, videos, and text, making high-quality content accessible to everyone regardless of technical skill level.</p>
+        <p>Explore AI tools like <a href="/tools/text-to-image">Text to Image</a>, <a href="/tools/text-to-video">Text to Video</a>, and <a href="/tools/ai-website-generator">AI Website Generator</a>.</p>
 
-        <h2>10. Social Media Content Downloaders</h2>
-        <p>These tools help preserve valuable content for offline viewing, backup purposes, or content curation. They're essential for digital marketers, researchers, and content creators who need to work with social media content.</p>
+        <h2>10. Website Performance and Speed</h2>
+        <p>Fast-loading pages improve user experience and SEO. Regular performance checks help ensure your site meets modern standards.</p>
+        <p>Run audits with the <a href="/tools/website-speed-checker">Website Speed Checker</a>.</p>
 
         <h2>Conclusion</h2>
         <p>The key to digital productivity lies not in using more tools, but in using the right tools effectively. Each tool mentioned here addresses specific pain points common in digital workflows. By integrating these tools into your routine, you'll save time, reduce errors, and focus on what truly matters: creating value and achieving your goals.</p>
 
         <p>Remember, the best tool is the one you actually use. Start with one or two tools that address your most pressing needs, master them, and gradually expand your toolkit as required.</p>
-      `
-    },
-    {
-      id: 2,
-      title: "Password Security Best Practices: A Complete Guide for 2024",
-      excerpt: "Learn how to create and manage strong passwords to keep your accounts secure in an increasingly dangerous digital landscape.",
-      date: "2024-01-10",
-      readTime: "12 min read",
-      author: "Security Expert",
-      content: `
+      `,
+  },
+  {
+    id: 2,
+    title: "Password Security Best Practices: A Complete Guide for 2024",
+    excerpt:
+      "Learn how to create and manage strong passwords to keep your accounts secure in an increasingly dangerous digital landscape.",
+    date: "2024-01-10",
+    readTime: "12 min read",
+    author: "Security Expert",
+    authorSlug: "security-expert",
+    slug: "password-security-best-practices-guide-2024",
+    content: `
         <p>Password security isn't just about IT departments anymore—it's everyone's responsibility. With data breaches affecting millions of users annually and cybercriminals becoming increasingly sophisticated, understanding password security has never been more critical.</p>
 
         <h2>The Current State of Password Security</h2>
@@ -119,6 +123,7 @@ const Blog = () => {
 
         <h2>Password Managers: Your Security Command Center</h2>
         <p>Password managers solve the fundamental problem of human memory limitations. They generate, store, and automatically fill unique passwords for every account, making strong password practices effortless.</p>
+        <p>When creating new credentials, generate strong passwords using our <a href="/tools/password-generator">Password Generator</a> to reduce risk of compromise.</p>
 
         <h3>Choosing the Right Password Manager</h3>
         <p>When selecting a password manager, consider:</p>
@@ -181,16 +186,19 @@ const Blog = () => {
         <p>Password security doesn't have to be complicated or burdensome. By adopting a password manager, enabling two-factor authentication, and following basic security hygiene, you can dramatically improve your digital security posture. The goal isn't perfection—it's making yourself a harder target than the majority of users who still use "password123" for everything.</p>
 
         <p>Remember: cybersecurity is a journey, not a destination. Stay informed about emerging threats, update your practices regularly, and never hesitate to prioritize security over convenience. Your future self will thank you.</p>
-      `
-    },
-    {
-      id: 3,
-      title: "File Conversion Mastery: The Complete Guide to Digital Format Management",
-      excerpt: "Everything you need to know about converting files between different formats for various use cases, from basic conversions to advanced optimization techniques.",
-      date: "2024-01-05",
-      readTime: "10 min read",
-      author: "Digital Workflow Specialist",
-      content: `
+      `,
+  },
+  {
+    id: 3,
+    title: "File Conversion Mastery: The Complete Guide to Digital Format Management",
+    excerpt:
+      "Everything you need to know about converting files between different formats for various use cases, from basic conversions to advanced optimization techniques.",
+    date: "2024-01-05",
+    readTime: "10 min read",
+    author: "Digital Workflow Specialist",
+    authorSlug: "digital-workflow-specialist",
+    slug: "file-conversion-mastery-complete-guide-digital-format-management",
+    content: `
         <p>In our interconnected digital world, file compatibility issues can be workflow killers. Whether you're a content creator, business professional, or casual user, understanding file conversion is essential for seamless collaboration and efficient work processes.</p>
 
         <h2>Understanding File Formats: The Foundation</h2>
@@ -210,6 +218,7 @@ const Blog = () => {
         <li>Security settings for sensitive documents</li>
         <li>Accessibility features for screen readers</li>
         </ul>
+        <p>Start with our <a href="/tools/pdf-converter">PDF Converter</a> to create shareable, consistent documents.</p>
 
         <h3>Word Processing Formats</h3>
         <p>Converting between Word, Google Docs, and other text formats often involves compatibility trade-offs. Advanced formatting, comments, and track changes may not translate perfectly between platforms.</p>
@@ -221,6 +230,7 @@ const Blog = () => {
         <p>Understanding this fundamental distinction helps make appropriate format choices:</p>
         <p><strong>Lossy formats (JPEG, WebP):</strong> Ideal for photographs and complex images where perfect quality isn't critical. They achieve smaller file sizes by discarding some visual information.</p>
         <p><strong>Lossless formats (PNG, TIFF):</strong> Essential for images with text, logos, or when you need perfect quality preservation. They maintain all original image data.</p>
+        <p>Use the <a href="/tools/image-converter">Image Converter</a> to switch formats for web and design needs.</p>
 
         <h3>Modern Web Formats</h3>
         <p>WebP and AVIF offer superior compression compared to traditional formats while maintaining quality. However, browser support varies, making format selection strategy crucial for web applications.</p>
@@ -238,24 +248,11 @@ const Blog = () => {
         <li>Archive: Higher bitrates for quality preservation</li>
         <li>Social media: Platform-specific optimization</li>
         </ul>
+        <p>Convert for platforms with our <a href="/tools/video-converter">Video Converter</a>.</p>
 
         <h3>Audio Considerations</h3>
         <p>Don't overlook audio quality in video conversions. Sample rates, bit depths, and codec selection affect the final viewing experience significantly.</p>
-
-        <h2>Audio Conversion: Fidelity vs. Efficiency</h2>
-        <p>Audio conversion serves different purposes, from creating smaller files for mobile devices to preparing high-quality masters for production.</p>
-
-        <h3>Sample Rate and Bit Depth</h3>
-        <p>These technical specifications determine audio quality limits. Converting from lower to higher specifications doesn't improve quality, while the reverse reduces it. Understanding source material limitations helps set realistic expectations.</p>
-
-        <h3>Codec Selection Strategy</h3>
-        <p>Different audio codecs serve different purposes:</p>
-        <ul>
-        <li>MP3: Universal compatibility, moderate compression</li>
-        <li>AAC: Better quality than MP3 at similar sizes</li>
-        <li>FLAC: Lossless compression for archival</li>
-        <li>OGG: Open-source alternative with good compression</li>
-        </ul>
+        <p>Extract and prepare soundtracks using the <a href="/tools/audio-converter">Audio Converter</a>.</p>
 
         <h2>Batch Processing: Scaling Your Workflow</h2>
         <p>For professionals dealing with multiple files, batch processing becomes essential. This involves converting many files simultaneously while maintaining consistent settings and quality standards.</p>
@@ -314,262 +311,6 @@ const Blog = () => {
         <p>Remember that conversion is often a balancing act between quality, file size, compatibility, and processing time. The "best" conversion is the one that meets your specific requirements while remaining practical for your workflow.</p>
 
         <p>As technology continues evolving, staying informed about format developments and conversion best practices will ensure your digital content remains accessible and useful across different platforms and devices.</p>
-      `
-    }
-  ];
-
-  const allBlogPosts = [...userBlogs, ...DEFAULT_BLOG_POSTS];
-
-  const handleSaveBlog = (blog: any) => {
-    const now = Date.now();
-    const computedSlug = blog?.slug || `${slugify(blog?.title)}-${now}`;
-    const enriched = { ...blog, slug: computedSlug };
-    setUserBlogs(prev => [enriched, ...prev]);
-    toast.success('Blog post saved successfully!');
-  };
-
-  const selectedPostData = slug
-    ? allBlogPosts.find(post => post.slug === slug)
-    : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
-
-  // Apply SEO dynamically for list vs article views
-  useEffect(() => {
-    if (selectedPostData) {
-      const title = `${selectedPostData.title} | TittoosTools Blog`;
-      setSEO({
-        title,
-        description: selectedPostData.excerpt,
-        keywords: [
-          'blog','productivity','online tools','guides','tutorials','digital workflow','seo tips','formatters','converters'
-        ],
-        type: 'article',
-        image: `${window.location.origin}/placeholder.svg`,
-        canonical: `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
-      });
-
-      // Inject BlogPosting JSON-LD for the article
-      injectJsonLd({
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        'headline': selectedPostData.title,
-        'articleBody': selectedPostData.excerpt,
-        'author': {
-          '@type': 'Person',
-          'name': selectedPostData.author || 'TittoosTools Team',
-          ...(selectedPostData.authorSlug ? { 'url': `${window.location.origin}/author/${selectedPostData.authorSlug}` } : {})
-        },
-        'datePublished': selectedPostData.date,
-        'publisher': {
-          '@type': 'Organization',
-          'name': 'TittoosTools',
-          'logo': {
-            '@type': 'ImageObject',
-            'url': `${window.location.origin}/favicon.ico`
-          }
-        },
-        'mainEntityOfPage': `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
-        'url': `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`
-      });
-    } else {
-      setSEO({
-        title: 'TittoosTools Blog - Tips, Tutorials, and Guides',
-        description: 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.',
-        keywords: [
-          'blog','online tools','seo','tutorials','guides','productivity','formatters','converters'
-        ],
-        type: 'website',
-        image: `${window.location.origin}/placeholder.svg`,
-        canonical: `${window.location.origin}/blog`,
-      });
-    }
-  }, [selectedPostData]);
-
-  if (selectedPostData) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <Link to="/blog" className="inline-flex items-center text-primary hover:text-accent mb-6">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
-            </Link>
-
-            <article className="bg-card rounded-lg shadow-lg p-8">
-              <header className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-4">
-                  {selectedPostData.title}
-                </h1>
-                
-                <div className="flex items-center space-x-6 text-muted-foreground text-sm">
-                  <div className="flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    {selectedPostData.authorSlug ? (
-                      <Link to={`/author/${selectedPostData.authorSlug}`} className="text-primary hover:text-accent">
-                        {selectedPostData.author}
-                      </Link>
-                    ) : (
-                      selectedPostData.author
-                    )}
-                  </div>
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {new Date(selectedPostData.date).toLocaleDateString()}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-2" />
-                    {selectedPostData.readTime}
-                  </div>
-                  {selectedPostData.isAIGenerated && (
-                    <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                      AI Generated
-                    </span>
-                  )}
-                </div>
-              </header>
-
-              {/* In-article ad for better in-content visibility */}
-              <AdSense
-                adSlot="1234567890"
-                adType="in_article"
-                className="my-6 max-w-2xl mx-auto"
-              />
-
-              <div 
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
-              />
-
-              {/* Multiplex ad at the end of the article */}
-              <AdSense
-                adSlot="1234567890"
-                adType="multiplex"
-                className="mt-8"
-              />
-            </article>
-          </div>
-        </div>
-
-        <Footer />
-      </div>
-    );
+      `,
   }
-
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 text-foreground">
-              TittoosTools Blog
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Tips, tutorials, and insights to help you make the most of our tools.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={() => setShowSubmissionForm(true)} className="flex items-center">
-                <Plus className="h-4 w-4 mr-2" />
-                Submit Your Blog
-              </Button>
-              <Button onClick={() => setShowAIGenerator(true)} variant="outline" className="flex items-center">
-                <Wand2 className="h-4 w-4 mr-2" />
-                AI Blog Generator
-              </Button>
-            </div>
-          </div>
-
-          {/* Top banner ad for list view */}
-          <AdSense
-            adSlot="1234567890"
-            adType="display"
-            className="mb-8 max-w-3xl mx-auto"
-          />
-
-          <div className="space-y-8">
-            {allBlogPosts.map((post, index) => (
-              <Fragment key={post.id}>
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Link to={`/blog/${post.slug}`}>
-                          <CardTitle 
-                            className="text-2xl hover:text-primary transition-colors cursor-pointer"
-                          >
-                            {post.title}
-                          </CardTitle>
-                        </Link>
-                        {post.isAIGenerated && (
-                          <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                            AI Generated
-                          </span>
-                        )}
-                      </div>
-                      <CardDescription className="text-base mb-4">
-                        {post.excerpt}
-                      </CardDescription>
-                      <Link to={`/blog/${post.slug}`} className="inline-block">
-                        <Button variant="outline">Read More</Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span>{new Date(post.date).toLocaleDateString()}</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                </CardContent>
-              </Card>
-              {/* Insert an in-feed ad after a couple of posts for better scroll placement */}
-              {index === 1 && (
-                <AdSense
-                  adSlot="1234567890"
-                  adType="in_feed"
-                  layoutKey={undefined}
-                  className="my-6 max-w-3xl mx-auto"
-                />
-              )}
-              </Fragment>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-gray-600">
-              Share your expertise with our community! Submit your blog or generate one with AI.
-            </p>
-          </div>
-
-          {/* Multiplex ad at end of list */}
-          <AdSense
-            adSlot="1234567890"
-            adType="multiplex"
-            className="mt-8"
-          />
-        </div>
-      </div>
-
-      <Footer />
-
-      {showSubmissionForm && (
-        <BlogSubmissionForm
-          onClose={() => setShowSubmissionForm(false)}
-          onSave={handleSaveBlog}
-        />
-      )}
-
-      {showAIGenerator && (
-        <AIBlogGenerator
-          onClose={() => setShowAIGenerator(false)}
-          onSave={handleSaveBlog}
-        />
-      )}
-    </div>
-  );
-};
-
-export default Blog;
+];

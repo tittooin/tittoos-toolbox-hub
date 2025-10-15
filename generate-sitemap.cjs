@@ -6,6 +6,8 @@ const baseUrl = process.env.SITEMAP_BASE_URL || "https://tittoos.online/";
 const appFile = path.join(__dirname, "src", "App.tsx");
 const toolsDataFile = path.join(__dirname, "src", "data", "tools.ts");
 const blogPostsDir = path.join(__dirname, "src", "pages", "blog-posts");
+const blogsDataFile = path.join(__dirname, "src", "data", "blogs.ts");
+const authorsDataFile = path.join(__dirname, "src", "data", "authors.ts");
 
 function extractRoutesFromApp() {
   try {
@@ -50,6 +52,42 @@ function extractBlogCategoryRoutes() {
   }
 }
 
+function extractBlogSlugRoutes() {
+  try {
+    const content = fs.readFileSync(blogsDataFile, "utf8");
+    const slugRegex = /slug\s*:\s*["'`]([^"'`]+)["'`]/g;
+    const routes = [];
+    let m;
+    while ((m = slugRegex.exec(content)) !== null) {
+      const slug = m[1];
+      if (slug && slug.length > 0) {
+        routes.push(`/blog/${slug}`);
+      }
+    }
+    return routes;
+  } catch {
+    return [];
+  }
+}
+
+function extractAuthorSlugRoutes() {
+  try {
+    const content = fs.readFileSync(authorsDataFile, "utf8");
+    const slugRegex = /slug\s*:\s*["'`]([^"'`]+)["'`]/g;
+    const routes = [];
+    let m;
+    while ((m = slugRegex.exec(content)) !== null) {
+      const slug = m[1];
+      if (slug && slug.length > 0) {
+        routes.push(`/author/${slug}`);
+      }
+    }
+    return routes;
+  } catch {
+    return [];
+  }
+}
+
 function includeDownloaderRoutes() {
   try {
     const envContent = fs.readFileSync(path.join(__dirname, ".env.review"), "utf8");
@@ -78,6 +116,8 @@ const collected = [
   ...extractRoutesFromApp(),
   ...extractToolPaths(),
   ...extractBlogCategoryRoutes(),
+  ...extractBlogSlugRoutes(),
+  ...extractAuthorSlugRoutes(),
 ];
 
 const uniquePaths = new Set();
@@ -94,5 +134,6 @@ const entries = Array.from(uniquePaths)
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>${baseUrl}</loc></url>\n${entries}\n</urlset>`;
 
-fs.writeFileSync("sitemap.xml", sitemap);
-console.log(`✅ Sitemap generated with ${uniquePaths.size} routes.`);
+const outputPath = path.join(__dirname, "public", "sitemap.xml");
+fs.writeFileSync(outputPath, sitemap);
+console.log(`✅ Sitemap generated at ${outputPath} with ${uniquePaths.size} routes.`);

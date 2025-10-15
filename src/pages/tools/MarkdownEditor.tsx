@@ -131,7 +131,7 @@ function hello() {
             </CardHeader>
             <CardContent>
               <div 
-                className="prose prose-sm max-w-none min-h-[400px] p-4 border rounded-lg bg-white"
+                className="prose prose-sm max-w-none min-h-[400px] p-4 border border-border rounded-lg bg-card"
                 dangerouslySetInnerHTML={{ __html: convertToHTML(markdownText) }}
               />
             </CardContent>

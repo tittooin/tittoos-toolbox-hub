@@ -75,6 +75,30 @@ const Index = () => {
                 '@type': 'Answer',
                 'text': 'Yes, TittoosTools is mobile-friendly and works across modern browsers on phones, tablets, and desktops.'
               }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Where can I analyze my website\'s SEO?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': `Use the SEO Analyzer at ${window.location.origin}/tools/seo-analyzer to audit pages.`
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How do I convert videos or images online?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': `Try the Video Converter (${window.location.origin}/tools/video-converter) and Image Converter (${window.location.origin}/tools/image-converter).`
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How can I quickly generate a secure password or QR code?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': `Use the Password Generator (${window.location.origin}/tools/password-generator) and QR Generator (${window.location.origin}/tools/qr-generator).`
+              }
             }
           ]
         }
@@ -109,22 +133,21 @@ const Index = () => {
   }, {} as Record<string, { name: string; tools: typeof tools }>);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-red-100 animate-fade-in">
+    <div className="min-h-screen bg-background animate-fade-in">
       <Header />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-red-500">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative container mx-auto px-4 py-20 text-center text-white">
+      <section className="relative overflow-hidden bg-background">
+        <div className="relative container mx-auto px-4 py-20 text-center text-foreground">
           <h1 className="text-5xl font-bold mb-6 animate-slide-up">
             TittoosTools
           </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 animate-slide-up delay-100">
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 animate-slide-up delay-100 text-muted-foreground">
             Your complete toolkit for online productivity. 40+ essential utilities including converters, 
             generators, analyzers, editors, and social media downloaders - all in one place.
           </p>
           <div className="flex justify-center animate-slide-up delay-200">
-            <Button size="lg" className="bg-white text-primary hover:text-accent hover:scale-105 transition-all" onClick={scrollToTools}>
+            <Button size="lg" variant="default" className="hover:scale-105 transition-all" onClick={scrollToTools}>
               Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -141,7 +164,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 placeholder="Search tools..."
                 value={searchTerm}
@@ -175,7 +198,7 @@ const Index = () => {
             <div className="space-y-12">
               {Object.entries(toolsByCategory).map(([categoryId, categoryData]) => (
                 <div key={categoryId}>
-                  <h2 className="text-2xl font-bold text-purple-800 mb-6 flex items-center">
+                  <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                     <span className="w-1 h-8 bg-gradient-to-b from-purple-600 to-red-500 rounded-full mr-4"></span>
                     {categoryData.name}
                   </h2>
@@ -188,14 +211,14 @@ const Index = () => {
                               <div className="p-2 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg">
                                 <tool.icon className="h-6 w-6 text-white" />
                               </div>
-                              <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                              <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                                 {categories.find(c => c.id === tool.category)?.name}
                               </span>
                             </div>
-                            <CardTitle className="text-lg group-hover:text-red-600 transition-colors">
+                            <CardTitle className="text-lg group-hover:text-primary transition-colors">
                               {tool.name}
                             </CardTitle>
-                            <p className="text-sm text-purple-600 font-medium">
+                            <p className="text-sm text-muted-foreground font-medium">
                               {tool.subheading}
                             </p>
                           </CardHeader>
@@ -214,13 +237,13 @@ const Index = () => {
           ) : (
             // Show filtered tools in a single grid when category is selected
             <>
-              <h2 className="text-3xl font-bold text-center mb-12 text-purple-800">
+              <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
                 {categories.find(c => c.id === selectedCategory)?.name || "Filtered Tools"}
               </h2>
               
               {filteredTools.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 text-lg">No tools found matching your criteria.</p>
+                  <p className="text-muted-foreground text-lg">No tools found matching your criteria.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -232,14 +255,14 @@ const Index = () => {
                             <div className="p-2 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg">
                               <tool.icon className="h-6 w-6 text-white" />
                             </div>
-                            <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                              {categories.find(c => c.id === tool.category)?.name}
-                            </span>
+                  <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
+                    {categories.find(c => c.id === tool.category)?.name}
+                  </span>
                           </div>
-                          <CardTitle className="text-lg group-hover:text-red-600 transition-colors">
+                          <CardTitle className="text-lg group-hover:text-primary transition-colors">
                             {tool.name}
                           </CardTitle>
-                          <p className="text-sm text-purple-600 font-medium">
+                          <p className="text-sm text-muted-foreground font-medium">
                             {tool.subheading}
                           </p>
                         </CardHeader>
@@ -261,10 +284,10 @@ const Index = () => {
       {/* FAQ Section for human-written SEO and trust */}
       <section className="container mx-auto px-4 pb-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8 text-purple-800">
+          <h2 className="text-3xl font-bold text-center mb-8 text-foreground">
             Frequently Asked Questions
           </h2>
-          <div className="space-y-6 text-gray-700">
+          <div className="space-y-6 text-muted-foreground">
             <div>
               <h3 className="text-xl font-semibold mb-2">What tools can I find here?</h3>
               <p>
@@ -306,6 +329,24 @@ const Index = () => {
               <p>
                 Yes. We do not collect sensitive personal data through tools. Please review our
                 Privacy Policy for details.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Where can I analyze my website\'s SEO?</h3>
+              <p>
+                Use our <Link to="/tools/seo-analyzer" className="text-primary hover:text-primary/80">SEO Analyzer</Link> to audit pages, meta tags, and on-page signals.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">How do I convert videos or images online?</h3>
+              <p>
+                Try the <Link to="/tools/video-converter" className="text-primary hover:text-primary/80">Video Converter</Link> and <Link to="/tools/image-converter" className="text-primary hover:text-primary/80">Image Converter</Link> for quick format changes and compression.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">How can I generate a secure password or QR code?</h3>
+              <p>
+                Use the <Link to="/tools/password-generator" className="text-primary hover:text-primary/80">Password Generator</Link> and <Link to="/tools/qr-generator" className="text-primary hover:text-primary/80">QR Generator</Link> for fast, reliable results.
               </p>
             </div>
           </div>

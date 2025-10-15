@@ -423,7 +423,7 @@ const AIWebsiteGenerator = () => {
                         </div>
                       </div>
                       <div 
-                        className="bg-white min-h-[400px] p-6"
+                        className="bg-card min-h-[400px] p-6"
                         dangerouslySetInnerHTML={{ __html: generatedWebsite.preview }}
                       />
                     </div>

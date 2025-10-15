@@ -67,13 +67,13 @@ const ${componentName} = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-lg">
+    <div className="p-6 max-w-md mx-auto bg-card rounded-lg shadow-lg">
       <div className="flex items-center mb-4">
-        <Calculator className="h-6 w-6 mr-2 text-blue-600" />
+        <Calculator className="h-6 w-6 mr-2 text-primary" />
         <h2 className="text-xl font-bold">${name}</h2>
       </div>
       
-      <p className="text-gray-600 mb-4">${description}</p>
+      <p className="text-muted-foreground mb-4">${description}</p>
       
       <div className="space-y-4">
         <input
@@ -100,7 +100,7 @@ const ${componentName} = () => {
         </button>
         
         {result && (
-          <div className="p-3 bg-gray-100 rounded-md">
+          <div className="p-3 bg-muted rounded-md">
             <strong>Result: {result}</strong>
           </div>
         )}

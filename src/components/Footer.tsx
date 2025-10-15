@@ -1,12 +1,12 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Github, Twitter, Linkedin } from "lucide-react";
+import { Share2 } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-white animate-fade-in">
+    <footer className="bg-background text-foreground animate-fade-in">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 animate-slide-up">
           {/* Brand Section */}
@@ -17,23 +17,39 @@ const Footer = () => {
               </div>
               <span className="text-xl font-bold">TittoosTools</span>
             </div>
-            <p className="text-gray-300 mb-4 max-w-md">
+            <p className="text-muted-foreground mb-4 max-w-md">
               Your complete toolkit for online productivity. Access 35+ essential utilities 
               including converters, generators, analyzers, and editors - all in one place.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Mail className="h-5 w-5" />
-              </a>
+              <button
+                type="button"
+                aria-label="Share this page"
+                className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                onClick={async () => {
+                  try {
+                    const shareData = {
+                      title: document.title,
+                      text: 'Check out this page on TittoosTools',
+                      url: window.location.href,
+                    };
+                    if (navigator.share) {
+                      await navigator.share(shareData);
+                    } else if (navigator.clipboard && window.isSecureContext) {
+                      await navigator.clipboard.writeText(shareData.url);
+                      alert('Link copied to clipboard');
+                    } else {
+                      // Fallback: open mailto
+                      window.location.href = `mailto:?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
+                    }
+                  } catch (e) {
+                    console.warn('Share canceled or failed', e);
+                  }
+                }}
+              >
+                <Share2 className="h-5 w-5" />
+                <span className="text-sm">Share</span>
+              </button>
             </div>
           </div>
 
@@ -42,27 +58,27 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Popular Tools</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/tools/pdf-converter" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/tools/pdf-converter" className="text-muted-foreground hover:text-foreground transition-colors">
                   PDF Converter
                 </Link>
               </li>
               <li>
-                <Link to="/tools/password-generator" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/tools/password-generator" className="text-muted-foreground hover:text-foreground transition-colors">
                   Password Generator
                 </Link>
               </li>
               <li>
-                <Link to="/tools/qr-generator" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/tools/qr-generator" className="text-muted-foreground hover:text-foreground transition-colors">
                   QR Code Generator
                 </Link>
               </li>
               <li>
-                <Link to="/tools/color-picker" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/tools/color-picker" className="text-muted-foreground hover:text-foreground transition-colors">
                   Color Picker
                 </Link>
               </li>
               <li>
-                <Link to="/tools/text-analyzer" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/tools/text-analyzer" className="text-muted-foreground hover:text-foreground transition-colors">
                   Text Analyzer
                 </Link>
               </li>
@@ -74,27 +90,27 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
                   Blog
                 </Link>
               </li>
@@ -102,8 +118,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400">
+        <div className="border-t border-border mt-8 pt-8 text-center">
+          <p className="text-muted-foreground">
             © {currentYear} TittoosTools. All rights reserved. Built with ❤️ for productivity.
           </p>
         </div>

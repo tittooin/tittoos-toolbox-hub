@@ -13,6 +13,7 @@ import AllTools from "./pages/AllTools";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Blog from "./pages/Blog";
+import Author from "./pages/Author";
 import PDFConverter from "./pages/tools/PDFConverter";
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
 import QRGenerator from "./pages/tools/QRGenerator";
@@ -96,6 +97,8 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<Blog />} />
+          <Route path="/author/:slug" element={<Author />} />
           
           {/* Blog Category Pages */}
           <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />

@@ -1,105 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-<url>
-	<loc>https://tittoos.online/</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>daily</changefreq>
-	<priority>1.0</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/blog/ai-automation-tools-2024</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>weekly</changefreq>
-	<priority>0.9</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/pdf-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/image-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/video-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/audio-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/unit-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/currency-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/temperature-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/base64-converter</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/password-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/qr-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/uuid-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/lorem-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/hash-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/barcode-generator</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
-<url>
-	<loc>https://tittoos.online/tools/seo-analyzer</loc>
-	<lastmod>2024-01-20T16:26:00+01:00</lastmod>
-	<changefreq>always</changefreq>
-	<priority>0.8</priority>
-</url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://tittoos.online/</loc></url>
+<url><loc>https://tittoos.online/about</loc></url>
+<url><loc>https://tittoos.online/author/digital-workflow-specialist</loc></url>
+<url><loc>https://tittoos.online/author/security-expert</loc></url>
+<url><loc>https://tittoos.online/author/tittoostools-team</loc></url>
+<url><loc>https://tittoos.online/blog</loc></url>
+<url><loc>https://tittoos.online/blog-posts/ai-tools-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/analyzers-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/calculators-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/converters-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/editors-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/formatters-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/generators-category</loc></url>
+<url><loc>https://tittoos.online/blog-posts/validators-category</loc></url>
+<url><loc>https://tittoos.online/blog/10-essential-online-tools-for-digital-productivity-2024</loc></url>
+<url><loc>https://tittoos.online/blog/file-conversion-mastery-complete-guide-digital-format-management</loc></url>
+<url><loc>https://tittoos.online/blog/password-security-best-practices-guide-2024</loc></url>
+<url><loc>https://tittoos.online/categories</loc></url>
+<url><loc>https://tittoos.online/contact</loc></url>
+<url><loc>https://tittoos.online/privacy</loc></url>
+<url><loc>https://tittoos.online/terms</loc></url>
+<url><loc>https://tittoos.online/tools</loc></url>
+<url><loc>https://tittoos.online/tools/age-calculator</loc></url>
+<url><loc>https://tittoos.online/tools/ai-image-editor</loc></url>
+<url><loc>https://tittoos.online/tools/ai-prompt-assistant</loc></url>
+<url><loc>https://tittoos.online/tools/ai-tool-generator</loc></url>
+<url><loc>https://tittoos.online/tools/ai-website-generator</loc></url>
+<url><loc>https://tittoos.online/tools/audio-converter</loc></url>
+<url><loc>https://tittoos.online/tools/barcode-generator</loc></url>
+<url><loc>https://tittoos.online/tools/base64-converter</loc></url>
+<url><loc>https://tittoos.online/tools/bmi-calculator</loc></url>
+<url><loc>https://tittoos.online/tools/calculator</loc></url>
+<url><loc>https://tittoos.online/tools/color-analyzer</loc></url>
+<url><loc>https://tittoos.online/tools/color-picker</loc></url>
+<url><loc>https://tittoos.online/tools/css-editor</loc></url>
+<url><loc>https://tittoos.online/tools/css-formatter</loc></url>
+<url><loc>https://tittoos.online/tools/csv-editor</loc></url>
+<url><loc>https://tittoos.online/tools/currency-converter</loc></url>
+<url><loc>https://tittoos.online/tools/hash-generator</loc></url>
+<url><loc>https://tittoos.online/tools/html-editor</loc></url>
+<url><loc>https://tittoos.online/tools/html-formatter</loc></url>
+<url><loc>https://tittoos.online/tools/image-analyzer</loc></url>
+<url><loc>https://tittoos.online/tools/image-background-remover</loc></url>
+<url><loc>https://tittoos.online/tools/image-converter</loc></url>
+<url><loc>https://tittoos.online/tools/json-editor</loc></url>
+<url><loc>https://tittoos.online/tools/json-formatter</loc></url>
+<url><loc>https://tittoos.online/tools/loan-calculator</loc></url>
+<url><loc>https://tittoos.online/tools/lorem-generator</loc></url>
+<url><loc>https://tittoos.online/tools/markdown-editor</loc></url>
+<url><loc>https://tittoos.online/tools/ocr-converter</loc></url>
+<url><loc>https://tittoos.online/tools/password-generator</loc></url>
+<url><loc>https://tittoos.online/tools/pdf-converter</loc></url>
+<url><loc>https://tittoos.online/tools/percentage-calculator</loc></url>
+<url><loc>https://tittoos.online/tools/qr-generator</loc></url>
+<url><loc>https://tittoos.online/tools/resume-builder</loc></url>
+<url><loc>https://tittoos.online/tools/seo-analyzer</loc></url>
+<url><loc>https://tittoos.online/tools/sql-formatter</loc></url>
+<url><loc>https://tittoos.online/tools/temperature-converter</loc></url>
+<url><loc>https://tittoos.online/tools/text-analyzer</loc></url>
+<url><loc>https://tittoos.online/tools/text-editor</loc></url>
+<url><loc>https://tittoos.online/tools/text-to-image</loc></url>
+<url><loc>https://tittoos.online/tools/text-to-video</loc></url>
+<url><loc>https://tittoos.online/tools/timestamp-converter</loc></url>
+<url><loc>https://tittoos.online/tools/unit-converter</loc></url>
+<url><loc>https://tittoos.online/tools/url-encoder</loc></url>
+<url><loc>https://tittoos.online/tools/uuid-generator</loc></url>
+<url><loc>https://tittoos.online/tools/video-converter</loc></url>
+<url><loc>https://tittoos.online/tools/video-editor</loc></url>
+<url><loc>https://tittoos.online/tools/website-analyzer</loc></url>
+<url><loc>https://tittoos.online/tools/website-speed-checker</loc></url>
+<url><loc>https://tittoos.online/tools/xml-formatter</loc></url>
 </urlset>

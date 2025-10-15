@@ -1,8 +1,30 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 const About = () => {
+  useEffect(() => {
+    const origin = window.location.origin;
+    setSEO({
+      title: "About TittoosTools – Free Online Utilities",
+      description: "TittoosTools offers 40+ free online utilities including converters, generators, analyzers, editors, and AI-powered tools. Our mission is to make powerful tools accessible to everyone.",
+      type: 'website',
+      canonical: `${origin}/about`,
+    });
+    injectJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'TittoosTools',
+      'url': origin,
+      'logo': `${origin}/favicon.ico`,
+      'sameAs': [
+        'https://twitter.com/TittoosTools',
+        'https://www.linkedin.com/company/tittoostools/'
+      ]
+    }, 'jsonld-org-about');
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header />

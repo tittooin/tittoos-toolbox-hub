@@ -79,14 +79,14 @@ const BarcodeGenerator = () => {
             <Card>
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
-                  <div className="bg-white border-2 border-dashed border-gray-300 p-8 rounded-lg">
+        <div className="bg-card border-2 border-dashed border-border p-8 rounded-lg">
                     <div className="space-y-1">
                       {/* Mock barcode pattern */}
                       <div className="flex justify-center space-x-px">
                         {Array.from({ length: 50 }, (_, i) => (
                           <div
                             key={i}
-                            className={`h-16 ${Math.random() > 0.5 ? 'bg-black w-1' : 'bg-white w-1'}`}
+                className={`h-16 ${Math.random() > 0.5 ? 'bg-black w-1' : 'bg-white w-1'}`}
                           />
                         ))}
                       </div>

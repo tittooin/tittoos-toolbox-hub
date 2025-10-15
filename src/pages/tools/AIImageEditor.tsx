@@ -770,7 +770,7 @@ const AIImageEditor = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardContent className="p-4">
-                <div className="border rounded-lg overflow-hidden bg-white" style={{ width: "fit-content" }}>
+                <div className="border border-border rounded-lg overflow-hidden bg-card" style={{ width: "fit-content" }}>
                   <canvas ref={canvasRef} className="block" />
                 </div>
                 
@@ -785,7 +785,7 @@ const AIImageEditor = () => {
                     </Button>
                   </div>
                   
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {canvasSize.width} × {canvasSize.height}px
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
-import { setSEO } from "@/utils/seoUtils";
+import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 interface ToolTemplateProps {
   title: string;
@@ -30,9 +30,20 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
       image: `${window.location.origin}/placeholder.svg`,
       type: 'website',
     });
+    // Inject WebApplication JSON-LD for each tool page
+    const url = `${window.location.origin}${window.location.pathname}`;
+    injectJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': title,
+      'description': description,
+      'url': url,
+      'applicationCategory': 'Utility',
+      'operatingSystem': 'Web'
+    }, 'jsonld-webapp');
   }, [title, description]);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-red-50 animate-fade-in">
+    <div className="min-h-screen bg-background animate-fade-in">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
@@ -134,7 +145,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                   <CardContent>
                     <ul className="space-y-2">
                       {features.map((feature, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-start">
+                        <li key={index} className="text-sm text-muted-foreground flex items-start">
                           <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
                           {feature}
                         </li>
