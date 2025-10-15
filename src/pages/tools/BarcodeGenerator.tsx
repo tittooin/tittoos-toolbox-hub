@@ -86,7 +86,7 @@ const BarcodeGenerator = () => {
                         {Array.from({ length: 50 }, (_, i) => (
                           <div
                             key={i}
-                className={`h-16 ${Math.random() > 0.5 ? 'bg-black w-1' : 'bg-white w-1'}`}
+                className={`h-16 ${Math.random() > 0.5 ? 'bg-black w-1' : 'bg-white w-1 barcode-bar'}`}
                           />
                         ))}
                       </div>
