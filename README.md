@@ -117,3 +117,14 @@ Run the site using GitHub as the source and Cloudflare for hosting/DNS.
 
 ### Notes
 - No Ezoic integration: ensure Cloudflare Apps/Zaraz/Workers/Rules do not inject Ezoic/CMP scripts.
+
+### Email Setup (Contact Forms)
+- Environment variables (Pages → Settings → Environment variables):
+  - `RESEND_API_KEY`: your Resend API key (required).
+  - `RESEND_FROM`: an allowed sender (optional; e.g., `notifications@tittoos.online`).
+- Function endpoint: form submissions POST to `/api/send-email` (Cloudflare Pages Function).
+- Sender domain: if using a custom `RESEND_FROM`, verify the domain in Resend; otherwise the default `onboarding@resend.dev` works until verification.
+- Testing:
+  - After deploy, submit the forms at `https://tittoos.online/contact`.
+  - Emails are delivered to `admin@tittoos.online`. If you use Cloudflare Email Routing, confirm the forward target inbox.
+  - Check Cloudflare Logs/Analytics if you need to trace function requests.

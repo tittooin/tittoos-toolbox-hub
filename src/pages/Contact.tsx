@@ -1,5 +1,5 @@
 
-import { Mail, MessageSquare, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,7 +19,7 @@ const Contact = () => {
             Have questions, feedback, or suggestions? We'd love to hear from you!
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-12">
             <Card className="text-center">
               <CardHeader>
                 <Mail className="h-12 w-12 mx-auto text-primary mb-4" />
@@ -34,40 +34,6 @@ const Contact = () => {
                   className="text-primary hover:text-primary/80 font-medium"
                 >
                   admin@tittoos.online
-                </a>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <MessageSquare className="h-12 w-12 mx-auto text-primary mb-4" />
-                <CardTitle>Live Chat</CardTitle>
-                <CardDescription>
-                  Get instant help from our team
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Available Mon-Fri<br />
-                  9 AM - 6 PM EST
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <Phone className="h-12 w-12 mx-auto text-primary mb-4" />
-                <CardTitle>Phone</CardTitle>
-                <CardDescription>
-                  Call us for urgent matters
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <a 
-                  href="tel:+1-555-123-4567" 
-                  className="text-primary hover:text-primary/80 font-medium"
-                >
-                  +1 (555) 123-4567
                 </a>
               </CardContent>
             </Card>
