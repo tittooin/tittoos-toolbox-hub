@@ -12,11 +12,7 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://tittoos.online/" />
 
-    <!-- Performance: Preconnect important third-party origins (Ezoic consent and assets) -->
-    <link rel="preconnect" href="https://g.ezoic.net" crossorigin>
-    <link rel="preconnect" href="https://privacy.gatekeeperconsent.com" crossorigin>
-    <link rel="dns-prefetch" href="https://g.ezoic.net">
-    <link rel="dns-prefetch" href="https://privacy.gatekeeperconsent.com">
+    
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -35,9 +31,35 @@
     <!-- Additional SEO -->
     <meta name="theme-color" content="#3b82f6" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="format-detection" content="telephone=no" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7510164795562884" crossorigin="anonymous"></script>
+    <script>
+      window.__tcfapi = function (command, version, callback, parameter) {
+        if (command === 'getTCData' || command === 'addEventListener' || command === 'removeEventListener') {
+          const tcData = {
+            gdprApplies: false,
+            tcString: '',
+            eventStatus: 'tcloaded',
+            cmpId: 299,
+            cmpVersion: 10,
+            cmpStatus: 'disabled',
+            isServiceSpecific: true,
+            useNonStandardStacks: false,
+            purposeOneTreatment: false,
+            purpose: { consents: {}, legitimateInterests: {} },
+            vendor: { consents: {}, legitimateInterests: {} }
+          };
+          callback(tcData, true);
+        } else if (command === 'ping') {
+          callback({ gdprApplies: false, cmpId: 299, cmpVersion: 10, cmpStatus: 'disabled' }, true);
+        } else {
+          callback(null, false);
+        }
+      };
+      window.dispatchEvent(new Event('tcfapiready'));
+    </script>
   </head>
 
   <body>
