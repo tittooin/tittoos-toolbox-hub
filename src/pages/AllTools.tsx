@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
+import { setSEO } from "@/utils/seoUtils";
 
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +21,18 @@ const AllTools = () => {
     const matchesCategory = selectedCategory === "all" || tool.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  useEffect(() => {
+    setSEO({
+      title: "All Tools | TittoosTools",
+      description: `Browse ${tools.length}+ free online utilities: converters, formatters, editors, generators, analyzers and more. No registration required.`,
+      keywords: [
+        'online tools','free web tools','productivity tools','file converter','json formatter','csv editor','qr code generator','password generator','seo analyzer','website tools'
+      ],
+      type: 'website',
+      image: `${window.location.origin}/placeholder.svg`,
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">

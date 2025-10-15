@@ -1,5 +1,5 @@
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ArrowLeft, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdSense from "@/components/AdSense";
+import { setSEO } from "@/utils/seoUtils";
 
 interface ToolTemplateProps {
   title: string;
@@ -19,6 +20,17 @@ interface ToolTemplateProps {
 }
 
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
+  useEffect(() => {
+    setSEO({
+      title,
+      description,
+      keywords: [
+        'free online tools','web tools','utilities','converter','formatter','validator','generator','editor','SEO tools','AI tools'
+      ],
+      image: `${window.location.origin}/placeholder.svg`,
+      type: 'website',
+    });
+  }, [title, description]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-red-50 animate-fade-in">
       <Header />

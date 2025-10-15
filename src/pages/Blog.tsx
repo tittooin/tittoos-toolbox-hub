@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogSubmissionForm from "@/components/BlogSubmissionForm";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
 import { toast } from 'sonner';
 import AdSense from "@/components/AdSense";
+import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 const Blog = () => {
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
@@ -315,6 +316,56 @@ const Blog = () => {
   };
 
   const selectedPostData = selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null;
+
+  // Apply SEO dynamically for list vs article views
+  useEffect(() => {
+    if (selectedPostData) {
+      const title = `${selectedPostData.title} | TittoosTools Blog`;
+      setSEO({
+        title,
+        description: selectedPostData.excerpt,
+        keywords: [
+          'blog','productivity','online tools','guides','tutorials','digital workflow','seo tips','formatters','converters'
+        ],
+        type: 'article',
+        image: `${window.location.origin}/placeholder.svg`,
+        canonicalUrl: `${window.location.origin}/blog`,
+      });
+
+      // Inject BlogPosting JSON-LD for the article
+      injectJsonLd({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        'headline': selectedPostData.title,
+        'articleBody': selectedPostData.excerpt,
+        'author': {
+          '@type': 'Person',
+          'name': selectedPostData.author || 'TittoosTools Team'
+        },
+        'datePublished': selectedPostData.date,
+        'publisher': {
+          '@type': 'Organization',
+          'name': 'TittoosTools',
+          'logo': {
+            '@type': 'ImageObject',
+            'url': `${window.location.origin}/favicon.ico`
+          }
+        },
+        'mainEntityOfPage': `${window.location.origin}/blog`
+      });
+    } else {
+      setSEO({
+        title: 'TittoosTools Blog - Tips, Tutorials, and Guides',
+        description: 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.',
+        keywords: [
+          'blog','online tools','seo','tutorials','guides','productivity','formatters','converters'
+        ],
+        type: 'website',
+        image: `${window.location.origin}/placeholder.svg`,
+        canonicalUrl: `${window.location.origin}/blog`,
+      });
+    }
+  }, [selectedPostData]);
 
   if (selectedPostData) {
     return (

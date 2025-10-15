@@ -11,29 +11,75 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
 import AdSense from "@/components/AdSense";
+import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    // Set SEO meta tags
-    document.title = "TittoosTools - 40+ Essential Online Utilities | Free Web Tools";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more. No registration required.');
-    }
+    // Apply global SEO meta and structured data
+    setSEO({
+      title: "TittoosTools - 40+ Essential Online Utilities | Free Web Tools",
+      description: "Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more. No registration required.",
+      keywords: [
+        'free online tools','web utilities','video converter','audio converter','image converter','password generator','QR code','JSON formatter','URL encoder','AI tools','SEO analyzer','website speed checker','bmi calculator','loan calculator'
+      ],
+      image: `${window.location.origin}/placeholder.svg`,
+      type: 'website',
+    });
 
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute('content', 'TittoosTools - 40+ Essential Online Utilities | Free Web Tools');
-    }
-
-    const ogDescription = document.querySelector('meta[property="og:description"]');
-    if (ogDescription) {
-      ogDescription.setAttribute('content', 'Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more.');
-    }
+    // WebSite + SearchAction + Organization JSON-LD
+    injectJsonLd({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          'name': 'TittoosTools',
+          'url': window.location.origin,
+          'logo': `${window.location.origin}/favicon.ico`,
+        },
+        {
+          '@type': 'WebSite',
+          'name': 'TittoosTools',
+          'url': window.location.origin,
+          'potentialAction': {
+            '@type': 'SearchAction',
+            'target': `${window.location.origin}/?q={search_term_string}`,
+            'query-input': 'required name=search_term_string'
+          }
+        },
+        {
+          '@type': 'FAQPage',
+          'mainEntity': [
+            {
+              '@type': 'Question',
+              'name': 'What free online tools does TittoosTools offer?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'We offer 40+ tools including converters (video, audio, image), generators (password, QR, UUID), formatters (JSON, XML, SQL), analyzers (SEO, website speed), calculators (BMI, loan, percentage), and AI tools.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Are the tools really free to use?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Yes. All tools are free with no signup required. Some pages may display ads to keep the platform free.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Do you support mobile devices?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Yes, TittoosTools is mobile-friendly and works across modern browsers on phones, tablets, and desktops.'
+              }
+            }
+          ]
+        }
+      ]
+    });
   }, []);
 
   const filteredTools = tools.filter(tool => {
@@ -209,6 +255,60 @@ const Index = () => {
               )}
             </>
           )}
+        </div>
+      </section>
+
+      {/* FAQ Section for human-written SEO and trust */}
+      <section className="container mx-auto px-4 pb-16">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8 text-purple-800">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6 text-gray-700">
+            <div>
+              <h3 className="text-xl font-semibold mb-2">What tools can I find here?</h3>
+              <p>
+                We offer 40+ free online utilities including converters (video, audio, image),
+                generators (password, QR, UUID), editors (JSON, HTML, CSS, Markdown), analyzers
+                (SEO, website speed, image/color), and practical calculators (BMI, loan, percentage).
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Is everything really free to use?</h3>
+              <p>
+                Yes. There is no login or registration required. We keep the platform free by
+                displaying non-intrusive ads on some pages.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Is TittoosTools mobile-friendly?</h3>
+              <p>
+                Absolutely. The site is responsive and optimized for modern browsers on phones,
+                tablets, and desktops.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Are downloads and generated files safe?</h3>
+              <p>
+                Tools run in your browser where possible. Generated files such as formatted JSON,
+                converted images, or code snippets are created locally and are safe to download.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">How can I request a new tool?</h3>
+              <p>
+                If you need a specific tool, reach out via our contact or feedback section. We
+                prioritize useful, frequently requested utilities.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Do you respect user privacy?</h3>
+              <p>
+                Yes. We do not collect sensitive personal data through tools. Please review our
+                Privacy Policy for details.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

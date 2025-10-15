@@ -1,11 +1,75 @@
 
-export const setToolSEO = (title: string, description: string) => {
-  document.title = title;
-  
-  const metaDescription = document.querySelector('meta[name="description"]');
-  if (metaDescription) {
-    metaDescription.setAttribute('content', description);
+const ensureTag = (selector: string, create: () => HTMLElement) => {
+  let el = document.querySelector(selector) as HTMLElement | null;
+  if (!el) {
+    el = create();
+    document.head.appendChild(el);
   }
+  return el as HTMLElement;
+};
+
+const setMeta = (nameOrProperty: { name?: string; property?: string }, content: string) => {
+  const selector = nameOrProperty.name
+    ? `meta[name="${nameOrProperty.name}"]`
+    : `meta[property="${nameOrProperty.property}"]`;
+  const el = ensureTag(selector, () => {
+    const m = document.createElement('meta');
+    if (nameOrProperty.name) m.setAttribute('name', nameOrProperty.name);
+    if (nameOrProperty.property) m.setAttribute('property', nameOrProperty.property!);
+    return m;
+  });
+  el.setAttribute('content', content);
+};
+
+const setCanonical = (url: string) => {
+  const link = ensureTag('link[rel="canonical"]', () => {
+    const l = document.createElement('link');
+    l.setAttribute('rel', 'canonical');
+    return l;
+  });
+  link.setAttribute('href', url);
+};
+
+export const injectJsonLd = (data: Record<string, any>, id = 'jsonld-primary') => {
+  // remove previous script with same id to avoid duplicates
+  const prev = document.getElementById(id);
+  if (prev) prev.remove();
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = id;
+  script.text = JSON.stringify(data);
+  document.head.appendChild(script);
+};
+
+export const setSEO = (opts: {
+  title: string;
+  description: string;
+  keywords?: string[];
+  image?: string;
+  type?: 'website' | 'article';
+  canonical?: string;
+}) => {
+  const { title, description, keywords, image, type = 'website', canonical } = opts;
+  document.title = title;
+  setMeta({ name: 'description' }, description);
+  if (keywords?.length) setMeta({ name: 'keywords' }, keywords.join(', '));
+
+  const origin = window.location.origin;
+  const pathname = window.location.pathname;
+  const canonicalUrl = canonical || `${origin}${pathname}`;
+  setCanonical(canonicalUrl);
+
+  setMeta({ property: 'og:title' }, title);
+  setMeta({ property: 'og:description' }, description);
+  setMeta({ property: 'og:type' }, type);
+  setMeta({ property: 'og:url' }, canonicalUrl);
+  if (image) setMeta({ property: 'og:image' }, image);
+
+  setMeta({ property: 'twitter:title' }, title);
+  setMeta({ property: 'twitter:description' }, description);
+  setMeta({ property: 'twitter:card' }, image ? 'summary_large_image' : 'summary');
+  setMeta({ property: 'twitter:url' }, canonicalUrl);
+  if (image) setMeta({ property: 'twitter:image' }, image);
 };
 
 export const toolSEOData = {
@@ -61,4 +125,9 @@ export const toolSEOData = {
     title: 'Free Hash Generator Online – TittoosTools',
     description: 'Generate MD5, SHA1, SHA256 hash values for text and files. Free hash generator and verifier at TittoosTools.'
   }
+};
+
+// Backward-compatible helper used in some tools
+export const setToolSEO = (title: string, description: string) => {
+  setSEO({ title, description });
 };
