@@ -199,7 +199,7 @@ const Index = () => {
               {Object.entries(toolsByCategory).map(([categoryId, categoryData]) => (
                 <div key={categoryId}>
                   <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
-                    <span className="w-1 h-8 bg-gradient-to-b from-purple-600 to-red-500 rounded-full mr-4"></span>
+                    <span className="w-1 h-8 bg-muted rounded-full mr-4"></span>
                     {categoryData.name}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -208,8 +208,8 @@ const Index = () => {
                         <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
                           <CardHeader className="pb-3">
                             <div className="flex items-center justify-between mb-3">
-                              <div className="p-2 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg">
-                                <tool.icon className="h-6 w-6 text-white" />
+                              <div className="p-2 bg-muted rounded-lg">
+                                <tool.icon className="h-6 w-6 text-foreground" />
                               </div>
                               <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                                 {categories.find(c => c.id === tool.category)?.name}
@@ -252,8 +252,8 @@ const Index = () => {
                       <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg">
-                              <tool.icon className="h-6 w-6 text-white" />
+                            <div className="p-2 bg-muted rounded-lg">
+                              <tool.icon className="h-6 w-6 text-foreground" />
                             </div>
                   <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                     {categories.find(c => c.id === tool.category)?.name}

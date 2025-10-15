@@ -35,15 +35,15 @@ const AllTools = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
+          <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
             All Tools
           </h1>
-          <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
             Browse our complete collection of {tools.length} productivity tools.
           </p>
 
@@ -51,7 +51,7 @@ const AllTools = () => {
           <div className="max-w-4xl mx-auto mb-12">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   placeholder="Search tools..."
                   value={searchTerm}
@@ -78,7 +78,7 @@ const AllTools = () => {
 
           {/* Results count */}
           <div className="text-center mb-8">
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Showing {filteredTools.length} of {tools.length} tools
             </p>
           </div>
@@ -91,7 +91,7 @@ const AllTools = () => {
           {/* Tools Grid */}
           {filteredTools.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No tools found matching your criteria.</p>
+              <p className="text-muted-foreground text-lg">No tools found matching your criteria.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -100,14 +100,14 @@ const AllTools = () => {
                   <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                          <tool.icon className="h-6 w-6 text-white" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <tool.icon className="h-6 w-6 text-foreground" />
                         </div>
-                        <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                        <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                           {categories.find(c => c.id === tool.category)?.name}
                         </span>
                       </div>
-                      <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
                         {tool.name}
                       </CardTitle>
                     </CardHeader>

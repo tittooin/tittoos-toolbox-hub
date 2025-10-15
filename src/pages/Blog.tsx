@@ -519,7 +519,7 @@ const Blog = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
+                  <div className="flex justify-between items-center text-sm text-muted-foreground">
                     <span>{new Date(post.date).toLocaleDateString()}</span>
                     <span>{post.readTime}</span>
                   </div>
@@ -539,7 +539,7 @@ const Blog = () => {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Share your expertise with our community! Submit your blog or generate one with AI.
             </p>
           </div>
