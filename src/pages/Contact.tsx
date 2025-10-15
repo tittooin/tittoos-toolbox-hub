@@ -29,10 +29,10 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 <a 
-                  href="mailto:support@tittoostools.com" 
+                  href="mailto:admin@tittoos.online" 
                   className="text-primary hover:text-primary/80 font-medium"
                 >
-                  support@tittoos.online
+                  admin@tittoos.online
                 </a>
               </CardContent>
             </Card>

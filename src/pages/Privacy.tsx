@@ -70,8 +70,8 @@ const Privacy = () => {
               <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Us</h2>
               <p className="mb-6">
                 If you have any questions about this Privacy Policy, please contact us at{" "}
-                <a href="mailto:privacy@tittoostools.com" className="text-primary hover:text-primary/80">
-                  privacy@tittoostools.com
+                <a href="mailto:admin@tittoos.online" className="text-primary hover:text-primary/80">
+                  admin@tittoos.online
                 </a>
               </p>
 

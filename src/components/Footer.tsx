@@ -39,8 +39,8 @@ const Footer = () => {
                       await navigator.clipboard.writeText(shareData.url);
                       alert('Link copied to clipboard');
                     } else {
-                      // Fallback: open mailto
-                      window.location.href = `mailto:?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
+                      // Fallback: open mailto with default recipient
+                      window.location.href = `mailto:admin@tittoos.online?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
                     }
                   } catch (e) {
                     console.warn('Share canceled or failed', e);
