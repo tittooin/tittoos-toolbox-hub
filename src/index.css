@@ -105,6 +105,21 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Force dark theme across legacy light classes */
+  .dark .bg-white { background-color: hsl(var(--card)) !important; }
+  .dark .bg-gray-50 { background-color: hsl(var(--muted)) !important; }
+  .dark .bg-gray-100 { background-color: hsl(var(--muted)) !important; }
+  .dark .text-gray-900, .dark .text-gray-800 { color: hsl(var(--foreground)) !important; }
+  .dark .text-gray-700, .dark .text-gray-600, .dark .text-gray-500 { color: hsl(var(--muted-foreground)) !important; }
+  .dark .border-blue-200 { border-color: hsl(var(--border)) !important; }
+  .dark .bg-blue-50 { background-color: hsl(var(--muted)) !important; }
+
+  /* Gradients: map light-from/to utilities to dark background for consistency */
+  .dark .from-slate-50 { --tw-gradient-from: hsl(var(--background)) !important; }
+  .dark .to-blue-50 { --tw-gradient-to: hsl(var(--background)) !important; }
+  .dark .from-purple-600 { --tw-gradient-from: hsl(var(--muted)) !important; }
+  .dark .to-red-500 { --tw-gradient-to: hsl(var(--muted)) !important; }
+
   .delay-100 {
     animation-delay: 100ms;
   }
