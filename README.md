@@ -71,3 +71,49 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Deploy with GitHub + Cloudflare Pages
+
+Run the site using GitHub as the source and Cloudflare for hosting/DNS.
+
+### Cloudflare Pages Settings
+- Project: Connect this GitHub repo in Cloudflare Pages.
+- Build command:
+  ```sh
+  npm ci && npm run generate-sitemap && npm run build
+  ```
+- Output directory: `dist`
+- Node version: `18` (or `20`)
+- Environment variables:
+  - `VITE_ENABLE_DOWNLOADERS=true`
+  - `CI=true` (optional)
+
+### Custom Domain
+- Add `tittoos.online` under Pages → Custom domains.
+- Add `www.tittoos.online` as an alias and set `tittoos.online` as the primary.
+- Enable “Redirect traffic to the primary domain” for www → apex 301 redirects.
+
+### DNS (Cloudflare)
+- Nameservers: point to Cloudflare (already done).
+- Records:
+  - `tittoos.online` → Cloudflare Pages-managed CNAME to your `*.pages.dev` domain, proxied.
+  - `www` → CNAME to `tittoos.online`, proxied.
+- SSL/TLS: set to “Full”.
+
+### GitHub Configuration
+- Settings → Pages: Disabled (Cloudflare Pages is the origin).
+- Workflows:
+  - Keep `.github/workflows/sitemap.yml` (generates sitemap and pings Google).
+  - Remove GitHub Pages deploy workflows (already removed).
+- Files:
+  - `CNAME` and `public/CNAME` are not used by Cloudflare Pages; optional to delete.
+
+### Post-Deploy Checklist
+- Purge Cloudflare cache: Caching → Purge everything.
+- Verify homepage meta:
+  - `canonical`, `og:url`, and `twitter:url` point to `https://tittoos.online/`.
+- Verify `https://tittoos.online/sitemap.xml` resolves and contains site URLs.
+- Test deep links (e.g., `/tools/validators`) and `www` → apex redirect.
+
+### Notes
+- No Ezoic integration: ensure Cloudflare Apps/Zaraz/Workers/Rules do not inject Ezoic/CMP scripts.
