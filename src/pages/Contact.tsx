@@ -3,6 +3,7 @@ import { Mail, MessageSquare, Phone } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ContactForms from "@/components/ContactForms";
 
 const Contact = () => {
   return (
@@ -71,6 +72,8 @@ const Contact = () => {
               </CardContent>
             </Card>
           </div>
+
+          <ContactForms />
 
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-semibold mb-6 text-foreground">
