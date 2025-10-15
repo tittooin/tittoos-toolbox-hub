@@ -66,6 +66,8 @@ import VideoEditor from "./pages/tools/VideoEditor";
 import OCRConverter from "./pages/tools/OCRConverter";
 import ResumeBuilder from "./pages/tools/ResumeBuilder";
 
+const ENABLE_DOWNLOADERS = import.meta.env.VITE_ENABLE_DOWNLOADERS !== 'false';
+
 // Blog Category Pages
 import AnalyzersCategoryPage from "./pages/blog-posts/analyzers-category";
 import CalculatorsCategoryPage from "./pages/blog-posts/calculators-category";
@@ -164,10 +166,14 @@ const App = () => (
           <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
           
           {/* Downloader Tools */}
-          <Route path="/tools/youtube-downloader" element={<YoutubeDownloader />} />
-          <Route path="/tools/facebook-downloader" element={<FacebookDownloader />} />
-          <Route path="/tools/twitter-downloader" element={<TwitterDownloader />} />
-          <Route path="/tools/linkedin-downloader" element={<LinkedinDownloader />} />
+          {ENABLE_DOWNLOADERS && (
+            <>
+              <Route path="/tools/youtube-downloader" element={<YoutubeDownloader />} />
+              <Route path="/tools/facebook-downloader" element={<FacebookDownloader />} />
+              <Route path="/tools/twitter-downloader" element={<TwitterDownloader />} />
+              <Route path="/tools/linkedin-downloader" element={<LinkedinDownloader />} />
+            </>
+          )}
           
           {/* Utility Tools */}
           <Route path="/tools/ocr-converter" element={<OCRConverter />} />

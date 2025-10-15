@@ -177,6 +177,7 @@ Start using our AI tools today to leverage cutting-edge technology and boost you
         title="AI Tools and Automation Guide 2024"
         description="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation."
         content={blogContent}
+        showContentAds
       />
     </>
   );

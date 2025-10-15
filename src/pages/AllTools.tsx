@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdSense from "@/components/AdSense";
 
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,6 +68,11 @@ const AllTools = () => {
             <p className="text-gray-600">
               Showing {filteredTools.length} of {tools.length} tools
             </p>
+          </div>
+
+          {/* AdSense Block */}
+          <div className="mb-10 flex justify-center">
+            <AdSense adSlot="1234567890" adFormat="auto" />
           </div>
 
           {/* Tools Grid */}

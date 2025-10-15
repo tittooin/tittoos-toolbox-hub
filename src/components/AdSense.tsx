@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react';
 
+type AdType = 'display' | 'in_article' | 'in_feed' | 'multiplex';
+
 interface AdSenseProps {
   className?: string;
   style?: React.CSSProperties;
   adSlot: string;
+  // For display ads, this controls auto vs fluid; ignored for specific types
   adFormat?: 'auto' | 'fluid';
   fullWidthResponsive?: boolean;
+  // Specific unit type support
+  adType?: AdType;
+  // In-feed units require a layout key provided by AdSense
+  layoutKey?: string;
 }
 
 const AdSense: React.FC<AdSenseProps> = ({
@@ -13,7 +20,9 @@ const AdSense: React.FC<AdSenseProps> = ({
   style,
   adSlot,
   adFormat = 'auto',
-  fullWidthResponsive = true
+  fullWidthResponsive = true,
+  adType = 'display',
+  layoutKey,
 }) => {
   useEffect(() => {
     try {
@@ -23,6 +32,35 @@ const AdSense: React.FC<AdSenseProps> = ({
     }
   }, []);
 
+  // Compute ad attributes based on type
+  const getAttributes = () => {
+    switch (adType) {
+      case 'in_article':
+        return {
+          'data-ad-format': 'fluid',
+          'data-ad-layout': 'in-article',
+        } as Record<string, string | boolean>;
+      case 'in_feed':
+        return {
+          'data-ad-format': 'fluid',
+          'data-ad-layout': 'in-feed',
+          ...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {}),
+        } as Record<string, string | boolean>;
+      case 'multiplex':
+        return {
+          'data-ad-format': 'autorelaxed',
+        } as Record<string, string | boolean>;
+      case 'display':
+      default:
+        return {
+          'data-ad-format': adFormat,
+          'data-full-width-responsive': fullWidthResponsive,
+        } as Record<string, string | boolean>;
+    }
+  };
+
+  const attributes = getAttributes();
+
   return (
     <div className={`animate-fade-in ${className || ''}`}>
       <ins
@@ -30,12 +68,11 @@ const AdSense: React.FC<AdSenseProps> = ({
         style={{
           display: 'block',
           textAlign: 'center',
-          ...style
+          ...style,
         }}
-        data-ad-client="YOUR_AD_CLIENT_ID" // Replace with your AdSense client ID
+        data-ad-client="ca-pub-7510164795562884"
         data-ad-slot={adSlot}
-        data-ad-format={adFormat}
-        data-full-width-responsive={fullWidthResponsive}
+        {...attributes}
       />
     </div>
   );

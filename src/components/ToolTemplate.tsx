@@ -6,16 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdSense from "@/components/AdSense";
 
 interface ToolTemplateProps {
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  children: ReactNode;
+  icon?: React.ComponentType<{ className?: string }>;
+  children?: ReactNode;
+  content?: string;
   features?: string[];
+  showContentAds?: boolean;
 }
 
-const ToolTemplate = ({ title, description, icon: Icon, children, features }: ToolTemplateProps) => {
+const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-red-50 animate-fade-in">
       <Header />
@@ -36,9 +39,11 @@ const ToolTemplate = ({ title, description, icon: Icon, children, features }: To
               <Card className="mb-6">
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className="p-3 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg animate-pulse-scale">
-                      <Icon className="h-6 w-6 text-white" />
-                    </div>
+                    {Icon && (
+                      <div className="p-3 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg animate-pulse-scale">
+                        <Icon className="h-6 w-6 text-white" />
+                      </div>
+                    )}
                     <div>
                       <CardTitle className="text-2xl">{title}</CardTitle>
                       <CardDescription className="text-base mt-1">
@@ -48,7 +53,27 @@ const ToolTemplate = ({ title, description, icon: Icon, children, features }: To
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {children}
+                  {showContentAds && (
+                    <AdSense
+                      adSlot="1234567890"
+                      adType="in_article"
+                      className="my-6 max-w-2xl mx-auto"
+                    />
+                  )}
+
+                  {content ? (
+                    <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+                  ) : (
+                    children
+                  )}
+
+                  {showContentAds && (
+                    <AdSense
+                      adSlot="1234567890"
+                      adType="multiplex"
+                      className="mt-8"
+                    />
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -75,6 +100,16 @@ const ToolTemplate = ({ title, description, icon: Icon, children, features }: To
                       <span className="text-sm">Secure and private</span>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Sponsored */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Sponsored</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AdSense adSlot="1234567890" adType="display" />
                 </CardContent>
               </Card>
 

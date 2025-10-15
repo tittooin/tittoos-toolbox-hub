@@ -11,7 +11,7 @@ import {
   Eye, UserCircle
 } from "lucide-react";
 
-export const categories = [
+const allCategories = [
   { id: "converter", name: "Converters" },
   { id: "generator", name: "Generators" },
   { id: "analyzer", name: "Analyzers" },
@@ -23,7 +23,7 @@ export const categories = [
   { id: "utility", name: "Utilities" },
 ];
 
-export const tools = [
+const allTools = [
   // Converters
   {
     id: "pdf-converter",
@@ -519,3 +519,13 @@ export const tools = [
     path: "/tools/resume-builder"
   }
 ];
+
+const ENABLE_DOWNLOADERS = import.meta.env.VITE_ENABLE_DOWNLOADERS !== 'false';
+
+export const categories = ENABLE_DOWNLOADERS
+  ? allCategories
+  : allCategories.filter((c) => c.id !== 'downloader');
+
+export const tools = ENABLE_DOWNLOADERS
+  ? allTools
+  : allTools.filter((t) => t.category !== 'downloader');

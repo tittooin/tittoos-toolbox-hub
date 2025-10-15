@@ -10,6 +10,7 @@ import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
+import AdSense from "@/components/AdSense";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,6 +83,11 @@ const Index = () => {
             </Button>
           </div>
         </div>
+      </section>
+
+      {/* AdSense Block */}
+      <section className="container mx-auto px-4 py-6">
+        <AdSense adSlot="1234567890" adFormat="auto" />
       </section>
 
       {/* Search and Filter Section */}

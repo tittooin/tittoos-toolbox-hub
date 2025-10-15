@@ -177,6 +177,7 @@ Start using our formatter tools today to enhance your code quality and maintain 
         title="Online Formatting Tools Guide 2024"
         description="Format and beautify your code with our comprehensive suite of online formatters for JSON, XML, SQL, and more."
         content={blogContent}
+        showContentAds
       />
     </>
   );

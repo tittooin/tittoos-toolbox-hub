@@ -42,10 +42,29 @@ const Privacy = () => {
                 processing happens locally in your browser for maximum privacy and security.
               </p>
 
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Third-Party Services</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Advertising and Cookies</h2>
               <p className="mb-6">
-                We may use third-party services for analytics and performance monitoring. 
-                These services have their own privacy policies governing the use of your information.
+                We display advertisements via Google AdSense. Google may use cookies to serve ads 
+                based on your prior visits to this and other websites. These cookies enable Google and its partners 
+                to serve ads to you based on your browsing activity.
+              </p>
+              <ul className="list-disc pl-6 mb-6 space-y-2">
+                <li>Google’s use of advertising cookies enables it and its partners to serve ads to you.</li>
+                <li>You may opt out of personalized advertising by visiting Google’s <a href="https://adssettings.google.com/" className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Ads Settings</a>.</li>
+                <li>Alternatively, opt out of third-party vendors’ use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</li>
+              </ul>
+
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Consent for EEA/UK Users</h2>
+              <p className="mb-6">
+                For users in the European Economic Area (EEA) and the United Kingdom, we display a consent banner 
+                to obtain your preferences for the use of cookies and personalized ads. You can update your preferences 
+                at any time from the footer link.
+              </p>
+
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Children’s Privacy</h2>
+              <p className="mb-6">
+                Our services are not directed to children under 13. We do not knowingly collect personal information from children. 
+                If you believe a child has provided us with personal information, please contact us and we will promptly delete it.
               </p>
 
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Us</h2>
@@ -54,6 +73,11 @@ const Privacy = () => {
                 <a href="mailto:privacy@tittoostools.com" className="text-blue-600 hover:text-blue-800">
                   privacy@tittoostools.com
                 </a>
+              </p>
+
+              <p className="text-sm text-gray-500">
+                For more information, please review the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">Google Ad Policies</a> and 
+                <a href="https://support.google.com/adsense/answer/1348695" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">How Google uses data</a>.
               </p>
             </div>
           </div>

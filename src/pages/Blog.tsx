@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogSubmissionForm from "@/components/BlogSubmissionForm";
@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
 import { toast } from 'sonner';
+import AdSense from "@/components/AdSense";
 
 const Blog = () => {
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
@@ -358,9 +359,23 @@ const Blog = () => {
                 </div>
               </header>
 
+              {/* In-article ad for better in-content visibility */}
+              <AdSense
+                adSlot="1234567890"
+                adType="in_article"
+                className="my-6 max-w-2xl mx-auto"
+              />
+
               <div 
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
+              />
+
+              {/* Multiplex ad at the end of the article */}
+              <AdSense
+                adSlot="1234567890"
+                adType="multiplex"
+                className="mt-8"
               />
             </article>
           </div>
@@ -397,9 +412,17 @@ const Blog = () => {
             </div>
           </div>
 
+          {/* Top banner ad for list view */}
+          <AdSense
+            adSlot="1234567890"
+            adType="display"
+            className="mb-8 max-w-3xl mx-auto"
+          />
+
           <div className="space-y-8">
-            {allBlogPosts.map((post) => (
-              <Card key={post.id} className="hover:shadow-lg transition-shadow">
+            {allBlogPosts.map((post, index) => (
+              <Fragment key={post.id}>
+              <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -435,6 +458,16 @@ const Blog = () => {
                   </div>
                 </CardContent>
               </Card>
+              {/* Insert an in-feed ad after a couple of posts for better scroll placement */}
+              {index === 1 && (
+                <AdSense
+                  adSlot="1234567890"
+                  adType="in_feed"
+                  layoutKey={undefined}
+                  className="my-6 max-w-3xl mx-auto"
+                />
+              )}
+              </Fragment>
             ))}
           </div>
 
@@ -443,6 +476,13 @@ const Blog = () => {
               Share your expertise with our community! Submit your blog or generate one with AI.
             </p>
           </div>
+
+          {/* Multiplex ad at end of list */}
+          <AdSense
+            adSlot="1234567890"
+            adType="multiplex"
+            className="mt-8"
+          />
         </div>
       </div>
 

@@ -177,6 +177,7 @@ Start using our generator tools today to streamline your content creation proces
         title="Online Generator Tools Guide 2024"
         description="Create secure passwords, QR codes, UUIDs, and more with our comprehensive suite of online generator tools."
         content={blogContent}
+        showContentAds
       />
     </>
   );
