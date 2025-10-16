@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-ads-txt.cjs",
     "build": "vite build",
     "build:review": "vite build --mode review",
     "build:dev": "vite build --mode development",
