@@ -14,6 +14,7 @@ import { setSEO } from "@/utils/seoUtils";
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,9 +85,11 @@ const AllTools = () => {
           </div>
 
           {/* AdSense Block */}
-          <div className="mb-10 flex justify-center">
-            <AdSense adSlot="1234567890" adFormat="auto" />
-          </div>
+          {adsEnabled && (
+            <div className="mb-10 flex justify-center">
+              <AdSense adSlot="1234567890" adFormat="auto" />
+            </div>
+          )}
 
           {/* Tools Grid */}
           {filteredTools.length === 0 ? (

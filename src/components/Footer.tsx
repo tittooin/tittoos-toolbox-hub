@@ -114,6 +114,23 @@ const Footer = () => {
                   Blog
                 </Link>
               </li>
+              <li>
+                <Link to="/attributions" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Attributions & Licensing
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Attributions & Licensing */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Attributions & Licensing</h3>
+            <ul className="space-y-2 text-muted-foreground">
+              <li className="text-sm">Icons by lucide-react (ISC License).</li>
+              <li className="text-sm">UI components via shadcn/ui (MIT License).</li>
+              <li className="text-sm">Built with React, Vite, Tailwind CSS.</li>
+              <li className="text-sm">Brand names/logos belong to their respective owners.</li>
+              <li className="text-sm">Downloader tools must respect platform terms; use responsibly.</li>
             </ul>
           </div>
         </div>

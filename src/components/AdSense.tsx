@@ -41,10 +41,17 @@ const AdSense: React.FC<AdSenseProps> = ({
           'data-ad-layout': 'in-article',
         } as Record<string, string | boolean>;
       case 'in_feed':
+        // In-feed requires a layout key. Fallback to display if missing to avoid invalid config.
+        if (!layoutKey) {
+          return {
+            'data-ad-format': adFormat,
+            'data-full-width-responsive': fullWidthResponsive,
+          } as Record<string, string | boolean>;
+        }
         return {
           'data-ad-format': 'fluid',
           'data-ad-layout': 'in-feed',
-          ...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {}),
+          'data-ad-layout-key': layoutKey,
         } as Record<string, string | boolean>;
       case 'multiplex':
         return {
@@ -67,6 +74,7 @@ const AdSense: React.FC<AdSenseProps> = ({
         className="adsbygoogle"
         style={{
           display: 'block',
+          width: '100%',
           textAlign: 'center',
           ...style,
         }}

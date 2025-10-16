@@ -55,7 +55,7 @@ const BlogPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-red-500">
+    <div className="min-h-screen bg-background">
       <Helmet>
         <title>Blog Posts | TittoosTools</title>
         <meta name="description" content="Explore our comprehensive guides about various online tools and their applications." />
@@ -64,20 +64,20 @@ const BlogPage = () => {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-white mb-8 text-center">Blog Posts</h1>
+        <h1 className="text-4xl font-bold text-foreground mb-8 text-center">Blog Posts</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogPosts.map((post, index) => (
             <Link
               key={index}
               to={post.path}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
+              className="bg-card border border-border rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300"
             >
               <div className="p-6">
-                <div className="text-sm text-purple-600 font-semibold mb-2">{post.category}</div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">{post.title}</h2>
-                <p className="text-gray-600 mb-4">{post.description}</p>
-                <div className="text-sm text-gray-500">{post.date}</div>
+                <div className="text-sm text-muted-foreground font-semibold mb-2">{post.category}</div>
+                <h2 className="text-xl font-bold text-foreground mb-2">{post.title}</h2>
+                <p className="text-muted-foreground mb-4">{post.description}</p>
+                <div className="text-sm text-muted-foreground">{post.date}</div>
               </div>
             </Link>
           ))}

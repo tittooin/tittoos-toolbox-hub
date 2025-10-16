@@ -12,6 +12,7 @@ import Contact from "./pages/Contact";
 import AllTools from "./pages/AllTools";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Attributions from "./pages/Attributions";
 import Blog from "./pages/Blog";
 import Author from "./pages/Author";
 import PDFConverter from "./pages/tools/PDFConverter";
@@ -67,6 +68,8 @@ import AIImageEditor from "./pages/tools/AIImageEditor";
 import VideoEditor from "./pages/tools/VideoEditor";
 import OCRConverter from "./pages/tools/OCRConverter";
 import ResumeBuilder from "./pages/tools/ResumeBuilder";
+import ConsentBanner from "./components/ConsentBanner";
+const ADS_ENABLED = import.meta.env.VITE_ENABLE_ADS === 'true';
 
 const ENABLE_DOWNLOADERS = import.meta.env.VITE_ENABLE_DOWNLOADERS !== 'false';
 
@@ -86,6 +89,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {ADS_ENABLED && <ConsentBanner />}
       <HelmetProvider>
       <BrowserRouter>
         <Routes>
@@ -96,6 +100,7 @@ const App = () => (
           <Route path="/tools" element={<AllTools />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/attributions" element={<Attributions />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Blog />} />
           <Route path="/author/:slug" element={<Author />} />

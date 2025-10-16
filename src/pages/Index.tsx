@@ -16,6 +16,7 @@ import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
 
   useEffect(() => {
     // Apply global SEO meta and structured data
@@ -155,9 +156,11 @@ const Index = () => {
       </section>
 
       {/* AdSense Block */}
-      <section className="container mx-auto px-4 py-6">
-        <AdSense adSlot="1234567890" adFormat="auto" />
-      </section>
+      {adsEnabled && (
+        <section className="container mx-auto px-4 py-6">
+          <AdSense adSlot="1234567890" adFormat="auto" />
+        </section>
+      )}
 
       {/* Search and Filter Section */}
       <section id="tools-section" className="container mx-auto px-4 py-8">

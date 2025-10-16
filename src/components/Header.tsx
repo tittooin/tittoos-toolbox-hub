@@ -45,6 +45,9 @@ const Header = () => {
             <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               Terms
             </Link>
+            <Link to="/attributions" className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
+              Attributions
+            </Link>
           </nav>
 
           {/* Search Bar */}
@@ -130,6 +133,13 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Terms
+              </Link>
+              <Link 
+                to="/attributions" 
+                className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Attributions
               </Link>
               <div className="pt-4 border-t">
                 <Input placeholder="Search tools..." className="mb-3" />

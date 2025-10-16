@@ -530,7 +530,6 @@ const Blog = () => {
                 <AdSense
                   adSlot="1234567890"
                   adType="in_feed"
-                  layoutKey={undefined}
                   className="my-6 max-w-3xl mx-auto"
                 />
               )}

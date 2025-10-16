@@ -1,5 +1,7 @@
 
 import { ReactNode, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { getToolContent } from "@/data/toolContent";
 import { ArrowLeft, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,7 @@ interface ToolTemplateProps {
 }
 
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
+  const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
   useEffect(() => {
     setSEO({
       title,
@@ -76,7 +79,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {showContentAds && (
+                  {adsEnabled && showContentAds && (
                     <AdSense
                       adSlot="1234567890"
                       adType="in_article"
@@ -84,13 +87,29 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                     />
                   )}
 
-                  {content ? (
-                    <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
-                  ) : (
-                    children
-                  )}
+                  {(() => {
+                    const location = typeof window !== 'undefined' ? { pathname: window.location.pathname } : { pathname: '' };
+                    const pathContent = getToolContent(location.pathname || '');
+                    const generalContent = `
+                      <h2>About ${title}</h2>
+                      <p>${description}</p>
+                      <h3>How to Use</h3>
+                      <ol>
+                        <li>Provide inputs or upload files as needed.</li>
+                        <li>Adjust settings or options relevant to your task.</li>
+                        <li>Run the action and copy or download results.</li>
+                      </ol>
+                    `;
+                    const resolved = content ?? pathContent ?? generalContent;
+                    return (
+                      <>
+                        <div className="prose prose-lg max-w-none mb-8" dangerouslySetInnerHTML={{ __html: resolved }} />
+                        {children}
+                      </>
+                    );
+                  })()}
 
-                  {showContentAds && (
+                  {adsEnabled && showContentAds && (
                     <AdSense
                       adSlot="1234567890"
                       adType="multiplex"
@@ -127,14 +146,16 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
               </Card>
 
               {/* Sponsored */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Sponsored</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <AdSense adSlot="1234567890" adType="display" />
-                </CardContent>
-              </Card>
+              {adsEnabled && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Sponsored</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <AdSense adSlot="1234567890" adType="display" />
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Features */}
               {features && (
