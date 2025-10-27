@@ -5,3 +5,11 @@
 /ads.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: max-age=300
+
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: max-age=300
+
+/sitemap.xml
+  Content-Type: application/xml
+  Cache-Control: max-age=300
