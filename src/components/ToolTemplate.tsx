@@ -49,6 +49,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
     <div className="min-h-screen bg-background animate-fade-in">
       <Header />
       
+      <main id="main-content" role="main">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="mb-6 animate-slide-up">
@@ -199,6 +200,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
           </div>
         </div>
       </div>
+      </main>
 
       <Footer />
     </div>

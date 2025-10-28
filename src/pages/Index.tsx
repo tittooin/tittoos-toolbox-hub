@@ -136,7 +136,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background animate-fade-in">
       <Header />
-      
+      <main id="main-content" role="main">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background">
         <div className="relative container mx-auto px-4 py-20 text-center text-foreground">
@@ -170,6 +170,7 @@ const Index = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 placeholder="Search tools..."
+                aria-label="Search tools"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 h-12"
@@ -357,6 +358,7 @@ const Index = () => {
       </section>
 
       <BlogPreview />
+      </main>
       <Footer />
     </div>
   );
