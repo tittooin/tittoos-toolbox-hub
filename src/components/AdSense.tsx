@@ -25,11 +25,34 @@ const AdSense: React.FC<AdSenseProps> = ({
   layoutKey,
 }) => {
   useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (error) {
-      console.error('AdSense error:', error);
+    const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
+    const consentGranted = typeof window !== 'undefined' && localStorage.getItem('consent.choice.v2') === 'granted';
+    if (!adsEnabled || !consentGranted) {
+      return;
     }
+    // Lazy-load script only when consent is granted
+    import('@/utils/adsLoader').then(({ loadAdsScript, whenAdsScriptReady }) => {
+      loadAdsScript();
+      const init = () => {
+        try {
+          // @ts-ignore
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (error) {
+          console.error('AdSense error:', error);
+        }
+      };
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        // @ts-ignore
+        requestIdleCallback(() => whenAdsScriptReady().then(init));
+      } else {
+        setTimeout(() => whenAdsScriptReady().then(init), 0);
+      }
+      const onConsentAccepted = () => whenAdsScriptReady().then(init);
+      window.addEventListener('consent.accepted', onConsentAccepted);
+      return () => {
+        window.removeEventListener('consent.accepted', onConsentAccepted);
+      };
+    });
   }, []);
 
   // Compute ad attributes based on type
@@ -69,7 +92,7 @@ const AdSense: React.FC<AdSenseProps> = ({
   const attributes = getAttributes();
 
   return (
-    <div className={`animate-fade-in ${className || ''}`}>
+    <div className={className || ''}>
       <ins
         className="adsbygoogle"
         style={{

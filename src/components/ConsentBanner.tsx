@@ -41,6 +41,8 @@ export default function ConsentBanner() {
     localStorage.setItem(CONSENT_STORAGE_KEY, 'granted');
     updateConsent('granted');
     setVisible(false);
+    // Notify components that consent has been granted
+    window.dispatchEvent(new Event('consent.accepted'));
   };
 
   const rejectAll = () => {

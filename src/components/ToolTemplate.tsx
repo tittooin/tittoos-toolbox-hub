@@ -46,13 +46,13 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
     }, 'jsonld-webapp');
   }, [title, description]);
   return (
-    <div className="min-h-screen bg-background animate-fade-in">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <main id="main-content" role="main">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="mb-6 animate-slide-up">
+        <div className="mb-6">
           <Link to="/" className="inline-flex items-center text-primary hover:text-accent transition-colors hover:scale-105 transform">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Tools
@@ -67,7 +67,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                 <CardHeader>
                   <div className="flex items-center space-x-3">
                     {Icon && (
-                      <div className="p-3 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg animate-pulse-scale">
+                      <div className="p-3 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg">
                         <Icon className="h-6 w-6 text-white" />
                       </div>
                     )}

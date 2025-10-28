@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import BlogPreview from "@/components/BlogPreview";
+import { Suspense, lazy } from "react";
+const BlogPreview = lazy(() => import("@/components/BlogPreview"));
 import AdSense from "@/components/AdSense";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
@@ -17,6 +18,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
+  const [showBlogPreview, setShowBlogPreview] = useState(false);
 
   useEffect(() => {
     // Apply global SEO meta and structured data
@@ -107,6 +109,16 @@ const Index = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const reveal = () => setShowBlogPreview(true);
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      // @ts-ignore
+      (window as any).requestIdleCallback(reveal);
+    } else {
+      setTimeout(reveal, 400);
+    }
+  }, []);
+
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          tool.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -134,20 +146,20 @@ const Index = () => {
   }, {} as Record<string, { name: string; tools: typeof tools }>);
 
   return (
-    <div className="min-h-screen bg-background animate-fade-in">
+    <div className="min-h-screen bg-background">
       <Header />
       <main id="main-content" role="main">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background">
         <div className="relative container mx-auto px-4 py-20 text-center text-foreground">
-          <h1 className="text-5xl font-bold mb-6 animate-slide-up">
+          <h1 className="text-5xl font-bold mb-6">
             TittoosTools
           </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 animate-slide-up delay-100 text-muted-foreground">
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 text-muted-foreground">
             Your complete toolkit for online productivity. 40+ essential utilities including converters, 
             generators, analyzers, editors, and social media downloaders - all in one place.
           </p>
-          <div className="flex justify-center animate-slide-up delay-200">
+          <div className="flex justify-center">
             <Button size="lg" variant="default" className="hover:scale-105 transition-all" onClick={scrollToTools}>
               Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -357,7 +369,13 @@ const Index = () => {
         </div>
       </section>
 
-      <BlogPreview />
+      {showBlogPreview && (
+        <section className="container mx-auto px-4 pb-16">
+          <Suspense fallback={<div className="p-8 text-center">Loading articles…</div>}>
+            <BlogPreview />
+          </Suspense>
+        </section>
+      )}
       </main>
       <Footer />
     </div>
