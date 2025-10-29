@@ -128,3 +128,46 @@ Run the site using GitHub as the source and Cloudflare for hosting/DNS.
   - After deploy, submit the forms at `https://tittoos.online/contact`.
   - Emails are delivered to `admin@tittoos.online`. If you use Cloudflare Email Routing, confirm the forward target inbox.
   - Check Cloudflare Logs/Analytics if you need to trace function requests.
+
+---
+
+## Ads.txt Setup & Verification (Google AdSense)
+
+Our site serves `ads.txt` from the root and provides a well-known alias to maximize crawler compatibility.
+
+- File location: `public/ads.txt`
+- Live URLs:
+  - `https://tittoos.online/ads.txt`
+  - `https://www.tittoos.online/ads.txt` (redirects to apex; path preserved)
+  - `https://tittoos.online/.well-known/ads.txt` → redirected to `/ads.txt`
+- Headers: `_headers` sets `Content-Type: text/plain` and `Cache-Control: no-cache, max-age=0, must-revalidate` for `/ads.txt`.
+- Routing: `_redirects` includes explicit rules to serve `/ads.txt` (and the well-known path) and avoid SPA rewrites.
+
+### Verify ads.txt
+1. Open the live URL `https://tittoos.online/ads.txt` and confirm it returns HTTP 200 with this line:
+   ```
+   google.com, pub-7510164795562884, DIRECT, f08c47fec0942fa0
+   ```
+2. Check on both apex and `www`.
+3. In AdSense → Sites → tittoos.online → Ads.txt, click “Check again”.
+4. AdSense crawler may take 24–48 hours (sometimes up to 72) to reflect the status change.
+
+### Cloudflare cache purge (optional)
+- Pages dashboard → Caching → Purge Cache → Custom Purge → add path `/ads.txt`.
+- Alternatively, “Purge Everything” after deploy if you changed `ads.txt`.
+
+### Troubleshooting
+- Ensure HTTPS is enabled and returns 200 for both apex and www.
+- Confirm `_redirects` contains:
+  ```
+  /ads.txt /ads.txt 200
+  /.well-known/ads.txt /ads.txt 200
+  /* /index.html 200
+  ```
+- Confirm `_headers` contains:
+  ```
+  /ads.txt
+    Content-Type: text/plain; charset=utf-8
+    Cache-Control: no-cache, max-age=0, must-revalidate
+  ```
+- Wait for the AdSense crawler; use “Check again” to nudge a refresh.
