@@ -15,6 +15,7 @@ const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
+  const showListAd = adsEnabled && selectedCategory !== 'downloader';
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,8 +85,8 @@ const AllTools = () => {
             </p>
           </div>
 
-          {/* AdSense Block */}
-          {adsEnabled && (
+          {/* AdSense Block (no ads on downloader category) */}
+          {showListAd && (
             <div className="mb-10 flex justify-center">
               <AdSense adSlot="1234567890" adFormat="auto" />
             </div>

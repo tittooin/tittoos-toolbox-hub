@@ -23,6 +23,14 @@ interface ToolTemplateProps {
 
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
   const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
+  const location = useLocation();
+  const BLOCK_ADS_ROUTES = [
+    '/tools/youtube-downloader',
+    '/tools/facebook-downloader',
+    '/tools/twitter-downloader',
+    '/tools/linkedin-downloader',
+  ];
+  const adsAllowed = adsEnabled && !BLOCK_ADS_ROUTES.includes(location.pathname);
   useEffect(() => {
     setSEO({
       title,
@@ -80,7 +88,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {adsEnabled && showContentAds && (
+                  {adsAllowed && showContentAds && (
                     <AdSense
                       adSlot="1234567890"
                       adType="in_article"
@@ -110,7 +118,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                     );
                   })()}
 
-                  {adsEnabled && showContentAds && (
+                  {adsAllowed && showContentAds && (
                     <AdSense
                       adSlot="1234567890"
                       adType="multiplex"
@@ -147,7 +155,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
               </Card>
 
               {/* Sponsored */}
-              {adsEnabled && (
+              {adsAllowed && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Sponsored</CardTitle>

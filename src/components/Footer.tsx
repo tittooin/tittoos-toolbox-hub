@@ -139,6 +139,9 @@ const Footer = () => {
           <p className="text-muted-foreground">
             © {currentYear} TittoosTools. All rights reserved. Built with ❤️ for productivity.
           </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Disclosure: Some pages may display ads to keep tools free. Ads are not shown on downloader pages.
+          </p>
         </div>
       </div>
     </footer>

@@ -168,7 +168,7 @@ const Index = () => {
       </section>
 
       {/* AdSense Block */}
-      {adsEnabled && (
+      {adsEnabled && selectedCategory !== 'downloader' && (
         <section className="container mx-auto px-4 py-6">
           <AdSense adSlot="1234567890" adFormat="auto" />
         </section>

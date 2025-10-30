@@ -61,6 +61,19 @@ const Privacy = () => {
                 at any time from the footer link.
               </p>
 
+              <h2 className="text-2xl font-semibold text-foreground mb-4">User-Generated Content & Copyright</h2>
+              <p className="mb-6">
+                Tools that interact with third‑party content must be used responsibly. Do not download or process
+                copyrighted material unless you own the rights or have permission. If you believe content on our site
+                infringes your rights, contact us and we will review and take appropriate action.
+              </p>
+
+              <h2 className="text-2xl font-semibold text-foreground mb-4">DMCA / Removal Requests</h2>
+              <p className="mb-6">
+                To submit a removal request, email <a href="mailto:admin@tittoos.online" className="text-primary hover:text-primary/80">admin@tittoos.online</a>
+                with links, a description of the content, and proof of ownership. We aim to respond promptly.
+              </p>
+
               <h2 className="text-2xl font-semibold text-foreground mb-4">Children’s Privacy</h2>
               <p className="mb-6">
                 Our services are not directed to children under 13. We do not knowingly collect personal information from children. 

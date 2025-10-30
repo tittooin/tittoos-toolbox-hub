@@ -45,6 +45,19 @@ const Terms = () => {
                 <li>Process copyrighted material without permission</li>
               </ul>
 
+              <h2 className="text-2xl font-semibold text-foreground mb-4">User‑Generated Content</h2>
+              <p className="mb-6">
+                If you upload or process content, you represent that you own the rights to it or have permission.
+                You are solely responsible for ensuring your use complies with all applicable laws and platform terms.
+              </p>
+
+              <h2 className="text-2xl font-semibold text-foreground mb-4">Copyright Complaints</h2>
+              <p className="mb-6">
+                If you believe material processed via our tools infringes your copyright, please email
+                <a href="mailto:admin@tittoos.online" className="text-primary hover:text-primary/80"> admin@tittoos.online</a>
+                with details and supporting documentation. We will investigate and take appropriate action.
+              </p>
+
               <h2 className="text-2xl font-semibold text-foreground mb-4">Disclaimer</h2>
               <p className="mb-6">
                 The materials on TittoosTools are provided on an 'as is' basis. TittoosTools 
