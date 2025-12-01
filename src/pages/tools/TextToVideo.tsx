@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Video, Download, Play, Sparkles, Clock, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,10 +18,10 @@ const TextToVideo = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [generationStage, setGenerationStage] = useState("");
+  const previewVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // AI-powered video generation based on text prompt
   const generateVideoFromPrompt = async (prompt: string, style: string, duration: number) => {
-    // Create a canvas for video generation
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas context not available');
@@ -29,33 +29,35 @@ const TextToVideo = () => {
     canvas.width = 1280;
     canvas.height = 720;
 
-    // Generate frames based on prompt analysis
-    const frames: ImageData[] = [];
-    const frameCount = duration * 24; // 24 fps
-    
-    // Analyze prompt for visual elements
+    const stream = canvas.captureStream(24);
+    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+    const chunks: BlobPart[] = [];
+    recorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunks.push(e.data);
+    };
+
     const promptAnalysis = analyzePromptForVisuals(prompt);
-    
-    for (let frame = 0; frame < frameCount; frame++) {
-      // Clear canvas
+    const totalFrames = duration * 24;
+
+    recorder.start();
+
+    for (let frame = 0; frame < totalFrames; frame++) {
       ctx.fillStyle = promptAnalysis.backgroundColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Generate frame content based on prompt
-      await generateFrameContent(ctx, promptAnalysis, frame, frameCount, style);
-      
-      // Capture frame
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      frames.push(imageData);
-      
-      // Update progress
-      const frameProgress = (frame / frameCount) * 80; // 80% for frame generation
+
+      await generateFrameContent(ctx, promptAnalysis, frame, totalFrames, style);
+
+      const frameProgress = (frame / totalFrames) * 80;
       setProgress(20 + frameProgress);
+
+      await new Promise((r) => setTimeout(r, 1000 / 24));
     }
-    
-    // Convert frames to video
-    const videoBlob = await createVideoFromFrames(frames, duration);
-    return URL.createObjectURL(videoBlob);
+
+    recorder.stop();
+    await new Promise((r) => setTimeout(r, 250));
+
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    return URL.createObjectURL(blob);
   };
 
   const analyzePromptForVisuals = (prompt: string) => {
@@ -202,30 +204,7 @@ const TextToVideo = () => {
     ctx.fill();
   };
 
-  const createVideoFromFrames = async (frames: ImageData[], duration: number): Promise<Blob> => {
-    // Create a simple animated sequence using canvas animation
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas context not available');
-    
-    canvas.width = frames[0].width;
-    canvas.height = frames[0].height;
-    
-    // For demo purposes, create a simple video-like blob
-    // In a real implementation, you would use WebCodecs API or similar
-    const chunks: Blob[] = [];
-    
-    for (let i = 0; i < frames.length; i++) {
-      ctx.putImageData(frames[i], 0, 0);
-      const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((blob) => resolve(blob!), 'image/png');
-      });
-      chunks.push(blob);
-    }
-    
-    // Create a simple video-like file (this is a simplified approach)
-    return new Blob(chunks, { type: 'video/mp4' });
-  };
+  // Removed previous faux MP4 generator; MediaRecorder now generates real WebM
 
   const generateVideo = async () => {
     if (!prompt.trim()) {
@@ -385,16 +364,10 @@ const TextToVideo = () => {
                 </div>
                 
                 <div className="relative bg-black rounded-lg overflow-hidden">
-                  <canvas 
-                    ref={(canvas) => {
-                      if (canvas && generatedVideo) {
-                        // Display the generated video
-                        canvas.width = 1280;
-                        canvas.height = 720;
-                        canvas.style.width = '100%';
-                        canvas.style.height = 'auto';
-                      }
-                    }}
+                  <video
+                    ref={previewVideoRef}
+                    src={generatedVideo || undefined}
+                    controls
                     className="w-full"
                   />
                 </div>

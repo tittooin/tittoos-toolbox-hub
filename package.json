@@ -54,6 +54,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
+    "pdfjs-dist": "^5.4.449",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -81,12 +82,12 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
+    "magic-string": "^0.30.11",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1",
-    "magic-string": "^0.30.11"
+    "vite": "^5.4.1"
   },
   "overrides": {
     "rollup": "npm:@rollup/wasm-node"

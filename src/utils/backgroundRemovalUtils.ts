@@ -34,9 +34,20 @@ function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingCont
 export const removeBackground = async (imageElement: HTMLImageElement): Promise<Blob> => {
   try {
     console.log('Starting AI-powered background removal process...');
-    const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-      device: 'webgpu',
-    });
+
+    const preferredDevice = typeof navigator !== 'undefined' && (navigator as any).gpu ? 'webgpu' : 'auto';
+
+    let segmenter: any;
+    try {
+      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+        device: preferredDevice,
+      });
+    } catch (e) {
+      console.warn('Primary backend failed, retrying with WebAssembly fallback...', e);
+      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+        device: 'wasm',
+      });
+    }
     
     // Convert HTMLImageElement to canvas
     const canvas = document.createElement('canvas');

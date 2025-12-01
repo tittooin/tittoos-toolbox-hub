@@ -19,7 +19,6 @@ const allCategories = [
   { id: "calculator", name: "Calculators" },
   { id: "formatter", name: "Formatters" },
   { id: "ai", name: "AI Tools" },
-  { id: "downloader", name: "Downloaders" },
   { id: "utility", name: "Utilities" },
 ];
 
@@ -461,43 +460,7 @@ const allTools = [
     path: "/tools/ai-tool-generator"
   },
 
-  // Downloaders
-  {
-    id: "youtube-downloader",
-    name: "YouTube Video Downloader",
-    subheading: "Download in multiple formats",
-    description: "Download YouTube videos in multiple formats and qualities.",
-    category: "downloader",
-    icon: Youtube,
-    path: "/tools/youtube-downloader"
-  },
-  {
-    id: "facebook-downloader",
-    name: "Facebook Video Downloader",
-    subheading: "Save Facebook videos",
-    description: "Download Facebook videos and save them to your device.",
-    category: "downloader",
-    icon: Facebook,
-    path: "/tools/facebook-downloader"
-  },
-  {
-    id: "twitter-downloader",
-    name: "X (Twitter) Video Downloader",
-    subheading: "Download X videos & GIFs",
-    description: "Download videos and GIFs from X (formerly Twitter).",
-    category: "downloader",
-    icon: Twitter,
-    path: "/tools/twitter-downloader"
-  },
-  {
-    id: "linkedin-downloader",
-    name: "LinkedIn Video Downloader",
-    subheading: "Save LinkedIn content",
-    description: "Download LinkedIn videos for offline viewing.",
-    category: "downloader",
-    icon: Linkedin,
-    path: "/tools/linkedin-downloader"
-  },
+  
 
   // Utility Tools
   {
@@ -520,12 +483,6 @@ const allTools = [
   }
 ];
 
-const ENABLE_DOWNLOADERS = import.meta.env.VITE_ENABLE_DOWNLOADERS !== 'false';
+export const categories = allCategories;
 
-export const categories = ENABLE_DOWNLOADERS
-  ? allCategories
-  : allCategories.filter((c) => c.id !== 'downloader');
-
-export const tools = ENABLE_DOWNLOADERS
-  ? allTools
-  : allTools.filter((t) => t.category !== 'downloader');
+export const tools = allTools;

@@ -8,8 +8,6 @@ import { Suspense, lazy } from "react";
 import ConsentBanner from "./components/ConsentBanner";
 const ADS_ENABLED = import.meta.env.VITE_ENABLE_ADS === 'true';
 
-const ENABLE_DOWNLOADERS = import.meta.env.VITE_ENABLE_DOWNLOADERS !== 'false';
-
 // Lazily load pages to reduce initial bundle size
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -67,10 +65,6 @@ const TextToVideo = lazy(() => import("./pages/tools/TextToVideo"));
 const AIPromptAssistant = lazy(() => import("./pages/tools/AIPromptAssistant"));
 const AIWebsiteGenerator = lazy(() => import("./pages/tools/AIWebsiteGenerator"));
 const AIToolGenerator = lazy(() => import("./pages/tools/AIToolGenerator"));
-const YoutubeDownloader = lazy(() => import("./pages/tools/YoutubeDownloader"));
-const FacebookDownloader = lazy(() => import("./pages/tools/FacebookDownloader"));
-const TwitterDownloader = lazy(() => import("./pages/tools/TwitterDownloader"));
-const LinkedinDownloader = lazy(() => import("./pages/tools/LinkedinDownloader"));
 const ImageBackgroundRemover = lazy(() => import("./pages/tools/ImageBackgroundRemover"));
 const WebsiteSpeedChecker = lazy(() => import("./pages/tools/WebsiteSpeedChecker"));
 const AIImageEditor = lazy(() => import("./pages/tools/AIImageEditor"));
@@ -181,11 +175,7 @@ const App = () => (
             <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
             <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
             
-            {/* Downloaders (optional) */}
-            {ENABLE_DOWNLOADERS && <Route path="/tools/youtube-downloader" element={<YoutubeDownloader />} />}
-            {ENABLE_DOWNLOADERS && <Route path="/tools/facebook-downloader" element={<FacebookDownloader />} />}
-            {ENABLE_DOWNLOADERS && <Route path="/tools/twitter-downloader" element={<TwitterDownloader />} />}
-            {ENABLE_DOWNLOADERS && <Route path="/tools/linkedin-downloader" element={<LinkedinDownloader />} />}
+            
             
             <Route path="*" element={<NotFound />} />
           </Routes>
