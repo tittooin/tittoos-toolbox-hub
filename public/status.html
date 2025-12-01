@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TittoosTools Status</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; display: grid; place-items: center; min-height: 100vh; background: #0b0b0d; color: #eaeaea; }
+    .card { padding: 24px 28px; border: 1px solid #2a2a31; border-radius: 12px; max-width: 560px; text-align: center; background: #121214; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    p { margin: 0 0 4px; color: #b5b5be; }
+    .ok { color: #3ad97c; font-weight: 600; }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('timestamp')
+      if (el) el.textContent = new Date().toISOString()
+    })
+  </script>
+  </head>
+<body>
+  <div class="card">
+    <h1>Service Status</h1>
+    <p class="ok">OK</p>
+    <p>Build and static hosting reachable.</p>
+    <p>Timestamp: <span id="timestamp"></span></p>
+  </div>
+</body>
+</html>
