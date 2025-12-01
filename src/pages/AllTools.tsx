@@ -15,7 +15,7 @@ const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
-  const showListAd = adsEnabled && selectedCategory !== 'downloader';
+  const showListAd = adsEnabled;
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -24,13 +24,7 @@ interface ToolTemplateProps {
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
   const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
   const location = useLocation();
-  const BLOCK_ADS_ROUTES = [
-    '/tools/youtube-downloader',
-    '/tools/facebook-downloader',
-    '/tools/twitter-downloader',
-    '/tools/linkedin-downloader',
-  ];
-  const adsAllowed = adsEnabled && !BLOCK_ADS_ROUTES.includes(location.pathname);
+  const adsAllowed = adsEnabled;
   useEffect(() => {
     setSEO({
       title,

@@ -750,70 +750,7 @@ export function getToolContent(pathname: string): string | undefined {
         <li>Generate and export the plan.</li>
       </ol>
     `,
-    '/tools/youtube-downloader': `
-      <h2>What This Tool Does</h2>
-      <p>Download videos in available formats and resolutions for offline viewing. Use responsibly and respect platform terms.</p>
-      <h3>Popular Use Cases</h3>
-      <ul>
-        <li>Save tutorials for offline study.</li>
-        <li>Archive your own content.</li>
-        <li>Prepare clips for educational use.</li>
-      </ul>
-      <h3>Quick Tutorial</h3>
-      <ol>
-        <li>Paste the video URL.</li>
-        <li>Select format/resolution.</li>
-        <li>Download the file.</li>
-      </ol>
-    `,
-    '/tools/facebook-downloader': `
-      <h2>What This Tool Does</h2>
-      <p>Download videos from public posts where permissible. Only download content you own or have rights to.</p>
-      <h3>Popular Use Cases</h3>
-      <ul>
-        <li>Backup your published videos.</li>
-        <li>Save educational material.</li>
-        <li>Review content offline.</li>
-      </ul>
-      <h3>Quick Tutorial</h3>
-      <ol>
-        <li>Paste a post URL.</li>
-        <li>Choose format and quality.</li>
-        <li>Download responsibly.</li>
-      </ol>
-    `,
-    '/tools/twitter-downloader': `
-      <h2>What This Tool Does</h2>
-      <p>Download media from public tweets where allowed. Respect creators and platform rules.</p>
-      <h3>Popular Use Cases</h3>
-      <ul>
-        <li>Save your own posted clips.</li>
-        <li>Collect references for research.</li>
-        <li>Archive campaign materials.</li>
-      </ul>
-      <h3>Quick Tutorial</h3>
-      <ol>
-        <li>Enter a tweet URL.</li>
-        <li>Select available quality.</li>
-        <li>Download media.</li>
-      </ol>
-    `,
-    '/tools/linkedin-downloader': `
-      <h2>What This Tool Does</h2>
-      <p>Download videos from public LinkedIn posts for legitimate purposes. Follow platform terms.</p>
-      <h3>Popular Use Cases</h3>
-      <ul>
-        <li>Archive corporate posts you own.</li>
-        <li>Collect training resources.</li>
-        <li>Prepare offline presentations.</li>
-      </ul>
-      <h3>Quick Tutorial</h3>
-      <ol>
-        <li>Paste a LinkedIn post URL.</li>
-        <li>Choose format.</li>
-        <li>Download the result.</li>
-      </ol>
-    `,
+    
     '/tools/ocr-converter': `
       <h2>What This Tool Does</h2>
       <p>Extract text from images and PDFs using OCR to edit and search content easily.</p>

@@ -157,7 +157,7 @@ const Index = () => {
           </h1>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 text-muted-foreground">
             Your complete toolkit for online productivity. 40+ essential utilities including converters, 
-            generators, analyzers, editors, and social media downloaders - all in one place.
+            generators, analyzers, editors — all in one place.
           </p>
           <div className="flex justify-center">
             <Button size="lg" variant="default" className="hover:scale-105 transition-all" onClick={scrollToTools}>
@@ -168,7 +168,7 @@ const Index = () => {
       </section>
 
       {/* AdSense Block */}
-      {adsEnabled && selectedCategory !== 'downloader' && (
+      {adsEnabled && (
         <section className="container mx-auto px-4 py-6">
           <AdSense adSlot="1234567890" adFormat="auto" />
         </section>
