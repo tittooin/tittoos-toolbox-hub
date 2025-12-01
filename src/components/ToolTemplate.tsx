@@ -108,6 +108,11 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                       <>
                         <div className="prose prose-lg max-w-none mb-8" dangerouslySetInnerHTML={{ __html: resolved }} />
                         {children}
+                        <div className="mt-6 text-center">
+                          <p className="text-sm font-medium text-muted-foreground">
+                            Free Online {title} Tool – No Download Required
+                          </p>
+                        </div>
                       </>
                     );
                   })()}
