@@ -20,6 +20,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Attributions = lazy(() => import("./pages/Attributions"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Author = lazy(() => import("./pages/Author"));
+const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
 
 // Tools
 const PDFConverter = lazy(() => import("./pages/tools/PDFConverter"));
@@ -104,6 +105,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<Blog />} />
             <Route path="/author/:slug" element={<Author />} />
+            <Route path="/submit-blog" element={<SubmitBlog />} />
             
             {/* Blog Category Pages */}
             <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />
