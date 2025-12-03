@@ -24,9 +24,12 @@ const Index = () => {
     // Apply global SEO meta and structured data
     setSEO({
       title: "TittoosTools - 40+ Essential Online Utilities | Free Web Tools",
-      description: "Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more. No registration required.",
+      description: "Free online tools for productivity: converters, generators, analyzers, editors, calculators, and AI tools. No registration required.",
       keywords: [
-        'free online tools','web utilities','video converter','audio converter','image converter','password generator','QR code','JSON formatter','URL encoder','AI tools','SEO analyzer','website speed checker','bmi calculator','loan calculator'
+        'free online tools','web utilities','video converter','audio converter','image converter','password generator','QR code','JSON formatter','URL encoder','AI tools','SEO analyzer','website speed checker','bmi calculator','loan calculator',
+        'AI content creation','AI art generator','AI video from text','machine learning art tools','AI digital assets',
+        'website speed test','SEO audit tools','website analytics','performance insights','web optimization',
+        'privacy online tools','data security','privacy-first utilities','local data processing','secure document conversion'
       ],
       image: `${window.location.origin}/placeholder.svg`,
       type: 'website',
@@ -294,6 +297,73 @@ const Index = () => {
               )}
             </>
           )}
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">Explore by Focus Area</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl">AI-Powered Creativity</CardTitle>
+                <CardDescription>
+                  Create with AI content creation tools, AI art generator, AI video from text workflows, and machine learning art tools to produce reusable AI digital assets.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/tools/text-to-image" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Text to Image</Link>
+                  <Link to="/tools/text-to-video" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Text to Video</Link>
+                  <Link to="/tools/ai-website-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">AI Website Generator</Link>
+                  <Link to="/tools/ai-tool-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">AI Tool Generator</Link>
+                  <Link to="/tools/ai-prompt-assistant" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">AI Prompt Assistant</Link>
+                </div>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Read the guide: <Link to="/blog-posts/ai-tools-category" className="text-primary hover:text-primary/80">AI Tools – Getting Started</Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl">Website Performance & Optimization</CardTitle>
+                <CardDescription>
+                  Run a website speed test, use SEO audit tools, check website analytics, get performance insights, and apply web optimization.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/tools/website-speed-checker" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Website Speed Test</Link>
+                  <Link to="/tools/seo-analyzer" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">SEO Audit Tools</Link>
+                  <Link to="/tools/website-analyzer" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Website Analytics</Link>
+                </div>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Read the guide: <Link to="/blog-posts/analyzers-category" className="text-primary hover:text-primary/80">Analyzers – Performance & SEO</Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl">Secure Data Handling & Privacy</CardTitle>
+                <CardDescription>
+                  Use privacy online tools for data security. Our privacy-first utilities rely on local data processing and secure document conversion.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/tools/pdf-converter" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Secure Document Conversion</Link>
+                  <Link to="/tools/hash-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Data Security (Hashes)</Link>
+                  <Link to="/tools/base64-converter" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Local Data Processing</Link>
+                  <Link to="/tools/json-formatter" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Privacy Online Tools</Link>
+                </div>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Read more: <Link to="/privacy" className="text-primary hover:text-primary/80">Privacy Policy</Link> · <Link to="/blog-posts/validators-category" className="text-primary hover:text-primary/80">Validators – Data Quality</Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
