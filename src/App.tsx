@@ -81,6 +81,7 @@ const AIToolsCategoryPage = lazy(() => import("./pages/blog-posts/ai-tools-categ
 const ValidatorsCategoryPage = lazy(() => import("./pages/blog-posts/validators-category"));
 const ConvertersCategoryPage = lazy(() => import("./pages/blog-posts/converters-category"));
 const GeneratorsCategoryPage = lazy(() => import("./pages/blog-posts/generators-category"));
+const EditorsCategoryPage = lazy(() => import("./pages/blog-posts/editors-category"));
 
 // Google Analytics pageview tracker
 const GoogleAnalytics = () => {
@@ -132,6 +133,7 @@ const App = () => (
               <Route path="/blog-posts/validators-category" element={<ValidatorsCategoryPage />} />
               <Route path="/blog-posts/converters-category" element={<ConvertersCategoryPage />} />
               <Route path="/blog-posts/generators-category" element={<GeneratorsCategoryPage />} />
+              <Route path="/blog-posts/editors-category" element={<EditorsCategoryPage />} />
 
               {/* Converter Tools */}
               <Route path="/tools/pdf-converter" element={<PDFConverter />} />
