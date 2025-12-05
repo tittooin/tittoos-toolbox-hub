@@ -157,6 +157,7 @@ const TextToVideo = () => {
       setGenerationStage("Generating video frames based on your prompt...");
 
       // Stage 3: Generate actual video from prompt
+      console.log("Starting video generation with duration:", duration, "parsed:", parseInt(duration));
       const videoUrl = await generateVideoFromPrompt(prompt, style, parseInt(duration));
 
       setProgress(90);
