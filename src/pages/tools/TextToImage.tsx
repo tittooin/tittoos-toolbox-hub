@@ -29,7 +29,18 @@ const TextToImage = () => {
       // Use Pollinations.ai for real image generation (free, no key required)
       const width = size.split('x')[0];
       const height = size.split('x')[1];
-      const enhancedPrompt = encodeURIComponent(`${prompt}, ${style} style, high quality, detailed`);
+      // Enhanced style prompts
+      const stylePrompts: Record<string, string> = {
+        "realistic": "photorealistic, 4k, 8k, ultra-detailed, photograph, sharp focus, cinematic lighting, hyperrealistic",
+        "artistic": "artistic style, creative, masterpiece, expressive, detailed",
+        "cartoon": "cartoon style, vibrant, flat colors, cel shaded, illustration, 2d",
+        "abstract": "abstract art, surreal, conceptual, imaginative, dreamlike",
+        "digital-art": "digital art, trending on artstation, high quality, digital painting, concept art",
+        "oil-painting": "oil painting, textured, canvas, classic art style, impasto"
+      };
+
+      const styleKeywords = stylePrompts[style] || `${style} style`;
+      const enhancedPrompt = encodeURIComponent(`${prompt}, ${styleKeywords}, high quality`);
       const imageUrl = `https://image.pollinations.ai/prompt/${enhancedPrompt}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
 
       console.log("Generating image with URL:", imageUrl);
