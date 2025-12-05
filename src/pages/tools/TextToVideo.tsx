@@ -20,44 +20,104 @@ const TextToVideo = () => {
   const [generationStage, setGenerationStage] = useState("");
   const previewVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  // AI-powered video generation based on text prompt
+  // AI-powered video generation based on text prompt (Image + Motion)
   const generateVideoFromPrompt = async (prompt: string, style: string, duration: number) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas context not available');
 
+    // Set video resolution
     canvas.width = 1280;
     canvas.height = 720;
 
-    const stream = canvas.captureStream(24);
+    // 1. Generate base image from Pollinations
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + ", " + style + " style, cinematic lighting, 8k")}?width=1280&height=720&nologo=true`;
+
+    // Load image with CORS to allow canvas export
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imageUrl;
+
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = () => reject(new Error("Failed to load base image"));
+    });
+
+    const stream = canvas.captureStream(30); // 30 FPS
     const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
     const chunks: BlobPart[] = [];
+
     recorder.ondataavailable = (e) => {
       if (e.data && e.data.size > 0) chunks.push(e.data);
     };
 
-    const promptAnalysis = analyzePromptForVisuals(prompt);
-    const totalFrames = duration * 24;
-
+    const totalFrames = duration * 30;
     recorder.start();
 
+    // Animation loop
     for (let frame = 0; frame < totalFrames; frame++) {
-      ctx.fillStyle = promptAnalysis.backgroundColor;
+      const progress = frame / totalFrames;
+
+      // Clear canvas
+      ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      await generateFrameContent(ctx, promptAnalysis, frame, totalFrames, style);
+      // Effect: Slow Zoom In
+      const scale = 1 + (progress * 0.1); // Zoom in by 10% over duration
+      const scaledWidth = canvas.width * scale;
+      const scaledHeight = canvas.height * scale;
+      const offsetX = (canvas.width - scaledWidth) / 2;
+      const offsetY = (canvas.height - scaledHeight) / 2;
 
-      const frameProgress = (frame / totalFrames) * 80;
-      setProgress(20 + frameProgress);
+      ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
 
-      await new Promise((r) => setTimeout(r, 1000 / 24));
+      // Add overlay effects based on prompt (simple particles)
+      if (prompt.toLowerCase().includes("snow") || prompt.toLowerCase().includes("winter")) {
+        renderParticles(ctx, frame, "snow");
+      } else if (prompt.toLowerCase().includes("rain")) {
+        renderParticles(ctx, frame, "rain");
+      } else if (prompt.toLowerCase().includes("fire") || prompt.toLowerCase().includes("magic")) {
+        renderParticles(ctx, frame, "embers");
+      }
+
+      // Update progress bar
+      const percent = Math.round((frame / totalFrames) * 100);
+      setProgress(percent);
+
+      // Wait for next frame (approx 33ms for 30fps)
+      // We use a shorter delay here to speed up generation, as captureStream records in real-time-ish
+      await new Promise((r) => setTimeout(r, 10));
     }
 
     recorder.stop();
-    await new Promise((r) => setTimeout(r, 250));
+
+    // Wait for recorder to finish
+    await new Promise((resolve) => {
+      recorder.onstop = resolve;
+    });
 
     const blob = new Blob(chunks, { type: 'video/webm' });
     return URL.createObjectURL(blob);
+  };
+
+  const renderParticles = (ctx: CanvasRenderingContext2D, frame: number, type: string) => {
+    // Simple particle system for effects
+    const particleCount = 50;
+    ctx.fillStyle = type === "embers" ? "rgba(255, 100, 0, 0.6)" : "rgba(255, 255, 255, 0.6)";
+
+    for (let i = 0; i < particleCount; i++) {
+      const x = (Math.sin(i * 132 + frame * 0.02) * 0.5 + 0.5) * ctx.canvas.width;
+      const y = ((i * 23 + frame * 2) % ctx.canvas.height);
+      const size = (i % 3) + 2;
+
+      if (type === "rain") {
+        ctx.fillRect(x, y, 1, 10);
+      } else {
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
   };
 
   const analyzePromptForVisuals = (prompt: string) => {
