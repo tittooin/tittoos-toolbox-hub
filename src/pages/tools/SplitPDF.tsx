@@ -178,127 +178,7 @@ const SplitPDF = () => {
         }
     }
 
-    const content = `
-    <article class="prose prose-lg max-w-none text-gray-800 dark:text-gray-200">
-      <h1 class="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Split PDF Files Online – Extract Pages Instantly</h1>
 
-      <div class="my-8">
-        <img src="/assets/images/split_pdf_illustration.png" alt="Illustration of splitting a PDF document" class="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700" />
-      </div>
-
-      <p class="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
-        Have you ever been stuck with a massive PDF document when you only needed a few specific pages? Perhaps a single invoice from a year-long statement, or one chapter from a textbook. Sharing the entire file is unnecessary and often confusing. With our <strong>Split PDF Online tool</strong>, you can extract exactly what you need in seconds, decluttering your digital life and saving precious time.
-      </p>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Splitting PDFs Makes Sense</h2>
-      <p>
-        In modern workflows, efficiency is king. Large PDF files are cumbersome to email, slow to load, and difficult to navigate. By <strong>separating PDF pages</strong>, you create smaller, more focused documents that are easier to handle.
-      </p>
-      <p>
-        Think of it as digital decluttering. Instead of sending a client a 100-page contract when they only need to sign the last page, you can extract and send just that one page. It looks professional, respects their time, and eliminates potential errors.
-      </p>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How to Separate PDF Pages: Step-by-Step</h2>
-      <p>
-        We've designed our tool to be intuitive and powerful. You don't need to be a tech wizard to use it. Here's how it works:
-      </p>
-
-      <div class="grid md:grid-cols-3 gap-6 my-8">
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
-            <h3 class="font-bold text-lg mb-2">1. Upload PDF</h3>
-            <p>Upload your file. We'll instantly generate thumbnails for every single page so you can see what you are working with.</p>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-indigo-500">
-            <h3 class="font-bold text-lg mb-2">2. Select Pages</h3>
-            <p>Click the pages you want to keep. Or, use the "Range" options to select pages 1-5, or just page 10. It's fully flexible.</p>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-purple-500">
-            <h3 class="font-bold text-lg mb-2">3. Extract</h3>
-            <p>Click "Split PDF". You can download your selected pages as a brand new PDF, or extract every page as separate files.</p>
-        </div>
-      </div>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Features That Set Us Apart</h2>
-      <ul class="list-none space-y-4 my-6">
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Visual Selection:</strong> No more guessing page numbers. Our visual interface lets you see the content of each page before you select it, ensuring you grab exactly the right content.</span>
-        </li>
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Bulk Extraction:</strong> Need every page as a separate file? One click does it all. We'll zip them up for you for an easy download.</span>
-        </li>
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Privacy First:</strong> The splitting happens in your browser. Your sensitive documents are never uploaded to our servers, guaranteeing 100% confidentiality.</span>
-        </li>
-      </ul>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Who Needs This Tool?</h2>
-      <dl class="space-y-4">
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">Human Resources (HR)</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Extract specific employee records or policy pages from large handbooks to share with new hires.</dd>
-        </div>
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">Real Estate Agents</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Separate floor plans, property disclosures, or contract pages from a master property file to send to potential buyers.</dd>
-        </div>
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">Researchers</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Isolate relevant chapters or bibliography pages from large academic journals or e-books for focused study.</dd>
-        </div>
-      </dl>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
-      
-      <div class="space-y-6">
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Can I split a password-protected PDF?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                For security reasons, you must unlock the PDF with the valid password before you can split it. We recommend removing the password first if you own the file.
-            </p>
-        </details>
-
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Will the quality of my pages decrease?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                Not at all. We extract the pages exactly as they are. Text remains sharp, vector graphics stay crisp, and images retain their original resolution.
-            </p>
-        </details>
-
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Is this tool free?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                Yes! TittoosTools is committed to providing high-quality utilities for free. There are no hidden charges for splitting your PDF files.
-            </p>
-        </details>
-      </div>
-
-      <div class="mt-12 p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-center">
-        <h2 class="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Ready to Extract Pages?</h2>
-        <p class="mb-6 text-blue-800 dark:text-blue-200">Simplify your documents today with our secure and fast splitter.</p>
-        <button onclick="document.getElementById('pdf-upload')?.click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
-            Split PDF Now
-        </button>
-      </div>
-    </article>
-  `;
 
     return (
         <>
@@ -311,7 +191,7 @@ const SplitPDF = () => {
                 title="Split PDF"
                 description="Extract specific pages or split documents into separate files."
                 icon={Scissors}
-                content={content}
+                content=""
                 features={[
                     "Visual page selection",
                     "Extract specific ranges",

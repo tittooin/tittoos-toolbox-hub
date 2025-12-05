@@ -88,143 +88,7 @@ const MergePDF = () => {
         }
     };
 
-    const content = `
-    <article class="prose prose-lg max-w-none text-gray-800 dark:text-gray-200">
-      <h1 class="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Merge PDF Files Online – Fast, Free, and Secure</h1>
-      
-      <div class="my-8">
-        <img src="/assets/images/merge_pdf_illustration.png" alt="Illustration of merging PDF documents" class="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700" />
-      </div>
 
-      <p class="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
-        Are you tired of juggling multiple PDF files for a single project? Whether you're a student compiling assignments, a business professional organizing reports, or just trying to keep your personal documents in order, managing scattered files is a headache. That's where our <strong>Merge PDF Online tool</strong> comes in. We've built a solution that is not just a utility, but a productivity booster designed to simplify your digital life.
-      </p>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Merging PDFs is Essential for Productivity</h2>
-      <p>
-        In today's fast-paced digital world, presentation matters. Sending an email with ten separate attachments looks cluttered and unprofessional. It can confuse the recipient and increase the risk of a file being overlooked. By <strong>combining PDF files</strong> into a single, organized document, you ensure that your work is viewed exactly as you intended—seamlessly and in the correct order.
-      </p>
-      <p>
-        Our tool isn't just about sticking pages together; it's about <em>creating a narrative</em>. Imagine sending a job application where your cover letter flows naturally into your resume, followed by your portfolio and references. A single file tells a complete story. That's the power of effective document management.
-      </p>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How to Combine PDFs: A Simple Guide</h2>
-      <p>
-        We believe that powerful tools shouldn't be complicated. We've stripped away the complex menus and confusing jargon to give you a straightforward, drag-and-drop experience. Here is how you can merge your files in seconds:
-      </p>
-      
-      <div class="grid md:grid-cols-3 gap-6 my-8">
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
-            <h3 class="font-bold text-lg mb-2">1. Upload</h3>
-            <p>Drag your files directly onto the page or click "Select PDF Files". You can upload multiple documents at once.</p>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-indigo-500">
-            <h3 class="font-bold text-lg mb-2">2. Reorder</h3>
-            <p>Did you upload them in the wrong order? No problem. Simply drag and drop the files in the list to rearrange them.</p>
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-purple-500">
-            <h3 class="font-bold text-lg mb-2">3. Merge & Download</h3>
-            <p>Hit the "Merge PDFs" button. In a blink, your unified document is ready to download.</p>
-        </div>
-      </div>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">What Makes TittoosTools Different?</h2>
-      <p>
-        There are dozens of PDF tools out there, so why choose us? The answer lies in our commitment to <strong>privacy, speed, and user experience</strong>.
-      </p>
-      <ul class="list-none space-y-4 my-6">
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Client-Side Privacy:</strong> Unlike many other services, we don't need to upload your sensitive contracts or personal data to a remote server for processing. Our advanced technology handles the merging right here in your browser. Your data stays on your device.</span>
-        </li>
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Zero Friction:</strong> We hate sign-up forms as much as you do. There are no accounts to create, no email addresses to verify, and absolutely no hidden paywalls. It's free, forever.</span>
-        </li>
-        <li class="flex items-start">
-            <span class="text-green-500 mr-2">✔</span>
-            <span><strong>Universal Compatibility:</strong> Working on a Mac? A Windows laptop? An Android tablet? Our tool works flawlessly across all devices and operating systems.</span>
-        </li>
-      </ul>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Common Use Cases</h2>
-      <p>
-        Our users come from all walks of life. Here are just a few ways people are using our PDF merger to make their lives easier:
-      </p>
-      <dl class="space-y-4">
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Students & Academics</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Combine research papers, lecture notes, and scanned handouts into one comprehensive study guide. Submit your final thesis with all appendices included in a single file.</dd>
-        </div>
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Legal Professionals</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Organize case files by merging evidence, affidavits, and court orders. Create a complete docket that is easy to navigate and share with clients or colleagues.</dd>
-        </div>
-        <div>
-            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Small Business Owners</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Streamline your accounting by merging monthly invoices and receipts. Create professional project proposals that combine text, charts, and images seamlessly.</dd>
-        </div>
-      </dl>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Expert Tips for Better PDFs</h2>
-      <p>
-        Merging is often just the first step. To get the most out of your documents, consider these expert tips:
-      </p>
-      <ul>
-        <li><strong>Standardize Page Sizes:</strong> If you are merging A4 documents with Letter-sized ones, the final result might look inconsistent. Try to ensure your source files are similar in dimensions.</li>
-        <li><strong>Compress After Merging:</strong> Merging several detailed files can result in a large document. Use our <a href="/compress-pdf-online" class="text-blue-600 hover:underline">Compress PDF tool</a> afterwards to optimize it for email sharing.</li>
-        <li><strong>Check for Security:</strong> If one of your input files is password-protected, the merge might fail. Ensure all files are unlocked before you start.</li>
-      </ul>
-
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
-      
-      <div class="space-y-6">
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Is my data really safe?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                Absolutely. Security is our top priority. Because we process your files locally in your browser, they never leave your computer. We don't see them, store them, or share them. It's as safe as processing them offline.
-            </p>
-        </details>
-
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Is there a file size limit?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                Since the processing happens on your device, the limit depends more on your computer's memory (RAM) than on our servers. You can typically merge files up to several hundred megabytes without any issue.
-            </p>
-        </details>
-
-        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
-            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
-                <span>Can I merge PDFs and images together?</span>
-                <span class="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                </span>
-            </summary>
-            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
-                Currently, this tool is designed for PDF files. If you have images (JPG, PNG) that you want to include, we recommend converting them to PDF first using our <a href="/tools/image-converter" class="text-blue-600 hover:underline">Image to PDF tool</a>, and then merging them here.
-            </p>
-        </details>
-      </div>
-
-      <div class="mt-12 p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-center">
-        <h2 class="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Ready to Organize Your Documents?</h2>
-        <p class="mb-6 text-blue-800 dark:text-blue-200">Join thousands of users who trust TittoosTools for their daily document needs.</p>
-        <button onclick="document.getElementById('pdf-upload')?.click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
-            Start Merging Now
-        </button>
-      </div>
-    </article>
-  `;
 
     return (
         <>
@@ -237,7 +101,7 @@ const MergePDF = () => {
                 title="Merge PDF"
                 description="Combine multiple PDF files into a single document instantly."
                 icon={FileText}
-                content={content}
+                content=""
                 features={[
                     "Combine unlimited files",
                     "Drag and drop interface",
@@ -399,6 +263,169 @@ const MergePDF = () => {
                     </div>
                 </div>
             </ToolTemplate>
+
+            <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+                <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Merge PDF Files Online – Fast, Secure & No Uploads</h1>
+
+                <div className="my-10 flex justify-center">
+                    {/* Custom SVG for Merge PDF */}
+                    <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border border-blue-100 dark:border-gray-700">
+                        <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+                        <defs>
+                            <linearGradient id="docGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#ffffff" />
+                                <stop offset="100%" stopColor="#f3f4f6" />
+                            </linearGradient>
+                        </defs>
+
+                        <g transform="translate(150, 100)">
+                            <rect width="120" height="160" rx="4" fill="url(#docGradient)" stroke="#94a3b8" strokeWidth="2" />
+                            <rect x="20" y="30" width="80" height="8" rx="2" fill="#cbd5e1" />
+                            <rect x="20" y="50" width="80" height="8" rx="2" fill="#cbd5e1" />
+                            <rect x="20" y="70" width="60" height="8" rx="2" fill="#cbd5e1" />
+                            <text x="60" y="130" textAnchor="middle" fill="#dc2626" fontWeight="bold" fontSize="14">PDF A</text>
+                        </g>
+
+                        <g transform="translate(330, 100)">
+                            <animateTransform attributeName="transform" type="translate" values="330 100; 160 110; 330 100" dur="4s" repeatCount="indefinite" />
+                            <rect width="120" height="160" rx="4" fill="url(#docGradient)" stroke="#94a3b8" strokeWidth="2" transform="rotate(5)" />
+                            <rect x="20" y="30" width="80" height="8" rx="2" fill="#cbd5e1" transform="rotate(5)" />
+                            <rect x="20" y="50" width="80" height="8" rx="2" fill="#cbd5e1" transform="rotate(5)" />
+                            <text x="60" y="130" textAnchor="middle" fill="#dc2626" fontWeight="bold" fontSize="14" transform="rotate(5)">PDF B</text>
+                        </g>
+
+                        <circle cx="300" cy="180" r="30" fill="#3b82f6" fillOpacity="0.9">
+                            <animate attributeName="r" values="30; 35; 30" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                        <path d="M285 180 H315 M300 165 V195" stroke="white" strokeWidth="4" strokeLinecap="round" />
+                    </svg>
+                </div>
+
+                <p className="lead text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-light">
+                    Managing digital documents shouldn't be a headache. Whether you have scattered invoices, multiple chapters of a thesis, or separate scanned pages of a contract, keeping them organized is crucial. Our <strong>Merge PDF tool</strong> is the ultimate solution to combine multiple PDF files into one seamless document. It is 100% free, runs entirely in your browser for maximum privacy, and requires no software installation.
+                </p>
+
+                <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+                    <span className="bg-blue-100 text-blue-800 p-2 rounded-md mr-4 text-2xl">🚀</span>
+                    Why Merging PDFs is a Productivity Superpower
+                </h2>
+                <p className="mb-6">
+                    In the modern digital workspace, fragmentation is the enemy. Sending an email with 15 different attachments (invoice_p1.pdf, invoice_p2.pdf...) is unprofessional and annoying for the recipient.
+                </p>
+                <p className="mb-6">
+                    By combining files, you create a cohesive narrative. A job application becomes a portfolio. A scattered receipt collection becomes an expense report. Merging files ensures that your document is read in the exact order you intended, without the risk of a page being lost or skipped.
+                </p>
+                <p className="mb-6">
+                    Need to separate pages instead? Use our <a href="/tools/split-pdf" className="text-blue-600 font-medium hover:underline">Split PDF Tool</a> to extract specific pages before merging.
+                </p>
+
+                <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+                    <span className="bg-indigo-100 text-indigo-800 p-2 rounded-md mr-4 text-2xl">🔒</span>
+                    Unmatched Privacy & Security
+                </h2>
+                <p className="mb-6">
+                    Most online PDF tools require you to upload your files to their servers. This means your sensitive documents (contracts, medical records, tax forms) travel across the internet and sit on a stranger's hard drive.
+                </p>
+                <p className="mb-6">
+                    <strong>TittoosTools is different.</strong> We use advanced WebAssembly technology to process your files <em>client-side</em>.
+                </p>
+                <ul className="list-disc pl-6 space-y-4 mb-8 bg-blue-50 dark:bg-gray-800 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
+                    <li><strong>No Uploads:</strong> Your files never leave your device.</li>
+                    <li><strong>No Storage:</strong> We cannot store what we never receive.</li>
+                    <li><strong>No Waiting:</strong> Since there is no upload/download time, merging is instant, even for massive files.</li>
+                </ul>
+
+                <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Step-by-Step Guide</h2>
+                <div className="grid md:grid-cols-3 gap-6 my-8">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 bg-blue-100 text-blue-800 px-3 py-1 rounded-bl-lg font-bold">1</div>
+                        <h3 className="font-bold text-lg mb-2 mt-2">Select Files</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Click the upload button or drag and drop your PDF files into the box. You can select multiple files at once.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 bg-blue-100 text-blue-800 px-3 py-1 rounded-bl-lg font-bold">2</div>
+                        <h3 className="font-bold text-lg mb-2 mt-2">Arrange</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Files joined in the order they appear. Use the arrow buttons to move files up or down to set the correct sequence.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 bg-blue-100 text-blue-800 px-3 py-1 rounded-bl-lg font-bold">3</div>
+                        <h3 className="font-bold text-lg mb-2 mt-2">Merge</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Click "Merge PDFs". Your browser will process the files and instantly prompt you to save the new document.</p>
+                    </div>
+                </div>
+
+                <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Real-World Use Cases</h2>
+                <div className="space-y-4 mb-8">
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-green-100 text-green-700 p-2 rounded-lg text-xl">🎓</div>
+                        <div>
+                            <h3 className="font-bold text-lg">Academics</h3>
+                            <p className="text-gray-600 dark:text-gray-400">Combine your thesis chapters, title page, and bibliography into a single submission file.</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-purple-100 text-purple-700 p-2 rounded-lg text-xl">⚖️</div>
+                        <div>
+                            <h3 className="font-bold text-lg">Legal & Corporate</h3>
+                            <p className="text-gray-600 dark:text-gray-400">Merge signed contracts, addendums, and ID proofs into one client dossier. Ensure your <a href="/tools/image-converter" className="text-blue-600 hover:underline">images are converted to PDF</a> before merging.</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-orange-100 text-orange-700 p-2 rounded-lg text-xl">🏥</div>
+                        <div>
+                            <h3 className="font-bold text-lg">Medical Records</h3>
+                            <p className="text-gray-600 dark:text-gray-400">Keep all your lab reports, prescriptions, and history in one continuous file for your doctor.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">FAQ: Common Questions</h2>
+                <div className="space-y-6">
+                    <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Can I merge PDF and JPG files?</span>
+                            <span className="transition group-open:rotate-180">
+                                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </span>
+                        </summary>
+                        <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                            <p>This tool strictly accepts PDF files. However, you can use our <a href="/tools/image-converter" className="text-blue-600 underline">Image to PDF Converter</a> to turn your JPGs/PNGs into PDFs first, and then merge them here.</p>
+                        </div>
+                    </details>
+
+                    <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Is there a limit on the number of files?</span>
+                            <span className="transition group-open:rotate-180">
+                                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </span>
+                        </summary>
+                        <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                            <p>No artificial limit. You can merge as many files as your computer's memory (RAM) can handle. We regularly test with 50+ files without issues.</p>
+                        </div>
+                    </details>
+
+                    <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">My merged file is too big!</span>
+                            <span className="transition group-open:rotate-180">
+                                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </span>
+                        </summary>
+                        <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                            <p>Merging many files naturally increases size. You can reduce the final size significantly using our <a href="/tools/compress-pdf" className="text-blue-600 underline">Compress PDF Tool</a>.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-8 rounded-2xl text-center border border-blue-100 dark:border-blue-800/30">
+                    <h3 className="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Ready to Merge?</h3>
+                    <p className="mb-6 text-blue-800 dark:text-blue-200">Organize your document workflow in seconds.</p>
+                    <button onClick={() => document.getElementById('pdf-upload')?.click()} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                        Select PDF Files
+                    </button>
+                </div>
+            </article>
         </>
     );
 };
