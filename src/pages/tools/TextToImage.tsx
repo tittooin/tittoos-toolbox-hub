@@ -26,15 +26,21 @@ const TextToImage = () => {
     setIsGenerating(true);
 
     try {
-      // Simulate AI image generation with a placeholder
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      // For demo purposes, we'll use a placeholder image service
+      // Use Pollinations.ai for real image generation (free, no key required)
       const width = size.split('x')[0];
       const height = size.split('x')[1];
-      const placeholderUrl = `https://picsum.photos/${width}/${height}?random=${Date.now()}`;
+      const enhancedPrompt = encodeURIComponent(`${prompt}, ${style} style, high quality, detailed`);
+      const imageUrl = `https://image.pollinations.ai/prompt/${enhancedPrompt}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
 
-      setGeneratedImage(placeholderUrl);
+      // Pre-load the image to ensure it's ready before showing
+      const img = new Image();
+      img.src = imageUrl;
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+
+      setGeneratedImage(imageUrl);
       toast.success("Image generated successfully!");
     } catch (error) {
       toast.error("Failed to generate image. Please try again.");
