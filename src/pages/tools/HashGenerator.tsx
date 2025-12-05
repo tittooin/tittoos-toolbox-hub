@@ -54,7 +54,7 @@ const HashGenerator = () => {
       toast.error("No hash to copy");
       return;
     }
-    
+
     navigator.clipboard.writeText(hash);
     toast.success("Hash copied to clipboard!");
   };
@@ -123,6 +123,81 @@ const HashGenerator = () => {
           )}
         </div>
       </div>
+
+      <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
+        <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">Secure Hash Generator – MD5, SHA-256</h1>
+
+        <div className="my-8 flex justify-center">
+          {/* Custom SVG Illustration for Hash Generator */}
+          <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-2xl rounded-xl shadow-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+            <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+
+            {/* Blender/Grinder concept */}
+            <defs>
+              <clipPath id="myClip">
+                <rect x="200" y="100" width="200" height="200" rx="20" />
+              </clipPath>
+            </defs>
+
+            {/* Use simplified paths for visual clarity */}
+            <rect x="250" y="50" width="100" height="40" fill="#f97316" rx="5" />
+            <path d="M220 100 H 380 L 360 300 H 240 Z" fill="#ffedd5" stroke="#f97316" strokeWidth="2" opacity="0.8" />
+
+            {/* Inputs satisfyingly falling in */}
+            <g>
+              <text x="280" y="80" fontSize="14" fill="white">Input Data</text>
+              <circle cx="300" cy="140" r="10" fill="#3b82f6" opacity="0.8">
+                <animate attributeName="cy" values="80;300" dur="2s" repeatCount="indefinite" />
+              </circle>
+              <rect x="320" y="120" width="15" height="15" fill="#ef4444" opacity="0.8">
+                <animate attributeName="y" values="60;300" dur="2.5s" repeatCount="indefinite" />
+              </rect>
+            </g>
+
+            {/* Mixing action in the middle */}
+            <path d="M260 280 L340 280" stroke="#f97316" strokeWidth="4">
+              <animateTransform attributeName="transform" type="rotate" from="0 300 280" to="360 300 280" dur="0.5s" repeatCount="indefinite" />
+            </path>
+
+            {/* Output Pipe */}
+            <rect x="280" y="300" width="40" height="60" fill="#9ca3af" />
+
+            {/* Hash coming out */}
+            <text x="300" y="380" textAnchor="middle" fontSize="16" fontFamily="monospace" fill="#059669" fontWeight="bold">
+              7f8a...9c2e
+            </text>
+
+          </svg>
+        </div>
+
+        <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
+          A <strong>Hash Function</strong> is a mathematical algorithm that transforms any amount of data into a fixed-size string of characters. It is a one-way process: you can generate a hash from data, but you cannot recreate the data from the hash.
+        </p>
+
+        <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Supported Algorithms</h2>
+        <div className="grid md:grid-cols-3 gap-6 my-8">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-2 text-red-600">MD5</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Fast but older. Not considered cryptographically secure anymore, but useful for checksums.</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-2 text-orange-600">SHA-1</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Also deprecated for high-security uses, but still widely found in legacy systems.</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="font-bold text-lg mb-2 text-green-600">SHA-256</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">The industry standard. Used by Bitcoin and modern SSL certificates. Highly secure.</p>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Uses of Hashing</h2>
+        <ul className="list-disc pl-6 space-y-2 mt-4 text-gray-600 dark:text-gray-400">
+          <li><strong>Password Storage:</strong> Websites store the hash of your password, not the password itself. If the DB is hacked, they only get random-looking strings.</li>
+          <li><strong>File Integrity:</strong> To ensure a downloaded file hasn't been corrupted or tampered with, you check its hash against the official source.</li>
+          <li><strong>Digital Signatures:</strong> Hashing is a core component of verifying digital identities.</li>
+        </ul>
+
+      </article>
     </ToolTemplate>
   );
 };
