@@ -1,3 +1,11 @@
+export interface SEOData {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  image?: string;
+  url?: string;
+  type?: string;
+}
 
 const ensureTag = (selector: string, create: () => HTMLElement) => {
   let el = document.querySelector(selector) as HTMLElement | null;
@@ -12,70 +20,67 @@ const setMeta = (nameOrProperty: { name?: string; property?: string }, content: 
   const selector = nameOrProperty.name
     ? `meta[name="${nameOrProperty.name}"]`
     : `meta[property="${nameOrProperty.property}"]`;
-  const el = ensureTag(selector, () => {
-    const m = document.createElement('meta');
-    if (nameOrProperty.name) m.setAttribute('name', nameOrProperty.name);
-    if (nameOrProperty.property) m.setAttribute('property', nameOrProperty.property!);
-    return m;
-  });
+
+  // Update or create
+  let el = document.querySelector(selector);
+  if (!el) {
+    el = document.createElement('meta');
+    if (nameOrProperty.name) el.setAttribute('name', nameOrProperty.name);
+    if (nameOrProperty.property) el.setAttribute('property', nameOrProperty.property!);
+    document.head.appendChild(el);
+  }
   el.setAttribute('content', content);
 };
 
-const setCanonical = (url: string) => {
-  const link = ensureTag('link[rel="canonical"]', () => {
-    const l = document.createElement('link');
-    l.setAttribute('rel', 'canonical');
-    return l;
-  });
-  link.setAttribute('href', url);
+export const setSEO = (data: SEOData) => {
+  if (data.title) {
+    document.title = data.title;
+    setMeta({ property: 'og:title' }, data.title);
+    setMeta({ name: 'twitter:title' }, data.title);
+  }
+
+  if (data.description) {
+    setMeta({ name: 'description' }, data.description);
+    setMeta({ property: 'og:description' }, data.description);
+    setMeta({ name: 'twitter:description' }, data.description);
+  }
+
+  if (data.keywords && data.keywords.length > 0) {
+    setMeta({ name: 'keywords' }, data.keywords.join(', '));
+  }
+
+  if (data.image) {
+    setMeta({ property: 'og:image' }, data.image);
+    setMeta({ name: 'twitter:image' }, data.image);
+  }
+
+  if (data.url) {
+    const link = ensureTag('link[rel="canonical"]', () => {
+      const l = document.createElement('link');
+      l.setAttribute('rel', 'canonical');
+      return l;
+    });
+    link.setAttribute('href', data.url);
+    setMeta({ property: 'og:url' }, data.url);
+  }
+
+  if (data.type) {
+    setMeta({ property: 'og:type' }, data.type);
+  }
 };
 
 export const injectJsonLd = (data: Record<string, any>, id = 'jsonld-primary') => {
-  // remove previous script with same id to avoid duplicates
   const prev = document.getElementById(id);
   if (prev) prev.remove();
-  const script = document.createElement('script');
-},
-'audio-converter': {
-  title: 'Free Audio Converter Online – TittoosTools',
-    description: 'Convert audio files between MP3, WAV, FLAC, AAC formats. High quality conversion with no watermark at TittoosTools.'
-},
 
-'color-picker': {
-  title: 'Free Color Picker Tool Online – TittoosTools',
-    description: 'Pick colors from images or use color wheel. Get HEX, RGB, HSL codes instantly. Free color picker tool at TittoosTools.'
-},
-'text-analyzer': {
-  title: 'Free Text Analyzer Online – TittoosTools',
-    description: 'Analyze text for word count, character count, readability score. Free text analysis tool with detailed statistics at TittoosTools.'
-},
-'calculator': {
-  title: 'Free Online Calculator – TittoosTools',
-    description: 'Advanced online calculator for basic and scientific calculations. Free calculator with memory functions at TittoosTools.'
-},
-'percentage-calculator': {
-  title: 'Free Percentage Calculator Online – TittoosTools',
-    description: 'Calculate percentages, percentage increase and decrease. Easy percentage calculator with step-by-step results at TittoosTools.'
-},
-'json-formatter': {
-  title: 'Free JSON Formatter Online – TittoosTools',
-    description: 'Format, validate and beautify JSON data. Free JSON formatter with syntax highlighting and error detection at TittoosTools.'
-},
-'base64-converter': {
-  title: 'Free Base64 Encoder/Decoder Online – TittoosTools',
-    description: 'Encode and decode Base64 strings and files. Free Base64 converter with file upload support at TittoosTools.'
-},
-'uuid-generator': {
-  title: 'Free UUID Generator Online – TittoosTools',
-    description: 'Generate UUID v1, v4 unique identifiers instantly. Free UUID generator with bulk generation at TittoosTools.'
-},
-'hash-generator': {
-  title: 'Free Hash Generator Online – TittoosTools',
-    description: 'Generate MD5, SHA1, SHA256 hash values for text and files. Free hash generator and verifier at TittoosTools.'
-}
+  const script = document.createElement('script');
+  script.id = id;
+  script.type = 'application/ld+json';
+  script.text = JSON.stringify(data);
+  document.head.appendChild(script);
 };
 
-// Backward-compatible helper used in some tools
+// Backward compatibility if needed
 export const setToolSEO = (title: string, description: string) => {
   setSEO({ title, description });
 };
