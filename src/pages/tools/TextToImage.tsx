@@ -34,16 +34,7 @@ const TextToImage = () => {
 
       console.log("Generating image with URL:", imageUrl);
 
-      // Pre-load the image to ensure it's ready before showing
-      const img = new Image();
-      img.src = imageUrl;
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = (e) => {
-          console.error("Image load failed:", e);
-          reject(new Error("Failed to load image"));
-        };
-      });
+      // Directly set the image URL without pre-loading to avoid runtime errors
 
       setGeneratedImage(imageUrl);
       toast.success("Image generated successfully!");
