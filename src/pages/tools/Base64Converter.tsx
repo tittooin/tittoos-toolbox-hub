@@ -194,8 +194,7 @@ const Base64Converter = () => {
           </div>
         </dl>
       </article>
-    </div>
-    </ToolTemplate >
+    </ToolTemplate>
   );
 };
 

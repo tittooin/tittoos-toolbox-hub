@@ -213,8 +213,7 @@ const TimestampConverter = () => {
           </div>
         </dl>
       </article>
-    </div>
-    </ToolTemplate >
+    </ToolTemplate>
   );
 };
 

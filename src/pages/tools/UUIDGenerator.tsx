@@ -202,8 +202,7 @@ const UUIDGenerator = () => {
           The probability of a collision (generating the same UUID twice) is astronomically low. You would need to generate <strong>1 billion UUIDs per second for 85 years</strong> to have a 50% chance of a single collision.
         </p>
       </article>
-    </div>
-    </ToolTemplate >
+    </ToolTemplate>
   );
 };
 
