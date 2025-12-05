@@ -1,5 +1,5 @@
-import { 
-  FileText, Download, Upload, Image, File, Palette, 
+import {
+  FileText, Download, Upload, Image, File, Palette,
   Lock, Key, Calculator, Hash, Clock, QrCode,
   Type, AlignLeft, Languages, Search, Zap, Code,
   BarChart, PieChart, TrendingUp, Globe, Mail,
@@ -13,6 +13,7 @@ import {
 
 const allCategories = [
   { id: "converter", name: "Converters" },
+  { id: "pdf", name: "PDF Tools" },
   { id: "generator", name: "Generators" },
   { id: "analyzer", name: "Analyzers" },
   { id: "editor", name: "Editors" },
@@ -29,7 +30,7 @@ const allTools = [
     name: "PDF Converter",
     subheading: "Convert documents seamlessly",
     description: "Convert documents to and from PDF format with ease.",
-    category: "converter",
+    category: "pdf",
     icon: FileText,
     path: "/tools/pdf-converter"
   },
@@ -460,7 +461,7 @@ const allTools = [
     path: "/tools/ai-tool-generator"
   },
 
-  
+
 
   // Utility Tools
   {
