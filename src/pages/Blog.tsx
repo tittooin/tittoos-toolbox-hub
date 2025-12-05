@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
 import { toast } from 'sonner';
-import AdSense from "@/components/AdSense";
+
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 import { Link, useParams } from "react-router-dom";
 import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
@@ -340,7 +340,7 @@ const Blog = () => {
         title,
         description: selectedPostData.excerpt,
         keywords: [
-          'blog','productivity','online tools','guides','tutorials','digital workflow','seo tips','formatters','converters'
+          'blog', 'productivity', 'online tools', 'guides', 'tutorials', 'digital workflow', 'seo tips', 'formatters', 'converters'
         ],
         type: 'article',
         image: `${window.location.origin}/placeholder.svg`,
@@ -375,7 +375,7 @@ const Blog = () => {
         title: 'TittoosTools Blog - Tips, Tutorials, and Guides',
         description: 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.',
         keywords: [
-          'blog','online tools','seo','tutorials','guides','productivity','formatters','converters'
+          'blog', 'online tools', 'seo', 'tutorials', 'guides', 'productivity', 'formatters', 'converters'
         ],
         type: 'website',
         image: `${window.location.origin}/placeholder.svg`,
@@ -388,7 +388,7 @@ const Blog = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        
+
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <Link to="/blog" className="inline-flex items-center text-primary hover:text-accent mb-6">
@@ -400,7 +400,7 @@ const Blog = () => {
                 <h1 className="text-4xl font-bold text-foreground mb-4">
                   {selectedPostData.title}
                 </h1>
-                
+
                 <div className="flex items-center space-x-6 text-muted-foreground text-sm">
                   <div className="flex items-center">
                     <User className="h-4 w-4 mr-2" />
@@ -428,24 +428,12 @@ const Blog = () => {
                 </div>
               </header>
 
-              {/* In-article ad for better in-content visibility */}
-              <AdSense
-                adSlot="1234567890"
-                adType="in_article"
-                className="my-6 max-w-2xl mx-auto"
-              />
 
-              <div 
+              <div
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
               />
 
-              {/* Multiplex ad at the end of the article */}
-              <AdSense
-                adSlot="1234567890"
-                adType="multiplex"
-                className="mt-8"
-              />
             </article>
           </div>
         </div>
@@ -458,7 +446,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -468,7 +456,7 @@ const Blog = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Tips, tutorials, and insights to help you make the most of our tools.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button onClick={() => setShowSubmissionForm(true)} className="flex items-center">
                 <Plus className="h-4 w-4 mr-2" />
@@ -481,58 +469,46 @@ const Blog = () => {
             </div>
           </div>
 
-          {/* Top banner ad for list view */}
-          <AdSense
-            adSlot="1234567890"
-            adType="display"
-            className="mb-8 max-w-3xl mx-auto"
-          />
+
 
           <div className="space-y-8">
             {allBlogPosts.map((post, index) => (
               <Fragment key={post.id}>
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Link to={`/blog/${post.slug}`}>
-                          <CardTitle 
-                            className="text-2xl hover:text-primary transition-colors cursor-pointer"
-                          >
-                            {post.title}
-                          </CardTitle>
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Link to={`/blog/${post.slug}`}>
+                            <CardTitle
+                              className="text-2xl hover:text-primary transition-colors cursor-pointer"
+                            >
+                              {post.title}
+                            </CardTitle>
+                          </Link>
+                          {post.isAIGenerated && (
+                            <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
+                              AI Generated
+                            </span>
+                          )}
+                        </div>
+                        <CardDescription className="text-base mb-4">
+                          {post.excerpt}
+                        </CardDescription>
+                        <Link to={`/blog/${post.slug}`} className="inline-block">
+                          <Button variant="outline">Read More</Button>
                         </Link>
-                        {post.isAIGenerated && (
-                          <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                            AI Generated
-                          </span>
-                        )}
                       </div>
-                      <CardDescription className="text-base mb-4">
-                        {post.excerpt}
-                      </CardDescription>
-                      <Link to={`/blog/${post.slug}`} className="inline-block">
-                        <Button variant="outline">Read More</Button>
-                      </Link>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <span>{new Date(post.date).toLocaleDateString()}</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                </CardContent>
-              </Card>
-              {/* Insert an in-feed ad after a couple of posts for better scroll placement */}
-              {index === 1 && (
-                <AdSense
-                  adSlot="1234567890"
-                  adType="in_feed"
-                  className="my-6 max-w-3xl mx-auto"
-                />
-              )}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                      <span>{new Date(post.date).toLocaleDateString()}</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
               </Fragment>
             ))}
           </div>
@@ -543,12 +519,7 @@ const Blog = () => {
             </p>
           </div>
 
-          {/* Multiplex ad at end of list */}
-          <AdSense
-            adSlot="1234567890"
-            adType="multiplex"
-            className="mt-8"
-          />
+
         </div>
       </div>
 

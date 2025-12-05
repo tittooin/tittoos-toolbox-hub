@@ -8,18 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import AdSense from "@/components/AdSense";
 import { setSEO } from "@/utils/seoUtils";
 
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const adsEnabled = import.meta.env.VITE_ENABLE_ADS === 'true';
-  const showListAd = adsEnabled;
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         tool.description.toLowerCase().includes(searchTerm.toLowerCase());
+      tool.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || tool.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -29,7 +26,7 @@ const AllTools = () => {
       title: "All Tools | TittoosTools",
       description: `Browse ${tools.length}+ free online utilities: converters, formatters, editors, generators, analyzers and more. No registration required.`,
       keywords: [
-        'online tools','free web tools','productivity tools','file converter','json formatter','csv editor','qr code generator','password generator','seo analyzer','website tools'
+        'online tools', 'free web tools', 'productivity tools', 'file converter', 'json formatter', 'csv editor', 'qr code generator', 'password generator', 'seo analyzer', 'website tools'
       ],
       type: 'website',
       image: `${window.location.origin}/placeholder.svg`,
@@ -39,7 +36,7 @@ const AllTools = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
@@ -84,13 +81,6 @@ const AllTools = () => {
               Showing {filteredTools.length} of {tools.length} tools
             </p>
           </div>
-
-          {/* AdSense Block (no ads on downloader category) */}
-          {showListAd && (
-            <div className="mb-10 flex justify-center">
-              <AdSense adSlot="1234567890" adFormat="auto" />
-            </div>
-          )}
 
           {/* Tools Grid */}
           {filteredTools.length === 0 ? (
