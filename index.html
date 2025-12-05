@@ -63,47 +63,45 @@
       }
     } catch (e) { }
   </script>
-  <!-- Preconnect to font origins to speed up text rendering -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Privacy-safe preconnect for Cloudflare analytics beacon (if injected in production) -->
-  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
-  <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin>
-  <script>
-      window.__tcfapi = function (command, version, callback, parameter) {
+  <!--Preconnect to font origins to speed up text rendering-- >
+      <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <!-- Privacy-safe preconnect for Cloudflare analytics beacon (if injected in production) -->
+          <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+            <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin>
+              <script>
+                window.__tcfapi = function (command, version, callback, parameter) {
       if (command === 'getTCData' || command === 'addEventListener' || command === 'removeEventListener') {
         const tcData = {
-        gdprApplies: false,
-      tcString: '',
-      eventStatus: 'tcloaded',
-      cmpId: 299,
-      cmpVersion: 10,
-      cmpStatus: 'disabled',
-      isServiceSpecific: true,
-      useNonStandardStacks: false,
-      purposeOneTreatment: false,
-      purpose: {consents: { }, legitimateInterests: { } },
-      vendor: {consents: { }, legitimateInterests: { } }
+                  gdprApplies: false,
+                tcString: '',
+                eventStatus: 'tcloaded',
+                cmpId: 299,
+                cmpVersion: 10,
+                cmpStatus: 'disabled',
+                isServiceSpecific: true,
+                useNonStandardStacks: false,
+                purposeOneTreatment: false,
+                purpose: {consents: { }, legitimateInterests: { } },
+                vendor: {consents: { }, legitimateInterests: { } }
         };
-      callback(tcData, true);
+                callback(tcData, true);
       } else if (command === 'ping') {
-        callback({ gdprApplies: false, cmpId: 299, cmpVersion: 10, cmpStatus: 'disabled' }, true);
+                  callback({ gdprApplies: false, cmpId: 299, cmpVersion: 10, cmpStatus: 'disabled' }, true);
       } else {
-        callback(null, false);
+                  callback(null, false);
       }
     };
-      window.dispatchEvent(new Event('tcfapiready'));
+                window.dispatchEvent(new Event('tcfapiready'));
   </script>
-  
 
- </head>
+
+</head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
-  <script async="async" data-cfasync="false"
-    src="//pl28167928.effectivegatecpm.com/e2d74b94ea1cf8746d9955f2e00b4ab8/invoke.js"></script>
-  <div id="container-e2d74b94ea1cf8746d9955f2e00b4ab8"></div>
+
 </body>
 
 </html>

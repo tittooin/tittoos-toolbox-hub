@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import ConsentBanner from "./components/ConsentBanner";
-const ADS_ENABLED = import.meta.env.VITE_ENABLE_ADS === 'true';
+const ADS_ENABLED = false;
 
 // Lazily load pages to reduce initial bundle size
 const Index = lazy(() => import("./pages/Index"));
