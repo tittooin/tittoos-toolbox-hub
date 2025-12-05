@@ -33,34 +33,34 @@
     content="Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more." />
   <meta property="twitter:image" content="https://tittoos.online/placeholder.svg" />
 
-  <!--Additional SEO-- >
+  <!--Additional SEO-->
   <meta name="theme-color" content="#3b82f6" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
-  <!--Google Consent Mode v2 Bootstrap: default denied until user consents-- >
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {dataLayer.push(arguments); }
-        gtag('consent', 'default', {
-          ad_storage: 'denied',
-        analytics_storage: 'denied',
-        functionality_storage: 'denied',
-        personalization_storage: 'denied',
-        security_storage: 'denied'
+  <!--Google Consent Mode v2 Bootstrap: default denied until user consents-->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'denied',
+      personalization_storage: 'denied',
+      security_storage: 'denied'
     });
-        // Apply stored choice early if present
-        try {
+    // Apply stored choice early if present
+    try {
       var saved = localStorage.getItem('consent.choice.v2');
-        if (saved === 'granted' || saved === 'denied') {
-          gtag('consent', 'update', {
-            ad_storage: saved,
-            analytics_storage: saved,
-            functionality_storage: saved,
-            personalization_storage: saved,
-            security_storage: saved
-          });
+      if (saved === 'granted' || saved === 'denied') {
+        gtag('consent', 'update', {
+          ad_storage: saved,
+          analytics_storage: saved,
+          functionality_storage: saved,
+          personalization_storage: saved,
+          security_storage: saved
+        });
       }
     } catch (e) { }
   </script>
