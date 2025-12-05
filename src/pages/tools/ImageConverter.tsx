@@ -207,78 +207,154 @@ const ImageConverter = () => {
           </Card>
         )}
 
-        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
-          <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-teal-600">Free Online Image Converter – Transform Any Format</h1>
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-teal-600">Free Image Converter Online – Convert Any Format Instantly</h1>
 
-          <div className="my-8">
-            <img
-              src="/assets/images/image_converter_illustration.png"
-              alt="Illustration of Image format conversion"
-              className="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
-            />
+          <div className="my-10 flex justify-center">
+            {/* Custom SVG for Image Converter */}
+            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-green-50 to-teal-50 dark:from-gray-800 dark:to-gray-900 border border-green-100 dark:border-gray-700">
+              <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+              <defs>
+                <linearGradient id="photoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#dcfce7" />
+                  <stop offset="100%" stopColor="#f0fdf4" />
+                </linearGradient>
+              </defs>
+
+              {/* Input Image (JPG) */}
+              <g transform="translate(140, 120)">
+                <rect width="120" height="160" rx="4" fill="white" stroke="#22c55e" strokeWidth="2" />
+                <rect x="10" y="10" width="100" height="100" fill="url(#photoGradient)" />
+                <circle cx="40" cy="40" r="10" fill="#86efac" />
+                <path d="M10 110 L40 80 L70 110 L80 100 L110 130 V110 H10 Z" fill="#bbf7d0" />
+                <text x="60" y="145" textAnchor="middle" fill="#15803d" fontWeight="bold" fontSize="16">JPG</text>
+              </g>
+
+              {/* Processing Arrows */}
+              <g transform="translate(290, 180)">
+                <path d="M10 0 H50" stroke="#0d9488" strokeWidth="4" strokeLinecap="round" strokeDasharray="6,4">
+                  <animate attributeName="stroke-dashoffset" values="10;0" dur="1s" repeatCount="indefinite" />
+                </path>
+                <rect x="20" y="-15" width="20" height="30" rx="4" fill="white" stroke="#0d9488" strokeWidth="2">
+                  <animateTransform attributeName="transform" type="scale" values="1; 1.2; 1" dur="2s" repeatCount="indefinite" />
+                </rect>
+              </g>
+
+              {/* Output Image (PNG) */}
+              <g transform="translate(370, 120)">
+                <rect width="120" height="160" rx="4" fill="white" stroke="#0d9488" strokeWidth="2" />
+                {/* Checkerboard pattern for transparency */}
+                <pattern id="checkers" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <rect width="5" height="5" fill="#f0f0f0" />
+                  <rect x="5" y="5" width="5" height="5" fill="#f0f0f0" />
+                </pattern>
+                <rect x="10" y="10" width="100" height="100" fill="url(#checkers)" />
+
+                <circle cx="40" cy="40" r="10" fill="#5eead4" />
+                <path d="M10 110 L40 80 L70 110 L80 100 L110 130 V110 H10 Z" fill="#99f6e4" />
+                <text x="60" y="145" textAnchor="middle" fill="#0f766e" fontWeight="bold" fontSize="16">PNG</text>
+              </g>
+            </svg>
           </div>
 
-          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
-            "Format not supported." It's frustrating when you try to upload a photo and get rejected because it's a WEBP instead of a JPG, or a PNG file that's too heavy. Our <strong>Universal Image Converter</strong> is the Swiss Army knife for your photos. Effortlessly switch between formats like PNG, JPG, GIF, and WebP in seconds, with zero quality loss.
+          <p className="lead text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-light">
+            "Format not supported." It's frustrating when you try to upload a photo and get rejected because it's a WEBP instead of a JPG, or a PNG file that's too heavy. Our <strong>Universal Image Converter</strong> is the Swiss Army knife for your photos. Effortlessly switch between formats like PNG, JPG, GIF, and WebP in seconds, directly in your browser.
           </p>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Convert Image Formats?</h2>
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+            <span className="bg-green-100 text-green-800 p-2 rounded-md mr-4 text-2xl">📸</span>
+            Understanding Image Formats
+          </h2>
+          <p className="mb-6">
+            Not all image formats are created equal. Choosing the right one can make a huge difference in file size and quality.
+          </p>
           <div className="grid md:grid-cols-2 gap-8 my-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold mb-3 text-blue-600 dark:text-blue-400">PNG to JPG</h3>
-              <p className="text-gray-600 dark:text-gray-300">Perfect for reducing file size. JPGs are smaller and faster to load, making them ideal for websites and emails where transparency isn't needed.</p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+              <h3 className="text-xl font-bold mb-3 text-blue-600 dark:text-blue-400">JPG / JPEG</h3>
+              <p className="text-gray-600 dark:text-gray-300">The king of photography. It uses "lossy" compression to create small file sizes, making it perfect for photos with millions of colors. However, it doesn't support transparency.</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold mb-3 text-purple-600 dark:text-purple-400">JPG to PNG</h3>
-              <p className="text-gray-600 dark:text-gray-300">Best for high-quality graphics. Convert to PNG when you need crisp text, screenshots, or want to prepare an image for editing.</p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+              <h3 className="text-xl font-bold mb-3 text-purple-600 dark:text-purple-400">PNG</h3>
+              <p className="text-gray-600 dark:text-gray-300">The choice for graphics. It uses "lossless" compression, meaning no quality is lost. It supports transparent backgrounds, making it essential for logos and web design.</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold mb-3 text-orange-600 dark:text-orange-400">WebP Conversion</h3>
-              <p className="text-gray-600 dark:text-gray-300">WebP is the modern standard for the web. It offers superior compression. Convert your old images to WebP to make your website fly.</p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+              <h3 className="text-xl font-bold mb-3 text-orange-600 dark:text-orange-400">WebP</h3>
+              <p className="text-gray-600 dark:text-gray-300">The modern web standard developed by Google. It offers superior compression (files are 25-35% smaller than JPGs) with high quality. Use this to make your website load faster.</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold mb-3 text-pink-600 dark:text-pink-400">GIF Creation</h3>
-              <p className="text-gray-600 dark:text-gray-300">Want to make a static image compatible with a platform that prefers GIFs? We handle that too.</p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+              <h3 className="text-xl font-bold mb-3 text-pink-600 dark:text-pink-400">GIF</h3>
+              <p className="text-gray-600 dark:text-gray-300">Famous for animations, but also useful for simple logos with few colors. It's an older format, so use WebP or PNG when animation isn't needed.</p>
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Professional Features, Free for Everyone</h2>
-          <ul className="space-y-4 text-gray-700 dark:text-gray-300">
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">How to Convert Images</h2>
+
+          <div className="flex flex-col md:flex-row gap-6 my-8">
+            <div className="flex-1 bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-100 dark:border-green-800 relative">
+              <div className="absolute -top-3 -right-3 bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-md">1</div>
+              <h3 className="font-bold text-lg mb-2 text-green-800 dark:text-green-300">Upload</h3>
+              <p className="text-green-700 dark:text-green-400">Click to select a file from your device. We accept almost any common image format.</p>
+            </div>
+            <div className="flex-1 bg-teal-50 dark:bg-teal-900/20 p-6 rounded-xl border border-teal-100 dark:border-teal-800 relative">
+              <div className="absolute -top-3 -right-3 bg-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-md">2</div>
+              <h3 className="font-bold text-lg mb-2 text-teal-800 dark:text-teal-300">Customize</h3>
+              <p className="text-teal-700 dark:text-teal-400">Choose your output format (e.g., convert JPG to PNG). You can also resize the width/height to fit specific requirements.</p>
+            </div>
+            <div className="flex-1 bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-xl border border-emerald-100 dark:border-emerald-800 relative">
+              <div className="absolute -top-3 -right-3 bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-md">3</div>
+              <h3 className="font-bold text-lg mb-2 text-emerald-800 dark:text-emerald-300">Download</h3>
+              <p className="text-emerald-700 dark:text-emerald-400">Hit convert and download your new image instantly. It's ready to use!</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+            <span className="bg-indigo-100 text-indigo-800 p-2 rounded-md mr-4 text-2xl">✨</span>
+            More Than Just Conversion
+          </h2>
+          <ul className="space-y-4 text-gray-700 dark:text-gray-300 mb-8">
             <li className="flex items-start">
               <span className="bg-green-100 text-green-600 rounded-full p-1 mr-3 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
               </span>
-              <span><strong>Resize on the Fly:</strong> Don't just convert format; change dimensions too. Set a specific width or height to fit your needs perfectly.</span>
+              <span><strong>Intelligent Resizing:</strong> Don't just change the format; change the size. If you need a 100px thumbnail for a profile picture, you can set the width right here.</span>
             </li>
             <li className="flex items-start">
               <span className="bg-green-100 text-green-600 rounded-full p-1 mr-3 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
               </span>
-              <span><strong>Quality Control:</strong> You're in charge. Adjust the quality slider (e.g., 80%, 60%) to find the sweet spot between file size and visual fidelity.</span>
+              <span><strong>Privacy Guaranteed:</strong> Unlike server-based tools, your photos are processed locally on your device. We never see your family photos or client work.</span>
             </li>
             <li className="flex items-start">
               <span className="bg-green-100 text-green-600 rounded-full p-1 mr-3 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
               </span>
-              <span><strong>Privacy First:</strong> Your photos are processed locally in your browser. No servers, no uploads, no risk of data leaks.</span>
+              <span><strong>PDF Integration:</strong> Need to turn these images into a document? Use our <a href="/tools/image-to-pdf" className="text-green-600 hover:underline font-medium">Image to PDF tool</a> afterwards to combine them.</span>
             </li>
           </ul>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Common Questions</h2>
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Common Questions</h2>
           <dl className="divide-y divide-gray-200 dark:divide-gray-700">
             <div className="py-4">
               <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Does converting JPG to PNG improve quality?</dt>
-              <dd className="mt-2 text-gray-600 dark:text-gray-400">No, converting a low-quality JPG to PNG won't magically add detail that isn't there. However, it will prevent *further* quality loss if you plan to edit the image and save it repeatedly.</dd>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">No. Converting a lower-quality JPG to PNG won't magically add detail that isn't there. It just changes the container. However, it will prevent *further* quality loss if you plan to edit the image and save it repeatedly.</dd>
             </div>
             <div className="py-4">
-              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">What is the best format for websites?</dt>
-              <dd className="mt-2 text-gray-600 dark:text-gray-400"><strong>WebP</strong> is generally the best choice today. It's supported by all modern browsers and offers files that are 25-35% smaller than comparable JPEGs.</dd>
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">What happens to transparent backgrounds?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">If you convert a transparent PNG to JPG, the transparent areas will turn white (or black), because JPG doesn't support transparency. To keep the background transparent, convert to <strong>PNG</strong>, <strong>WebP</strong>, or <strong>GIF</strong>.</dd>
             </div>
             <div className="py-4">
-              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Can I convert transparent images?</dt>
-              <dd className="mt-2 text-gray-600 dark:text-gray-400">Yes! If you convert a specialized format (like WebP) with transparency to <strong>PNG</strong>, the transparency is preserved. If you convert to JPG, the transparent background will become white (since JPG doesn't support transparency).</dd>
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Can I convert a document to an image?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">This tool is for image files. If you have a PDF you want to turn into a PNG or JPG, use our specialized <a href="/tools/pdf-to-image" className="text-green-600 hover:underline font-medium">PDF to Image Converter</a>.</dd>
             </div>
           </dl>
+
+          <div className="mt-16 bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 p-8 rounded-2xl text-center border border-green-100 dark:border-green-800/30">
+            <h3 className="text-2xl font-bold mb-4 text-green-900 dark:text-green-100">Ready to Transform Your Images?</h3>
+            <p className="mb-6 text-green-800 dark:text-green-200">Fast, free, and secure conversion for everyone.</p>
+            <button onClick={() => document.getElementById('image-upload')?.click()} className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+              Select Image File
+            </button>
+          </div>
         </article>
       </div>
     </ToolTemplate>

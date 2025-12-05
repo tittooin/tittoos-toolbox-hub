@@ -62,18 +62,18 @@ const TextToVideo = () => {
 
   const analyzePromptForVisuals = (prompt: string) => {
     const lowerPrompt = prompt.toLowerCase();
-    
+
     // Color analysis
     let backgroundColor = '#87CEEB'; // sky blue default
     if (lowerPrompt.includes('night') || lowerPrompt.includes('dark')) backgroundColor = '#1a1a2e';
     if (lowerPrompt.includes('sunset') || lowerPrompt.includes('orange')) backgroundColor = '#ff6b35';
     if (lowerPrompt.includes('ocean') || lowerPrompt.includes('water')) backgroundColor = '#006994';
     if (lowerPrompt.includes('forest') || lowerPrompt.includes('green')) backgroundColor = '#2d5016';
-    
+
     // Movement analysis
-    const hasMovement = lowerPrompt.includes('moving') || lowerPrompt.includes('flowing') || 
-                       lowerPrompt.includes('flying') || lowerPrompt.includes('walking');
-    
+    const hasMovement = lowerPrompt.includes('moving') || lowerPrompt.includes('flowing') ||
+      lowerPrompt.includes('flying') || lowerPrompt.includes('walking');
+
     // Object analysis
     const objects = [];
     if (lowerPrompt.includes('circle') || lowerPrompt.includes('ball')) objects.push('circle');
@@ -81,7 +81,7 @@ const TextToVideo = () => {
     if (lowerPrompt.includes('star')) objects.push('star');
     if (lowerPrompt.includes('wave')) objects.push('wave');
     if (lowerPrompt.includes('cloud')) objects.push('cloud');
-    
+
     return {
       backgroundColor,
       hasMovement,
@@ -92,7 +92,7 @@ const TextToVideo = () => {
 
   const generateFrameContent = async (ctx: CanvasRenderingContext2D, analysis: any, frame: number, totalFrames: number, style: string) => {
     const progress = frame / totalFrames;
-    
+
     // Apply style-specific effects
     if (style === 'cinematic') {
       // Add cinematic bars
@@ -100,19 +100,19 @@ const TextToVideo = () => {
       ctx.fillRect(0, 0, ctx.canvas.width, 100);
       ctx.fillRect(0, ctx.canvas.height - 100, ctx.canvas.width, 100);
     }
-    
+
     // Generate objects based on prompt
     analysis.objects.forEach((obj: string, index: number) => {
       const x = (ctx.canvas.width / (analysis.objects.length + 1)) * (index + 1);
       const y = ctx.canvas.height / 2;
-      
+
       // Add movement if specified
       const offsetX = analysis.hasMovement ? Math.sin(progress * Math.PI * 2) * 100 : 0;
       const offsetY = analysis.hasMovement ? Math.cos(progress * Math.PI * 2) * 50 : 0;
-      
+
       ctx.save();
       ctx.translate(x + offsetX, y + offsetY);
-      
+
       // Draw objects
       switch (obj) {
         case 'circle':
@@ -137,17 +137,17 @@ const TextToVideo = () => {
           drawCloud(ctx, 0, 0);
           break;
       }
-      
+
       ctx.restore();
     });
-    
+
     // Add text overlay if no objects specified
     if (analysis.objects.length === 0) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       ctx.font = '48px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('AI Generated Video', ctx.canvas.width / 2, ctx.canvas.height / 2);
-      
+
       ctx.font = '24px Arial';
       ctx.fillText(`Frame ${frame + 1}/${totalFrames}`, ctx.canvas.width / 2, ctx.canvas.height / 2 + 60);
     }
@@ -161,7 +161,7 @@ const TextToVideo = () => {
 
     ctx.beginPath();
     ctx.moveTo(cx, cy - outerRadius);
-    
+
     for (let i = 0; i < spikes; i++) {
       x = cx + Math.cos(rot) * outerRadius;
       y = cy + Math.sin(rot) * outerRadius;
@@ -173,7 +173,7 @@ const TextToVideo = () => {
       ctx.lineTo(x, y);
       rot += step;
     }
-    
+
     ctx.lineTo(cx, cy - outerRadius);
     ctx.closePath();
   };
@@ -182,7 +182,7 @@ const TextToVideo = () => {
     ctx.beginPath();
     ctx.strokeStyle = '#00bcd4';
     ctx.lineWidth = 4;
-    
+
     for (let x = 0; x < ctx.canvas.width; x += 10) {
       const y = Math.sin((x * 0.01) + (progress * Math.PI * 2)) * 50;
       if (x === 0) {
@@ -215,27 +215,27 @@ const TextToVideo = () => {
     setIsGenerating(true);
     setProgress(0);
     setGenerationStage("Analyzing prompt with AI...");
-    
+
     try {
       // Stage 1: Prompt Analysis
       await new Promise(resolve => setTimeout(resolve, 800));
       setProgress(10);
       setGenerationStage("Initializing AI video generation engine...");
-      
+
       // Stage 2: AI Engine Setup
       await new Promise(resolve => setTimeout(resolve, 1000));
       setProgress(20);
       setGenerationStage("Generating video frames based on your prompt...");
-      
+
       // Stage 3: Generate actual video from prompt
       const videoUrl = await generateVideoFromPrompt(prompt, style, parseInt(duration));
-      
+
       setProgress(90);
       setGenerationStage("Finalizing AI-generated video...");
-      
+
       await new Promise(resolve => setTimeout(resolve, 500));
       setProgress(100);
-      
+
       setGeneratedVideo(videoUrl);
       toast.success(`AI video generated successfully from prompt: "${prompt.slice(0, 50)}${prompt.length > 50 ? '...' : ''}"`);
     } catch (error) {
@@ -328,9 +328,9 @@ const TextToVideo = () => {
               </div>
             </div>
 
-            <Button 
-              onClick={generateVideo} 
-              className="w-full" 
+            <Button
+              onClick={generateVideo}
+              className="w-full"
               disabled={isGenerating}
               size="lg"
             >
@@ -362,7 +362,7 @@ const TextToVideo = () => {
                     Video created from your prompt: "{prompt}"
                   </p>
                 </div>
-                
+
                 <div className="relative bg-black rounded-lg overflow-hidden">
                   <video
                     ref={previewVideoRef}
@@ -371,7 +371,7 @@ const TextToVideo = () => {
                     className="w-full"
                   />
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button onClick={downloadVideo} variant="outline" className="flex-1">
                     <Download className="h-4 w-4 mr-2" />
@@ -421,8 +421,175 @@ const TextToVideo = () => {
           </CardContent>
         </Card>
       </div>
-    </ToolTemplate>
-  );
+
+      <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Free AI Text to Video Generator – Instantly Create Videos</h1>
+
+        <div className="my-10 flex justify-center">
+          {/* Custom SVG for Text to Video */}
+          <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border border-blue-100 dark:border-gray-700">
+            <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+            <defs>
+              <linearGradient id="beamGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#818cf8" stopOpacity="0.2" />
+              </linearGradient>
+            </defs>
+
+            {/* Input Side (Text) */}
+            <g transform="translate(60, 120)">
+              <rect width="160" height="120" rx="8" fill="white" stroke="#3b82f6" strokeWidth="2" />
+              {/* Text Lines */}
+              <rect x="20" y="30" width="80" height="8" rx="4" fill="#93c5fd" />
+              <rect x="20" y="50" width="120" height="8" rx="4" fill="#e5e7eb" />
+              <rect x="20" y="70" width="100" height="8" rx="4" fill="#e5e7eb" />
+              <text x="80" y="150" textAnchor="middle" fill="#3b82f6" fontWeight="bold" fontSize="16">Text Prompt</text>
+            </g>
+
+            {/* AI Processing Beam */}
+            <g transform="translate(240, 180)">
+              <path d="M0 0 L100 0" stroke="url(#beamGradient)" strokeWidth="40" strokeLinecap="round" />
+              {/* Floating Icons in Beam */}
+              <circle cx="20" cy="0" r="4" fill="white" opacity="0.8">
+                <animate attributeName="cx" values="20;80" dur="1s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="40" cy="10" r="3" fill="white" opacity="0.6">
+                <animate attributeName="cx" values="40;90" dur="1.2s" repeatCount="indefinite" />
+              </circle>
+            </g>
+
+            {/* Output Side (Video) */}
+            <g transform="translate(380, 100)">
+              <rect width="180" height="160" rx="8" fill="white" stroke="#6366f1" strokeWidth="2" />
+              <rect x="10" y="10" width="160" height="140" rx="4" fill="#1e1b4b" />
+
+              {/* Play Button */}
+              <circle cx="90" cy="80" r="25" fill="#6366f1" bg-opacity="0.8" />
+              <path d="M85 70 L100 80 L85 90 Z" fill="white" />
+
+              {/* Film Strip Holes */}
+              <rect x="2" y="20" width="6" height="4" fill="white" opacity="0.5" />
+              <rect x="2" y="40" width="6" height="4" fill="white" opacity="0.5" />
+              <rect x="2" y="60" width="6" height="4" fill="white" opacity="0.5" />
+              <rect x="2" y="80" width="6" height="4" fill="white" opacity="0.5" />
+              <rect x="2" y="100" width="6" height="4" fill="white" opacity="0.5" />
+              <rect x="2" y="120" width="6" height="4" fill="white" opacity="0.5" />
+
+              <text x="90" y="190" textAnchor="middle" fill="#6366f1" fontWeight="bold" fontSize="16">Generated Video</text>
+            </g>
+
+            {/* Sparkles */}
+            <g transform="translate(300, 80)">
+              <path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#fbbf24">
+                <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="3s" repeatCount="indefinite" />
+              </path>
+            </g>
+          </svg>
+        </div>
+
+        <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
+          Turning your imagination into reality used to require expensive cameras, actors, and weeks of editing. Now, all you need is an idea. Our <strong>Text-to-Video AI Generator</strong> creates stunning, fluid motion videos from simple text descriptions. Whether you need a cinematic intro, an abstract background, or a visualization of a concept, just type it and watch it come to life.
+        </p>
+
+        <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">From Words to Motion</h2>
+        <p className="mb-6">
+          Our tool creates frames in real-time right in your browser. It parses your prompt for key elements:
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm text-center">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">🎨</span>
+            </div>
+            <h3 className="font-bold text-lg mb-2">Color & Mood</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">"Sunset", "Dark", "Neon". The AI sets the palette instantly.</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm text-center">
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">⚡</span>
+            </div>
+            <h3 className="font-bold text-lg mb-2">Movement</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">"Flowing", "Rotating", "Fast". Dynamic physics are applied to objects.</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm text-center">
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">📦</span>
+            </div>
+            <h3 className="font-bold text-lg mb-2">Objects</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">"Star", "Cloud", "Wave". Recognizing shapes and rendering them.</p>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">How to Write Better Prompts</h2>
+        <p className="mb-4">The quality of your video depends on your description. Here is the secret formula:</p>
+        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 mb-8 font-mono text-sm md:text-base">
+          <span className="text-purple-600 font-bold">[Subject]</span> + <span className="text-blue-600 font-bold">[Action]</span> + <span className="text-green-600 font-bold">[Style/Mood]</span>
+        </div>
+
+        <div className="space-y-4 mb-8">
+          <div className="flex items-center gap-4">
+            <span className="bg-red-100 text-red-700 px-3 py-1 rounded text-sm font-bold">Bad</span>
+            <span className="text-gray-600 dark:text-gray-400">"A ball."</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm font-bold">Good</span>
+            <span className="text-gray-600 dark:text-gray-400">"A red ball bouncing energetically on a dark background."</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm font-bold">Pro</span>
+            <span className="text-gray-600 dark:text-gray-400">"Golden stars rotating slowly in a deep blue night sky, cinematic lighting."</span>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Applications</h2>
+        <ul className="grid md:grid-cols-2 gap-4 mb-8">
+          <li className="flex items-start bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
+            <span className="text-blue-500 mr-3">✓</span>
+            <span><strong>Social Media Intros:</strong> quick, catchy animations.</span>
+          </li>
+          <li className="flex items-start bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
+            <span className="text-blue-500 mr-3">✓</span>
+            <span><strong>Website Backgrounds:</strong> abstract, looping visuals that don't distract.</span>
+          </li>
+          <li className="flex items-start bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
+            <span className="text-blue-500 mr-3">✓</span>
+            <span><strong>Presentations:</strong> unique slide transitions or conceptual aids.</span>
+          </li>
+          <li className="flex items-start bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
+            <span className="text-blue-500 mr-3">✓</span>
+            <span><strong>Meditation Aids:</strong> "Calm blue waves flowing slowly."</span>
+          </li>
+        </ul>
+
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Frequency Asked Questions</h2>
+        <div className="space-y-6">
+          <details className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 group">
+            <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+              <span>How long does generation take?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>Because it runs in your browser, it's usually very fast—about 5-10 seconds for a 5-second clip.</p>
+            </div>
+          </details>
+
+          <details className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 group">
+            <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+              <span>Is it copyright free?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>Yes. Since the AI generates it from scratch based on your unique prompt, you own the resulting video file completely.</p>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      );
 };
 
-export default TextToVideo;
+      export default TextToVideo;
