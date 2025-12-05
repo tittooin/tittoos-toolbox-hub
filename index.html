@@ -20,6 +20,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
+  </script>
   <meta property="og:description"
     content="Free online tools for productivity: video converters, password generators, QR codes, calculators, formatters, AI tools, social media downloaders and more." />
   <meta property="og:image" content="https://tittoos.online/placeholder.svg" />
@@ -67,32 +68,32 @@
       <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
           <!-- Privacy-safe preconnect for Cloudflare analytics beacon (if injected in production) -->
-          <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
-            <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin>
-              <script>
-                window.__tcfapi = function (command, version, callback, parameter) {
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin>
+  <script>
+    window.__tcfapi = function (command, version, callback, parameter) {
       if (command === 'getTCData' || command === 'addEventListener' || command === 'removeEventListener') {
         const tcData = {
-                  gdprApplies: false,
-                tcString: '',
-                eventStatus: 'tcloaded',
-                cmpId: 299,
-                cmpVersion: 10,
-                cmpStatus: 'disabled',
-                isServiceSpecific: true,
-                useNonStandardStacks: false,
-                purposeOneTreatment: false,
-                purpose: {consents: { }, legitimateInterests: { } },
-                vendor: {consents: { }, legitimateInterests: { } }
+          gdprApplies: false,
+          tcString: '',
+          eventStatus: 'tcloaded',
+          cmpId: 299,
+          cmpVersion: 10,
+          cmpStatus: 'disabled',
+          isServiceSpecific: true,
+          useNonStandardStacks: false,
+          purposeOneTreatment: false,
+          purpose: { consents: {}, legitimateInterests: {} },
+          vendor: { consents: {}, legitimateInterests: {} }
         };
-                callback(tcData, true);
+        callback(tcData, true);
       } else if (command === 'ping') {
-                  callback({ gdprApplies: false, cmpId: 299, cmpVersion: 10, cmpStatus: 'disabled' }, true);
+        callback({ gdprApplies: false, cmpId: 299, cmpVersion: 10, cmpStatus: 'disabled' }, true);
       } else {
-                  callback(null, false);
+        callback(null, false);
       }
     };
-                window.dispatchEvent(new Event('tcfapiready'));
+    window.dispatchEvent(new Event('tcfapiready'));
   </script>
 
 
