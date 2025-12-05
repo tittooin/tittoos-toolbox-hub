@@ -589,7 +589,8 @@ const TextToVideo = () => {
         </div>
       </article>
 
-      );
+    </ToolTemplate>
+  );
 };
 
-      export default TextToVideo;
+export default TextToVideo;
