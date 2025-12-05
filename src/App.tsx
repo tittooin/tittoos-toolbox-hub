@@ -72,6 +72,9 @@ const AIImageEditor = lazy(() => import("./pages/tools/AIImageEditor"));
 const VideoEditor = lazy(() => import("./pages/tools/VideoEditor"));
 const OCRConverter = lazy(() => import("./pages/tools/OCRConverter"));
 const ResumeBuilder = lazy(() => import("./pages/tools/ResumeBuilder"));
+const MergePDF = lazy(() => import("./pages/tools/MergePDF"));
+const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
+const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -145,6 +148,9 @@ const App = () => (
               <Route path="/tools/temperature-converter" element={<TemperatureConverter />} />
               <Route path="/tools/base64-converter" element={<Base64Converter />} />
               <Route path="/tools/timestamp-converter" element={<TimestampConverter />} />
+              <Route path="/merge-pdf-online" element={<MergePDF />} />
+              <Route path="/split-pdf-online" element={<SplitPDF />} />
+              <Route path="/compress-pdf-online" element={<CompressPDF />} />
 
               {/* Generator Tools */}
               <Route path="/tools/password-generator" element={<PasswordGenerator />} />

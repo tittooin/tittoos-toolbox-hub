@@ -35,6 +35,33 @@ const allTools = [
     path: "/tools/pdf-converter"
   },
   {
+    id: "merge-pdf",
+    name: "Merge PDF",
+    subheading: "Combine multiple PDFs",
+    description: "Merge multiple PDF documents into a single file easily online.",
+    category: "pdf",
+    icon: FileText,
+    path: "/merge-pdf-online"
+  },
+  {
+    id: "split-pdf",
+    name: "Split PDF",
+    subheading: "Extract pages from PDF",
+    description: "Split PDF files or extract specific pages into new documents.",
+    category: "pdf",
+    icon: FileText,
+    path: "/split-pdf-online"
+  },
+  {
+    id: "compress-pdf",
+    name: "Compress PDF",
+    subheading: "Reduce PDF file size",
+    description: "Compress and optimize PDF files to reduce file size online.",
+    category: "pdf",
+    icon: FileText,
+    path: "/compress-pdf-online"
+  },
+  {
     id: "image-converter",
     name: "Image Converter",
     subheading: "Transform image formats instantly",
