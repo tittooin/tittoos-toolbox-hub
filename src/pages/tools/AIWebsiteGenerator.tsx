@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import ToolTemplate from "@/components/ToolTemplate";
-import { Globe, Wand2, Download, Eye, Settings, Palette, Layout, Code, Rocket } from "lucide-react";
+import { Globe, Wand2, Download, Eye, Settings, Palette, Layout, Code, Rocket, Monitor, Smartphone, Zap } from "lucide-react";
 import { generateWebsiteFromPrompt } from "@/utils/websiteGenerator";
 import { toast } from "sonner";
 import JSZip from "jszip";
 
 const AIWebsiteGenerator = () => {
+  useEffect(() => {
+    document.title = "Free AI Website Generator – Create Websites from Text Prompts";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Generate professional, responsive websites instantly with our free AI Website Generator. Just describe what you need, and let AI build the code for you.');
+    }
+  }, []);
+
   const [prompt, setPrompt] = useState("");
   const [websiteType, setWebsiteType] = useState("landing");
   const [theme, setTheme] = useState("modern");
@@ -74,7 +82,7 @@ const AIWebsiteGenerator = () => {
         colorScheme,
         customizations
       });
-      
+
       setGeneratedWebsite(website);
       toast.success("Website generated successfully!");
     } catch (error) {
@@ -89,21 +97,21 @@ const AIWebsiteGenerator = () => {
     if (!generatedWebsite) return;
 
     const zip = new JSZip();
-    
+
     // Add HTML file
     zip.file("index.html", generatedWebsite.html);
-    
+
     // Add CSS file
     zip.file("styles.css", generatedWebsite.css);
-    
+
     // Add JavaScript file if exists
     if (generatedWebsite.js) {
       zip.file("script.js", generatedWebsite.js);
     }
-    
+
     // Add README
     zip.file("README.md", generatedWebsite.readme);
-    
+
     // Generate and download zip
     zip.generateAsync({ type: "blob" }).then((content) => {
       const url = URL.createObjectURL(content);
@@ -121,10 +129,10 @@ const AIWebsiteGenerator = () => {
 
   const handleDeploy = () => {
     if (!generatedWebsite) return;
-    
+
     // Simulate deployment process
     toast.success("Deployment initiated! Your website will be live in a few minutes.");
-    
+
     // In a real implementation, this would integrate with Netlify, Vercel, etc.
     setTimeout(() => {
       toast.success("Website deployed successfully! Check your email for the live URL.");
@@ -234,12 +242,11 @@ const AIWebsiteGenerator = () => {
                       <button
                         key={scheme.value}
                         onClick={() => setColorScheme(scheme.value)}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          colorScheme === scheme.value ? "border-primary ring-2 ring-primary/20" : "border-gray-200"
-                        }`}
+                        className={`p-3 rounded-lg border-2 transition-all ${colorScheme === scheme.value ? "border-primary ring-2 ring-primary/20" : "border-gray-200"
+                          }`}
                       >
-                        <div 
-                          className="w-full h-8 rounded mb-2" 
+                        <div
+                          className="w-full h-8 rounded mb-2"
                           style={{ backgroundColor: scheme.color }}
                         />
                         <div className="text-xs font-medium">{scheme.label}</div>
@@ -248,8 +255,8 @@ const AIWebsiteGenerator = () => {
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleGenerate} 
+                <Button
+                  onClick={handleGenerate}
                   disabled={isGenerating || !prompt.trim()}
                   className="w-full"
                   size="lg"
@@ -422,7 +429,7 @@ const AIWebsiteGenerator = () => {
                           {generatedWebsite.title.toLowerCase().replace(/\s+/g, "-")}.com
                         </div>
                       </div>
-                      <div 
+                      <div
                         className="bg-card min-h-[400px] p-6"
                         dangerouslySetInnerHTML={{ __html: generatedWebsite.preview }}
                       />
@@ -497,9 +504,145 @@ const AIWebsiteGenerator = () => {
             )}
           </TabsContent>
         </Tabs>
+
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">AI Website Generator</h1>
+
+          <div className="my-10 flex justify-center">
+            {/* Custom SVG Illustration for AI Website Generator */}
+            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 border border-blue-100 dark:border-gray-700">
+              <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+
+              {/* Browser Window */}
+              <g transform="translate(100, 60)">
+                <rect width="400" height="280" rx="8" fill="white" stroke="#e2e8f0" strokeWidth="2" className="dark:fill-gray-800 dark:stroke-gray-600" />
+                <rect x="0" y="0" width="400" height="30" rx="8" fill="#f1f5f9" className="dark:fill-gray-700" />
+                <circle cx="20" cy="15" r="4" fill="#ef4444" />
+                <circle cx="35" cy="15" r="4" fill="#f59e0b" />
+                <circle cx="50" cy="15" r="4" fill="#22c55e" />
+
+                {/* Website Content */}
+                <rect x="40" y="60" width="140" height="20" rx="4" fill="#3b82f6" opacity="0.8" />
+                <rect x="40" y="90" width="200" height="10" rx="2" fill="#94a3b8" opacity="0.5" />
+                <rect x="40" y="110" width="180" height="10" rx="2" fill="#94a3b8" opacity="0.5" />
+
+                <rect x="280" y="60" width="80" height="80" rx="4" fill="#8b5cf6" opacity="0.2" />
+
+                <rect x="40" y="160" width="100" height="80" rx="4" fill="#cbd5e1" opacity="0.3" />
+                <rect x="150" y="160" width="100" height="80" rx="4" fill="#cbd5e1" opacity="0.3" />
+                <rect x="260" y="160" width="100" height="80" rx="4" fill="#cbd5e1" opacity="0.3" />
+              </g>
+
+              {/* AI Magic Effect */}
+              <g transform="translate(50, 250)">
+                <path d="M0 0 L20 -20 M10 0 L20 10 M30 -10 L10 -30" stroke="#8b5cf6" strokeWidth="2" opacity="0.6" />
+                <circle cx="15" cy="-10" r="2" fill="#8b5cf6" />
+              </g>
+
+              <g transform="translate(520, 100)">
+                <path d="M0 0 L-20 20 M-10 0 L-20 -10 M-30 10 L-10 30" stroke="#3b82f6" strokeWidth="2" opacity="0.6" />
+                <circle cx="-15" cy="10" r="2" fill="#3b82f6" />
+              </g>
+
+              <text x="300" y="380" textAnchor="middle" fill="#64748b" fontSize="16" fontWeight="500">Intelligent Web Design Automation</text>
+            </svg>
+          </div>
+
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
+            Building a website used to take weeks of coding and design work. With our <strong>AI Website Generator</strong>, you can turn a simple text description into a fully functional, responsive website in seconds. Whether you need a portfolio, a landing page, or an online store, our AI architect handles the code, layout, and styling for you.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
+            <span className="bg-blue-100 text-blue-800 p-2 rounded-md mr-4 text-2xl">🚀</span>
+            How It Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+              <div className="bg-blue-100 dark:bg-blue-900/30 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">1. Describe</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Tell the AI what you want. Be specific about the purpose, style, and features you need.</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+              <div className="bg-purple-100 dark:bg-purple-900/30 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                <Wand2 className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">2. Generate</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Our AI engine writes the HTML, CSS, and JavaScript, selecting the perfect layout and color palette.</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+              <div className="bg-green-100 dark:bg-green-900/30 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                <Download className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">3. Launch</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Preview your site, tweak the settings, and download the complete source code ready for deployment.</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Features & Capabilities</h2>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="flex items-start gap-3">
+              <Monitor className="h-6 w-6 text-blue-500 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg">Responsive Design</h3>
+                <p className="text-gray-600 dark:text-gray-400">Every website is mobile-friendly and looks great on all devices, from phones to desktops.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Palette className="h-6 w-6 text-purple-500 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg">Smart Theming</h3>
+                <p className="text-gray-600 dark:text-gray-400">Choose from modern, creative, or professional themes with harmonious color schemes generated by AI.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Code className="h-6 w-6 text-green-500 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg">Clean Code</h3>
+                <p className="text-gray-600 dark:text-gray-400">Get semantic, well-structured HTML5 and CSS3 code that is easy to maintain and SEO-optimized.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Smartphone className="h-6 w-6 text-orange-500 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg">App-Ready</h3>
+                <p className="text-gray-600 dark:text-gray-400">Generated sites are lightweight and fast, perfect for converting into Progressive Web Apps (PWAs).</p>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            <details className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 group">
+              <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Do I own the generated code?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                <p>Yes! The code generated by our tool is 100% yours to use, modify, and deploy for personal or commercial projects without any attribution required.</p>
+              </div>
+            </details>
+
+            <details className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 group">
+              <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Can I edit the website after downloading?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                <p>Absolutely. You receive standard HTML, CSS, and JavaScript files. You can open them in any code editor (like VS Code) to make further customizations.</p>
+              </div>
+            </details>
+          </div>
+        </article>
       </div>
     </ToolTemplate>
   );
 };
 
 export default AIWebsiteGenerator;
+

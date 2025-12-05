@@ -153,91 +153,212 @@ const UnitConverter = () => {
           )}
         </div>
 
-        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
-          <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">Free Unit Converter – Length, Weight, Volume & More</h1>
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">Free Unit Converter – Length, Weight, Volume & More</h1>
 
-          <div className="my-8 flex justify-center">
+          <div className="my-10 flex justify-center">
             {/* Custom SVG Illustration for Unit Converter */}
-            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-2xl rounded-xl shadow-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 border border-orange-100 dark:border-gray-700">
               <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+              <defs>
+                <linearGradient id="rulerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#fb923c" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+              </defs>
 
-              {/* Ruler */}
-              <g transform="translate(100, 150) rotate(-45)">
-                <rect x="0" y="0" width="300" height="60" fill="#fb923c" rx="4" />
-                <line x1="20" y1="0" x2="20" y2="20" stroke="white" strokeWidth="2" />
-                <line x1="60" y1="0" x2="60" y2="30" stroke="white" strokeWidth="2" /> // Major tick
-                <line x1="100" y1="0" x2="100" y2="20" stroke="white" strokeWidth="2" />
-                <line x1="140" y1="0" x2="140" y2="30" stroke="white" strokeWidth="2" /> // Major tick
-                <line x1="180" y1="0" x2="180" y2="20" stroke="white" strokeWidth="2" />
-                <line x1="220" y1="0" x2="220" y2="30" stroke="white" strokeWidth="2" /> // Major tick
-                <line x1="260" y1="0" x2="260" y2="20" stroke="white" strokeWidth="2" />
+              {/* Central Conversion Hub */}
+              <circle cx="300" cy="200" r="80" fill="white" stroke="#f59e0b" strokeWidth="2" strokeDasharray="5,5" />
+              <text x="300" y="205" textAnchor="middle" fill="#d97706" fontWeight="bold" fontSize="24">=</text>
+              <circle cx="300" cy="200" r="70" fill="#fff7ed" opacity="0.5">
+                <animate attributeName="r" values="60;70;60" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite" />
+              </circle>
+
+              {/* Length - Ruler */}
+              <g transform="translate(140, 100) rotate(-15)">
+                <rect x="0" y="0" width="120" height="40" rx="4" fill="url(#rulerGradient)" transform="rotate(-15)" />
+                <g transform="rotate(-15)">
+                  <line x1="10" y1="0" x2="10" y2="10" stroke="white" strokeWidth="2" />
+                  <line x1="30" y1="0" x2="30" y2="15" stroke="white" strokeWidth="2" />
+                  <line x1="50" y1="0" x2="50" y2="10" stroke="white" strokeWidth="2" />
+                  <line x1="70" y1="0" x2="70" y2="15" stroke="white" strokeWidth="2" />
+                  <line x1="90" y1="0" x2="90" y2="10" stroke="white" strokeWidth="2" />
+                </g>
+                <text x="50" y="30" fill="white" fontSize="12" fontWeight="bold" transform="rotate(-15)">Length</text>
               </g>
 
-              {/* Weight Scale Base */}
-              <g transform="translate(350, 200)">
-                <rect x="0" y="0" width="140" height="10" fill="#475569" rx="2" />
-                <rect x="65" y="-80" width="10" height="80" fill="#475569" />
-                <circle cx="70" cy="-90" r="60" fill="white" stroke="#475569" strokeWidth="4" />
-                <line x1="70" y1="-90" x2="90" y2="-110" stroke="#ef4444" strokeWidth="3" /> {/* Hand */}
+              {/* Weight - Weight Scale */}
+              <g transform="translate(400, 120)">
+                <path d="M0 0 L60 0 L50 20 L10 20 Z" fill="#78716c" />
+                <rect x="25" y="20" width="10" height="30" fill="#78716c" />
+                <path d="M10 50 L50 50 L60 60 L0 60 Z" fill="#57534e" />
+                <circle cx="30" cy="35" r="15" fill="white" stroke="#57534e" strokeWidth="2" />
+                <line x1="30" y1="35" x2="40" y2="25" stroke="#ef4444" strokeWidth="2" />
+                <text x="30" y="80" textAnchor="middle" fill="#57534e" fontSize="12" fontWeight="bold">Weight</text>
               </g>
 
-              {/* Beaker */}
-              <g transform="translate(350, 100)">
-                {/* Simplistic Beaker representation if needed, or keep clean */}
+              {/* Volume - Beaker */}
+              <g transform="translate(150, 280)">
+                <path d="M10 0 L40 0 L45 60 L5 60 Z" fill="#bae6fd" stroke="#0ea5e9" strokeWidth="2" />
+                <line x1="10" y1="10" x2="20" y2="10" stroke="#0ea5e9" strokeWidth="2" />
+                <line x1="9" y1="20" x2="25" y2="20" stroke="#0ea5e9" strokeWidth="2" />
+                <line x1="8" y1="30" x2="20" y2="30" stroke="#0ea5e9" strokeWidth="2" />
+                <line x1="7" y1="40" x2="30" y2="40" stroke="#0ea5e9" strokeWidth="2" />
+                {/* Bubbles */}
+                <circle cx="20" cy="50" r="2" fill="white" opacity="0.6">
+                  <animate attributeName="cy" values="50;10" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <text x="25" y="80" textAnchor="middle" fill="#0369a1" fontSize="12" fontWeight="bold">Volume</text>
               </g>
 
-              <text x="300" y="350" textAnchor="middle" fill="#64748b" fontSize="18" fontWeight="500">Universal Conversion Tool</text>
+              {/* Temperature - Thermometer */}
+              <g transform="translate(420, 260)">
+                <rect x="20" y="0" width="10" height="60" rx="5" fill="#fecaca" stroke="#ef4444" strokeWidth="2" />
+                <circle cx="25" cy="65" r="10" fill="#ef4444" />
+                <rect x="22" y="20" width="6" height="40" fill="#ef4444" />
+                <text x="25" y="90" textAnchor="middle" fill="#b91c1c" fontSize="12" fontWeight="bold">Temp</text>
+              </g>
+
+              {/* Connection Lines */}
+              <path d="M180 140 Q 240 160 270 180" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" fill="none" />
+              <path d="M400 150 Q 360 170 330 180" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" fill="none" />
+              <path d="M190 280 Q 240 240 270 220" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" fill="none" />
+              <path d="M420 280 Q 360 240 330 220" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" fill="none" />
+
             </svg>
           </div>
 
-          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
-            How many feet are in 5 meters? What is 10 pounds in kilograms? Whether you're a student solving physics problems, a chef converting a recipe, or just curious, our <strong>Unit Converter</strong> gives you precise answers instantly. No math required.
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
+            How many feet are in 5 meters? What is 10 pounds in kilograms? Does a pint in the US equal a pint in the UK? (Spoiler: It doesn't!) Whether you're a student solving physics problems, a chef converting a sophisticated recipe, or an engineer checking specialized measurements, our <strong>Universal Unit Converter</strong> gives you precise answers instantly. No complex math, no formula memorization required.
           </p>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Supported Categories</h2>
-          <div className="grid md:grid-cols-3 gap-6 my-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-              <span className="text-4xl mb-4 block">📏</span>
-              <h3 className="font-bold text-lg mb-2">Length</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Meter, Foot, Inch, Yard, Mile</p>
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
+            <span className="bg-orange-100 text-orange-800 p-2 rounded-md mr-4 text-2xl">🌍</span>
+            The Tale of Two Systems
+          </h2>
+          <p className="mb-6">
+            The world is largely divided into two measurement camps, and bridging them is why unit converters exist.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-blue-500 shadow-sm">
+              <h3 className="text-xl font-bold mb-4 text-blue-600 dark:text-blue-400">The Metric System (SI)</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">Used by over 95% of the world. It's logical, based on powers of 10. Water freezes at 0°C and boils at 100°C. 1000 meters make a kilometer.</p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Meters</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Kilograms</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Liters</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Celsius</span>
+              </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-              <span className="text-4xl mb-4 block">⚖️</span>
-              <h3 className="font-bold text-lg mb-2">Weight</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Kilogram, Pound, Gram, Ounce</p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-              <span className="text-4xl mb-4 block">🥛</span>
-              <h3 className="font-bold text-lg mb-2">Volume</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Liter, Gallon (US/UK), Cup, Pint</p>
+
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-red-500 shadow-sm">
+              <h3 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Imperial / US Customary</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">Used primarily in the USA (and partially in UK/Canada). Based on historical human traits (a "foot" was literally a foot length). 12 inches in a foot, 5280 feet in a mile.</p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Feet</span>
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Pounds</span>
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Gallons</span>
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Fahrenheit</span>
+              </div>
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Accuracy Matters</h2>
-          <p>
-            In cooking, a slight difference in flour measurement can ruin a cake. In engineering, a unit error can cause a bridge to collapse. We use standard international conversion factors (SI Units) to ensure your results are precise down to the decimal point.
-          </p>
-          <ul className="list-disc pl-6 space-y-2 mt-4 text-gray-600 dark:text-gray-400">
-            <li><strong>Instant Calculation:</strong> See the result as you type.</li>
-            <li><strong>Bidirectional:</strong> Switch "From" and "To" units with a single click logic.</li>
-            <li><strong>Mobile Friendly:</strong> Works perfectly on your phone for quick checks at the grocery store.</li>
-          </ul>
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Supported Conversion Categories</h2>
+          <div className="grid md:grid-cols-3 gap-6 my-8">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg text-center hover:bg-orange-50 dark:hover:bg-gray-700 transition">
+              <span className="text-4xl mb-4 block">📏</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Length</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Crucial for construction, travel, and height calculations.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg text-center hover:bg-orange-50 dark:hover:bg-gray-700 transition">
+              <span className="text-4xl mb-4 block">⚖️</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Weight / Mass</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Essential for cooking, shipping, and fitness.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg text-center hover:bg-orange-50 dark:hover:bg-gray-700 transition">
+              <span className="text-4xl mb-4 block">🥛</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Volume</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Recipes and fuel consumption.</p>
+            </div>
+          </div>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Common Conversions</h2>
-          <dl className="divide-y divide-gray-200 dark:divide-gray-700">
-            <div className="py-3 flex justify-between">
-              <dt className="text-gray-700 dark:text-gray-300">1 Inch</dt>
-              <dd className="font-mono text-gray-900 dark:text-white">2.54 Centimeters (exact)</dd>
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Why Precision is Critical</h2>
+          <p className="mb-4 text-lg">
+            History is full of disasters caused by unit conversion errors.
+          </p>
+          <div className="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-800 mb-8">
+            <h4 className="font-bold text-amber-800 dark:text-amber-200 mb-2">⚠️ The Gimli Glider Incident (1983)</h4>
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              An Air Canada Boeing 767 ran out of fuel mid-flight because the ground crew calculated fuel in <strong>pounds</strong> while the plane's computer required <strong>kilograms</strong>. Miraculously, the pilot glided to a safe landing.
+            </p>
+          </div>
+          <p className="mb-6">
+            Our tool uses precise standard conversion factors defined by the <strong>International System of Units (SI)</strong> to ensure you never make such a mistake.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Common Conversion Cheat Sheet</h2>
+          <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Conversion</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Approximate Value</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">Length</td>
+                  <td className="px-6 py-4">1 Inch → Centimeters</td>
+                  <td className="px-6 py-4 font-mono text-blue-600">2.54 cm</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">Length</td>
+                  <td className="px-6 py-4">1 Mile → Kilometers</td>
+                  <td className="px-6 py-4 font-mono text-blue-600">1.60934 km</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">Weight</td>
+                  <td className="px-6 py-4">1 Kilogram → Pounds</td>
+                  <td className="px-6 py-4 font-mono text-blue-600">2.20462 lbs</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">Weight</td>
+                  <td className="px-6 py-4">1 Ounce → Grams</td>
+                  <td className="px-6 py-4 font-mono text-blue-600">28.3495 g</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium">Volume</td>
+                  <td className="px-6 py-4">1 Gallon (US) → Liters</td>
+                  <td className="px-6 py-4 font-mono text-blue-600">3.78541 L</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-4">
+            <div className="pt-4">
+              <dt className="font-bold text-lg">What is a "Liquid Ounce" vs a regular "Ounce"?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">This is a common confusion! A <strong>Fluid Ounce (fl oz)</strong> measures <em>volume</em> (like water), whereas a standard <strong>Ounce (oz)</strong> measures <em>weight</em>. 1 fl oz of water weighs roughly 1 oz, but 1 fl oz of honey weighs about 1.5 oz.</dd>
             </div>
-            <div className="py-3 flex justify-between">
-              <dt className="text-gray-700 dark:text-gray-300">1 Kilogram</dt>
-              <dd className="font-mono text-gray-900 dark:text-white">~2.20462 Pounds</dd>
-            </div>
-            <div className="py-3 flex justify-between">
-              <dt className="text-gray-700 dark:text-gray-300">1 Gallon (US)</dt>
-              <dd className="font-mono text-gray-900 dark:text-white">~3.78541 Liters</dd>
+            <div className="pt-4">
+              <dt className="font-bold text-lg">Are US Gallons and UK Gallons the same?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">No! A <strong>US Gallon</strong> is approx 3.78 liters. A <strong>UK (Imperial) Gallon</strong> is approx 4.54 liters. Be careful when using UK recipes in the US!</dd>
             </div>
           </dl>
+
+          <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h4 className="font-bold text-lg mb-2">Need to convert currency?</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">We have a dedicated tool with live exchange rates.</p>
+            </div>
+            <Button asChild variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20">
+              <a href="/tools/currency-converter">Go to Currency Converter</a>
+            </Button>
+          </div>
         </article>
       </div>
     </ToolTemplate>

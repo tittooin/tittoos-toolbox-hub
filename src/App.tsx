@@ -75,6 +75,9 @@ const ResumeBuilder = lazy(() => import("./pages/tools/ResumeBuilder"));
 const MergePDF = lazy(() => import("./pages/tools/MergePDF"));
 const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
 const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
+const IPAddressLookup = lazy(() => import("./pages/tools/IPAddressLookup"));
+const WhoisLookup = lazy(() => import("./pages/tools/WhoisLookup"));
+const InternetSpeedTest = lazy(() => import("./pages/tools/InternetSpeedTest"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -201,6 +204,9 @@ const App = () => (
               <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
               <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
               <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
+              <Route path="/tools/ip-address-lookup" element={<IPAddressLookup />} />
+              <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
+              <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
 
 
 

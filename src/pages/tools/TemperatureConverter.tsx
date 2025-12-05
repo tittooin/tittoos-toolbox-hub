@@ -113,103 +113,206 @@ const TemperatureConverter = () => {
           )}
         </div>
 
-        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
-          <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-blue-600">Temperature Converter – Celsius, Fahrenheit & Kelvin</h1>
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-blue-600">Free Temperature Converter – Celsius, Fahrenheit & Kelvin</h1>
 
-          <div className="my-8 flex justify-center">
+          <div className="my-10 flex justify-center">
             {/* Custom SVG Illustration for Temperature Converter */}
-            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-2xl rounded-xl shadow-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-blue-50 to-red-50 dark:from-gray-800 dark:to-gray-900 border border-blue-100 dark:border-gray-700">
               <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+              <defs>
+                <linearGradient id="hotCold" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="50%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#ef4444" />
+                </linearGradient>
+              </defs>
 
-              {/* Hot Thermometer */}
-              <g transform="translate(150, 100)">
-                <rect x="35" y="0" width="30" height="200" fill="#ffe4e6" rx="15" stroke="#e11d48" strokeWidth="2" />
-                <circle cx="50" cy="220" r="30" fill="#e11d48" />
-                <rect x="42" y="50" width="16" height="170" fill="#e11d48" />
-                <text x="100" y="100" fill="#e11d48" fontSize="24" fontWeight="bold">Hot</text>
+              {/* Central Thermometer */}
+              <g transform="translate(250, 50)">
+                <rect x="30" y="0" width="40" height="300" rx="20" fill="white" stroke="#e5e7eb" strokeWidth="2" className="dark:fill-gray-800 dark:stroke-gray-600" />
+                {/* Liquid */}
+                <rect x="40" y="40" width="20" height="240" rx="10" fill="url(#hotCold)" />
+                <circle cx="50" cy="280" r="30" fill="#3b82f6" />
+                <circle cx="50" cy="280" r="25" fill="none" stroke="white" strokeWidth="2" opacity="0.3" />
+
+                {/* Tick Marks */}
+                <g transform="translate(80, 0)">
+                  <line x1="0" y1="50" x2="10" y2="50" stroke="#9ca3af" strokeWidth="2" />
+                  <text x="15" y="55" fontSize="12" fill="#6b7280">100°C</text>
+
+                  <line x1="0" y1="110" x2="10" y2="110" stroke="#9ca3af" strokeWidth="2" />
+
+                  <line x1="0" y1="165" x2="10" y2="165" stroke="#9ca3af" strokeWidth="2" />
+                  <text x="15" y="170" fontSize="12" fill="#6b7280">0°C</text>
+
+                  <line x1="0" y1="220" x2="10" y2="220" stroke="#9ca3af" strokeWidth="2" />
+                </g>
               </g>
 
-              {/* Cold Thermometer */}
-              <g transform="translate(350, 100)">
-                <rect x="35" y="0" width="30" height="200" fill="#dbeafe" rx="15" stroke="#2563eb" strokeWidth="2" />
-                <circle cx="50" cy="220" r="30" fill="#2563eb" />
-                <rect x="42" y="120" width="16" height="100" fill="#2563eb" />
-                <text x="100" y="200" fill="#2563eb" fontSize="24" fontWeight="bold">Cold</text>
+              {/* Floating Elements/Icons */}
+              <g transform="translate(100, 100)">
+                <circle cx="0" cy="0" r="40" fill="#ffe4e6" opacity="0.6">
+                  <animate attributeName="r" values="35;45;35" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <text x="0" y="5" textAnchor="middle" fontSize="24">🔥</text>
+                <text x="0" y="35" textAnchor="middle" fontSize="14" fill="#be123c" fontWeight="bold">Hot</text>
               </g>
 
-              {/* Conversion Arrows */}
-              <g transform="translate(280, 180)">
-                <path d="M0 0 L40 20 L0 40 Z" fill="#64748b" opacity="0.5" />
+              <g transform="translate(500, 250)">
+                <circle cx="0" cy="0" r="40" fill="#dbeafe" opacity="0.6">
+                  <animate attributeName="r" values="35;45;35" dur="3s" repeatCount="indefinite" delay="1.5s" />
+                </circle>
+                <text x="0" y="5" textAnchor="middle" fontSize="24">❄️</text>
+                <text x="0" y="35" textAnchor="middle" fontSize="14" fill="#1e40af" fontWeight="bold">Cold</text>
               </g>
 
-              <text x="300" y="320" textAnchor="middle" fill="#64748b" fontSize="18" fontWeight="500">Accurate Scientific Conversion</text>
+              {/* Scientific Formula Background */}
+              <text x="50" y="350" fill="#9ca3af" fontSize="14" opacity="0.3" fontFamily="monospace">F = C × 9/5 + 32</text>
+              <text x="400" y="350" fill="#9ca3af" fontSize="14" opacity="0.3" fontFamily="monospace">K = C + 273.15</text>
             </svg>
           </div>
 
-          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Cooking a recipe from another country? Checking the weather for your vacation? Science homework? Our <strong>Temperature Converter</strong> instantly bridges the gap between Celsius (°C), Fahrenheit (°F), and Kelvin (K).
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
+            Cooking a recipe from another country? Checking the weather for your vacation to the United States? Or perhaps double-checking a physics problem? Our <strong>Temperature Converter</strong> instantly bridges the gap between Celsius (°C), Fahrenheit (°F), and Kelvin (K). No more mental math or guessing—just precise, scientific results.
           </p>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Understanding the Scales</h2>
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
+            <span className="bg-orange-100 text-orange-800 p-2 rounded-md mr-4 text-2xl">🌡️</span>
+            The Three Major Scales
+          </h2>
+          <p className="mb-6">
+            In the modern world, we primarily deal with three ways of measuring thermal energy. Understanding the difference can save you from a burnt cake or packing the wrong jacket.
+          </p>
+
           <div className="grid md:grid-cols-3 gap-6 my-8">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border-t-4 border-blue-500">
-              <h3 className="font-bold text-lg mb-2">Celsius (°C)</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Used by most of the world. Water freezes at 0°C and boils at 100°C. Simple and logical.</p>
+              <h3 className="font-bold text-lg mb-2 text-blue-700 dark:text-blue-400">Celsius (°C)</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Used by:</strong> The entire world (except the US, Liberia, and a few island nations).</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">It is based on water: <strong>0°C</strong> is freezing, and <strong>100°C</strong> is boiling at sea level. It makes perfect sense for daily life and science.</p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border-t-4 border-red-500">
-              <h3 className="font-bold text-lg mb-2">Fahrenheit (°F)</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Used primarily in the USA. Water freezes at 32°F and boils at 212°F. More precise for weather.</p>
+              <h3 className="font-bold text-lg mb-2 text-red-700 dark:text-red-400">Fahrenheit (°F)</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Used by:</strong> The United States, Bahamas, Cayman Islands.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Water freezes at <strong>32°F</strong> and boils at <strong>212°F</strong>. Though less logical mathematically, 0°F to 100°F covers the typical range of ambient weather for humans.</p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border-t-4 border-purple-500">
-              <h3 className="font-bold text-lg mb-2">Kelvin (K)</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">The scientific standard. 0K is "Absolute Zero" — the coldest possible temperature in the universe.</p>
+              <h3 className="font-bold text-lg mb-2 text-purple-700 dark:text-purple-400">Kelvin (K)</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Used by:</strong> Scientists and Physicists.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">It starts at <strong>Absolute Zero</strong> (0K), the point where all atomic motion stops. There are no negative numbers in Kelvin.</p>
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Quick Reference Guide</h2>
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <th className="p-3 border dark:border-gray-600">Event</th>
-                <th className="p-3 border dark:border-gray-600">Celsius</th>
-                <th className="p-3 border dark:border-gray-600">Fahrenheit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="p-3 border dark:border-gray-600">Absolute Zero</td>
-                <td className="p-3 border dark:border-gray-600">-273.15°C</td>
-                <td className="p-3 border dark:border-gray-600">-459.67°F</td>
-              </tr>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
-                <td className="p-3 border dark:border-gray-600">Water Freezes</td>
-                <td className="p-3 border dark:border-gray-600">0°C</td>
-                <td className="p-3 border dark:border-gray-600">32°F</td>
-              </tr>
-              <tr>
-                <td className="p-3 border dark:border-gray-600">Room Temp</td>
-                <td className="p-3 border dark:border-gray-600">20°C</td>
-                <td className="p-3 border dark:border-gray-600">68°F</td>
-              </tr>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
-                <td className="p-3 border dark:border-gray-600">Body Temp</td>
-                <td className="p-3 border dark:border-gray-600">37°C</td>
-                <td className="p-3 border dark:border-gray-600">98.6°F</td>
-              </tr>
-              <tr>
-                <td className="p-3 border dark:border-gray-600">Water Boils</td>
-                <td className="p-3 border dark:border-gray-600">100°C</td>
-                <td className="p-3 border dark:border-gray-600">212°F</td>
-              </tr>
-            </tbody>
-          </table>
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Conversion Formulas Cheat Sheet</h2>
+          <p class="mb-6">While our tool does this instantly, here are the formulas if you ever need to do it by hand (for a test, perhaps!).</p>
 
-          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Features</h2>
-          <ul className="list-disc pl-6 space-y-2 mt-4 text-gray-600 dark:text-gray-400">
-            <li><strong>Precision:</strong> Get results up to 2 decimal places.</li>
-            <li><strong>Instant:</strong> No need to press a "calculate" button.</li>
-            <li><strong>Educational:</strong> Learn the difference between scales as you use it.</li>
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+              <thead>
+                <tr className="bg-gray-100 dark:bg-gray-700 border-b dark:border-gray-600">
+                  <th className="p-4 font-bold">Conversion</th>
+                  <th className="p-4 font-bold">Formula</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td className="p-4">Celsius to Fahrenheit</td>
+                  <td className="p-4 font-mono text-blue-600 dark:text-blue-400">(°C × 9/5) + 32 = °F</td>
+                </tr>
+                <tr>
+                  <td className="p-4">Fahrenheit to Celsius</td>
+                  <td className="p-4 font-mono text-red-600 dark:text-red-400">(°F - 32) × 5/9 = °C</td>
+                </tr>
+                <tr>
+                  <td className="p-4">Celsius to Kelvin</td>
+                  <td className="p-4 font-mono text-purple-600 dark:text-purple-400">°C + 273.15 = K</td>
+                </tr>
+                <tr>
+                  <td className="p-4">Kelvin to Celsius</td>
+                  <td className="p-4 font-mono text-purple-600 dark:text-purple-400">K - 273.15 = °C</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Common Temperature Benchmarks</h2>
+          <div className="space-y-4">
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="w-16 text-2xl text-center">🥶</div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 dark:text-white">Absolute Zero</h4>
+                <p className="text-gray-500 text-sm">The coldest theoretical temperature.</p>
+              </div>
+              <div className="text-right font-mono text-sm space-y-1">
+                <div className="text-blue-600">-273.15°C</div>
+                <div className="text-red-600">-459.67°F</div>
+                <div className="text-purple-600">0 K</div>
+              </div>
+            </div>
+
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="w-16 text-2xl text-center">🧊</div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 dark:text-white">Water Freezing</h4>
+                <p className="text-gray-500 text-sm">Standard freezing point of water.</p>
+              </div>
+              <div className="text-right font-mono text-sm space-y-1">
+                <div className="text-blue-600">0°C</div>
+                <div className="text-red-600">32°F</div>
+                <div className="text-purple-600">273.15 K</div>
+              </div>
+            </div>
+
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="w-16 text-2xl text-center">🧘</div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 dark:text-white">Human Body Temp</h4>
+                <p className="text-gray-500 text-sm">Average normal body temperature.</p>
+              </div>
+              <div className="text-right font-mono text-sm space-y-1">
+                <div className="text-blue-600">37°C</div>
+                <div className="text-red-600">98.6°F</div>
+                <div className="text-purple-600">310.15 K</div>
+              </div>
+            </div>
+
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="w-16 text-2xl text-center">☕</div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 dark:text-white">Water Boiling</h4>
+                <p className="text-gray-500 text-sm">Standard boiling point of water.</p>
+              </div>
+              <div className="text-right font-mono text-sm space-y-1">
+                <div className="text-blue-600">100°C</div>
+                <div className="text-red-600">212°F</div>
+                <div className="text-purple-600">373.15 K</div>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Why does the USA use Fahrenheit?</h2>
+          <p className="mb-4">
+            It's a common question! Most of the world switched to Celsius during the metrication periods of the 1960s and 70s. The US, however, stuck with the British Imperial System (now US Customary Units).
+          </p>
+          <p className="mb-4">
+            Daniel Gabriel Fahrenheit was the first to create a reliable mercury thermometer in 1714. His scale was the standard for a long time. While Celsius is mathematically cleaner (0-100), fans of Fahrenheit argue that it allows for more precision in weather discussions without using decimals. For example, the difference between 70°F and 71°F is smaller than 21°C and 22°C.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-4">
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Is -40 degrees same for Celsius and Fahrenheit?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Yes! This is the unique "crossover point" where the lines intersect. -40°C is exactly equal to -40°F.</dd>
+            </div>
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">What is absolute zero?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Absolute zero (0 Kelvin) is the lowest limit of the thermodynamic temperature scale. At this temperature, atoms stop moving completely, and no heat energy remains. It is theoretically impossible to reach, though scientists have gotten very close.</dd>
+            </div>
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">How do I convert oven temperatures?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">A quick rule of thumb for cooking: If a US recipe says 350°F, that is roughly 175°C (or 180°C for simplicity). Just halve the Fahrenheit number for a rough estimate!</dd>
+            </div>
+          </dl>
         </article>
       </div>
     </ToolTemplate>

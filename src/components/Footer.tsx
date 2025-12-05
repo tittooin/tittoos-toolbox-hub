@@ -18,7 +18,7 @@ const Footer = () => {
               <span className="text-xl font-bold">TittoosTools</span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
-              Your complete toolkit for online productivity. Access 35+ essential utilities 
+              Your complete toolkit for online productivity. Access 35+ essential utilities
               including converters, generators, analyzers, and editors - all in one place.
             </p>
             <div className="flex space-x-4">
@@ -130,7 +130,7 @@ const Footer = () => {
               <li className="text-sm">UI components via shadcn/ui (MIT License).</li>
               <li className="text-sm">Built with React, Vite, Tailwind CSS.</li>
               <li className="text-sm">Brand names/logos belong to their respective owners.</li>
-              <li className="text-sm">Downloader tools must respect platform terms; use responsibly.</li>
+
             </ul>
           </div>
         </div>
@@ -140,7 +140,7 @@ const Footer = () => {
             © {currentYear} TittoosTools. All rights reserved. Built with ❤️ for productivity.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Disclosure: Some pages may display ads to keep tools free. Ads are not shown on downloader pages.
+            Disclosure: Some pages may display ads to keep tools free.
           </p>
         </div>
       </div>
