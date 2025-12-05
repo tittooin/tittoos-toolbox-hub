@@ -110,6 +110,16 @@ const TextToVideo = () => {
     return "zoom_in"; // Default
   };
 
+  const analyzeMotion = (prompt: string): string => {
+    const p = prompt.toLowerCase();
+    if (p.includes("pan right") || p.includes("move right") || p.includes("slide right")) return "pan_right";
+    if (p.includes("pan left") || p.includes("move left") || p.includes("slide left")) return "pan_left";
+    if (p.includes("pan up") || p.includes("move up")) return "pan_up";
+    if (p.includes("zoom out") || p.includes("pull back")) return "zoom_out";
+    if (p.includes("zoom") || p.includes("closer")) return "zoom_in";
+    return "zoom_in"; // Default
+  };
+
   const renderParticles = (ctx: CanvasRenderingContext2D, frame: number, type: string) => {
     // Simple particle system for effects
     const particleCount = 50;
