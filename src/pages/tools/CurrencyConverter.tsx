@@ -244,6 +244,81 @@ const CurrencyConverter = () => {
             </Card>
           )}
         </div>
+
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
+          <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-600">Free Currency Converter – Live Exchange Rates</h1>
+
+          <div className="my-8 flex justify-center">
+            {/* Custom SVG Illustration for Currency Converter */}
+            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-2xl rounded-xl shadow-lg bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+              <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+
+              {/* Central Exchange Icon */}
+              <g transform="translate(250, 150)">
+                <circle cx="50" cy="50" r="60" fill="#ecfdf5" stroke="#10b981" strokeWidth="2" />
+                <path d="M30 40 L70 40 L50 20 Z" fill="#10b981" /> {/* Up Arrow */}
+                <path d="M70 60 L30 60 L50 80 Z" fill="#059669" /> {/* Down Arrow */}
+              </g>
+
+              {/* Dollar Coin */}
+              <g transform="translate(150, 180)">
+                <circle cx="0" cy="0" r="40" fill="#fbbf24" stroke="#d97706" strokeWidth="3" />
+                <text x="0" y="10" textAnchor="middle" fill="#92400e" fontSize="30" fontWeight="bold">$</text>
+              </g>
+
+              {/* Euro Coin */}
+              <g transform="translate(450, 180)">
+                <circle cx="0" cy="0" r="40" fill="#60a5fa" stroke="#2563eb" strokeWidth="3" />
+                <text x="0" y="10" textAnchor="middle" fill="#1e40af" fontSize="30" fontWeight="bold">€</text>
+              </g>
+
+              {/* Chart Line background */}
+              <path d="M50 350 L150 250 L250 300 L400 150 L550 200" fill="none" stroke="#10b981" strokeWidth="3" strokeDasharray="10 5" opacity="0.3" />
+
+              <text x="300" y="350" textAnchor="middle" fill="#64748b" fontSize="18" fontWeight="500">Global Market Rates</text>
+            </svg>
+          </div>
+
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
+            Planning a trip to Europe? Buying something from an international website? Or just trading forex? Our <strong>Currency Converter</strong> provides real-time exchange rates for over 150 currencies worldwide. Get accurate conversions instantly so you know exactly what your money is worth.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Use an Online Converter?</h2>
+          <div className="grid md:grid-cols-2 gap-8 my-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+              <h3 className="text-xl font-bold mb-3 text-green-600 dark:text-green-400">Avoid Bad Deals</h3>
+              <p className="text-gray-600 dark:text-gray-300">Airports and tourist shops often offer terrible exchange rates. Check the real market rate here first so you don't get ripped off.</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+              <h3 className="text-xl font-bold mb-3 text-blue-600 dark:text-blue-400">Budget Better</h3>
+              <p className="text-gray-600 dark:text-gray-300">Know exactly how much that hotel or dinner costs in your home currency. No more guessing games.</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Major Currencies Supported</h2>
+          <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center my-6 text-gray-700 dark:text-gray-300">
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇺🇸 USD</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇪🇺 EUR</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇬🇧 GBP</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇯🇵 JPY</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇮🇳 INR</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇨🇦 CAD</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇦🇺 AUD</li>
+            <li className="bg-gray-50 dark:bg-gray-800 p-3 rounded font-medium">🇨🇭 CHF</li>
+          </ul>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <dl className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="py-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">How often are rates updated?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Our rates are updated regularly to reflect the live mid-market exchange rates. However, for large transactions, always verify with your bank as they may charge a spread.</dd>
+            </div>
+            <div className="py-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Is this the rate I will get at the bank?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Likely not. This is the "mid-market" rate—the midpoint between buy and sell prices. Banks and kiosks typically add a 2-5% fee (spread) on top of this rate.</dd>
+            </div>
+          </dl>
+        </article>
       </div>
     </ToolTemplate>
   );

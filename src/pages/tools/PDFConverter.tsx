@@ -20,7 +20,7 @@ const PDFConverter = () => {
   useEffect(() => {
     // Set SEO meta tags
     document.title = "Free PDF to Word Converter Online – TittoosTools";
-    
+
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Convert PDF to editable Word documents instantly and free. No signup, no watermark – just drag, convert & download at TittoosTools.');
@@ -179,6 +179,84 @@ const PDFConverter = () => {
             </CardContent>
           </Card>
         )}
+
+        <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12">
+          <h1 className="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Convert PDF to Image Online – High Quality & Free</h1>
+
+          <div className="my-8">
+            <img
+              src="/assets/images/pdf_converter_illustration.png"
+              alt="Illustration of PDF to Image conversion"
+              className="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
+            />
+          </div>
+
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
+            Sometimes, sharing a PDF isn't enough. You might need to post a page on Instagram, insert a slide into a presentation, or just view a document without a PDF reader. Our <strong>PDF to Image Converter</strong> solves this instantly. It transforms every page of your PDF document into a high-quality PNG image, ready for use anywhere.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Convert PDF to Images?</h2>
+          <p>
+            PDFs are great for documents, but they can be clunky. Images (like PNGs) are universal.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-6 text-gray-600 dark:text-gray-400">
+            <li><strong>Easy Sharing:</strong> Images can be sent via WhatsApp, Messenger, or uploaded to social media instantly.</li>
+            <li><strong>Universal Compatibility:</strong> Every device on the planet can open a PNG file. No special software needed.</li>
+            <li><strong>Embed Anywhere:</strong> Easily drop a page from a report into your Word doc, PowerPoint, or website.</li>
+          </ul>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How to Convert PDF to PNG in Seconds</h2>
+          <div className="grid md:grid-cols-3 gap-6 my-8">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
+              <h3 className="font-bold text-lg mb-2">1. Upload</h3>
+              <p>Click "Choose PDF File" and select any document from your device.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-indigo-500">
+              <h3 className="font-bold text-lg mb-2">2. Convert</h3>
+              <p>Click "Convert to Images". Our tool processes each page individually.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-purple-500">
+              <h3 className="font-bold text-lg mb-2">3. Download</h3>
+              <p>Download single pages or grab everything in one neat ZIP file.</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Is it Safe?</h2>
+          <p>
+            Absolutely. We believe in <strong>privacy by design</strong>. Unlike other converters that upload your files to a cloud server, our tool works 100% in your browser.
+          </p>
+          <p className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4">
+            <strong>Security Note:</strong> Your sensitive bank statements, contracts, or personal documents never leave your computer. You are the only one who sees them.
+          </p>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            <details className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+              <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>What format are the images?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <p className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                We convert your PDF pages to <strong>PNG (Portable Network Graphics)</strong> format. PNG is ideal because it preserves text clarity and quality better than JPG, making it perfect for documents.
+              </p>
+            </details>
+
+            <details className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+              <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Is there a page limit?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <p className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                Since the conversion happens on your device, the only limit is your computer's memory (RAM). Most modern devices can handle PDFs with dozens or even hundreds of pages without issue.
+              </p>
+            </details>
+          </div>
+        </article>
+
       </div>
     </ToolTemplate>
   );
