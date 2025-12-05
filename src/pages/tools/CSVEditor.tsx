@@ -380,7 +380,7 @@ const CSVEditor = () => {
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                <p>This tool supports <strong>.csv</strong> and <strong>.txt</strong> files. To open an Excel file (.xlsx), please save it as a CSV file in Excel first ("Save As" > "CSV UTF-8"), then upload it here.</p>
+                <p>This tool supports <strong>.csv</strong> and <strong>.txt</strong> files. To open an Excel file (.xlsx), please save it as a CSV file in Excel first ("Save As" &gt; "CSV UTF-8"), then upload it here.</p>
               </div>
             </details>
 
