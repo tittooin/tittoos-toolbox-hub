@@ -1,3 +1,4 @@
+// SEO Utilities for TittoosTools
 export interface SEOData {
   title?: string;
   description?: string;
