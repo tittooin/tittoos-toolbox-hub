@@ -75,82 +75,124 @@ const CompressPDF = () => {
                 toast.info("File was already optimized. No significant reduction achieved.");
             }
 
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to compress PDF.");
         } finally {
             setIsCompressing(false);
         }
     };
 
     const content = `
-    <article class="prose prose-lg max-w-none">
-      <h2>Compress PDF Online - Reduce File Size for Free</h2>
-      <p>Are your PDF files too large to email or upload? Large documents can be a hassle to share and slow to load. Our **Compress PDF Online** tool solves this problem by optimizing your files to reduce their size while maintaining good quality—all directly in your browser.</p>
+    <article class="prose prose-lg max-w-none text-gray-800 dark:text-gray-200">
+      <h1 class="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Compress PDF Online – Reduce File Size Without Losing Quality</h1>
 
-      <h3>How to Compress a PDF</h3>
-      <ol>
-        <li><strong>Upload File:</strong> Click "Choose PDF File" and select the document you want to shrink.</li>
-        <li><strong>Compress:</strong> Click the "Compress PDF" button. Our tool will analyze and rebuild the file to remove redundant data.</li>
-        <li><strong>Download:</strong> Once finished, the smaller file will be downloaded automatically. We'll show you exactly how much space you saved.</li>
-      </ol>
+      <div class="my-8">
+        <img src="/assets/images/compress_pdf_illustration.png" alt="Illustration of compressing a PDF document" class="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700" />
+      </div>
 
-      <h2>Why Do PDFs Get So Big?</h2>
-      <p>PDFs can become bloated for several reasons:</p>
-      <ul>
-        <li><strong>High-Resolution Images:</strong> Scanned documents often contain images with much higher detail than necessary for on-screen reading.</li>
-        <li><strong>Embedded Fonts:</strong> Including full font sets instead of subsets can add megabytes to a simple text document.</li>
-        <li><strong>Unused Objects:</strong> Editing a PDF repeatedly can leave behind "garbage" data—old versions of pages or deleted images that are still hidden in the file structure.</li>
-        <li><strong>Inefficient Structure:</strong> Some PDF creators don't optimize how the data is stored internally.</li>
+      <p class="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
+        "File too large to attach." We've all seen that annoying error message right before a deadline. Whether you're trying to email a report, upload a portfolio to a job site, or save space on your phone, large PDF files are a hassle. Our <strong>Compress PDF Online tool</strong> is the smart solution. It intelligently optimizes your documents, shrinking their size significantly while keeping them looking crisp and professional.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Optimization Matters</h2>
+      <p>
+        In a world where speed is everything, bloated files slow you down. Large PDFs take longer to upload, consume your data plan, and can even be blocked by email servers (which often have a 25MB limit).
+      </p>
+      <p>
+        By <strong>compressing your PDF</strong>, you:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 mb-6 text-gray-600 dark:text-gray-400">
+        <li><strong>Speed up sharing:</strong> Send files over WhatsApp, Slack, or Email instantly.</li>
+        <li><strong>Save storage space:</strong> Keep more documents on your cloud drive or device.</li>
+        <li><strong>Improve accessibility:</strong> Ensure your recipients can open your files quickly, even on slow mobile connections.</li>
       </ul>
 
-      <h2>How Our Compression Works</h2>
-      <p>Our tool performs what is known as "lossless" or "structural" optimization. It parses the entire PDF structure and rewrites it in the most efficient way possible. It:
-      <ul>
-        <li>Removes unused objects and orphaned data streams.</li>
-        <li>Optimizes the internal reference table.</li>
-        <li>Uses object streams to compress the document structure itself.</li>
-      </ul>
-      This method is safe for all documents as it does not degrade image quality or change text. It effectively "cleans up" the file.</p>
-      <p><em>Note: For drastically smaller sizes (like reducing a 50MB scan to 5MB), "lossy" compression (lowering image quality) is usually needed. Our current tool focuses on safe, quality-preserving optimization.</em></p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How It Works: The Magic Behind the Curtain</h2>
+      <p>
+        You might be wondering, "How can you make a file smaller without deleting content?" The secret lies in <em>structure optimization</em>.
+      </p>
+      <p>
+        PDFs often contain hidden redundant data—unused fonts, excessive metadata, and inefficient internal structures. Our tool analyzes your file deep down to the code level. It cleans up this invisible clutter and reorganizes the data streams efficiently. The result? A leaner, lighter file that looks exactly the same to the human eye.
+      </p>
 
-      <h2>Benefits of Using Our Compressor</h2>
-      <ul>
-        <li><strong>Faster Uploads/Downloads:</strong> Smaller files transfer quicker, saving you time and bandwidth.</li>
-        <li><strong>Email Friendly:</strong> Most email providers limit attachments to 20MB or 25MB. Compression helps you stay under this limit.</li>
-        <li><strong>Archive Efficiency:</strong> Save disk space when storing thousands of documents.</li>
-        <li><strong>100% Free & Private:</strong> Like all our tools, it runs in your browser. We don't see your files.</li>
-      </ul>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How to Compress a PDF in 3 Steps</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6 my-8">
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
+            <h3 class="font-bold text-lg mb-2">1. Upload</h3>
+            <p>Select your large PDF file. Our tool accepts files of almost any size.</p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-indigo-500">
+            <h3 class="font-bold text-lg mb-2">2. Analyze</h3>
+            <p>Our intelligent engine scans the file to find optimization opportunities instantly.</p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-purple-500">
+            <h3 class="font-bold text-lg mb-2">3. Download</h3>
+            <p>We'll show you how much space you saved. Click download and enjoy your optimized file.</p>
+        </div>
+      </div>
 
-      <h2>Frequently Asked Questions (FAQs)</h2>
-
-      <h3>Does this reduce image quality?</h3>
-      <p>Our current compression method focuses on structural optimization, which preserves 100% of the original visual quality. It's safe for legal documents and contracts where clarity is critical.</p>
-
-      <h3>How much size can I save?</h3>
-      <p>This depends heavily on the source file. If a file was created inefficiently, you might see reductions of 10-50%. If the file is already highly optimized, the reduction might be minimal. Files with many vector graphics or inefficiently embedded fonts see the best results.</p>
-
-      <h3>Is my data secure?</h3>
-      <p>Yes. The compression happens locally on your device (client-side processing). Your confidential documents are never uploaded to a public cloud or stored by us.</p>
-
-      <h3>Can I compress multiple files at once?</h3>
-      <p>Currently, we support single file processing to ensure maximum stability and speed in the browser. You can process files one after another without any waiting time.</p>
-
-      <h3>What if the file size doesn't change?</h3>
-      <p>If the file size remains the same, it means your PDF was already maximally optimized by the software that created it. In this case, further reduction would require degrading image quality (coming soon).</p>
-
-      <h3>Do I need to install software?</h3>
-      <p>No. It works entirely online. You can use it on Windows, Mac, Linux, Android, and iOS.</p>
-
-      <h2>Tips for Managing Large PDFs</h2>
-      <ul>
-        <li><strong>Scan Settings:</strong> When scanning documents, choose 150 DPI for text docs instead of 300 or 600 DPI to keep initial sizes low.</li>
-        <li><strong>Black & White:</strong> Convert color scans to Grayscale or B&W if color isn't needed.</li>
-        <li><strong>Split First:</strong> If a document is huge, consider using our Split PDF tool to break it into smaller parts before compressing.</li>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Features You'll Love</h2>
+      <ul class="list-none space-y-4 my-6">
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Smart Compression:</strong> We strike the perfect balance between file size and quality. Your text stays sharp for reading, and images remain clear.</span>
+        </li>
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Secure & Private:</strong> Just like our other tools, compression happens locally in your browser. We don't spy on your data.</span>
+        </li>
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Instant Feedback:</strong> See exactly how much weight your file lost. It's satisfying to see "Reduced by 45%"!</span>
+        </li>
       </ul>
 
-      <h2>Conclusion</h2>
-      <p>Stop struggling with "File too large" errors. Use TittoosTools' **Compress PDF** to streamline your documents quickly, safely, and for free. Give it a try now!</p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+      
+      <div class="space-y-6">
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Will my images become blurry?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                Our default settings are tuned for "Lossless" or "High Quality" optimization. This means we primarily target structural data. While there might be imperceptible changes to image data to save space, visible quality is largely preserved for screen viewing and standard printing.
+            </p>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>How much can I reduce my file size?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                It depends on the file. PDFs created by scanners or containing many high-res images can often be reduced by 50% to 90%. Files that are already efficient (mostly text) might see smaller gains.
+            </p>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Is this safe for confidential documents?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                100%. Since we don't upload your file to a server for processing, your confidential information never leaves your own controlled environment.
+            </p>
+        </details>
+      </div>
+
+      <div class="mt-12 p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-center">
+        <h2 class="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Ready to Lighten the Load?</h2>
+        <p class="mb-6 text-blue-800 dark:text-blue-200">Shrink your files and speed up your workflow now.</p>
+        <button onclick="document.getElementById('pdf-upload')?.click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
+            Compress PDF Now
+        </button>
+      </div>
     </article>
   `;
 

@@ -89,82 +89,140 @@ const MergePDF = () => {
     };
 
     const content = `
-    <article class="prose prose-lg max-w-none">
-      <h2>How to Merge PDF Files Online</h2>
-      <p>Combining multiple PDF documents into a single file is a common requirement for professionals, students, and businesses. Our <strong>Merge PDF Online</strong> tool makes this process incredibly simple, fast, and secure. Whether you need to compile a report, combine different chapters of a book, or organize invoices, our tool handles it all directly in your browser without requiring any software installation.</p>
-
-      <h3>Step-by-Step Guide to Merging PDFs</h3>
-      <ol>
-        <li><strong>Upload Your Files:</strong> Click on the "Choose PDF Files" button or drag and drop your files into the upload area. You can select multiple files at once.</li>
-        <li><strong>Arrange the Order:</strong> Once uploaded, you will see a list of your files. Use the standard Up and Down arrow buttons to reorder them exactly how you want them to appear in the final document. The top file will be the first part of your new PDF.</li>
-        <li><strong>Remove Unwanted Files:</strong> If you accidentally added a wrong file, simply click the trash icon next to it to remove it from the list.</li>
-        <li><strong>Click Merge:</strong> When you are satisfied with the order, click the "Merge PDFs" button. Our tool will process the files instantly.</li>
-        <li><strong>Download:</strong> Your merged PDF will be ready in seconds. The download will start automatically, or you will be prompted to save the file.</li>
-      </ol>
-
-      <h2>Why Use Our Online PDF Merger?</h2>
-      <p>There are many reasons to choose our tool over desktop software or other online alternatives:</p>
-      <ul>
-        <li><strong>100% Free:</strong> No hidden costs, no premium subscriptions, and no watermarks on your documents.</li>
-        <li><strong>No Installation Needed:</strong> It works entirely in your web browser (Chrome, Firefox, Safari, Edge). You don't need to download bulky software like Adobe Acrobat.</li>
-        <li><strong>Secure & Private:</strong> We value your privacy. Your files are processed locally in your browser (client-side) or securely on our servers and deleted automatically. We do not store your documents.</li>
-        <li><strong>User-Friendly Interface:</strong> Designed with simplicity in mind. Anyone can use it without technical knowledge.</li>
-        <li><strong>Fast Processing:</strong> Leveraging modern browser technologies, merging happens almost instantly for most documents.</li>
-        <li><strong>Cross-Platform Compatibility:</strong> Works seamlessly on Windows, Mac, Linux, iOS, and Android devices.</li>
-      </ul>
-
-      <h2>Common Use Cases for Merging PDFs</h2>
-      <p>Merging PDFs is useful in various scenarios:</p>
-      <ul>
-        <li><strong>Business Reports:</strong> Combine financial statements, analysis charts, and text reports into a single comprehensive PDF file for stakeholders.</li>
-        <li><strong>Job Applications:</strong> Merge your cover letter, resume, and portfolio into one file to ensure the recruiter sees everything in context.</li>
-        <li><strong>Education:</strong> Students can combine lecture notes, scanned assignments, and research papers into one study guide.</li>
-        <li><strong>Invoicing:</strong> Combine multiple invoices or receipts into a single file for easier accounting and tax filing.</li>
-        <li><strong>Legal Documents:</strong> Lawyers can merge contracts, evidence, and addendums into a single case file.</li>
-        <li><strong>E-books:</strong> Combine separate chapters written in different files into a complete book ready for publishing.</li>
-      </ul>
-
-      <h2>The Importance of PDF Organization</h2>
-      <p>In the digital age, file management is crucial. Having dozens of separate PDF files can be chaotic and makes sharing difficult. Sending one email with 10 attachments is unprofessional and annoying for the recipient. By merging them into a single, well-organized PDF, you present yourself as professional and organized. It also ensures that the recipient reads the documents in the correct order, preventing confusion.</p>
-
-      <h2>Technical Reliability</h2>
-      <p>Our tool uses advanced PDF processing libraries to ensure that the quality of your documents is preserved. Text remains searchable, images stay sharp, and formatting is maintained across the merge. We handle complex PDF structures, ensuring that even files with different page sizes or orientations are combined smoothly.</p>
-
-      <h2>Frequently Asked Questions (FAQs)</h2>
+    <article class="prose prose-lg max-w-none text-gray-800 dark:text-gray-200">
+      <h1 class="text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Merge PDF Files Online – Fast, Free, and Secure</h1>
       
-      <h3>Is it safe to merge PDFs online here?</h3>
-      <p>Yes, absolutely. We prioritize your privacy. The merging process happens securey. Your sensitive data is never shared with third parties.</p>
+      <div class="my-8">
+        <img src="/assets/images/merge_pdf_illustration.png" alt="Illustration of merging PDF documents" class="w-full max-w-2xl mx-auto rounded-xl shadow-lg border border-gray-100 dark:border-gray-700" />
+      </div>
 
-      <h3>Can I merge files with different page sizes?</h3>
-      <p>Yes, our tool can handle PDFs with varying page sizes (e.g., A4 and Letter). The final document will retain the original page dimensions of each source file.</p>
+      <p class="lead text-xl text-gray-600 dark:text-gray-300 mb-8">
+        Are you tired of juggling multiple PDF files for a single project? Whether you're a student compiling assignments, a business professional organizing reports, or just trying to keep your personal documents in order, managing scattered files is a headache. That's where our <strong>Merge PDF Online tool</strong> comes in. We've built a solution that is not just a utility, but a productivity booster designed to simplify your digital life.
+      </p>
 
-      <h3>Is there a limit to the number of files I can merge?</h3>
-      <p>While there is no hard limit, we recommend merging up to 20-30 files at a time to ensure optimal browser performance. For very large batches, you might want to merge them in groups.</p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Merging PDFs is Essential for Productivity</h2>
+      <p>
+        In today's fast-paced digital world, presentation matters. Sending an email with ten separate attachments looks cluttered and unprofessional. It can confuse the recipient and increase the risk of a file being overlooked. By <strong>combining PDF files</strong> into a single, organized document, you ensure that your work is viewed exactly as you intended—seamlessly and in the correct order.
+      </p>
+      <p>
+        Our tool isn't just about sticking pages together; it's about <em>creating a narrative</em>. Imagine sending a job application where your cover letter flows naturally into your resume, followed by your portfolio and references. A single file tells a complete story. That's the power of effective document management.
+      </p>
 
-      <h3>Can I merge password-protected PDFs?</h3>
-      <p>Currently, you need to remove the password from secured PDFs before merging them. We are working on a feature to allow unlocking files directly within the tool.</p>
-
-      <h3>Does this tool work on mobile/tablets?</h3>
-      <p>Yes! Our website is fully responsive. You can merge PDFs directly from your iPhone, iPad, or Android smartphone just as easily as on a desktop computer.</p>
-
-      <h3>Will I lose quality after merging?</h3>
-      <p>No. We merge the existing pages without re-compressing them whenever possible, so your text and images remain as clear as the originals.</p>
-
-      <h3>Can I reorder the pages inside the PDFs?</h3>
-      <p>This specific tool merges whole files. To reorder individual pages within a file, you can first use our "Split PDF" tool to extract pages and then merge them in the desired order, or look out for our upcoming "Organize PDF" tool.</p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">How to Combine PDFs: A Simple Guide</h2>
+      <p>
+        We believe that powerful tools shouldn't be complicated. We've stripped away the complex menus and confusing jargon to give you a straightforward, drag-and-drop experience. Here is how you can merge your files in seconds:
+      </p>
       
-      <h3>Do I need to create an account?</h3>
-      <p>No registration is required. You can start using the tool immediately.</p>
+      <div class="grid md:grid-cols-3 gap-6 my-8">
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-blue-500">
+            <h3 class="font-bold text-lg mb-2">1. Upload</h3>
+            <p>Drag your files directly onto the page or click "Select PDF Files". You can upload multiple documents at once.</p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-indigo-500">
+            <h3 class="font-bold text-lg mb-2">2. Reorder</h3>
+            <p>Did you upload them in the wrong order? No problem. Simply drag and drop the files in the list to rearrange them.</p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border-l-4 border-purple-500">
+            <h3 class="font-bold text-lg mb-2">3. Merge & Download</h3>
+            <p>Hit the "Merge PDFs" button. In a blink, your unified document is ready to download.</p>
+        </div>
+      </div>
 
-      <h2>Tips for Best Results</h2>
-      <ul>
-        <li><strong>Naming:</strong> Rename your final file to something descriptive so you can find it easily later.</li>
-        <li><strong>Check Content:</strong> Verify that you are uploading the correct versions of your documents before merging.</li>
-        <li><strong>File Size:</strong> If your merged file is too large to email, use our "Compress PDF" tool afterwards to reduce its size.</li>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">What Makes TittoosTools Different?</h2>
+      <p>
+        There are dozens of PDF tools out there, so why choose us? The answer lies in our commitment to <strong>privacy, speed, and user experience</strong>.
+      </p>
+      <ul class="list-none space-y-4 my-6">
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Client-Side Privacy:</strong> Unlike many other services, we don't need to upload your sensitive contracts or personal data to a remote server for processing. Our advanced technology handles the merging right here in your browser. Your data stays on your device.</span>
+        </li>
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Zero Friction:</strong> We hate sign-up forms as much as you do. There are no accounts to create, no email addresses to verify, and absolutely no hidden paywalls. It's free, forever.</span>
+        </li>
+        <li class="flex items-start">
+            <span class="text-green-500 mr-2">✔</span>
+            <span><strong>Universal Compatibility:</strong> Working on a Mac? A Windows laptop? An Android tablet? Our tool works flawlessly across all devices and operating systems.</span>
+        </li>
       </ul>
 
-      <h2>Conclusion</h2>
-      <p>Merging PDFs doesn't have to be a headache. With TittoosTools' <strong>Merge PDF Online</strong>, you have a powerful, free, and secure solution at your fingertips. Try it today and experience the easiest way to manage your PDF documents.</p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Common Use Cases</h2>
+      <p>
+        Our users come from all walks of life. Here are just a few ways people are using our PDF merger to make their lives easier:
+      </p>
+      <dl class="space-y-4">
+        <div>
+            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Students & Academics</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Combine research papers, lecture notes, and scanned handouts into one comprehensive study guide. Submit your final thesis with all appendices included in a single file.</dd>
+        </div>
+        <div>
+            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Legal Professionals</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Organize case files by merging evidence, affidavits, and court orders. Create a complete docket that is easy to navigate and share with clients or colleagues.</dd>
+        </div>
+        <div>
+            <dt class="font-bold text-lg text-gray-900 dark:text-gray-100">For Small Business Owners</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Streamline your accounting by merging monthly invoices and receipts. Create professional project proposals that combine text, charts, and images seamlessly.</dd>
+        </div>
+      </dl>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Expert Tips for Better PDFs</h2>
+      <p>
+        Merging is often just the first step. To get the most out of your documents, consider these expert tips:
+      </p>
+      <ul>
+        <li><strong>Standardize Page Sizes:</strong> If you are merging A4 documents with Letter-sized ones, the final result might look inconsistent. Try to ensure your source files are similar in dimensions.</li>
+        <li><strong>Compress After Merging:</strong> Merging several detailed files can result in a large document. Use our <a href="/compress-pdf-online" class="text-blue-600 hover:underline">Compress PDF tool</a> afterwards to optimize it for email sharing.</li>
+        <li><strong>Check for Security:</strong> If one of your input files is password-protected, the merge might fail. Ensure all files are unlocked before you start.</li>
+      </ul>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+      
+      <div class="space-y-6">
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Is my data really safe?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                Absolutely. Security is our top priority. Because we process your files locally in your browser, they never leave your computer. We don't see them, store them, or share them. It's as safe as processing them offline.
+            </p>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Is there a file size limit?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                Since the processing happens on your device, the limit depends more on your computer's memory (RAM) than on our servers. You can typically merge files up to several hundred megabytes without any issue.
+            </p>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm group">
+            <summary class="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
+                <span>Can I merge PDFs and images together?</span>
+                <span class="transition group-open:rotate-180">
+                    <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+            </summary>
+            <p class="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn">
+                Currently, this tool is designed for PDF files. If you have images (JPG, PNG) that you want to include, we recommend converting them to PDF first using our <a href="/tools/image-converter" class="text-blue-600 hover:underline">Image to PDF tool</a>, and then merging them here.
+            </p>
+        </details>
+      </div>
+
+      <div class="mt-12 p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-center">
+        <h2 class="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Ready to Organize Your Documents?</h2>
+        <p class="mb-6 text-blue-800 dark:text-blue-200">Join thousands of users who trust TittoosTools for their daily document needs.</p>
+        <button onclick="document.getElementById('pdf-upload')?.click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
+            Start Merging Now
+        </button>
+      </div>
     </article>
   `;
 
