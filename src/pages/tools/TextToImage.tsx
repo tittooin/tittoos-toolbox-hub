@@ -32,18 +32,29 @@ const TextToImage = () => {
       const enhancedPrompt = encodeURIComponent(`${prompt}, ${style} style, high quality, detailed`);
       const imageUrl = `https://image.pollinations.ai/prompt/${enhancedPrompt}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
 
+      console.log("Generating image with URL:", imageUrl);
+
       // Pre-load the image to ensure it's ready before showing
       const img = new Image();
       img.src = imageUrl;
       await new Promise((resolve, reject) => {
         img.onload = resolve;
-        img.onerror = reject;
+        img.onerror = (e) => {
+          console.error("Image load failed:", e);
+          reject(new Error("Failed to load image"));
+        };
       });
 
       setGeneratedImage(imageUrl);
       toast.success("Image generated successfully!");
     } catch (error) {
-      toast.error("Failed to generate image. Please try again.");
+      console.error("Generation error:", error);
+      toast.error("Failed to generate image. Check console for details.");
+      // Set image anyway so user can try to open it directly if it's just a CORS/loading issue
+      if (error instanceof Error && error.message === "Failed to load image") {
+        // We can't easily get the URL here without refactoring, but for now let's just show a specific message
+        toast.info("Try checking your internet connection or ad blocker.");
+      }
     } finally {
       setIsGenerating(false);
     }
