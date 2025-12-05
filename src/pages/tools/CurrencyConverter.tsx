@@ -272,148 +272,149 @@ const CurrencyConverter = () => {
               <circle cx="550" cy="200" r="4" fill="#10b981" />
 
               {/* Central Exchange Icon */}
-              <circle cx="40" cy="40" r="50" fill="white" stroke="#10b981" strokeWidth="2" />
-              <animateTransform attributeName="transform" type="translate" values="0 0; 5 0; 0 0" dur="2s" repeatCount="indefinite" />
-            </path>
-            <path d="M60 50 L20 50 L35 65 Z" fill="#059669">
-              <animateTransform attributeName="transform" type="translate" values="0 0; -5 0; 0 0" dur="2s" repeatCount="indefinite" />
-            </path>
-          </g>
+              <g>
+                <circle cx="40" cy="40" r="50" fill="white" stroke="#10b981" strokeWidth="2">
+                  <animateTransform attributeName="transform" type="translate" values="0 0; 5 0; 0 0" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <path d="M60 50 L20 50 L35 65 Z" fill="#059669">
+                  <animateTransform attributeName="transform" type="translate" values="0 0; -5 0; 0 0" dur="2s" repeatCount="indefinite" />
+                </path>
+              </g>
 
-          {/* Floating Coins */}
-          <g transform="translate(120, 150)">
-            <circle cx="0" cy="0" r="35" fill="url(#coinGradient)" stroke="#b45309" strokeWidth="2">
-              <animate attributeName="cy" values="0;-10;0" dur="3s" repeatCount="indefinite" />
-            </circle>
-            <text x="0" y="10" textAnchor="middle" fill="#78350f" fontSize="24" fontWeight="bold">$</text>
-          </g>
+              {/* Floating Coins */}
+              <g transform="translate(120, 150)">
+                <circle cx="0" cy="0" r="35" fill="url(#coinGradient)" stroke="#b45309" strokeWidth="2">
+                  <animate attributeName="cy" values="0;-10;0" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <text x="0" y="10" textAnchor="middle" fill="#78350f" fontSize="24" fontWeight="bold">$</text>
+              </g>
 
-          <g transform="translate(480, 150)">
-            <circle cx="0" cy="0" r="35" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="2">
-              <animate attributeName="cy" values="0;-10;0" dur="3.5s" repeatCount="indefinite" />
-            </circle>
-            <text x="0" y="10" textAnchor="middle" fill="#1e3a8a" fontSize="24" fontWeight="bold">€</text>
-          </g>
+              <g transform="translate(480, 150)">
+                <circle cx="0" cy="0" r="35" fill="#bfdbfe" stroke="#1d4ed8" strokeWidth="2">
+                  <animate attributeName="cy" values="0;-10;0" dur="3.5s" repeatCount="indefinite" />
+                </circle>
+                <text x="0" y="10" textAnchor="middle" fill="#1e3a8a" fontSize="24" fontWeight="bold">€</text>
+              </g>
 
-          <g transform="translate(180, 280)">
-            <circle cx="0" cy="0" r="25" fill="#e9d5ff" stroke="#7e22ce" strokeWidth="2">
-              <animate attributeName="cy" values="0;-8;0" dur="4s" repeatCount="indefinite" />
-            </circle>
-            <text x="0" y="8" textAnchor="middle" fill="#581c87" fontSize="18" fontWeight="bold">£</text>
-          </g>
+              <g transform="translate(180, 280)">
+                <circle cx="0" cy="0" r="25" fill="#e9d5ff" stroke="#7e22ce" strokeWidth="2">
+                  <animate attributeName="cy" values="0;-8;0" dur="4s" repeatCount="indefinite" />
+                </circle>
+                <text x="0" y="8" textAnchor="middle" fill="#581c87" fontSize="18" fontWeight="bold">£</text>
+              </g>
 
-          <g transform="translate(420, 280)">
-            <circle cx="0" cy="0" r="25" fill="#fecaca" stroke="#b91c1c" strokeWidth="2">
-              <animate attributeName="cy" values="0;-8;0" dur="2.5s" repeatCount="indefinite" />
-            </circle>
-            <text x="0" y="8" textAnchor="middle" fill="#7f1d1d" fontSize="18" fontWeight="bold">¥</text>
-          </g>
+              <g transform="translate(420, 280)">
+                <circle cx="0" cy="0" r="25" fill="#fecaca" stroke="#b91c1c" strokeWidth="2">
+                  <animate attributeName="cy" values="0;-8;0" dur="2.5s" repeatCount="indefinite" />
+                </circle>
+                <text x="0" y="8" textAnchor="middle" fill="#7f1d1d" fontSize="18" fontWeight="bold">¥</text>
+              </g>
 
-          <text x="300" y="320" textAnchor="middle" fill="#065f46" fontSize="14" fontWeight="bold" opacity="0.8">LIVE MARKET RATES</text>
-        </svg>
-      </div>
-
-      <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
-        Planning a dream trip to Europe? Buying a gadget from an international website? Or just curious about why your favorite imported coffee costs more today? Our <strong>Universal Currency Converter</strong> provides real-time exchange rates for over 150 global currencies. Get accurate, up-to-the-minute conversions instantly so you know fully well what your money is worth.
-      </p>
-
-      <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
-        <span className="bg-green-100 text-green-800 p-2 rounded-md mr-4 text-2xl">📈</span>
-        Understanding Exchange Rates
-      </h2>
-      <p className="mb-6">
-        Exchange rates are the heartbeat of the global economy. They determine how much one currency is worth in terms of another.
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-green-500 shadow-sm">
-          <h3 className="text-xl font-bold mb-4 text-green-600 dark:text-green-400">The "Mid-Market" Rate</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">This is the "real" exchange rate—the midpoint between the buy and sell prices on global markets. It's the rate you see on Google or Reuters.</p>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-red-500 shadow-sm">
-          <h3 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">The "Tourist" Rate</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">The rate you get at airports or banks. They typically add a <strong>2% to 5% markup</strong> (hidden fee) to the mid-market rate to make profit.</p>
-        </div>
-      </div>
-
-      <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Use Our Converter?</h2>
-      <div className="grid md:grid-cols-3 gap-6 my-8">
-        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
-          <span className="text-4xl mb-4 block">🛡️</span>
-          <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Avoid Bad Deals</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Knowledge is power. If you know the real rate, you can spot a rip-off at a currency exchange kiosk from a mile away.</p>
-        </div>
-        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
-          <span className="text-4xl mb-4 block">🛍️</span>
-          <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Shop Smart</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Buying online? Sometimes paying in the local currency (e.g., Euros) is cheaper than letting PayPal or Amazon convert it for you.</p>
-        </div>
-        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
-          <span className="text-4xl mb-4 block">✈️</span>
-          <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Budget Travel</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Know exactly how much that hotel or dinner costs in your home currency. No more mental math guessing games.</p>
-        </div>
-      </div>
-
-      <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Top Traded Currencies</h2>
-      <div className="space-y-4">
-        <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-          <span className="text-2xl mr-4">🇺🇸</span>
-          <div>
-            <h4 className="font-bold">US Dollar (USD)</h4>
-            <p className="text-sm text-gray-500">The world's primary reserve currency. Used in international trade and commodities like oil and gold.</p>
+              <text x="300" y="320" textAnchor="middle" fill="#065f46" fontSize="14" fontWeight="bold" opacity="0.8">LIVE MARKET RATES</text>
+            </svg>
           </div>
-        </div>
-        <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-          <span className="text-2xl mr-4">🇪🇺</span>
-          <div>
-            <h4 className="font-bold">Euro (EUR)</h4>
-            <p className="text-sm text-gray-500">The official currency of 20 of the 27 European Union member states. The second most traded currency.</p>
-          </div>
-        </div>
-        <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-          <span className="text-2xl mr-4">🇯🇵</span>
-          <div>
-            <h4 className="font-bold">Japanese Yen (JPY)</h4>
-            <p className="text-sm text-gray-500">Often used as a "safe-haven" currency during times of economic uncertainty in Asia.</p>
-          </div>
-        </div>
-        <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-          <span className="text-2xl mr-4">🇬🇧</span>
-          <div>
-            <h4 className="font-bold">British Pound (GBP)</h4>
-            <p className="text-sm text-gray-500">The oldest currency still in use today. Known as "Sterling."</p>
-          </div>
-        </div>
-      </div>
 
-      <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
-      <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-4">
-        <div className="pt-4">
-          <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">How often are rates updated?</dt>
-          <dd className="mt-2 text-gray-600 dark:text-gray-400">Our rates are updated every hour to reflect the live mid-market exchange rates. However, for large transactions, always verify with your bank as they may charge a spread.</dd>
-        </div>
-        <div className="pt-4">
-          <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Is this the rate I will get at the bank?</dt>
-          <dd className="mt-2 text-gray-600 dark:text-gray-400">Likely not. This is the "mid-market" rate. Banks typically offer a "buy" rate (lower than this) and a "sell" rate (higher than this) to make a profit on the difference.</dd>
-        </div>
-        <div className="pt-4">
-          <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">What is the "Big Mac Index"?</dt>
-          <dd className="mt-2 text-gray-600 dark:text-gray-400">It's a fun way to compare currencies! It compares the price of a McDonald's Big Mac in different countries to see if a currency is overvalued or undervalued based on purchasing power.</dd>
-        </div>
-      </dl>
+          <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
+            Planning a dream trip to Europe? Buying a gadget from an international website? Or just curious about why your favorite imported coffee costs more today? Our <strong>Universal Currency Converter</strong> provides real-time exchange rates for over 150 global currencies. Get accurate, up-to-the-minute conversions instantly so you know fully well what your money is worth.
+          </p>
 
-      <div className="mt-12 p-8 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl text-center border border-emerald-100 dark:border-emerald-800/30">
-        <h3 className="text-2xl font-bold mb-4 text-emerald-900 dark:text-emerald-100">Need to convert measurements?</h3>
-        <p className="mb-6 text-emerald-800 dark:text-emerald-200">Converting prices per kg to lbs? Or liters to gallons?</p>
-        <div className="flex justify-center gap-4">
-          <a href="/tools/unit-converter" className="px-6 py-3 bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 font-bold rounded-full hover:bg-emerald-50 dark:hover:bg-gray-700 transition shadow-sm">
-            Go to Unit Converter
-          </a>
-        </div>
-      </div>
-    </article>
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
+            <span className="bg-green-100 text-green-800 p-2 rounded-md mr-4 text-2xl">📈</span>
+            Understanding Exchange Rates
+          </h2>
+          <p className="mb-6">
+            Exchange rates are the heartbeat of the global economy. They determine how much one currency is worth in terms of another.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-green-500 shadow-sm">
+              <h3 className="text-xl font-bold mb-4 text-green-600 dark:text-green-400">The "Mid-Market" Rate</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">This is the "real" exchange rate—the midpoint between the buy and sell prices on global markets. It's the rate you see on Google or Reuters.</p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-l-4 border-red-500 shadow-sm">
+              <h3 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">The "Tourist" Rate</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">The rate you get at airports or banks. They typically add a <strong>2% to 5% markup</strong> (hidden fee) to the mid-market rate to make profit.</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">Why Use Our Converter?</h2>
+          <div className="grid md:grid-cols-3 gap-6 my-8">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
+              <span className="text-4xl mb-4 block">🛡️</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Avoid Bad Deals</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Knowledge is power. If you know the real rate, you can spot a rip-off at a currency exchange kiosk from a mile away.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
+              <span className="text-4xl mb-4 block">🛍️</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Shop Smart</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Buying online? Sometimes paying in the local currency (e.g., Euros) is cheaper than letting PayPal or Amazon convert it for you.</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg hover:shadow-md transition">
+              <span className="text-4xl mb-4 block">✈️</span>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Budget Travel</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Know exactly how much that hotel or dinner costs in your home currency. No more mental math guessing games.</p>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Top Traded Currencies</h2>
+          <div className="space-y-4">
+            <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+              <span className="text-2xl mr-4">🇺🇸</span>
+              <div>
+                <h4 className="font-bold">US Dollar (USD)</h4>
+                <p className="text-sm text-gray-500">The world's primary reserve currency. Used in international trade and commodities like oil and gold.</p>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+              <span className="text-2xl mr-4">🇪🇺</span>
+              <div>
+                <h4 className="font-bold">Euro (EUR)</h4>
+                <p className="text-sm text-gray-500">The official currency of 20 of the 27 European Union member states. The second most traded currency.</p>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+              <span className="text-2xl mr-4">🇯🇵</span>
+              <div>
+                <h4 className="font-bold">Japanese Yen (JPY)</h4>
+                <p className="text-sm text-gray-500">Often used as a "safe-haven" currency during times of economic uncertainty in Asia.</p>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+              <span className="text-2xl mr-4">🇬🇧</span>
+              <div>
+                <h4 className="font-bold">British Pound (GBP)</h4>
+                <p className="text-sm text-gray-500">The oldest currency still in use today. Known as "Sterling."</p>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-4">
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">How often are rates updated?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Our rates are updated every hour to reflect the live mid-market exchange rates. However, for large transactions, always verify with your bank as they may charge a spread.</dd>
+            </div>
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Is this the rate I will get at the bank?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Likely not. This is the "mid-market" rate. Banks typically offer a "buy" rate (lower than this) and a "sell" rate (higher than this) to make a profit on the difference.</dd>
+            </div>
+            <div className="pt-4">
+              <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">What is the "Big Mac Index"?</dt>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">It's a fun way to compare currencies! It compares the price of a McDonald's Big Mac in different countries to see if a currency is overvalued or undervalued based on purchasing power.</dd>
+            </div>
+          </dl>
+
+          <div className="mt-12 p-8 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl text-center border border-emerald-100 dark:border-emerald-800/30">
+            <h3 className="text-2xl font-bold mb-4 text-emerald-900 dark:text-emerald-100">Need to convert measurements?</h3>
+            <p className="mb-6 text-emerald-800 dark:text-emerald-200">Converting prices per kg to lbs? Or liters to gallons?</p>
+            <div className="flex justify-center gap-4">
+              <a href="/tools/unit-converter" className="px-6 py-3 bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 font-bold rounded-full hover:bg-emerald-50 dark:hover:bg-gray-700 transition shadow-sm">
+                Go to Unit Converter
+              </a>
+            </div>
+          </div>
+        </article>
       </div >
     </ToolTemplate >
   );
