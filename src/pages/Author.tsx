@@ -35,6 +35,7 @@ const Author = () => {
         description: 'The requested author profile could not be found.',
         type: 'website',
         canonical,
+        noindex: true,
       });
     }
   }, [author, slug]);

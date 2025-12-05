@@ -95,7 +95,7 @@ function includeDownloaderRoutes() {
     if (m) {
       return m[1].trim() !== "false";
     }
-  } catch {}
+  } catch { }
   return true;
 }
 

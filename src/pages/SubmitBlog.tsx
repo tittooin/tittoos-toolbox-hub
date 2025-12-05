@@ -29,7 +29,7 @@ const SubmitBlog = () => {
       const existing = JSON.parse(localStorage.getItem("submittedBlogs") || "[]");
       existing.push(blog);
       localStorage.setItem("submittedBlogs", JSON.stringify(existing));
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -37,6 +37,7 @@ const SubmitBlog = () => {
       <Helmet>
         <title>Submit Your Blog | TittoosTools</title>
         <meta name="description" content="Submit your blog post for review and publishing on TittoosTools." />
+        <meta name="robots" content="noindex" />
       </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-16">

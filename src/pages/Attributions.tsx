@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Attributions = () => {
   return (
@@ -11,6 +11,7 @@ const Attributions = () => {
           name="description"
           content="Open-source licenses and attributions for icons, UI components, libraries, and any third-party resources used across our tools."
         />
+        <meta name="robots" content="noindex" />
       </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-10 flex-1">
