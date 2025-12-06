@@ -27,6 +27,7 @@ const PDFConverter = lazy(() => import("./pages/tools/PDFConverter"));
 const PDFToWord = lazy(() => import("./pages/tools/PDFToWord"));
 const WordToPDF = lazy(() => import("./pages/tools/WordToPDF"));
 const PDFToJPG = lazy(() => import("./pages/tools/PDFToJPG"));
+const PDFToPNG = lazy(() => import("./pages/tools/PDFToPNG"));
 const JPGToPDF = lazy(() => import("./pages/tools/JPGToPDF"));
 const PDFToExcel = lazy(() => import("./pages/tools/PDFToExcel"));
 const ExcelToPDF = lazy(() => import("./pages/tools/ExcelToPDF"));
@@ -163,6 +164,7 @@ const App = () => (
               <Route path="/tools/pdf-to-word" element={<PDFToWord />} />
               <Route path="/tools/word-to-pdf" element={<WordToPDF />} />
               <Route path="/tools/pdf-to-jpg" element={<PDFToJPG />} />
+              <Route path="/tools/pdf-to-png" element={<PDFToPNG />} />
               <Route path="/tools/jpg-to-pdf" element={<JPGToPDF />} />
               <Route path="/tools/pdf-to-excel" element={<PDFToExcel />} />
               <Route path="/tools/excel-to-pdf" element={<ExcelToPDF />} />

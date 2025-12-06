@@ -89,6 +89,15 @@ const allTools = [
     path: "/tools/pdf-to-jpg"
   },
   {
+    id: "pdf-to-png",
+    name: "PDF to PNG",
+    subheading: "Convert PDF pages to PNG",
+    description: "Convert each page of a PDF into a high-quality PNG image.",
+    category: "pdf",
+    icon: Image,
+    path: "/tools/pdf-to-png"
+  },
+  {
     id: "jpg-to-pdf",
     name: "JPG to PDF",
     subheading: "Convert Images to PDF",
