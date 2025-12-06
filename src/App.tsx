@@ -24,6 +24,23 @@ const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
 
 // Tools
 const PDFConverter = lazy(() => import("./pages/tools/PDFConverter"));
+const PDFToWord = lazy(() => import("./pages/tools/PDFToWord"));
+const WordToPDF = lazy(() => import("./pages/tools/WordToPDF"));
+const PDFToJPG = lazy(() => import("./pages/tools/PDFToJPG"));
+const JPGToPDF = lazy(() => import("./pages/tools/JPGToPDF"));
+const PDFToExcel = lazy(() => import("./pages/tools/PDFToExcel"));
+const ExcelToPDF = lazy(() => import("./pages/tools/ExcelToPDF"));
+const PDFToPPT = lazy(() => import("./pages/tools/PDFToPPT"));
+const PPTToPDF = lazy(() => import("./pages/tools/PPTToPDF"));
+const LockPDF = lazy(() => import("./pages/tools/LockPDF"));
+const UnlockPDF = lazy(() => import("./pages/tools/UnlockPDF"));
+const RotatePDF = lazy(() => import("./pages/tools/RotatePDF"));
+const DeletePDFPages = lazy(() => import("./pages/tools/DeletePDFPages"));
+const ExtractPDFPages = lazy(() => import("./pages/tools/ExtractPDFPages"));
+const WatermarkPDF = lazy(() => import("./pages/tools/WatermarkPDF"));
+const RearrangePDF = lazy(() => import("./pages/tools/RearrangePDF"));
+const PDFTextExtractor = lazy(() => import("./pages/tools/PDFTextExtractor"));
+const PDFEditor = lazy(() => import("./pages/tools/PDFEditor"));
 const PasswordGenerator = lazy(() => import("./pages/tools/PasswordGenerator"));
 const QRGenerator = lazy(() => import("./pages/tools/QRGenerator"));
 const ColorPicker = lazy(() => import("./pages/tools/ColorPicker"));
@@ -143,6 +160,23 @@ const App = () => (
 
               {/* Converter Tools */}
               <Route path="/tools/pdf-converter" element={<PDFConverter />} />
+              <Route path="/tools/pdf-to-word" element={<PDFToWord />} />
+              <Route path="/tools/word-to-pdf" element={<WordToPDF />} />
+              <Route path="/tools/pdf-to-jpg" element={<PDFToJPG />} />
+              <Route path="/tools/jpg-to-pdf" element={<JPGToPDF />} />
+              <Route path="/tools/pdf-to-excel" element={<PDFToExcel />} />
+              <Route path="/tools/excel-to-pdf" element={<ExcelToPDF />} />
+              <Route path="/tools/pdf-to-ppt" element={<PDFToPPT />} />
+              <Route path="/tools/ppt-to-pdf" element={<PPTToPDF />} />
+              <Route path="/tools/lock-pdf" element={<LockPDF />} />
+              <Route path="/tools/unlock-pdf" element={<UnlockPDF />} />
+              <Route path="/tools/rotate-pdf" element={<RotatePDF />} />
+              <Route path="/tools/delete-pdf-pages" element={<DeletePDFPages />} />
+              <Route path="/tools/extract-pdf-pages" element={<ExtractPDFPages />} />
+              <Route path="/tools/watermark-pdf" element={<WatermarkPDF />} />
+              <Route path="/tools/rearrange-pdf" element={<RearrangePDF />} />
+              <Route path="/tools/pdf-text-extractor" element={<PDFTextExtractor />} />
+              <Route path="/tools/pdf-editor" element={<PDFEditor />} />
               <Route path="/tools/image-converter" element={<ImageConverter />} />
               <Route path="/tools/video-converter" element={<VideoConverter />} />
               <Route path="/tools/audio-converter" element={<AudioConverter />} />
