@@ -10,7 +10,7 @@ const Categories = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
@@ -35,7 +35,7 @@ const Categories = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {categoryTools.slice(0, 5).map((tool) => (
+                      {categoryTools.map((tool) => (
                         <Link
                           key={tool.id}
                           to={tool.path}
@@ -44,11 +44,6 @@ const Categories = () => {
                           • {tool.name}
                         </Link>
                       ))}
-                      {categoryTools.length > 5 && (
-                        <p className="text-sm text-gray-500 mt-2">
-                          +{categoryTools.length - 5} more tools
-                        </p>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
