@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { Share2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -37,7 +38,7 @@ const Footer = () => {
                       await navigator.share(shareData);
                     } else if (navigator.clipboard && window.isSecureContext) {
                       await navigator.clipboard.writeText(shareData.url);
-                      alert('Link copied to clipboard');
+                      toast.success('Link copied to clipboard');
                     } else {
                       // Fallback: open mailto with default recipient
                       window.location.href = `mailto:admin@tittoos.online?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
