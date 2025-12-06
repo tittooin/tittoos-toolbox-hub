@@ -1,5 +1,45 @@
 import { useState, useEffect } from "react";
-import { Upload, Download, FileText, CheckCircle2, AlertCircle, Lock, Zap, Layout, Shield, Image as ImageIcon, Plus, X, ArrowUp, ArrowDown } from "lucide-react";
+import { Upload, Download, FileText, CheckCircle2, AlertCircle, Lock, Zap, Layout, Shield, Image as ImageIcon, Plus, X, ArrowUp, ArrowDown, Camera } from "lucide-react";
+// ... (imports remain same)
+
+// ... inside component ...
+
+                                <div className="flex justify-center gap-4 flex-wrap">
+                                    {/* Standard Upload */}
+                                    <input
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        multiple
+                                        onChange={handleFileSelect}
+                                        className="hidden"
+                                        id="image-upload"
+                                    />
+                                    <label htmlFor="image-upload">
+                                        <Button size="lg" className="cursor-pointer" asChild>
+                                            <span>
+                                                <Upload className="mr-2 h-5 w-5" /> Upload Images
+                                            </span>
+                                        </Button>
+                                    </label>
+
+                                    {/* Camera Upload (Mobile Scanner) */}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        capture="environment"
+                                        onChange={handleFileSelect}
+                                        className="hidden"
+                                        id="camera-upload"
+                                    />
+                                    <label htmlFor="camera-upload" className="md:hidden">
+                                        <Button size="lg" variant="secondary" className="cursor-pointer" asChild>
+                                            <span>
+                                                <Camera className="mr-2 h-5 w-5" /> Scan Document
+                                            </span>
+                                        </Button>
+                                    </label>
+                                </div>
+                                <p className="text-xs text-muted-foreground">or drag and drop files here</p>
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -273,7 +313,7 @@ const JPGToPDF = () => {
 
                     <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
                         <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                            The Ultimate Guide to JPG to PDF Conversion
+                            Free Mobile Scanner & JPG to PDF Converter
                         </h1>
 
                         <div className="my-10 flex justify-center">
@@ -330,6 +370,15 @@ const JPGToPDF = () => {
                         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                             The solution is simple: <strong>Convert your JPGs to PDF</strong>. Our tool allows you to combine multiple images into one clean, organized, and easy-to-share PDF document. It's the digital equivalent of stapling your papers together before handing them over.
                         </p>
+
+                        <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800 my-8">
+                            <h3 className="text-xl font-bold mb-3 flex items-center text-blue-800 dark:text-blue-100">
+                                <Camera className="mr-2 h-6 w-6" /> Turn Your Phone into a Scanner
+                            </h3>
+                            <p className="text-blue-800 dark:text-blue-200">
+                                No need to install heavy scanner apps! Just visit this page on your mobile, tap <strong>"Scan Document"</strong>, and take photos of your documents. We'll instantly compile them into a professional PDF. It's faster, safer, and completely free.
+                            </p>
+                        </div>
 
                         <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
                             <span className="bg-blue-100 text-blue-800 p-2 rounded-md mr-4 text-2xl">📁</span>
