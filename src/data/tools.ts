@@ -8,7 +8,7 @@ import {
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit,
-  Eye, UserCircle
+  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation
 } from "lucide-react";
 
 const allCategories = [
@@ -60,6 +60,159 @@ const allTools = [
     category: "pdf",
     icon: FileText,
     path: "/compress-pdf-online"
+  },
+  {
+    id: "pdf-to-word",
+    name: "PDF to Word",
+    subheading: "Convert PDF to DOCX",
+    description: "Convert PDF files to editable Word documents.",
+    category: "pdf",
+    icon: FileText,
+    path: "/tools/pdf-to-word"
+  },
+  {
+    id: "word-to-pdf",
+    name: "Word to PDF",
+    subheading: "Convert DOCX to PDF",
+    description: "Convert Word documents to PDF format.",
+    category: "pdf",
+    icon: FileText,
+    path: "/tools/word-to-pdf"
+  },
+  {
+    id: "pdf-to-jpg",
+    name: "PDF to JPG",
+    subheading: "Convert PDF pages to Images",
+    description: "Convert each page of a PDF into a high-quality JPG image.",
+    category: "pdf",
+    icon: Image,
+    path: "/tools/pdf-to-jpg"
+  },
+  {
+    id: "jpg-to-pdf",
+    name: "JPG to PDF",
+    subheading: "Convert Images to PDF",
+    description: "Combine multiple JPG images into a single PDF document.",
+    category: "pdf",
+    icon: Image,
+    path: "/tools/jpg-to-pdf"
+  },
+  {
+    id: "pdf-to-excel",
+    name: "PDF to Excel",
+    subheading: "Convert PDF to XLSX",
+    description: "Extract tables from PDF files into Excel spreadsheets.",
+    category: "pdf",
+    icon: FileSpreadsheet,
+    path: "/tools/pdf-to-excel"
+  },
+  {
+    id: "excel-to-pdf",
+    name: "Excel to PDF",
+    subheading: "Convert XLSX to PDF",
+    description: "Convert Excel spreadsheets to PDF format.",
+    category: "pdf",
+    icon: FileSpreadsheet,
+    path: "/tools/excel-to-pdf"
+  },
+  {
+    id: "pdf-to-ppt",
+    name: "PDF to PPT",
+    subheading: "Convert PDF to PowerPoint",
+    description: "Convert PDF pages into PowerPoint slides.",
+    category: "pdf",
+    icon: Presentation,
+    path: "/tools/pdf-to-ppt"
+  },
+  {
+    id: "ppt-to-pdf",
+    name: "PPT to PDF",
+    subheading: "Convert PowerPoint to PDF",
+    description: "Convert PowerPoint presentations to PDF format.",
+    category: "pdf",
+    icon: Presentation,
+    path: "/tools/ppt-to-pdf"
+  },
+  {
+    id: "lock-pdf",
+    name: "Lock PDF",
+    subheading: "Protect PDF with Password",
+    description: "Encrypt PDF files with a password for security.",
+    category: "pdf",
+    icon: Lock,
+    path: "/tools/lock-pdf"
+  },
+  {
+    id: "unlock-pdf",
+    name: "Unlock PDF",
+    subheading: "Remove PDF Password",
+    description: "Remove password protection from PDF files.",
+    category: "pdf",
+    icon: Lock,
+    path: "/tools/unlock-pdf"
+  },
+  {
+    id: "rotate-pdf",
+    name: "Rotate PDF",
+    subheading: "Rotate PDF Pages",
+    description: "Rotate PDF pages 90, 180, or 270 degrees.",
+    category: "pdf",
+    icon: RotateCw,
+    path: "/tools/rotate-pdf"
+  },
+  {
+    id: "delete-pdf-pages",
+    name: "Delete PDF Pages",
+    subheading: "Remove Pages from PDF",
+    description: "Remove specific pages from a PDF document.",
+    category: "pdf",
+    icon: Trash2,
+    path: "/tools/delete-pdf-pages"
+  },
+  {
+    id: "extract-pdf-pages",
+    name: "Extract PDF Pages",
+    subheading: "Extract Pages from PDF",
+    description: "Create a new PDF containing only selected pages.",
+    category: "pdf",
+    icon: Scissors,
+    path: "/tools/extract-pdf-pages"
+  },
+  {
+    id: "watermark-pdf",
+    name: "Watermark PDF",
+    subheading: "Add Watermark to PDF",
+    description: "Add custom text watermarks to PDF pages.",
+    category: "pdf",
+    icon: Stamp,
+    path: "/tools/watermark-pdf"
+  },
+  {
+    id: "rearrange-pdf",
+    name: "Rearrange PDF",
+    subheading: "Reorder PDF Pages",
+    description: "Reorder pages within a PDF document.",
+    category: "pdf",
+    icon: Move,
+    path: "/tools/rearrange-pdf"
+  },
+  {
+    id: "pdf-text-extractor",
+    name: "PDF Text Extractor",
+    subheading: "Extract Text from PDF",
+    description: "Extract raw text from PDF files.",
+    category: "pdf",
+    icon: AlignLeft,
+    path: "/tools/pdf-text-extractor"
+  },
+  {
+    id: "pdf-editor",
+    name: "PDF Editor",
+    subheading: "Edit PDF Online",
+    description: "Add text, shapes, and annotations to PDFs.",
+    category: "pdf",
+    icon: Edit,
+    path: "/tools/pdf-editor"
   },
   {
     id: "image-converter",
