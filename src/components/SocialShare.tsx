@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Linkedin, Share2, MessageCircle, Image as ImageIcon } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Share2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -40,7 +40,7 @@ const SocialShare = ({ url, title, description }: SocialShareProps) => {
         },
         {
             name: "Pinterest",
-            icon: ImageIcon,
+            icon: Share2,
             url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedDesc}&media=https://tittoos.online/placeholder.svg`,
             color: "hover:bg-[#BD081C] hover:text-white",
         },
