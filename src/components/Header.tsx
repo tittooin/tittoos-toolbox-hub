@@ -13,9 +13,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
-              <span className="text-white font-bold text-sm">TT</span>
-            </div>
+            <img src="/logo.png" alt="TittoosTools Logo" className="w-8 h-8 rounded-lg hover:scale-110 transition-transform" />
             <span className="text-xl font-bold text-primary">TittoosTools</span>
           </Link>
 
@@ -85,71 +83,71 @@ const Header = () => {
         {isMenuOpen && (
           <div id="mobile-menu" className="md:hidden py-4 border-t">
             <nav className="flex flex-col space-y-4">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                to="/tools" 
+              <Link
+                to="/tools"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 All Tools
               </Link>
-              <Link 
-                to="/categories" 
+              <Link
+                to="/categories"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Categories
               </Link>
-              <Link 
-                to="/blog" 
+              <Link
+                to="/blog"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Blog
               </Link>
-              <Link 
-                to="/submit-blog" 
+              <Link
+                to="/submit-blog"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Submit Your Blog
               </Link>
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
               </Link>
-              <Link 
-                to="/privacy" 
+              <Link
+                to="/privacy"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Privacy
               </Link>
-              <Link 
-                to="/terms" 
+              <Link
+                to="/terms"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Terms
               </Link>
-              <Link 
-                to="/attributions" 
+              <Link
+                to="/attributions"
                 className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
                 onClick={() => setIsMenuOpen(false)}
               >
