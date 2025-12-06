@@ -661,6 +661,33 @@ const allTools = [
     category: "utility",
     icon: UserCircle,
     path: "/tools/resume-builder"
+  },
+  {
+    id: "ip-address-lookup",
+    name: "IP Address Lookup",
+    subheading: "Check IP details",
+    description: "Get detailed information about your IP address and location.",
+    category: "utility",
+    icon: MapPin,
+    path: "/tools/ip-address-lookup"
+  },
+  {
+    id: "whois-lookup",
+    name: "Whois Lookup",
+    subheading: "Domain registration info",
+    description: "Lookup domain registration details and ownership information.",
+    category: "utility",
+    icon: Search,
+    path: "/tools/whois-lookup"
+  },
+  {
+    id: "internet-speed-test",
+    name: "Internet Speed Test",
+    subheading: "Check connection speed",
+    description: "Test your internet download and upload speeds instantly.",
+    category: "utility",
+    icon: Zap,
+    path: "/tools/internet-speed-test"
   }
 ];
 
