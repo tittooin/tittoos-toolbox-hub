@@ -9,6 +9,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
+import SocialShare from "@/components/SocialShare";
+
 interface ToolTemplateProps {
   title: string;
   description: string;
@@ -21,18 +23,37 @@ interface ToolTemplateProps {
 
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
   const location = useLocation();
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
+    // Generate an "attractive" description for social media
+    // If the description is technical, we try to make it more engaging for the OG tag
+    const socialDescription = description.length > 50
+      ? description
+      : `Use this free ${title} to handle your tasks instantly. No download required, secure, and easy to use.`;
+
     setSEO({
       title,
       description,
       keywords: [
-        'free online tools', 'web tools', 'utilities', 'converter', 'formatter', 'validator', 'generator', 'editor', 'SEO tools', 'AI tools'
+        'free online tools', 'web tools', 'utilities', 'converter', 'formatter', 'validator', 'generator', 'editor', 'SEO tools', 'AI tools',
+        title.toLowerCase(),
+        `${title.toLowerCase()} online`,
+        `free ${title.toLowerCase()}`
       ],
       image: `${window.location.origin}/placeholder.svg`,
       type: 'website',
-      url: window.location.href // Added valid URL for SEO
+      url: window.location.href
     });
+
+    // Manually set Twitter Card tags since setSEO might not cover all specific custom tags
+    // Note: react-helmet-async in setSEO should ideally handle this, but we ensure it here if needed or rely on setSEO.
+    // Assuming setSEO handles standard meta. If we want to force specific OG tags that differ from description:
+    const metaOgDesc = document.querySelector('meta[property="og:description"]');
+    if (metaOgDesc) {
+      metaOgDesc.setAttribute('content', socialDescription);
+    }
+
     // Inject WebApplication JSON-LD for each tool page
     const url = `${window.location.origin}${window.location.pathname}`;
     injectJsonLd({
@@ -42,9 +63,15 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
       'description': description,
       'url': url,
       'applicationCategory': 'Utility',
-      'operatingSystem': 'Web'
+      'operatingSystem': 'Web',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'USD'
+      }
     }, 'jsonld-webapp');
   }, [title, description]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -114,6 +141,13 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
 
               {/* Sidebar */}
               <div className="space-y-6">
+                {/* Social Share */}
+                <SocialShare
+                  url={currentUrl}
+                  title={`Check out this free ${title} tool!`}
+                  description={description}
+                />
+
                 {/* Tool Info */}
                 <Card>
                   <CardHeader>
