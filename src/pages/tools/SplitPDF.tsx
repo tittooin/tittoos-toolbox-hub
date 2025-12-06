@@ -191,7 +191,6 @@ const SplitPDF = () => {
                 title="Split PDF"
                 description="Extract specific pages or split documents into separate files."
                 icon={Scissors}
-                content=""
                 features={[
                     "Visual page selection",
                     "Extract specific ranges",
@@ -336,16 +335,175 @@ w - 6 h - 6 rounded - full flex items - center justify - center transition - col
                         </div>
                     )}
 
-                    {/* CTA */}
-                    <div className="bg-primary/5 rounded-2xl p-8 text-center space-y-4">
-                        <h3 className="text-2xl font-bold text-primary">Need to combine pages instead?</h3>
-                        <p className="text-muted-foreground max-w-2xl mx-auto">
-                            If you extracted pages to rearrange them, you can merge them back together easily.
+                    <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
+                        <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600">
+                            Split PDF Online - Extract Pages Instantly
+                        </h1>
+
+                        <div className="my-10 flex justify-center">
+                            <svg width="600" height="400" viewBox="0 0 600 400" className="w-full max-w-3xl rounded-xl shadow-2xl bg-gradient-to-br from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-900 border border-orange-100 dark:border-gray-700">
+                                <rect x="0" y="0" width="600" height="400" fill="none" rx="12" />
+                                <defs>
+                                    <linearGradient id="splitGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor="#ea580c" />
+                                        <stop offset="100%" stopColor="#dc2626" />
+                                    </linearGradient>
+                                </defs>
+
+                                {/* Original PDF */}
+                                <g transform="translate(100, 120)">
+                                    <rect width="100" height="140" rx="4" fill="white" stroke="#ea580c" strokeWidth="2" />
+                                    <rect x="15" y="15" width="70" height="10" rx="2" fill="#fed7aa" />
+                                    <rect x="15" y="35" width="70" height="10" rx="2" fill="#e5e7eb" />
+                                    <rect x="15" y="55" width="70" height="10" rx="2" fill="#e5e7eb" />
+                                    <rect x="15" y="75" width="70" height="10" rx="2" fill="#e5e7eb" />
+                                    <text x="50" y="125" textAnchor="middle" fill="#c2410c" fontWeight="bold" fontSize="14">Full PDF</text>
+                                </g>
+
+                                {/* Scissors Icon */}
+                                <g transform="translate(250, 160)">
+                                    <circle cx="30" cy="30" r="35" fill="white" stroke="#ea580c" strokeWidth="2" />
+                                    <path d="M20 20 L40 40 M40 20 L20 40" stroke="#ea580c" strokeWidth="4" strokeLinecap="round" />
+                                    <circle cx="20" cy="20" r="5" fill="white" stroke="#ea580c" strokeWidth="2" />
+                                    <circle cx="20" cy="40" r="5" fill="white" stroke="#ea580c" strokeWidth="2" />
+
+                                    {/* Dashed Cut Line */}
+                                    <path d="M30 -40 V100" stroke="#ea580c" strokeWidth="2" strokeDasharray="6,4" opacity="0.5" />
+                                </g>
+
+                                {/* Split Pages */}
+                                <g transform="translate(380, 100)">
+                                    {/* Page 1 */}
+                                    <g transform="translate(0, 0)">
+                                        <rect width="80" height="100" rx="4" fill="white" stroke="#dc2626" strokeWidth="2" />
+                                        <text x="40" y="55" textAnchor="middle" fill="#dc2626" fontWeight="bold" fontSize="16">Pg 1</text>
+                                        <animateTransform attributeName="transform" type="translate" values="0,0; 10,-10; 0,0" dur="3s" repeatCount="indefinite" />
+                                    </g>
+
+                                    {/* Page 2 */}
+                                    <g transform="translate(40, 40)">
+                                        <rect width="80" height="100" rx="4" fill="white" stroke="#dc2626" strokeWidth="2" />
+                                        <text x="40" y="55" textAnchor="middle" fill="#dc2626" fontWeight="bold" fontSize="16">Pg 2</text>
+                                        <animateTransform attributeName="transform" type="translate" values="40,40; 50,50; 40,40" dur="3s" repeatCount="indefinite" begin="0.5s" />
+                                    </g>
+
+                                    {/* Page 3 */}
+                                    <g transform="translate(80, 80)">
+                                        <rect width="80" height="100" rx="4" fill="white" stroke="#dc2626" strokeWidth="2" />
+                                        <text x="40" y="55" textAnchor="middle" fill="#dc2626" fontWeight="bold" fontSize="16">Pg 3</text>
+                                        <animateTransform attributeName="transform" type="translate" values="80,80; 90,90; 80,80" dur="3s" repeatCount="indefinite" begin="1s" />
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <p className="lead text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-light">
+                            You have a 100-page contract, but you only need to share the signature page. Or maybe you have a large ebook and want to extract just one chapter. Sending the entire file is unprofessional and confusing.
                         </p>
-                        <Button size="lg" asChild>
-                            <a href="/merge-pdf-online">Go to Merge PDF</a>
-                        </Button>
-                    </div>
+                        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+                            Our <strong>Split PDF Tool</strong> gives you surgical precision. Extract specific pages, split a document into individual files, or remove unwanted sections in seconds—all without installing complex software.
+                        </p>
+
+                        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+                            <span className="bg-orange-100 text-orange-800 p-2 rounded-md mr-4 text-2xl">✂️</span>
+                            Why Split a PDF?
+                        </h2>
+                        <ul className="list-disc pl-6 space-y-4 mb-8 bg-orange-50 dark:bg-gray-800 p-6 rounded-xl border border-orange-100 dark:border-gray-700">
+                            <li><strong>Extract Important Pages:</strong> Pull out invoices, receipts, or certificates from a larger merged document.</li>
+                            <li><strong>Reduce File Size:</strong> If you only need 5 pages from a 50MB file, splitting it is the fastest way to "compress" it for email.</li>
+                            <li><strong>Organize Documents:</strong> Break down large reports into separate chapters or sections for easier distribution to different teams.</li>
+                            <li><strong>Remove Sensitive Info:</strong> Delete pages containing confidential data before sharing the rest of the document.</li>
+                        </ul>
+
+                        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
+                            <span className="bg-green-100 text-green-800 p-2 rounded-md mr-4 text-2xl">🔒</span>
+                            Secure & Private
+                        </h2>
+                        <p className="mb-6">
+                            Your documents never leave your device. TittoosTools uses browser-based technology to split your files locally.
+                        </p>
+                        <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
+                            <CheckCircle2 className="h-8 w-8 flex-shrink-0" />
+                            <div>
+                                <h4 className="font-bold text-lg mb-2">No Uploads Needed</h4>
+                                <p>We don't store your files on any server. The splitting process happens entirely in your browser memory, ensuring 100% privacy for your legal and financial documents.</p>
+                            </div>
+                        </div>
+
+                        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">How to Split a PDF</h2>
+                        <div className="grid md:grid-cols-3 gap-6 my-8">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                <div className="absolute top-0 right-0 bg-orange-100 text-orange-800 px-3 py-1 rounded-bl-lg font-bold">1</div>
+                                <div className="mb-4 text-orange-600"><Upload className="h-8 w-8" /></div>
+                                <h3 className="font-bold text-lg mb-2">Upload</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Select your PDF. We'll generate thumbnails for every page so you can see what you're doing.</p>
+                            </div>
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                <div className="absolute top-0 right-0 bg-orange-100 text-orange-800 px-3 py-1 rounded-bl-lg font-bold">2</div>
+                                <div className="mb-4 text-red-600"><Scissors className="h-8 w-8" /></div>
+                                <h3 className="font-bold text-lg mb-2">Select</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Click on the pages you want to keep, or type a range (e.g., "1-5, 10").</p>
+                            </div>
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                                <div className="absolute top-0 right-0 bg-orange-100 text-orange-800 px-3 py-1 rounded-bl-lg font-bold">3</div>
+                                <div className="mb-4 text-green-600"><Download className="h-8 w-8" /></div>
+                                <h3 className="font-bold text-lg mb-2">Download</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Get your new PDF containing only the selected pages, or download all pages as separate files.</p>
+                            </div>
+                        </div>
+
+                        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Frequently Asked Questions</h2>
+                        <div className="space-y-6">
+                            <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Can I split multiple files at once?</span>
+                                    <span className="transition group-open:rotate-180">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </span>
+                                </summary>
+                                <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                                    <p>Currently, you can only process one PDF file at a time. However, you can extract multiple ranges from that single file in one go.</p>
+                                </div>
+                            </details>
+
+                            <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Will the quality be affected?</span>
+                                    <span className="transition group-open:rotate-180">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </span>
+                                </summary>
+                                <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                                    <p>No. We copy the pages exactly as they are in the original document. Text, images, and formatting remain 100% identical.</p>
+                                </div>
+                            </details>
+
+                            <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Can I merge them back later?</span>
+                                    <span className="transition group-open:rotate-180">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </span>
+                                </summary>
+                                <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+                                    <p>Absolutely. Use our <a href="/tools/merge-pdf" className="text-orange-600 hover:underline">Merge PDF</a> tool to combine any PDF files back into a single document.</p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div className="mt-16 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-8 rounded-2xl text-center border border-orange-100 dark:border-orange-800/30">
+                            <h3 className="text-2xl font-bold mb-4 text-orange-900 dark:text-orange-100">Ready to Organize Your PDF?</h3>
+                            <p className="mb-6 text-orange-800 dark:text-orange-200">Select and extract pages in seconds.</p>
+                            <div className="flex justify-center gap-4">
+                                <Button onClick={() => document.getElementById('pdf-upload')?.click()} size="lg" className="bg-orange-600 hover:bg-orange-700 rounded-full shadow-lg">
+                                    Split PDF Now
+                                </Button>
+                                <Button variant="outline" asChild className="rounded-full">
+                                    <a href="/tools/merge-pdf">Merge PDFs</a>
+                                </Button>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </ToolTemplate>
         </>
