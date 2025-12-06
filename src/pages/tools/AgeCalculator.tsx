@@ -50,10 +50,13 @@ const AgeCalculator = () => {
     const totalMinutes = totalHours * 60;
     const totalSeconds = totalMinutes * 60;
 
+    const totalMonths = (years * 12) + months;
+
     setAge({
       years,
       months,
       days,
+      totalMonths,
       totalDays,
       totalWeeks,
       totalHours,
