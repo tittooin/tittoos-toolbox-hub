@@ -24,7 +24,7 @@ const allCategories = [
 ];
 
 const allTools = [
-  // Converters
+  // Converters - Updated
   {
     id: "pdf-converter",
     name: "PDF Converter",
