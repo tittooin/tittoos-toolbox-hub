@@ -46,6 +46,7 @@ const PasswordGenerator = lazy(() => import("./pages/tools/PasswordGenerator"));
 const QRGenerator = lazy(() => import("./pages/tools/QRGenerator"));
 const ColorPicker = lazy(() => import("./pages/tools/ColorPicker"));
 const ImageConverter = lazy(() => import("./pages/tools/ImageConverter"));
+const PDFToEPUB = lazy(() => import("./pages/tools/PDFToEPUB"));
 const PDFToImage = lazy(() => import("./pages/tools/PDFToImage"));
 const TextAnalyzer = lazy(() => import("./pages/tools/TextAnalyzer"));
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
@@ -182,6 +183,7 @@ const App = () => (
               <Route path="/tools/pdf-editor" element={<PDFEditor />} />
               <Route path="/tools/image-converter" element={<ImageConverter />} />
               <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
+              <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
               <Route path="/tools/video-converter" element={<VideoConverter />} />
               <Route path="/tools/audio-converter" element={<AudioConverter />} />
               <Route path="/tools/unit-converter" element={<UnitConverter />} />
