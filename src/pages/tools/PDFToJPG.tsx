@@ -383,7 +383,7 @@ const PDFToJPG = () => {
                             <li className="flex items-start gap-3">
                                 <CheckCircle2 className="h-6 w-6 text-green-500 flex-shrink-0 mt-1" />
                                 <div>
-                                    <strong>Text vs. Images:</strong> This tool converts the <em>entire page</em> into an image. If you just want to extract images <em>inside</em> the PDF, use our <a href="/tools/pdf-image-extractor" className="text-blue-600 underline">PDF Image Extractor</a> (coming soon).
+                                    <strong>Text vs. Images:</strong> This tool converts the <em>entire page</em> into an image. If you want more control over the format, try our <a href="/tools/pdf-to-image" className="text-blue-600 underline">PDF to Image Converter</a>.
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">

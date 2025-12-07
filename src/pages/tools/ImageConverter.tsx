@@ -444,7 +444,7 @@ const ImageConverter = () => {
               <span className="bg-green-100 text-green-600 rounded-full p-1 mr-3 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
               </span>
-              <span><strong>PDF Integration:</strong> Need to turn these images into a document? Use our <a href="/tools/image-to-pdf" className="text-green-600 hover:underline font-medium">Image to PDF tool</a> afterwards to combine them.</span>
+              <span><strong>PDF Integration:</strong> Need to turn these images into a document? Use our <a href="/tools/jpg-to-pdf" className="text-green-600 hover:underline font-medium">Image to PDF tool</a> afterwards to combine them.</span>
             </li>
           </ul>
 

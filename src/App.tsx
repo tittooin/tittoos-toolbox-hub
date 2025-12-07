@@ -180,6 +180,7 @@ const App = () => (
               <Route path="/tools/pdf-text-extractor" element={<PDFTextExtractor />} />
               <Route path="/tools/pdf-editor" element={<PDFEditor />} />
               <Route path="/tools/image-converter" element={<ImageConverter />} />
+              <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
               <Route path="/tools/video-converter" element={<VideoConverter />} />
               <Route path="/tools/audio-converter" element={<AudioConverter />} />
               <Route path="/tools/unit-converter" element={<UnitConverter />} />
