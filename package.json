@@ -52,6 +52,7 @@
     "embla-carousel-react": "^8.3.0",
     "fabric": "^6.7.0",
     "file-saver": "^2.0.5",
+    "heic2any": "^0.0.4",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
@@ -59,6 +60,7 @@
     "lucide-react": "^0.462.0",
     "mammoth": "^1.11.0",
     "next-themes": "^0.3.0",
+    "parse-exr": "^1.0.2",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.4.449",
     "pptxgenjs": "^4.0.1",
@@ -73,6 +75,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "utif": "^3.1.0",
     "vaul": "^0.9.3",
     "xlsx": "^0.18.5",
     "zod": "^3.23.8"
