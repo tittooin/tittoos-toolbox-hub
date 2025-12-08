@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => ({
             if (id.includes('pdfjs-dist') || id.includes('pdf-lib') || id.includes('jspdf')) return 'pdf-vendor';
             if (id.includes('@huggingface/transformers')) return 'ai-vendor';
             if (id.includes('fabric')) return 'image-vendor';
-            if (id.includes('xlsx') || id.includes('docx') || id.includes('pptxgenjs') || id.includes('mammoth')) return 'office-vendor';
+
             if (id.includes('lucide-react')) return 'icons-vendor';
             if (id.includes('@radix-ui')) return 'ui-vendor';
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'react-vendor';
