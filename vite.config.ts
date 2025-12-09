@@ -19,21 +19,22 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('pdfjs-dist')) return 'pdfjs-vendor';
-            if (id.includes('pdf-lib')) return 'pdflib-vendor';
-            if (id.includes('jspdf')) return 'jspdf-vendor';
-            if (id.includes('@huggingface/transformers')) return 'ai-vendor';
-            if (id.includes('fabric')) return 'image-vendor';
+        // manualChunks: (id) => {
+        //   if (id.includes('node_modules')) {
+        //     if (id.includes('pdfjs-dist')) return 'pdfjs-vendor';
+        //     if (id.includes('pdf-lib')) return 'pdflib-vendor';
+        //     if (id.includes('jspdf')) return 'jspdf-vendor';
+        //     if (id.includes('@huggingface/transformers')) return 'ai-vendor';
+        //     if (id.includes('fabric')) return 'image-vendor';
 
-            if (id.includes('lucide-react')) return 'icons-vendor';
-            if (id.includes('@radix-ui')) return 'ui-vendor';
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'react-vendor';
+        //     // Consolidate React and UI libs into the main vendor chunk to avoid initialization issues
+        //     // if (id.includes('lucide-react')) return 'icons-vendor';
+        //     // if (id.includes('@radix-ui')) return 'ui-vendor';
+        //     // if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'react-vendor';
 
-            return 'vendor'; // Catch-all for other node_modules
-          }
-        },
+        //     return 'vendor'; // Catch-all for other node_modules
+        //   }
+        // },
       },
     },
   },
