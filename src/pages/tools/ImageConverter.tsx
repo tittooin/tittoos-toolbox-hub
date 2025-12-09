@@ -24,11 +24,11 @@ const ImageConverter = () => {
 
   useEffect(() => {
     // Set SEO meta tags
-    document.title = "Free Image Converter Online – TittoosTools";
+    document.title = "Free Image Converter Online – Axevora";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Convert images between PNG, JPG, WebP, GIF formats instantly. Free online image converter with no watermark at TittoosTools.');
+      metaDescription.setAttribute('content', 'Convert images between PNG, JPG, WebP, GIF formats instantly. Free online image converter with no watermark at Axevora.');
     }
   }, []);
 

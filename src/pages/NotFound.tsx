@@ -16,7 +16,7 @@ const NotFound = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Helmet>
         <meta name="robots" content="noindex" />
-        <title>Page Not Found | TittoosTools</title>
+        <title>Page Not Found | Axevora</title>
       </Helmet>
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>

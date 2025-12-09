@@ -168,9 +168,9 @@ Start using our generator tools today to streamline your content creation proces
   return (
     <>
       <Helmet>
-        <title>Online Generator Tools Guide 2024 | TittoosTools</title>
+        <title>Online Generator Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Create secure passwords, QR codes, UUIDs, and more with our comprehensive suite of online generator tools." />
-        <meta property="og:title" content="Online Generator Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Online Generator Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Create secure passwords, QR codes, UUIDs, and more with our comprehensive suite of online generator tools." />
       </Helmet>
       <ToolTemplate

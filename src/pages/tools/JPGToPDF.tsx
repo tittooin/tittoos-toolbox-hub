@@ -13,7 +13,7 @@ const JPGToPDF = () => {
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        document.title = "JPG to PDF Converter - Free Image to PDF Tool | TittoosTools";
+        document.title = "JPG to PDF Converter - Free Image to PDF Tool | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert JPG, PNG, and WebP images to PDF for free. Merge multiple images into a single PDF document. Fast, secure, and works on mobile.');
@@ -117,7 +117,7 @@ const JPGToPDF = () => {
     return (
         <>
             <Helmet>
-                <title>JPG to PDF Converter - Free Image to PDF Tool | TittoosTools</title>
+                <title>JPG to PDF Converter - Free Image to PDF Tool | Axevora</title>
                 <meta name="description" content="Convert JPG, PNG, and WebP images to PDF for free. Merge multiple images into a single PDF document. Fast, secure, and works on mobile." />
             </Helmet>
             <ToolTemplate
@@ -352,7 +352,7 @@ const JPGToPDF = () => {
                         <Shield className="h-8 w-8 flex-shrink-0" />
                         <div>
                             <h4 className="font-bold text-lg mb-2">Browser-Based Processing</h4>
-                            <p>TittoosTools processes your images <strong>locally on your device</strong>. The conversion happens right in your browser window. Your photos never travel over the internet, guaranteeing 100% privacy.</p>
+                            <p>Axevora processes your images <strong>locally on your device</strong>. The conversion happens right in your browser window. Your photos never travel over the internet, guaranteeing 100% privacy.</p>
                         </div>
                     </div>
 

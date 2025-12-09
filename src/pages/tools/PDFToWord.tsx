@@ -20,7 +20,7 @@ const PDFToWord = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF to Word Converter Online - Editable DOCX | TittoosTools";
+        document.title = "Free PDF to Word Converter Online - Editable DOCX | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to Word (DOCX) online for free. Extract text from PDF to editable Word document instantly. No signup, secure client-side processing.');
@@ -117,7 +117,7 @@ const PDFToWord = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to Word Converter Online - Editable DOCX | TittoosTools</title>
+                <title>Free PDF to Word Converter Online - Editable DOCX | Axevora</title>
                 <meta name="description" content="Convert PDF to Word (DOCX) online for free. Extract text from PDF to editable Word document instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="pdf to word, convert pdf to docx, pdf to word converter, online pdf to word, free pdf converter, extract text from pdf" />
             </Helmet>
@@ -299,7 +299,7 @@ const PDFToWord = () => {
                             In an era of data breaches and privacy concerns, uploading your sensitive documents to an unknown server is risky. Many online converters require you to upload your file to their cloud, where it is processed and then deleted (hopefully).
                         </p>
                         <p className="mb-6">
-                            <strong>TittoosTools takes a different approach.</strong> We utilize advanced browser technologies (WebAssembly and JavaScript) to process your files <em>locally on your device</em>.
+                            <strong>Axevora takes a different approach.</strong> We utilize advanced browser technologies (WebAssembly and JavaScript) to process your files <em>locally on your device</em>.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <Shield className="h-8 w-8 flex-shrink-0" />
@@ -381,7 +381,7 @@ const PDFToWord = () => {
                                     </span>
                                 </summary>
                                 <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                                    <p>Yes, absolutely! TittoosTools is committed to providing high-quality utilities for free. There are no hidden fees, no credit card requirements, and no daily limits on the number of files you can convert.</p>
+                                    <p>Yes, absolutely! Axevora is committed to providing high-quality utilities for free. There are no hidden fees, no credit card requirements, and no daily limits on the number of files you can convert.</p>
                                 </div>
                             </details>
 

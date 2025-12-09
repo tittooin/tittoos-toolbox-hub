@@ -17,7 +17,7 @@ const LockPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF Password Protector - Encrypt & Lock PDF Online | TittoosTools";
+        document.title = "Free PDF Password Protector - Encrypt & Lock PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Secure your PDF files with a password online for free. Encrypt and lock your documents to prevent unauthorized access. No signup, secure client-side processing.');
@@ -107,7 +107,7 @@ const LockPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF Password Protector - Encrypt & Lock PDF Online | TittoosTools</title>
+                <title>Free PDF Password Protector - Encrypt & Lock PDF Online | Axevora</title>
                 <meta name="description" content="Secure your PDF files with a password online for free. Encrypt and lock your documents to prevent unauthorized access. No signup, secure client-side processing." />
                 <meta name="keywords" content="lock pdf, protect pdf, encrypt pdf, password protect pdf, secure pdf, online pdf locker" />
             </Helmet>
@@ -294,7 +294,7 @@ const LockPDF = () => {
                             Unbreakable Security
                         </h2>
                         <p className="mb-6">
-                            We take security seriously. When you use TittoosTools, you're getting top-tier protection.
+                            We take security seriously. When you use Axevora, you're getting top-tier protection.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <Shield className="h-8 w-8 flex-shrink-0" />

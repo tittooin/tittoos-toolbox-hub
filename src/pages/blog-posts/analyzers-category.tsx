@@ -5,7 +5,7 @@ const AnalyzersCategoryPage = () => {
   const blogContent = `
   <h1>Website Performance & Optimization: Deep-Dive Guide for 2024</h1>
   
-  <p>Performance and analysis are two sides of the same coin. Performance determines user experience and discoverability, while analysis explains what to fix and why. This guide converts abstract metrics into clear actions using TittoosTools: run a website speed test, perform an SEO audit, analyze pages and assets, and turn insights into measurable improvements.</p>
+  <p>Performance and analysis are two sides of the same coin. Performance determines user experience and discoverability, while analysis explains what to fix and why. This guide converts abstract metrics into clear actions using Axevora: run a website speed test, perform an SEO audit, analyze pages and assets, and turn insights into measurable improvements.</p>
   
   <h2>1) Core Concepts: Performance that Drives Outcomes</h2>
   <p>Website performance affects engagement, conversions, and rankings. Modern performance practice focuses on <em>measured experience</em> rather than theoretical speed. Define goals in terms of how quickly users can read, click, and complete tasks.</p>
@@ -25,7 +25,7 @@ const AnalyzersCategoryPage = () => {
     <li><strong>First Paint/Contentful Paint:</strong> Early feedback to users — preload critical assets, reduce blocking resources.</li>
   </ul>
   
-  <h2>3) Measurement with TittoosTools</h2>
+  <h2>3) Measurement with Axevora</h2>
   <p>Start with a quick benchmark, then dig deeper for causes.</p>
   <ul>
     <li><a href="/tools/website-speed-checker">Website Speed Checker</a>: Run lab tests, inspect timings and opportunities.</li>
@@ -114,7 +114,7 @@ const AnalyzersCategoryPage = () => {
   <h3>SEO Pages Not Indexed</h3>
   <p>Check canonical links, sitemap entries, and robots directives; ensure pages are discoverable and load quickly.</p>
   
-  <h2>11) Tools on TittoosTools</h2>
+  <h2>11) Tools on Axevora</h2>
   <ul>
     <li><a href="/tools/website-speed-checker">Website Speed Checker</a> for performance audits.</li>
     <li><a href="/tools/website-analyzer">Website Analyzer</a> for structural insights.</li>
@@ -123,15 +123,15 @@ const AnalyzersCategoryPage = () => {
   </ul>
   
   <h2>12) Conclusion</h2>
-  <p>Optimization is a continuous practice: measure, fix, verify, and iterate. Focus first on Core Web Vitals, remove the biggest blockers, and keep shipping small improvements. TittoosTools gives you the practical checks to move from assumptions to facts — and turn those facts into faster, more discoverable experiences.</p>
+  <p>Optimization is a continuous practice: measure, fix, verify, and iterate. Focus first on Core Web Vitals, remove the biggest blockers, and keep shipping small improvements. Axevora gives you the practical checks to move from assumptions to facts — and turn those facts into faster, more discoverable experiences.</p>
   `;
 
   return (
     <>
       <Helmet>
-        <title>Online Analysis Tools Guide 2024 | TittoosTools</title>
+        <title>Online Analysis Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Gain valuable insights with our comprehensive suite of analysis tools for SEO, website performance, text content, and more." />
-        <meta property="og:title" content="Online Analysis Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Online Analysis Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Gain valuable insights with our comprehensive suite of analysis tools for SEO, website performance, text content, and more." />
       </Helmet>
       <ToolTemplate

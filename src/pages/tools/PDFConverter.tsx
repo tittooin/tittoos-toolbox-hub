@@ -19,11 +19,11 @@ const PDFConverter = () => {
 
   useEffect(() => {
     // Set SEO meta tags
-    document.title = "Free PDF to Word Converter Online – TittoosTools";
+    document.title = "Free PDF to Word Converter Online – Axevora";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Convert PDF to editable Word documents instantly and free. No signup, no watermark – just drag, convert & download at TittoosTools.');
+      metaDescription.setAttribute('content', 'Convert PDF to editable Word documents instantly and free. No signup, no watermark – just drag, convert & download at Axevora.');
     }
   }, []);
 

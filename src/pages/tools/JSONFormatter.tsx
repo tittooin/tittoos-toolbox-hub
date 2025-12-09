@@ -253,7 +253,7 @@ const JSONFormatter = () => {
 
                   <text x="20" y="25" fill="#60a5fa" fontFamily="monospace" fontSize="14">"name"</text>
                   <text x="70" y="25" fill="#94a3b8" fontFamily="monospace" fontSize="14">:</text>
-                  <text x="90" y="25" fill="#a3e635" fontFamily="monospace" fontSize="14">"Tittoos"</text>
+                  <text x="90" y="25" fill="#a3e635" fontFamily="monospace" fontSize="14">"Axevora"</text>
                   <text x="160" y="25" fill="#94a3b8" fontFamily="monospace" fontSize="14">,</text>
 
                   <text x="20" y="50" fill="#60a5fa" fontFamily="monospace" fontSize="14">"valid"</text>

@@ -21,7 +21,7 @@ const Index = () => {
   useEffect(() => {
     // Apply global SEO meta and structured data
     setSEO({
-      title: "TittoosTools - 40+ Essential Online Utilities | Free Web Tools",
+      title: "Axevora - 40+ Essential Online Utilities | Free Web Tools",
       description: "Free online tools for productivity: converters, generators, analyzers, editors, calculators, and AI tools. No registration required.",
       keywords: [
         'free online tools', 'web utilities', 'video converter', 'audio converter', 'image converter', 'password generator', 'QR code', 'JSON formatter', 'URL encoder', 'AI tools', 'SEO analyzer', 'website speed checker', 'bmi calculator', 'loan calculator',
@@ -39,13 +39,13 @@ const Index = () => {
       '@graph': [
         {
           '@type': 'Organization',
-          'name': 'TittoosTools',
+          'name': 'Axevora',
           'url': window.location.origin,
-          'logo': `${window.location.origin}/favicon.ico`,
+          'logo': `${window.location.origin}/favicon.png`,
         },
         {
           '@type': 'WebSite',
-          'name': 'TittoosTools',
+          'name': 'Axevora',
           'url': window.location.origin,
           'potentialAction': {
             '@type': 'SearchAction',
@@ -58,7 +58,7 @@ const Index = () => {
           'mainEntity': [
             {
               '@type': 'Question',
-              'name': 'What free online tools does TittoosTools offer?',
+              'name': 'What free online tools does Axevora offer?',
               'acceptedAnswer': {
                 '@type': 'Answer',
                 'text': 'We offer 40+ tools including converters (video, audio, image), generators (password, QR, UUID), formatters (JSON, XML, SQL), analyzers (SEO, website speed), calculators (BMI, loan, percentage), and AI tools.'
@@ -77,7 +77,7 @@ const Index = () => {
               'name': 'Do you support mobile devices?',
               'acceptedAnswer': {
                 '@type': 'Answer',
-                'text': 'Yes, TittoosTools is mobile-friendly and works across modern browsers on phones, tablets, and desktops.'
+                'text': 'Yes, Axevora is mobile-friendly and works across modern browsers on phones, tablets, and desktops.'
               }
             },
             {
@@ -154,7 +154,7 @@ const Index = () => {
         <section className="relative overflow-hidden bg-background">
           <div className="relative container mx-auto px-4 py-20 text-center text-foreground">
             <h1 className="text-5xl font-bold mb-6">
-              TittoosTools
+              Axevora
             </h1>
             <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90 text-muted-foreground">
               Your complete toolkit for online productivity. 40+ essential utilities including converters,
@@ -381,7 +381,7 @@ const Index = () => {
                 </p>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Is TittoosTools mobile-friendly?</h3>
+                <h3 className="text-xl font-semibold mb-2">Is Axevora mobile-friendly?</h3>
                 <p>
                   Absolutely. The site is responsive and optimized for modern browsers on phones,
                   tablets, and desktops.

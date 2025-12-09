@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: [https://lovable.dev/projects/7408e193-6900-494a-9080-4f305693207b](https://tittoos.online/)
+**URL**: [https://lovable.dev/projects/7408e193-6900-494a-9080-4f305693207b](https://axevora.com/)
 
 ## How can I edit this code?
 
@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project]([https://lovable.dev/projects/7408e193-6900-494a-9080-4f305693207b](https://tittoos.online/)) and start prompting.
+Simply visit the [Lovable Project]([https://lovable.dev/projects/7408e193-6900-494a-9080-4f305693207b](https://axevora.com/)) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
@@ -89,15 +89,15 @@ Run the site using GitHub as the source and Cloudflare for hosting/DNS.
   - `CI=true` (optional)
 
 ### Custom Domain
-- Add `tittoos.online` under Pages → Custom domains.
-- Add `www.tittoos.online` as an alias and set `tittoos.online` as the primary.
+- Add `axevora.com` under Pages → Custom domains.
+- Add `www.axevora.com` as an alias and set `axevora.com` as the primary.
 - Enable “Redirect traffic to the primary domain” for www → apex 301 redirects.
 
 ### DNS (Cloudflare)
 - Nameservers: point to Cloudflare (already done).
 - Records:
-  - `tittoos.online` → Cloudflare Pages-managed CNAME to your `*.pages.dev` domain, proxied.
-  - `www` → CNAME to `tittoos.online`, proxied.
+  - `axevora.com` → Cloudflare Pages-managed CNAME to your `*.pages.dev` domain, proxied.
+  - `www` → CNAME to `axevora.com`, proxied.
 - SSL/TLS: set to “Full”.
 
 ### GitHub Configuration
@@ -111,8 +111,8 @@ Run the site using GitHub as the source and Cloudflare for hosting/DNS.
 ### Post-Deploy Checklist
 - Purge Cloudflare cache: Caching → Purge everything.
 - Verify homepage meta:
-  - `canonical`, `og:url`, and `twitter:url` point to `https://tittoos.online/`.
-- Verify `https://tittoos.online/sitemap.xml` resolves and contains site URLs.
+  - `canonical`, `og:url`, and `twitter:url` point to `https://axevora.com/`.
+- Verify `https://axevora.com/sitemap.xml` resolves and contains site URLs.
 - Test deep links (e.g., `/tools/validators`) and `www` → apex redirect.
 
 ### Notes
@@ -121,12 +121,12 @@ Run the site using GitHub as the source and Cloudflare for hosting/DNS.
 ### Email Setup (Contact Forms)
 - Environment variables (Pages → Settings → Environment variables):
   - `RESEND_API_KEY`: your Resend API key (required).
-  - `RESEND_FROM`: an allowed sender (optional; e.g., `notifications@tittoos.online`).
+  - `RESEND_FROM`: an allowed sender (optional; e.g., `notifications@axevora.com`).
 - Function endpoint: form submissions POST to `/api/send-email` (Cloudflare Pages Function).
 - Sender domain: if using a custom `RESEND_FROM`, verify the domain in Resend; otherwise the default `onboarding@resend.dev` works until verification.
 - Testing:
-  - After deploy, submit the forms at `https://tittoos.online/contact`.
-  - Emails are delivered to `admin@tittoos.online`. If you use Cloudflare Email Routing, confirm the forward target inbox.
+  - After deploy, submit the forms at `https://axevora.com/contact`.
+  - Emails are delivered to `admin@axevora.com`. If you use Cloudflare Email Routing, confirm the forward target inbox.
   - Check Cloudflare Logs/Analytics if you need to trace function requests.
 
 ---
@@ -137,19 +137,19 @@ Our site serves `ads.txt` from the root and provides a well-known alias to maxim
 
 - File location: `public/ads.txt`
 - Live URLs:
-  - `https://tittoos.online/ads.txt`
-  - `https://www.tittoos.online/ads.txt` (redirects to apex; path preserved)
-  - `https://tittoos.online/.well-known/ads.txt` → redirected to `/ads.txt`
+  - `https://axevora.com/ads.txt`
+  - `https://www.axevora.com/ads.txt` (redirects to apex; path preserved)
+  - `https://axevora.com/.well-known/ads.txt` → redirected to `/ads.txt`
 - Headers: `_headers` sets `Content-Type: text/plain` and `Cache-Control: no-cache, max-age=0, must-revalidate` for `/ads.txt`.
 - Routing: `_redirects` includes explicit rules to serve `/ads.txt` (and the well-known path) and avoid SPA rewrites.
 
 ### Verify ads.txt
-1. Open the live URL `https://tittoos.online/ads.txt` and confirm it returns HTTP 200 with this line:
+1. Open the live URL `https://axevora.com/ads.txt` and confirm it returns HTTP 200 with this line:
    ```
    google.com, pub-7510164795562884, DIRECT, f08c47fec0942fa0
    ```
 2. Check on both apex and `www`.
-3. In AdSense → Sites → tittoos.online → Ads.txt, click “Check again”.
+3. In AdSense → Sites → axevora.com → Ads.txt, click “Check again”.
 4. AdSense crawler may take 24–48 hours (sometimes up to 72) to reflect the status change.
 
 ### Cloudflare cache purge (optional)

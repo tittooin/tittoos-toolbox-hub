@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const baseUrl = process.env.SITEMAP_BASE_URL || "https://tittoos.online/";
+const baseUrl = process.env.SITEMAP_BASE_URL || "https://axevora.com/";
 const appFile = path.join(__dirname, "src", "App.tsx");
 const toolsDataFile = path.join(__dirname, "src", "data", "tools.ts");
 const blogPostsDir = path.join(__dirname, "src", "pages", "blog-posts");

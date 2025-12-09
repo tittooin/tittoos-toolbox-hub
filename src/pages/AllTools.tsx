@@ -23,7 +23,7 @@ const AllTools = () => {
 
   useEffect(() => {
     setSEO({
-      title: "All Tools | TittoosTools",
+      title: "All Tools | Axevora",
       description: `Browse ${tools.length}+ free online utilities: converters, formatters, editors, generators, analyzers and more. No registration required.`,
       keywords: [
         'online tools', 'free web tools', 'productivity tools', 'file converter', 'json formatter', 'csv editor', 'qr code generator', 'password generator', 'seo analyzer', 'website tools'

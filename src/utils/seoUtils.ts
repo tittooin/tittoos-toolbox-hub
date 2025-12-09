@@ -1,4 +1,4 @@
-// SEO Utilities for TittoosTools
+// SEO Utilities for Axevora
 export interface SEOData {
   title?: string;
   description?: string;
@@ -6,6 +6,7 @@ export interface SEOData {
   image?: string;
   url?: string;
   type?: string;
+  noindex?: boolean;
 }
 
 const ensureTag = (selector: string, create: () => HTMLElement) => {
@@ -68,6 +69,14 @@ export const setSEO = (data: SEOData) => {
   if (data.type) {
     setMeta({ property: 'og:type' }, data.type);
   }
+
+  if (data.noindex) {
+    setMeta({ name: 'robots' }, 'noindex');
+  } else {
+    // Ensure robots is index, follow if not explicitly noindex (or remove noindex if present)
+    const el = document.querySelector('meta[name="robots"]');
+    if (el) el.setAttribute('content', 'index, follow');
+  }
 };
 
 export const injectJsonLd = (data: Record<string, any>, id = 'jsonld-primary') => {
@@ -84,4 +93,48 @@ export const injectJsonLd = (data: Record<string, any>, id = 'jsonld-primary') =
 // Backward compatibility if needed
 export const setToolSEO = (title: string, description: string) => {
   setSEO({ title, description });
+};
+
+export const toolSEOData = {
+  'video-converter': {
+    title: 'Free Video Converter Online – Axevora',
+    description: 'Convert videos between MP4, AVI, MOV, WebM formats. Support for HD, 4K quality. No signup required – just upload and convert at Axevora.'
+  },
+  'audio-converter': {
+    title: 'Free Audio Converter Online – Axevora',
+    description: 'Convert audio files between MP3, WAV, FLAC, AAC formats. High quality conversion with no watermark at Axevora.'
+  },
+
+  'color-picker': {
+    title: 'Free Color Picker Tool Online – Axevora',
+    description: 'Pick colors from images or use color wheel. Get HEX, RGB, HSL codes instantly. Free color picker tool at Axevora.'
+  },
+  'text-analyzer': {
+    title: 'Free Text Analyzer Online – Axevora',
+    description: 'Analyze text for word count, character count, readability score. Free text analysis tool with detailed statistics at Axevora.'
+  },
+  'calculator': {
+    title: 'Free Online Calculator – Axevora',
+    description: 'Advanced online calculator for basic and scientific calculations. Free calculator with memory functions at Axevora.'
+  },
+  'percentage-calculator': {
+    title: 'Free Percentage Calculator Online – Axevora',
+    description: 'Calculate percentages, percentage increase and decrease. Easy percentage calculator with step-by-step results at Axevora.'
+  },
+  'json-formatter': {
+    title: 'Free JSON Formatter Online – Axevora',
+    description: 'Format, validate and beautify JSON data. Free JSON formatter with syntax highlighting and error detection at Axevora.'
+  },
+  'base64-converter': {
+    title: 'Free Base64 Encoder/Decoder Online – Axevora',
+    description: 'Encode and decode Base64 strings and files. Free Base64 converter with file upload support at Axevora.'
+  },
+  'uuid-generator': {
+    title: 'Free UUID Generator Online – Axevora',
+    description: 'Generate UUID v1, v4 unique identifiers instantly. Free UUID generator with bulk generation at Axevora.'
+  },
+  'hash-generator': {
+    title: 'Free Hash Generator Online – Axevora',
+    description: 'Generate MD5, SHA1, SHA256 hash values for text and files. Free hash generator and verifier at Axevora.'
+  }
 };

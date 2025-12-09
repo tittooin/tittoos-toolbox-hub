@@ -10,12 +10,12 @@ export interface AuthorProfile {
 
 export const AUTHORS: AuthorProfile[] = [
   {
-    name: "TittoosTools Team",
-    slug: "tittoostools-team",
-    bio: "The TittoosTools editorial team researches, tests, and writes practical guides on online tools, workflow optimization, and digital productivity.",
-    website: "https://tittoostools.com/",
-    twitter: "https://twitter.com/TittoosTools",
-    linkedin: "https://www.linkedin.com/company/tittoostools/",
+    name: "Axevora Team",
+    slug: "axevora-team",
+    bio: "The Axevora editorial team researches, tests, and writes practical guides on online tools, workflow optimization, and digital productivity.",
+    website: "https://axevora.com/",
+    twitter: "https://twitter.com/Axevora",
+    linkedin: "https://www.linkedin.com/company/axevora/",
   },
   {
     name: "Security Expert",

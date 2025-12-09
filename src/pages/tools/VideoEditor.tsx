@@ -1171,7 +1171,7 @@ const VideoEditor = () => {
         </div>
 
         <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
-          Video editing used to be hard. You had to learn complex software, understand keyframes, and spend hours tweaking transitions. <strong>TittoosTools AI Video Editor</strong> changes the game. It combines a professional timeline editor with generative AI. Just type what you want—"Make the video cinematic" or "Remove background noise"—and our AI handles the technical heavy lifting instantly.
+          Video editing used to be hard. You had to learn complex software, understand keyframes, and spend hours tweaking transitions. <strong>Axevora AI Video Editor</strong> changes the game. It combines a professional timeline editor with generative AI. Just type what you want—"Make the video cinematic" or "Remove background noise"—and our AI handles the technical heavy lifting instantly.
         </p>
 
         <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">

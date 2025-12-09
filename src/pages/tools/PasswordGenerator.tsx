@@ -20,11 +20,11 @@ const PasswordGenerator = () => {
 
   useEffect(() => {
     // Set SEO meta tags
-    document.title = "Free Strong Password Generator Online – TittoosTools";
+    document.title = "Free Strong Password Generator Online – Axevora";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Generate secure, strong passwords instantly. Customize length, symbols, numbers. Free password generator with no signup required at TittoosTools.');
+      metaDescription.setAttribute('content', 'Generate secure, strong passwords instantly. Customize length, symbols, numbers. Free password generator with no signup required at Axevora.');
     }
   }, []);
 
@@ -258,7 +258,7 @@ const PasswordGenerator = () => {
               </span>
             </summary>
             <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-              <p>Yes, absolutely. TittoosTools uses <strong>client-side generation</strong>. This means the code runs entirely on your device (browser). The password is created in your computer's memory and is never sent over the internet to our servers. You can even disconnect your internet and the tool will still work. Learn more about our data handling in our <a href="/privacy" className="text-emerald-600 underline">Privacy Policy</a>.</p>
+              <p>Yes, absolutely. Axevora uses <strong>client-side generation</strong>. This means the code runs entirely on your device (browser). The password is created in your computer's memory and is never sent over the internet to our servers. You can even disconnect your internet and the tool will still work. Learn more about our data handling in our <a href="/privacy" className="text-emerald-600 underline">Privacy Policy</a>.</p>
             </div>
           </details>
 

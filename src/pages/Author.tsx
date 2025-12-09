@@ -15,10 +15,10 @@ const Author = () => {
     const canonical = `${origin}/author/${slug ?? ''}`;
     if (author) {
       setSEO({
-        title: `${author.name} – Author at TittoosTools`,
+        title: `${author.name} – Author at Axevora`,
         description: author.bio,
         type: 'website',
-        canonical,
+        url: canonical,
       });
       injectJsonLd({
         '@context': 'https://schema.org',
@@ -31,10 +31,10 @@ const Author = () => {
       }, 'jsonld-author');
     } else {
       setSEO({
-        title: 'Author Not Found – TittoosTools',
+        title: 'Author Not Found – Axevora',
         description: 'The requested author profile could not be found.',
         type: 'website',
-        canonical,
+        url: canonical,
         noindex: true,
       });
     }

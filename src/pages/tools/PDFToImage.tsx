@@ -27,7 +27,7 @@ const PDFToImage = () => {
     const [scale, setScale] = useState("2"); // 1 = 72dpi, 2 = 144dpi, 3 = 216dpi
 
     useEffect(() => {
-        document.title = "Free PDF to Image Converter - JPG, PNG, WebP | TittoosTools";
+        document.title = "Free PDF to Image Converter - JPG, PNG, WebP | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF pages to high-quality images (JPG, PNG, WebP). Customize resolution and quality. Secure client-side processing.');
@@ -131,7 +131,7 @@ const PDFToImage = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to Image Converter - JPG, PNG, WebP | TittoosTools</title>
+                <title>Free PDF to Image Converter - JPG, PNG, WebP | Axevora</title>
                 <meta name="description" content="Convert PDF pages to high-quality images (JPG, PNG, WebP). Customize resolution and quality. Secure client-side processing." />
                 <meta name="keywords" content="pdf to image, pdf to jpg, pdf to png, pdf to webp, convert pdf, high quality pdf converter" />
             </Helmet>

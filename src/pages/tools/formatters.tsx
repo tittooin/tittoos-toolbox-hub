@@ -178,9 +178,9 @@ Start using our formatter tools today to enhance your code quality and maintain 
   return (
     <>
       <Helmet>
-        <title>Formatting Tools Guide 2024 | TittoosTools</title>
+        <title>Formatting Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Learn how to perfect your code presentation with our suite of formatting tools for JSON, XML, SQL, HTML, and CSS." />
-        <meta property="og:title" content="Formatting Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Formatting Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Learn how to perfect your code presentation with our suite of formatting tools for JSON, XML, SQL, HTML, and CSS." />
       </Helmet>
       <ToolTemplate

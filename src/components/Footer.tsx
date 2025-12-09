@@ -14,9 +14,9 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-sm">TT</span>
+                <span className="text-white font-bold text-sm">AX</span>
               </div>
-              <span className="text-xl font-bold">TittoosTools</span>
+              <span className="text-xl font-bold">Axevora</span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
               Your complete toolkit for online productivity. Access 35+ essential utilities
@@ -31,7 +31,7 @@ const Footer = () => {
                   try {
                     const shareData = {
                       title: document.title,
-                      text: 'Check out this page on TittoosTools',
+                      text: 'Check out this page on Axevora',
                       url: window.location.href,
                     };
                     if (navigator.share) {
@@ -41,7 +41,7 @@ const Footer = () => {
                       toast.success('Link copied to clipboard');
                     } else {
                       // Fallback: open mailto with default recipient
-                      window.location.href = `mailto:admin@tittoos.online?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
+                      window.location.href = `mailto:admin@axevora.com?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
                     }
                   } catch (e) {
                     console.warn('Share canceled or failed', e);
@@ -138,7 +138,7 @@ const Footer = () => {
 
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground">
-            © {currentYear} TittoosTools. All rights reserved. Built with ❤️ for productivity.
+            © {currentYear} Axevora. All rights reserved. Built with ❤️ for productivity.
           </p>
           <p className="text-xs text-muted-foreground mt-2">
             Disclosure: Some pages may display ads to keep tools free.

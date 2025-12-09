@@ -17,7 +17,7 @@ const UnlockPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF Password Remover - Unlock PDF Online | TittoosTools";
+        document.title = "Free PDF Password Remover - Unlock PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Remove passwords from PDF files online for free. Unlock encrypted PDFs instantly. No signup, secure client-side processing.');
@@ -103,7 +103,7 @@ const UnlockPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF Password Remover - Unlock PDF Online | TittoosTools</title>
+                <title>Free PDF Password Remover - Unlock PDF Online | Axevora</title>
                 <meta name="description" content="Remove passwords from PDF files online for free. Unlock encrypted PDFs instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="unlock pdf, remove pdf password, decrypt pdf, pdf password remover, online pdf unlocker" />
             </Helmet>
@@ -293,7 +293,7 @@ const UnlockPDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Decryption</h4>
-                                <p>TittoosTools decrypts your file <strong>locally in your browser</strong>. We never see your file or your password. The unlocked version is generated directly on your device.</p>
+                                <p>Axevora decrypts your file <strong>locally in your browser</strong>. We never see your file or your password. The unlocked version is generated directly on your device.</p>
                             </div>
                         </div>
 

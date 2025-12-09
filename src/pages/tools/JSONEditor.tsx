@@ -153,12 +153,12 @@ const JSONEditor = () => {
 
   const loadSample = () => {
     const sample = {
-      "project": "Tittoos Toolbox",
+      "project": "Axevora Toolbox",
       "version": 1.0,
       "features": ["JSON Editor", "Converters", "Analyzers"],
       "active": true,
       "metadata": {
-        "author": "Tittoos",
+        "author": "Axevora",
         "year": 2024
       }
     };

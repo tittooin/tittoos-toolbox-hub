@@ -168,9 +168,9 @@ Start using our editor tools today to enhance your content creation and code dev
   return (
     <>
       <Helmet>
-        <title>Online Editor Tools Guide 2024 | TittoosTools</title>
+        <title>Online Editor Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Create and edit content professionally with our comprehensive suite of online editors for text, JSON, CSV, and HTML." />
-        <meta property="og:title" content="Online Editor Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Online Editor Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Create and edit content professionally with our comprehensive suite of online editors for text, JSON, CSV, and HTML." />
       </Helmet>
       <ToolTemplate

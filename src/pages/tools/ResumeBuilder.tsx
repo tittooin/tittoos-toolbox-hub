@@ -33,7 +33,7 @@ const ResumeBuilder = () => {
   const [skills, setSkills] = useState("");
 
   useEffect(() => {
-    document.title = "Free Resume Builder Online – TittoosTools";
+    document.title = "Free Resume Builder Online – Axevora";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {

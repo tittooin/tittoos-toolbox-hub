@@ -9,7 +9,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
@@ -29,11 +29,11 @@ const Contact = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <a 
-                  href="mailto:admin@tittoos.online" 
+                <a
+                  href="mailto:admin@axevora.com"
                   className="text-primary hover:text-primary/80 font-medium"
                 >
-                  admin@tittoos.online
+                  admin@axevora.com
                 </a>
               </CardContent>
             </Card>

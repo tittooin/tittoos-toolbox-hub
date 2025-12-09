@@ -6,13 +6,13 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
             Terms of Service
           </h1>
-          
+
           <div className="bg-card rounded-lg p-8 shadow-sm">
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p className="text-sm text-muted-foreground mb-8">
@@ -21,13 +21,13 @@ const Terms = () => {
 
               <h2 className="text-2xl font-semibold text-foreground mb-4">Acceptance of Terms</h2>
               <p className="mb-6">
-                By accessing and using TittoosTools, you accept and agree to be bound by the 
+                By accessing and using Axevora, you accept and agree to be bound by the
                 terms and provision of this agreement.
               </p>
 
               <h2 className="text-2xl font-semibold text-foreground mb-4">Use License</h2>
               <p className="mb-6">
-                Permission is granted to temporarily use TittoosTools for personal and commercial use. 
+                Permission is granted to temporarily use Axevora for personal and commercial use.
                 This is the grant of a license, not a transfer of title, and under this license you may:
               </p>
               <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -54,25 +54,25 @@ const Terms = () => {
               <h2 className="text-2xl font-semibold text-foreground mb-4">Copyright Complaints</h2>
               <p className="mb-6">
                 If you believe material processed via our tools infringes your copyright, please email
-                <a href="mailto:admin@tittoos.online" className="text-primary hover:text-primary/80"> admin@tittoos.online</a>
+                <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80"> admin@axevora.com</a>
                 with details and supporting documentation. We will investigate and take appropriate action.
               </p>
 
               <h2 className="text-2xl font-semibold text-foreground mb-4">Disclaimer</h2>
               <p className="mb-6">
-                The materials on TittoosTools are provided on an 'as is' basis. TittoosTools 
-                makes no warranties, expressed or implied, and hereby disclaims and negates all 
-                other warranties including, without limitation, implied warranties or conditions 
-                of merchantability, fitness for a particular purpose, or non-infringement of 
+                The materials on Axevora are provided on an 'as is' basis. Axevora
+                makes no warranties, expressed or implied, and hereby disclaims and negates all
+                other warranties including, without limitation, implied warranties or conditions
+                of merchantability, fitness for a particular purpose, or non-infringement of
                 intellectual property or other violation of rights.
               </p>
 
               <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Information</h2>
               <p className="mb-6">
                 If you have any questions about these Terms of Service, please contact us at{" "}
-              <a href="mailto:admin@tittoos.online" className="text-primary hover:text-primary/80">
-                admin@tittoos.online
-              </a>
+                <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">
+                  admin@axevora.com
+                </a>
               </p>
             </div>
           </div>

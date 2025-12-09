@@ -25,7 +25,7 @@ const InternetSpeedTest = () => {
     const testPing = async () => {
         const start = performance.now();
         try {
-            await fetch("/favicon.ico", { cache: "no-store", method: "HEAD" });
+            await fetch("/favicon.png", { cache: "no-store", method: "HEAD" });
             const end = performance.now();
             return Math.round(end - start);
         } catch (e) {

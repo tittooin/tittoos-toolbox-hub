@@ -20,7 +20,7 @@ const PDFToPNG = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF to PNG Converter Online - High Quality Images | TittoosTools";
+        document.title = "Free PDF to PNG Converter Online - High Quality Images | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to PNG online for free. Extract pages from PDF as high-quality PNG images with transparent background support. No signup, secure client-side processing.');
@@ -119,7 +119,7 @@ const PDFToPNG = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to PNG Converter Online - High Quality Images | TittoosTools</title>
+                <title>Free PDF to PNG Converter Online - High Quality Images | Axevora</title>
                 <meta name="description" content="Convert PDF to PNG online for free. Extract pages from PDF as high-quality PNG images. No signup, secure client-side processing." />
                 <meta name="keywords" content="pdf to png, convert pdf to image, pdf to png converter, online pdf converter, free pdf tools, extract images from pdf" />
             </Helmet>
@@ -379,7 +379,7 @@ const PDFToPNG = () => {
                                     </span>
                                 </summary>
                                 <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                                    <p>Yes, TittoosTools is completely free to use. No hidden fees, no watermarks, and no registration required.</p>
+                                    <p>Yes, Axevora is completely free to use. No hidden fees, no watermarks, and no registration required.</p>
                                 </div>
                             </details>
 

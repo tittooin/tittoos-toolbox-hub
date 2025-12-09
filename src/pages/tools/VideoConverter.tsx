@@ -21,11 +21,11 @@ const VideoConverter = () => {
 
   useEffect(() => {
     // Set SEO meta tags
-    document.title = "Free Video Converter Online – TittoosTools";
+    document.title = "Free Video Converter Online – Axevora";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Convert videos between MP4, AVI, MOV, WebM formats. Support for HD, 4K quality. No signup required – just upload and convert at TittoosTools.');
+      metaDescription.setAttribute('content', 'Convert videos between MP4, AVI, MOV, WebM formats. Support for HD, 4K quality. No signup required – just upload and convert at Axevora.');
     }
   }, []);
 
@@ -422,7 +422,7 @@ const VideoConverter = () => {
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Why Use TittoosTools Video Converter?</h2>
+          <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-white">Why Use Axevora Video Converter?</h2>
           <ul className="space-y-4 text-gray-700 dark:text-gray-300 mb-8">
             <li className="flex items-start">
               <span className="bg-red-100 text-red-600 rounded-full p-1 mr-3 mt-1">✓</span>

@@ -178,9 +178,9 @@ Start exploring our AI tools today to transform your creative and development pr
   return (
     <>
       <Helmet>
-        <title>AI Tools and Automation Guide 2024 | TittoosTools</title>
+        <title>AI Tools and Automation Guide 2024 | Axevora</title>
         <meta name="description" content="Explore cutting-edge AI tools for content creation, automation, and workflow optimization." />
-        <meta property="og:title" content="AI Tools and Automation Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="AI Tools and Automation Guide 2024 | Axevora" />
         <meta property="og:description" content="Explore cutting-edge AI tools for content creation, automation, and workflow optimization." />
       </Helmet>
       <ToolTemplate

@@ -20,7 +20,7 @@ const PDFToJPG = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF to JPG Converter Online - High Quality Images | TittoosTools";
+        document.title = "Free PDF to JPG Converter Online - High Quality Images | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to JPG online for free. Extract pages from PDF as high-quality JPG images. No signup, secure client-side processing.');
@@ -119,7 +119,7 @@ const PDFToJPG = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to JPG Converter Online - High Quality Images | TittoosTools</title>
+                <title>Free PDF to JPG Converter Online - High Quality Images | Axevora</title>
                 <meta name="description" content="Convert PDF to JPG online for free. Extract pages from PDF as high-quality JPG images. No signup, secure client-side processing." />
                 <meta name="keywords" content="pdf to jpg, convert pdf to image, pdf to jpeg, online pdf converter, free pdf tools, extract images from pdf" />
             </Helmet>
@@ -334,7 +334,7 @@ const PDFToJPG = () => {
                             Privacy & Security Guaranteed
                         </h2>
                         <p className="mb-6">
-                            We understand that your PDFs might contain sensitive information. That's why we built TittoosTools with a <strong>Privacy-First</strong> architecture.
+                            We understand that your PDFs might contain sensitive information. That's why we built Axevora with a <strong>Privacy-First</strong> architecture.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <Shield className="h-8 w-8 flex-shrink-0" />

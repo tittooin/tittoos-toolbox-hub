@@ -24,7 +24,7 @@ const ValidatorsCategoryPage = () => {
     <li><strong>Format Validation:</strong> Verify input type and size before conversion; avoid rendering mixed content.</li>
     <li><strong>Output Checks:</strong> Re-validate the converted file to ensure compliance and readability.</li>
   </ul>
-  <p>Start with TittoosTools utilities:</p>
+  <p>Start with Axevora utilities:</p>
   <ul>
     <li><a href="/tools/pdf-converter">PDF Converter</a> for consistent, shareable documents.</li>
     <li><a href="/tools/base64-converter">Base64 Converter</a> for safe embedding and transport of small payloads.</li>
@@ -87,7 +87,7 @@ const ValidatorsCategoryPage = () => {
     <li><strong>Impersonation:</strong> Misuse of identity fields without verification.</li>
   </ul>
   
-  <h2>9) Using TittoosTools</h2>
+  <h2>9) Using Axevora</h2>
   <ul>
     <li><a href="/tools/json-formatter">JSON Formatter</a> for structure verification.</li>
     <li><a href="/tools/xml-formatter">XML Formatter</a> for schema-focused cleaning.</li>
@@ -97,15 +97,15 @@ const ValidatorsCategoryPage = () => {
   </ul>
   
   <h2>10) Conclusion</h2>
-  <p>Validation is the foundation of secure, private, and reliable software. By enforcing strict structures, minimizing data, and preferring local processing, you protect users and your own systems. TittoosTools helps you implement these principles day-to-day — from formatting JSON to converting documents safely — so you can ship with confidence.</p>
+  <p>Validation is the foundation of secure, private, and reliable software. By enforcing strict structures, minimizing data, and preferring local processing, you protect users and your own systems. Axevora helps you implement these principles day-to-day — from formatting JSON to converting documents safely — so you can ship with confidence.</p>
   `;
 
   return (
     <>
       <Helmet>
-        <title>Online Validation Tools Guide 2024 | TittoosTools</title>
+        <title>Online Validation Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Ensure code quality and data integrity with our comprehensive suite of online validators for JSON, XML, HTML, CSS, and more." />
-        <meta property="og:title" content="Online Validation Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Online Validation Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Ensure code quality and data integrity with our comprehensive suite of online validators for JSON, XML, HTML, CSS, and more." />
       </Helmet>
       <ToolTemplate

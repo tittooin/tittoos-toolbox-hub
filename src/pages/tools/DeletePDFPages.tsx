@@ -23,7 +23,7 @@ const DeletePDFPages = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Delete PDF Pages - Remove Pages from PDF Online | TittoosTools";
+        document.title = "Free Delete PDF Pages - Remove Pages from PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Delete pages from PDF online for free. Remove unwanted pages from your PDF documents instantly. No signup, secure client-side processing.');
@@ -161,7 +161,7 @@ const DeletePDFPages = () => {
     return (
         <>
             <Helmet>
-                <title>Free Delete PDF Pages - Remove Pages from PDF Online | TittoosTools</title>
+                <title>Free Delete PDF Pages - Remove Pages from PDF Online | Axevora</title>
                 <meta name="description" content="Delete pages from PDF online for free. Remove unwanted pages from your PDF documents instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="delete pdf pages, remove pdf pages, cut pdf pages, edit pdf, online pdf editor" />
             </Helmet>
@@ -358,7 +358,7 @@ const DeletePDFPages = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. The pages are removed directly on your device.</p>
+                                <p>Axevora processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. The pages are removed directly on your device.</p>
                             </div>
                         </div>
 

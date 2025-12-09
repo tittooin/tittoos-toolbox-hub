@@ -20,7 +20,7 @@ const PDFTextExtractor = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF Text Extractor - Extract Text from PDF Online | TittoosTools";
+        document.title = "Free PDF Text Extractor - Extract Text from PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Extract text from PDF online for free. Copy text from PDF documents instantly. No signup, secure client-side processing.');
@@ -115,7 +115,7 @@ const PDFTextExtractor = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF Text Extractor - Extract Text from PDF Online | TittoosTools</title>
+                <title>Free PDF Text Extractor - Extract Text from PDF Online | Axevora</title>
                 <meta name="description" content="Extract text from PDF online for free. Copy text from PDF documents instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="extract pdf text, copy pdf text, pdf to text, pdf text grabber, online pdf tool" />
             </Helmet>
@@ -310,7 +310,7 @@ const PDFTextExtractor = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools extracts the text <strong>locally in your browser</strong>. We don't upload your document to any server. The extraction happens directly on your device.</p>
+                                <p>Axevora extracts the text <strong>locally in your browser</strong>. We don't upload your document to any server. The extraction happens directly on your device.</p>
                             </div>
                         </div>
 

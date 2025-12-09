@@ -113,7 +113,7 @@ const HTMLEditor = () => {
               <text x="200" y="90" fill="#f97316" fontFamily="monospace" fontSize="16">&lt;/h1&gt;</text>
 
               <text x="40" y="120" fill="#f97316" fontFamily="monospace" fontSize="16">&lt;p&gt;</text>
-              <text x="80" y="120" fill="#f8fafc" fontFamily="monospace" fontSize="16">Welcome to Tittoos</text>
+              <text x="80" y="120" fill="#f8fafc" fontFamily="monospace" fontSize="16">Welcome to Axevora</text>
               <text x="250" y="120" fill="#f97316" fontFamily="monospace" fontSize="16">&lt;/p&gt;</text>
 
               <text x="20" y="150" fill="#f97316" fontFamily="monospace" fontSize="16">&lt;/body&gt;</text>

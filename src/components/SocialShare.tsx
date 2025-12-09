@@ -41,7 +41,7 @@ const SocialShare = ({ url, title, description }: SocialShareProps) => {
         {
             name: "Pinterest",
             icon: Share2,
-            url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedDesc}&media=https://tittoos.online/placeholder.svg`,
+            url: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedDesc}&media=https://axevora.com/placeholder.svg`,
             color: "hover:bg-[#BD081C] hover:text-white",
         },
     ];

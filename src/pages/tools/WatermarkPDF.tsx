@@ -26,7 +26,7 @@ const WatermarkPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Add Watermark to PDF - Watermark PDF Online | TittoosTools";
+        document.title = "Free Add Watermark to PDF - Watermark PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Add watermark to PDF online for free. Protect your documents with text watermarks. Customize text, color, and position. No signup, secure client-side processing.');
@@ -129,7 +129,7 @@ const WatermarkPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free Add Watermark to PDF - Watermark PDF Online | TittoosTools</title>
+                <title>Free Add Watermark to PDF - Watermark PDF Online | Axevora</title>
                 <meta name="description" content="Add watermark to PDF online for free. Protect your documents with text watermarks. Customize text, color, and position. No signup, secure client-side processing." />
                 <meta name="keywords" content="watermark pdf, add watermark, stamp pdf, protect pdf, pdf copyright, online pdf tool" />
             </Helmet>
@@ -373,7 +373,7 @@ const WatermarkPDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools applies the watermark <strong>locally in your browser</strong>. We don't upload your document to any server. The stamping happens directly on your device.</p>
+                                <p>Axevora applies the watermark <strong>locally in your browser</strong>. We don't upload your document to any server. The stamping happens directly on your device.</p>
                             </div>
                         </div>
 

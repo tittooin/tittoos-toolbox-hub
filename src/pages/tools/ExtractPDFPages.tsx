@@ -23,7 +23,7 @@ const ExtractPDFPages = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Extract PDF Pages - Split PDF Online | TittoosTools";
+        document.title = "Free Extract PDF Pages - Split PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Extract pages from PDF online for free. Split PDF files and save specific pages as a new document. No signup, secure client-side processing.');
@@ -149,7 +149,7 @@ const ExtractPDFPages = () => {
     return (
         <>
             <Helmet>
-                <title>Free Extract PDF Pages - Split PDF Online | TittoosTools</title>
+                <title>Free Extract PDF Pages - Split PDF Online | Axevora</title>
                 <meta name="description" content="Extract pages from PDF online for free. Split PDF files and save specific pages as a new document. No signup, secure client-side processing." />
                 <meta name="keywords" content="extract pdf pages, split pdf, separate pdf pages, cut pdf, online pdf splitter" />
             </Helmet>
@@ -351,7 +351,7 @@ const ExtractPDFPages = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. The extraction happens directly on your device.</p>
+                                <p>Axevora processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. The extraction happens directly on your device.</p>
                             </div>
                         </div>
 

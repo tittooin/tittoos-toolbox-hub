@@ -19,7 +19,7 @@ const PDFToExcel = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF to Excel Converter Online - PDF to XLSX | TittoosTools";
+        document.title = "Free PDF to Excel Converter Online - PDF to XLSX | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to Excel (XLSX) online for free. Extract tables and data from PDF to editable Excel spreadsheets. No signup, secure client-side processing.');
@@ -116,7 +116,7 @@ const PDFToExcel = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to Excel Converter Online - PDF to XLSX | TittoosTools</title>
+                <title>Free PDF to Excel Converter Online - PDF to XLSX | Axevora</title>
                 <meta name="description" content="Convert PDF to Excel (XLSX) online for free. Extract tables and data from PDF to editable Excel spreadsheets. No signup, secure client-side processing." />
                 <meta name="keywords" content="pdf to excel, convert pdf to xlsx, pdf to spreadsheet, online pdf converter, extract tables from pdf, free excel tool" />
             </Helmet>
@@ -302,7 +302,7 @@ const PDFToExcel = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing Technology</h4>
-                                <p>TittoosTools uses advanced browser-based technology to process your files <strong>locally on your computer</strong>. Your financial statements and client lists never leave your device. We don't see them, we don't store them, and we don't share them.</p>
+                                <p>Axevora uses advanced browser-based technology to process your files <strong>locally on your computer</strong>. Your financial statements and client lists never leave your device. We don't see them, we don't store them, and we don't share them.</p>
                             </div>
                         </div>
 

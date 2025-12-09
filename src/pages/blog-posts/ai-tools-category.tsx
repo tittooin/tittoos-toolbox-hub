@@ -5,7 +5,7 @@ const AIToolsCategoryPage = () => {
   const blogContent = `
   <h1>AI-Powered Creativity: The Complete Handbook for 2024</h1>
   
-  <p>Artificial Intelligence has transformed digital creativity from a single-tool workflow into a structured, repeatable production system. Whether you’re writing long-form content, generating visuals, building websites, or prototyping utilities, AI augments human judgment with speed, scale, and consistency. This handbook translates buzzwords into practical methods you can apply immediately using TittoosTools. It focuses on four pillars: AI content creation, AI art generation, AI video from text, and machine learning art tools — with a pragmatic layer for managing AI digital assets.</p>
+  <p>Artificial Intelligence has transformed digital creativity from a single-tool workflow into a structured, repeatable production system. Whether you’re writing long-form content, generating visuals, building websites, or prototyping utilities, AI augments human judgment with speed, scale, and consistency. This handbook translates buzzwords into practical methods you can apply immediately using Axevora. It focuses on four pillars: AI content creation, AI art generation, AI video from text, and machine learning art tools — with a pragmatic layer for managing AI digital assets.</p>
   
   <h2>1) Foundations: How Modern Generative AI Works</h2>
   <p>Generative systems convert intent into output. Under the hood, most creative AI uses transformer models for language, diffusion models or GANs for imagery, and multimodal models that blend text, image, and audio. You don’t need to be a researcher to use them well — but understanding the building blocks helps you make better decisions:</p>
@@ -37,7 +37,7 @@ const AIToolsCategoryPage = () => {
     <li><strong>Readability Pass:</strong> Simplify sentences, improve transitions, add subheadings.</li>
     <li><strong>Optimization:</strong> Generate meta title, description, and FAQ from your own draft.</li>
   </ul>
-  <p>Use TittoosTools helpers during production:</p>
+  <p>Use Axevora helpers during production:</p>
   <ul>
     <li><a href="/tools/text-editor">Text Editor</a> for drafting and polishing.</li>
     <li><a href="/tools/seo-analyzer">SEO Analyzer</a> to validate headings, meta tags, and internal links.</li>
@@ -61,7 +61,7 @@ const AIToolsCategoryPage = () => {
     <li>Label choices and reasons (“chosen for clarity, lighting, brand fit”).</li>
     <li>Upscale finalists and apply minor edits.</li>
   </ul>
-  <p>Refine outputs with TittoosTools:</p>
+  <p>Refine outputs with Axevora:</p>
   <ul>
     <li><a href="/tools/text-to-image">Text to Image</a> for initial generations.</li>
     <li><a href="/tools/ai-image-editor">AI Image Editor</a> for retouching, layering, and typography overlays.</li>
@@ -78,7 +78,7 @@ const AIToolsCategoryPage = () => {
     <li><strong>Scene Composition:</strong> Foreground subject, clean background, controlled lighting.</li>
     <li><strong>Narrative Flow:</strong> Hook → Value → Proof → CTA; keep captions concise.</li>
   </ul>
-  <p>Use TittoosTools to assemble your pipeline:</p>
+  <p>Use Axevora to assemble your pipeline:</p>
   <ul>
     <li><a href="/tools/text-to-video">Text to Video</a> for generation experiments.</li>
     <li><a href="/tools/video-editor">Video Editor</a> to stitch scenes, add transitions, and balance audio.</li>
@@ -102,7 +102,7 @@ const AIToolsCategoryPage = () => {
     <li><strong>Licensing:</strong> Track usage rights for fonts, stock, and training sources.</li>
     <li><strong>Distribution:</strong> Export platform-optimized formats (image/video) with naming conventions.</li>
   </ul>
-  <p>TittoosTools utilities that help:</p>
+  <p>Axevora utilities that help:</p>
   <ul>
     <li><a href="/tools/qr-generator">QR Generator</a> to link assets to documentation.</li>
     <li><a href="/tools/hash-generator">Hash Generator</a> to fingerprint versions.</li>
@@ -142,7 +142,7 @@ const AIToolsCategoryPage = () => {
   <p><strong>Q:</strong> How do I avoid repetitive AI text?<br/><strong>A:</strong> Force structure: outline → section drafts → example layer → edit pass; add unique details from your work.</p>
   
   <h2>12) Conclusion</h2>
-  <p>AI becomes powerful when you combine creative direction with repeatable systems. Use prompts as briefs, score outputs with rubrics, and manage assets with metadata. With TittoosTools, you have practical utilities to operate this workflow: draft content, generate imagery and video, validate SEO, and export platform-ready formats — all while respecting privacy and performance.</p>
+  <p>AI becomes powerful when you combine creative direction with repeatable systems. Use prompts as briefs, score outputs with rubrics, and manage assets with metadata. With Axevora, you have practical utilities to operate this workflow: draft content, generate imagery and video, validate SEO, and export platform-ready formats — all while respecting privacy and performance.</p>
   
   <p>Start experimenting today with <a href="/tools/text-to-image">Text to Image</a>, <a href="/tools/text-to-video">Text to Video</a>, and <a href="/tools/ai-website-generator">AI Website Generator</a>, then refine results in the <a href="/tools/ai-image-editor">AI Image Editor</a> and <a href="/tools/video-editor">Video Editor</a>. Document choices, iterate, and build a creative system that scales.</p>
   `;
@@ -150,9 +150,9 @@ const AIToolsCategoryPage = () => {
   return (
     <>
       <Helmet>
-        <title>AI Tools and Automation Guide 2024 | TittoosTools</title>
+        <title>AI Tools and Automation Guide 2024 | Axevora</title>
         <meta name="description" content="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation." />
-        <meta property="og:title" content="AI Tools and Automation Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="AI Tools and Automation Guide 2024 | Axevora" />
         <meta property="og:description" content="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation." />
       </Helmet>
       <ToolTemplate

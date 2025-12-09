@@ -15,7 +15,7 @@ const WordToPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Word to PDF Converter Online - DOCX to PDF | TittoosTools";
+        document.title = "Free Word to PDF Converter Online - DOCX to PDF | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert Word (DOCX) to PDF online for free. Transform your documents into professional PDFs instantly. No signup, secure client-side processing.');
@@ -97,7 +97,7 @@ const WordToPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free Word to PDF Converter Online - DOCX to PDF | TittoosTools</title>
+                <title>Free Word to PDF Converter Online - DOCX to PDF | Axevora</title>
                 <meta name="description" content="Convert Word (DOCX) to PDF online for free. Transform your documents into professional PDFs instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="word to pdf, convert docx to pdf, doc to pdf, online word converter, free pdf creator, document to pdf" />
             </Helmet>
@@ -276,7 +276,7 @@ const WordToPDF = () => {
                             Secure, Private, and Free
                         </h2>
                         <p className="mb-6">
-                            Security is our top priority. Unlike other online converters that upload your files to a remote server for processing, TittoosTools performs the conversion <strong>locally in your browser</strong>.
+                            Security is our top priority. Unlike other online converters that upload your files to a remote server for processing, Axevora performs the conversion <strong>locally in your browser</strong>.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <Shield className="h-8 w-8 flex-shrink-0" />
@@ -346,7 +346,7 @@ const WordToPDF = () => {
                                     </span>
                                 </summary>
                                 <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                                    <p>Yes, TittoosTools is 100% free. We don't charge for conversions, we don't watermark your files, and we don't limit the number of documents you can process.</p>
+                                    <p>Yes, Axevora is 100% free. We don't charge for conversions, we don't watermark your files, and we don't limit the number of documents you can process.</p>
                                 </div>
                             </details>
 

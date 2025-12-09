@@ -15,7 +15,7 @@ const PPTToPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PPT to PDF Converter Online - PowerPoint to PDF | TittoosTools";
+        document.title = "Free PPT to PDF Converter Online - PowerPoint to PDF | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PowerPoint (PPTX) to PDF online for free. Transform presentations into professional PDF documents. No signup, secure client-side processing.');
@@ -123,7 +123,7 @@ const PPTToPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free PPT to PDF Converter Online - PowerPoint to PDF | TittoosTools</title>
+                <title>Free PPT to PDF Converter Online - PowerPoint to PDF | Axevora</title>
                 <meta name="description" content="Convert PowerPoint (PPTX) to PDF online for free. Transform presentations into professional PDF documents. No signup, secure client-side processing." />
                 <meta name="keywords" content="ppt to pdf, convert pptx to pdf, powerpoint to pdf, online ppt converter, presentation to pdf, free pdf tool" />
             </Helmet>
@@ -309,7 +309,7 @@ const PPTToPDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">No Cloud Uploads</h4>
-                                <p>TittoosTools processes your files <strong>locally in your browser</strong>. We don't upload your presentation to any server. Your slides never leave your computer, ensuring total privacy.</p>
+                                <p>Axevora processes your files <strong>locally in your browser</strong>. We don't upload your presentation to any server. Your slides never leave your computer, ensuring total privacy.</p>
                             </div>
                         </div>
 

@@ -19,7 +19,7 @@ const PDFToPPT = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF to PPT Converter Online - PDF to PowerPoint | TittoosTools";
+        document.title = "Free PDF to PPT Converter Online - PDF to PowerPoint | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to PowerPoint (PPTX) online for free. Turn PDF slides into editable presentations instantly. No signup, secure client-side processing.');
@@ -106,7 +106,7 @@ const PDFToPPT = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to PPT Converter Online - PDF to PowerPoint | TittoosTools</title>
+                <title>Free PDF to PPT Converter Online - PDF to PowerPoint | Axevora</title>
                 <meta name="description" content="Convert PDF to PowerPoint (PPTX) online for free. Turn PDF slides into editable presentations instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="pdf to ppt, convert pdf to powerpoint, pdf to pptx, online pdf converter, slides to pdf, free ppt tool" />
             </Helmet>
@@ -287,7 +287,7 @@ const PDFToPPT = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Client-Side Processing</h4>
-                                <p>TittoosTools performs the conversion <strong>locally in your web browser</strong>. We don't upload your file to the cloud. Your intellectual property stays safely on your machine at all times.</p>
+                                <p>Axevora performs the conversion <strong>locally in your web browser</strong>. We don't upload your file to the cloud. Your intellectual property stays safely on your machine at all times.</p>
                             </div>
                         </div>
 

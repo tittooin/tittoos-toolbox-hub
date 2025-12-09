@@ -17,11 +17,11 @@ const QRGenerator = () => {
 
   useEffect(() => {
     // Set SEO meta tags
-    document.title = "Free QR Code Generator Online – TittoosTools";
+    document.title = "Free QR Code Generator Online – Axevora";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Create QR codes for text, URLs, WiFi, contact info instantly. Free QR code generator with download options at TittoosTools.');
+      metaDescription.setAttribute('content', 'Create QR codes for text, URLs, WiFi, contact info instantly. Free QR code generator with download options at Axevora.');
     }
   }, []);
 

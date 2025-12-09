@@ -16,7 +16,7 @@ const ExcelToPDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Excel to PDF Converter Online - XLSX to PDF | TittoosTools";
+        document.title = "Free Excel to PDF Converter Online - XLSX to PDF | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert Excel (XLSX) to PDF online for free. Transform spreadsheets into professional PDF documents. No signup, secure client-side processing.');
@@ -105,7 +105,7 @@ const ExcelToPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free Excel to PDF Converter Online - XLSX to PDF | TittoosTools</title>
+                <title>Free Excel to PDF Converter Online - XLSX to PDF | Axevora</title>
                 <meta name="description" content="Convert Excel (XLSX) to PDF online for free. Transform spreadsheets into professional PDF documents. No signup, secure client-side processing." />
                 <meta name="keywords" content="excel to pdf, convert xlsx to pdf, xls to pdf, online excel converter, spreadsheet to pdf, free pdf tool" />
             </Helmet>
@@ -294,7 +294,7 @@ const ExcelToPDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">No Cloud Uploads</h4>
-                                <p>Unlike other converters, TittoosTools processes your files <strong>locally in your browser</strong>. Your data never leaves your computer. It's physically impossible for us to see your spreadsheets.</p>
+                                <p>Unlike other converters, Axevora processes your files <strong>locally in your browser</strong>. Your data never leaves your computer. It's physically impossible for us to see your spreadsheets.</p>
                             </div>
                         </div>
 

@@ -14,7 +14,7 @@ const CompressPDF = () => {
     const [compressedSize, setCompressedSize] = useState<number>(0);
 
     useEffect(() => {
-        document.title = "Compress PDF Online Free - Reduce PDF File Size | TittoosTools";
+        document.title = "Compress PDF Online Free - Reduce PDF File Size | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Compress PDF online to reduce file size without losing quality. Optimizes documents for web and email. Fast, free, and secure.');
@@ -85,7 +85,7 @@ const CompressPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Compress PDF Online Free - Reduce PDF File Size | TittoosTools</title>
+                <title>Compress PDF Online Free - Reduce PDF File Size | Axevora</title>
                 <meta name="description" content="Compress PDF online to reduce file size without losing quality. Optimizes documents for web and email. Fast, free, and secure." />
                 <meta name="keywords" content="compress pdf, shrink pdf, reduce pdf size, optimize pdf, pdf compressor online" />
             </Helmet>
@@ -271,7 +271,7 @@ const CompressPDF = () => {
                             Secure Client-Side Compression
                         </h2>
                         <p className="mb-6">
-                            Security is our top priority. Unlike other tools that require you to upload your sensitive documents to a remote server, TittoosTools processes your files <strong>locally in your browser</strong>.
+                            Security is our top priority. Unlike other tools that require you to upload your sensitive documents to a remote server, Axevora processes your files <strong>locally in your browser</strong>.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <Settings className="h-8 w-8 flex-shrink-0" />

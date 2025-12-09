@@ -8,44 +8,44 @@ const About = () => {
   useEffect(() => {
     const origin = window.location.origin;
     setSEO({
-      title: "About TittoosTools – Free Online Utilities",
-      description: "TittoosTools offers 40+ free online utilities including converters, generators, analyzers, editors, and AI-powered tools. Our mission is to make powerful tools accessible to everyone.",
+      title: "About Axevora – Free Online Utilities",
+      description: "Axevora offers 40+ free online utilities including converters, generators, analyzers, editors, and AI-powered tools. Our mission is to make powerful tools accessible to everyone.",
       type: 'website',
-      canonical: `${origin}/about`,
+      url: `${origin}/about`,
     });
     injectJsonLd({
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      'name': 'TittoosTools',
+      'name': 'Axevora',
       'url': origin,
-      'logo': `${origin}/favicon.ico`,
+      'logo': `${origin}/favicon.png`,
       'sameAs': [
-        'https://twitter.com/TittoosTools',
-        'https://www.linkedin.com/company/tittoostools/'
+        'https://twitter.com/Axevora',
+        'https://www.linkedin.com/company/axevora/'
       ]
     }, 'jsonld-org-about');
   }, []);
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 text-foreground">
-            About TittoosTools
+            About Axevora
           </h1>
-          
+
           <div className="prose prose-lg mx-auto text-muted-foreground">
             <p className="text-xl leading-relaxed mb-8">
-              TittoosTools is your comprehensive online toolkit designed to boost productivity 
-              and simplify digital tasks. We provide 35+ essential utilities that cover everything 
+              Axevora is your comprehensive online toolkit designed to boost productivity
+              and simplify digital tasks. We provide 35+ essential utilities that cover everything
               from file conversion to password generation.
             </p>
 
             <h2 className="text-2xl font-semibold text-foreground mb-4">Our Mission</h2>
             <p className="mb-6">
-              We believe that powerful tools should be accessible to everyone. That's why we've 
-              created a collection of free, easy-to-use utilities that help you accomplish tasks 
+              We believe that powerful tools should be accessible to everyone. That's why we've
+              created a collection of free, easy-to-use utilities that help you accomplish tasks
               quickly and efficiently, without the need for complex software installations.
             </p>
 

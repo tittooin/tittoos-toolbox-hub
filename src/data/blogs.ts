@@ -22,8 +22,8 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       "Discover the most useful online tools that can boost your productivity and streamline your digital workflow in the modern era.",
     date: "2024-01-15",
     readTime: "8 min read",
-    author: "TittoosTools Team",
-    authorSlug: "tittoostools-team",
+    author: "Axevora Team",
+    authorSlug: "axevora-team",
     slug: "10-essential-online-tools-for-digital-productivity-2024",
     content: `
         <p>In today's fast-paced digital world, having the right tools at your fingertips can make the difference between struggling with daily tasks and completing them efficiently. Whether you're a professional, student, or entrepreneur, these essential online tools will revolutionize how you work and manage your digital life.</p>

@@ -178,9 +178,9 @@ Start using our validator tools today to enhance your data quality and maintain 
   return (
     <>
       <Helmet>
-        <title>Validation Tools Guide 2024 | TittoosTools</title>
+        <title>Validation Tools Guide 2024 | Axevora</title>
         <meta name="description" content="Ensure data quality and reliability with our comprehensive suite of validation tools." />
-        <meta property="og:title" content="Validation Tools Guide 2024 | TittoosTools" />
+        <meta property="og:title" content="Validation Tools Guide 2024 | Axevora" />
         <meta property="og:description" content="Ensure data quality and reliability with our comprehensive suite of validation tools." />
       </Helmet>
       <ToolTemplate

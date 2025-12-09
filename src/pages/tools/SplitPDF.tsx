@@ -23,7 +23,7 @@ const SplitPDF = () => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
-        document.title = "Split PDF Online Free - Extract Pages from PDF Instantly | TittoosTools";
+        document.title = "Split PDF Online Free - Extract Pages from PDF Instantly | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Split PDF files online for free. Extract specific pages or split every page into separate files. Secure, fast, and easy to use.');
@@ -183,7 +183,7 @@ const SplitPDF = () => {
     return (
         <>
             <Helmet>
-                <title>Split PDF Online Free - Extract Pages from PDF Instantly | TittoosTools</title>
+                <title>Split PDF Online Free - Extract Pages from PDF Instantly | Axevora</title>
                 <meta name="description" content="Split PDF files online for free. Extract specific pages or split every page into separate files. Secure, fast, and easy to use." />
                 <meta name="keywords" content="split pdf, extract pdf pages, separate pdf, cut pdf, online pdf splitter" />
             </Helmet>
@@ -420,7 +420,7 @@ w - 6 h - 6 rounded - full flex items - center justify - center transition - col
                             Secure & Private
                         </h2>
                         <p className="mb-6">
-                            Your documents never leave your device. TittoosTools uses browser-based technology to split your files locally.
+                            Your documents never leave your device. Axevora uses browser-based technology to split your files locally.
                         </p>
                         <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 mt-4 flex items-start gap-4">
                             <CheckCircle2 className="h-8 w-8 flex-shrink-0" />

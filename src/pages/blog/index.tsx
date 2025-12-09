@@ -57,9 +57,9 @@ const BlogPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Blog Posts | TittoosTools</title>
+        <title>Blog Posts | Axevora</title>
         <meta name="description" content="Explore our comprehensive guides about various online tools and their applications." />
-        <meta property="og:title" content="Blog Posts | TittoosTools" />
+        <meta property="og:title" content="Blog Posts | Axevora" />
         <meta property="og:description" content="Explore our comprehensive guides about various online tools and their applications." />
       </Helmet>
 

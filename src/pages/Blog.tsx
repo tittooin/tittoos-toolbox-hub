@@ -33,7 +33,7 @@ const Blog = () => {
       excerpt: "Discover the most useful online tools that can boost your productivity and streamline your digital workflow in the modern era.",
       date: "2024-01-15",
       readTime: "8 min read",
-      author: "TittoosTools Team",
+      author: "Axevora Team",
       content: `
         <p>In today's fast-paced digital world, having the right tools at your fingertips can make the difference between struggling with daily tasks and completing them efficiently. Whether you're a professional, student, or entrepreneur, these essential online tools will revolutionize how you work and manage your digital life.</p>
 
@@ -335,7 +335,7 @@ const Blog = () => {
   // Apply SEO dynamically for list vs article views
   useEffect(() => {
     if (selectedPostData) {
-      const title = `${selectedPostData.title} | TittoosTools Blog`;
+      const title = `${selectedPostData.title} | Axevora Blog`;
       setSEO({
         title,
         description: selectedPostData.excerpt,
@@ -344,7 +344,7 @@ const Blog = () => {
         ],
         type: 'article',
         image: `${window.location.origin}/placeholder.svg`,
-        canonical: `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
+        url: `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
       });
 
       // Inject BlogPosting JSON-LD for the article
@@ -355,16 +355,16 @@ const Blog = () => {
         'articleBody': selectedPostData.excerpt,
         'author': {
           '@type': 'Person',
-          'name': selectedPostData.author || 'TittoosTools Team',
+          'name': selectedPostData.author || 'Axevora Team',
           ...(selectedPostData.authorSlug ? { 'url': `${window.location.origin}/author/${selectedPostData.authorSlug}` } : {})
         },
         'datePublished': selectedPostData.date,
         'publisher': {
           '@type': 'Organization',
-          'name': 'TittoosTools',
+          'name': 'Axevora',
           'logo': {
             '@type': 'ImageObject',
-            'url': `${window.location.origin}/favicon.ico`
+            'url': `${window.location.origin}/favicon.png`
           }
         },
         'mainEntityOfPage': `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
@@ -372,14 +372,14 @@ const Blog = () => {
       });
     } else {
       setSEO({
-        title: 'TittoosTools Blog - Tips, Tutorials, and Guides',
+        title: 'Axevora Blog - Tips, Tutorials, and Guides',
         description: 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.',
         keywords: [
           'blog', 'online tools', 'seo', 'tutorials', 'guides', 'productivity', 'formatters', 'converters'
         ],
         type: 'website',
         image: `${window.location.origin}/placeholder.svg`,
-        canonical: `${window.location.origin}/blog`,
+        url: `${window.location.origin}/blog`,
       });
     }
   }, [selectedPostData]);
@@ -451,7 +451,7 @@ const Blog = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 text-foreground">
-              TittoosTools Blog
+              Axevora Blog
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
               Tips, tutorials, and insights to help you make the most of our tools.

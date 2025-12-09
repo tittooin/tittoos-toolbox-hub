@@ -23,7 +23,7 @@ const RearrangePDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Rearrange PDF Pages - Reorder PDF Online | TittoosTools";
+        document.title = "Free Rearrange PDF Pages - Reorder PDF Online | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Rearrange PDF pages online for free. Reorder pages in your PDF documents instantly. No signup, secure client-side processing.');
@@ -137,7 +137,7 @@ const RearrangePDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free Rearrange PDF Pages - Reorder PDF Online | TittoosTools</title>
+                <title>Free Rearrange PDF Pages - Reorder PDF Online | Axevora</title>
                 <meta name="description" content="Rearrange PDF pages online for free. Reorder pages in your PDF documents instantly. No signup, secure client-side processing." />
                 <meta name="keywords" content="rearrange pdf, reorder pdf pages, organize pdf, sort pdf pages, online pdf editor" />
             </Helmet>
@@ -344,7 +344,7 @@ const RearrangePDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools rearranges your file <strong>locally in your browser</strong>. We don't upload your document to any server. The reordering happens directly on your device.</p>
+                                <p>Axevora rearranges your file <strong>locally in your browser</strong>. We don't upload your document to any server. The reordering happens directly on your device.</p>
                             </div>
                         </div>
 

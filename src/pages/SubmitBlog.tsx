@@ -12,8 +12,8 @@ const SubmitBlog = () => {
 
   useEffect(() => {
     setSEO({
-      title: "Submit Your Blog | TittoosTools",
-      description: "Share your article with the community. Submit your blog post for review and publishing on TittoosTools.",
+      title: "Submit Your Blog | Axevora",
+      description: "Share your article with the community. Submit your blog post for review and publishing on Axevora.",
       type: "website",
       image: `${window.location.origin}/placeholder.svg`,
     });
@@ -35,8 +35,8 @@ const SubmitBlog = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Submit Your Blog | TittoosTools</title>
-        <meta name="description" content="Submit your blog post for review and publishing on TittoosTools." />
+        <title>Submit Your Blog | Axevora</title>
+        <meta name="description" content="Submit your blog post for review and publishing on Axevora." />
         <meta name="robots" content="noindex" />
       </Helmet>
       <Header />

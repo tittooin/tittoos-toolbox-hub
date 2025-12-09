@@ -33,7 +33,7 @@ const PDFEditor = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free PDF Editor Online - Edit PDF Files | TittoosTools";
+        document.title = "Free PDF Editor Online - Edit PDF Files | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Edit PDF files online for free. Add text, shapes, and annotations to your PDF documents. No signup, secure client-side processing.');
@@ -214,7 +214,7 @@ const PDFEditor = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF Editor Online - Edit PDF Files | TittoosTools</title>
+                <title>Free PDF Editor Online - Edit PDF Files | Axevora</title>
                 <meta name="description" content="Edit PDF files online for free. Add text, shapes, and annotations to your PDF documents. No signup, secure client-side processing." />
                 <meta name="keywords" content="edit pdf, pdf editor, annotate pdf, add text to pdf, online pdf tool" />
             </Helmet>
@@ -442,7 +442,7 @@ const PDFEditor = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. All edits are applied directly on your device.</p>
+                                <p>Axevora processes your file <strong>locally in your browser</strong>. We don't upload your document to any server. All edits are applied directly on your device.</p>
                             </div>
                         </div>
 

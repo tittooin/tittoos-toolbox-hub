@@ -21,7 +21,7 @@ const RotatePDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags
-        document.title = "Free Rotate PDF Online - Rotate PDF Pages Permanently | TittoosTools";
+        document.title = "Free Rotate PDF Online - Rotate PDF Pages Permanently | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Rotate PDF pages online for free. Permanently rotate your PDF files 90, 180, or 270 degrees. No signup, secure client-side processing.');
@@ -129,7 +129,7 @@ const RotatePDF = () => {
     return (
         <>
             <Helmet>
-                <title>Free Rotate PDF Online - Rotate PDF Pages Permanently | TittoosTools</title>
+                <title>Free Rotate PDF Online - Rotate PDF Pages Permanently | Axevora</title>
                 <meta name="description" content="Rotate PDF pages online for free. Permanently rotate your PDF files 90, 180, or 270 degrees. No signup, secure client-side processing." />
                 <meta name="keywords" content="rotate pdf, turn pdf, pdf rotator, rotate pages, fix pdf orientation, online pdf tool" />
             </Helmet>
@@ -322,7 +322,7 @@ const RotatePDF = () => {
                             <Shield className="h-8 w-8 flex-shrink-0" />
                             <div>
                                 <h4 className="font-bold text-lg mb-2">Local Processing</h4>
-                                <p>TittoosTools rotates your file <strong>locally in your browser</strong>. We don't upload your document to any server. The changes happen directly on your device.</p>
+                                <p>Axevora rotates your file <strong>locally in your browser</strong>. We don't upload your document to any server. The changes happen directly on your device.</p>
                             </div>
                         </div>
 

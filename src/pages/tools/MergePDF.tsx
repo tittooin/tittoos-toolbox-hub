@@ -13,7 +13,7 @@ const MergePDF = () => {
 
     useEffect(() => {
         // Set SEO meta tags dynamically
-        document.title = "Merge PDF Online Free - Combine PDF Files Instantly | TittoosTools";
+        document.title = "Merge PDF Online Free - Combine PDF Files Instantly | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Merge PDF files online for free. Combine multiple PDFs into one document easily. Secure, fast, and no installation required. Try our PDF Merger now!');
@@ -93,7 +93,7 @@ const MergePDF = () => {
     return (
         <>
             <Helmet>
-                <title>Merge PDF Online Free - Combine PDF Files Instantly | TittoosTools</title>
+                <title>Merge PDF Online Free - Combine PDF Files Instantly | Axevora</title>
                 <meta name="description" content="Merge PDF files online for free. Combine multiple PDFs into one document easily. Secure, fast, and no installation required. Try our PDF Merger now!" />
                 <meta name="keywords" content="merge pdf, combine pdf, join pdf, pdf merger, online pdf tools, free pdf merger" />
             </Helmet>
@@ -327,7 +327,7 @@ const MergePDF = () => {
                     Most online PDF tools require you to upload your files to their servers. This means your sensitive documents (contracts, medical records, tax forms) travel across the internet and sit on a stranger's hard drive.
                 </p>
                 <p className="mb-6">
-                    <strong>TittoosTools is different.</strong> We use advanced WebAssembly technology to process your files <em>client-side</em>.
+                    <strong>Axevora is different.</strong> We use advanced WebAssembly technology to process your files <em>client-side</em>.
                 </p>
                 <ul className="list-disc pl-6 space-y-4 mb-8 bg-blue-50 dark:bg-gray-800 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
                     <li><strong>No Uploads:</strong> Your files never leave your device.</li>

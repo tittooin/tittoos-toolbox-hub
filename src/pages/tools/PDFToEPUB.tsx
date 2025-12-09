@@ -23,7 +23,7 @@ const PDFToEPUB = () => {
     const [bookAuthor, setBookAuthor] = useState("");
 
     useEffect(() => {
-        document.title = "Free PDF to EPUB Converter - Safe & Secure | TittoosTools";
+        document.title = "Free PDF to EPUB Converter - Safe & Secure | Axevora";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', 'Convert PDF to EPUB format for Kindle and eReaders. 100% free, secure client-side conversion. No software installation required.');
@@ -227,7 +227,7 @@ const PDFToEPUB = () => {
     return (
         <>
             <Helmet>
-                <title>Free PDF to EPUB Converter - Safe & Secure | TittoosTools</title>
+                <title>Free PDF to EPUB Converter - Safe & Secure | Axevora</title>
                 <meta name="description" content="Convert PDF to EPUB format for Kindle and eReaders. 100% free, secure client-side conversion. No software installation required." />
                 <meta name="keywords" content="pdf to epub, convert pdf to ebook, kindle converter, free pdf converter, secure pdf tool, epub maker" />
             </Helmet>
