@@ -98,6 +98,12 @@ const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
 const IPAddressLookup = lazy(() => import("./pages/tools/IPAddressLookup"));
 const WhoisLookup = lazy(() => import("./pages/tools/WhoisLookup"));
 const InternetSpeedTest = lazy(() => import("./pages/tools/InternetSpeedTest"));
+const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
+const Game2048 = lazy(() => import("./pages/tools/Game2048"));
+const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
+const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
+const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
+const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -108,6 +114,7 @@ const ValidatorsCategoryPage = lazy(() => import("./pages/blog-posts/validators-
 const ConvertersCategoryPage = lazy(() => import("./pages/blog-posts/converters-category"));
 const GeneratorsCategoryPage = lazy(() => import("./pages/blog-posts/generators-category"));
 const EditorsCategoryPage = lazy(() => import("./pages/blog-posts/editors-category"));
+const GamesCategoryPage = lazy(() => import("./pages/blog-posts/games-category"));
 
 // Google Analytics pageview tracker
 const GoogleAnalytics = () => {
@@ -160,6 +167,7 @@ const App = () => (
               <Route path="/blog-posts/converters-category" element={<ConvertersCategoryPage />} />
               <Route path="/blog-posts/generators-category" element={<GeneratorsCategoryPage />} />
               <Route path="/blog-posts/editors-category" element={<EditorsCategoryPage />} />
+              <Route path="/blog-posts/games-category" element={<GamesCategoryPage />} />
 
               {/* Converter Tools */}
               <Route path="/tools/pdf-converter" element={<PDFConverter />} />
@@ -247,6 +255,12 @@ const App = () => (
               <Route path="/tools/ip-address-lookup" element={<IPAddressLookup />} />
               <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
               <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
+              <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
+              <Route path="/tools/2048-game" element={<Game2048 />} />
+              <Route path="/tools/click-speed-test" element={<ClickSpeedTest />} />
+              <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
+              <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
+              <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
 
 
 

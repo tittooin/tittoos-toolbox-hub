@@ -8,7 +8,7 @@ import {
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit,
-  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation
+  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2
 } from "lucide-react";
 
 const allCategories = [
@@ -20,6 +20,7 @@ const allCategories = [
   { id: "calculator", name: "Calculators" },
   { id: "formatter", name: "Formatters" },
   { id: "ai", name: "AI Tools" },
+  { id: "games", name: "Games & Brain" },
   { id: "utility", name: "Utilities" },
 ];
 
@@ -697,6 +698,60 @@ const allTools = [
     category: "utility",
     icon: Zap,
     path: "/tools/internet-speed-test"
+  },
+  {
+    id: "typing-speed-test",
+    name: "Typing Speed Test",
+    subheading: "Check your WPM",
+    description: "Test your typing speed and accuracy with our free online typing test.",
+    category: "games",
+    icon: Keyboard,
+    path: "/tools/typing-speed-test"
+  },
+  {
+    id: "2048-game",
+    name: "2048 Game",
+    subheading: "Classic puzzle game",
+    description: "Play the addictive 2048 puzzle game online. Merge numbers to win!",
+    category: "games",
+    icon: Gamepad2,
+    path: "/tools/2048-game"
+  },
+  {
+    id: "click-speed-test",
+    name: "Click Speed Test",
+    subheading: "Check your CPS",
+    description: "Test your clicking speed with our CPS (Clicks Per Second) test.",
+    category: "games",
+    icon: MousePointer2,
+    path: "/tools/click-speed-test"
+  },
+  {
+    id: "reaction-time-test",
+    name: "Reaction Time Test",
+    subheading: "Test your reflexes",
+    description: "Measure your visual reaction time in milliseconds. Are you fast enough?",
+    category: "games",
+    icon: Timer,
+    path: "/tools/reaction-time-test"
+  },
+  {
+    id: "memory-match-game",
+    name: "Memory Match Game",
+    subheading: "Train your brain",
+    description: "Classic card matching game to improve your short-term memory and focus.",
+    category: "games",
+    icon: Brain,
+    path: "/tools/memory-match-game"
+  },
+  {
+    id: "math-speed-challenge",
+    name: "Math Speed Challenge",
+    subheading: "Mental math practice",
+    description: "Solve rapid-fire arithmetic problems against the clock. Great for students!",
+    category: "games",
+    icon: Calculator,
+    path: "/tools/math-speed-challenge"
   }
 ];
 
