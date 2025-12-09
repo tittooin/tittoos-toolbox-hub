@@ -21,7 +21,9 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('pdfjs-dist') || id.includes('pdf-lib') || id.includes('jspdf')) return 'pdf-vendor';
+            if (id.includes('pdfjs-dist')) return 'pdfjs-vendor';
+            if (id.includes('pdf-lib')) return 'pdflib-vendor';
+            if (id.includes('jspdf')) return 'jspdf-vendor';
             if (id.includes('@huggingface/transformers')) return 'ai-vendor';
             if (id.includes('fabric')) return 'image-vendor';
 
