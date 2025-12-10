@@ -104,6 +104,7 @@ const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
 const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
 const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
 const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
+const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -255,6 +256,9 @@ const App = () => (
               <Route path="/tools/ip-address-lookup" element={<IPAddressLookup />} />
               <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
               <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
+              <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+
+              {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
               <Route path="/tools/2048-game" element={<Game2048 />} />
               <Route path="/tools/click-speed-test" element={<ClickSpeedTest />} />
@@ -262,13 +266,9 @@ const App = () => (
               <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
               <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
 
-
-
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-
-
         </BrowserRouter>
       </HelmetProvider>
     </TooltipProvider>

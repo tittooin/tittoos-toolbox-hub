@@ -752,6 +752,15 @@ const allTools = [
     category: "games",
     icon: Calculator,
     path: "/tools/math-speed-challenge"
+  },
+  {
+    id: "image-compressor",
+    name: "Image Compressor",
+    subheading: "Reduce image size",
+    description: "Compress JPG, PNG, and WebP images locally in your browser.",
+    category: "utility",
+    icon: Image,
+    path: "/tools/image-compressor"
   }
 ];
 
