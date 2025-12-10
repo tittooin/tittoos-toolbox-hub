@@ -168,6 +168,84 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Trending & Games Section - NEW */}
+        <section className="container mx-auto px-4 py-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
+                <span className="w-1 h-8 bg-primary rounded-full mr-4"></span>
+                Trending & Games
+              </h2>
+              <span className="text-sm text-muted-foreground hidden md:inline-block">Most popular right now</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Typing Speed Test */}
+              <Link to="/tools/typing-speed-test">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-primary/20 bg-primary/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><rect width="20" height="12" x="2" y="6" rx="2" /><path d="M12 12h.01" /><path d="M17 12h.01" /><path d="M7 12h.01" /><path d="M12 16h.01" /><path d="M17 16h.01" /><path d="M7 16h.01" /></svg>
+                      </div>
+                      <span className="text-xs px-2 py-1 bg-primary text-primary-foreground rounded-full font-bold">HOT</span>
+                    </div>
+                    <CardTitle className="text-lg">Typing Speed Test</CardTitle>
+                    <CardDescription className="text-xs">Check your WPM instantly</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+
+              {/* 2048 Game */}
+              <Link to="/tools/2048-game">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-orange-500/20 bg-orange-500/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 bg-orange-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-orange-600"><rect width="16" height="16" x="4" y="4" rx="2" /><path d="M8 8h8" /><path d="M8 12h8" /><path d="M8 16h8" /><path d="M12 8v8" /></svg>
+                      </div>
+                      <span className="text-xs px-2 py-1 bg-orange-500 text-white rounded-full font-bold">GAME</span>
+                    </div>
+                    <CardTitle className="text-lg">2048 Game</CardTitle>
+                    <CardDescription className="text-xs">Addictive puzzle game</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+
+              {/* Image Compressor */}
+              <Link to="/tools/image-compressor">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-blue-500/20 bg-blue-500/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-600"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
+                      </div>
+                      <span className="text-xs px-2 py-1 bg-blue-500 text-white rounded-full font-bold">NEW</span>
+                    </div>
+                    <CardTitle className="text-lg">Image Compressor</CardTitle>
+                    <CardDescription className="text-xs">Reduce file size locally</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+
+              {/* Reaction Time */}
+              <Link to="/tools/reaction-time-test">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-green-500/20 bg-green-500/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 bg-green-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-green-600"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                      </div>
+                      <span className="text-xs px-2 py-1 bg-green-500 text-white rounded-full font-bold">FUN</span>
+                    </div>
+                    <CardTitle className="text-lg">Reaction Time</CardTitle>
+                    <CardDescription className="text-xs">Test your reflexes</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Search and Filter Section */}
         <section id="tools-section" className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">

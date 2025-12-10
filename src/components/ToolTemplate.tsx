@@ -1,10 +1,21 @@
-
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getToolContent } from "@/data/toolContent";
-import { ArrowLeft, Star } from "lucide-react";
+import { tools } from "@/data/tools";
+import { ArrowLeft, Star, Code, Copy, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
@@ -24,6 +35,7 @@ interface ToolTemplateProps {
 const ToolTemplate = ({ title, description, icon: Icon, children, content, features, showContentAds = false }: ToolTemplateProps) => {
   const location = useLocation();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // Generate an "attractive" description for social media
@@ -71,6 +83,26 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
       }
     }, 'jsonld-webapp');
   }, [title, description]);
+
+  // Find related tools based on category
+  const currentToolPath = location.pathname;
+  const currentTool = tools.find(t => t.path === currentToolPath);
+
+  // Get 5 related tools from the same category, excluding current one
+  const relatedTools = currentTool
+    ? tools
+      .filter(t => t.category === currentTool.category && t.path !== currentToolPath)
+      .sort(() => 0.5 - Math.random()) // Shuffle
+      .slice(0, 5)
+    : tools.slice(0, 5); // Fallback if tool not found
+
+  const embedCode = `<iframe src="${currentUrl}" width="100%" height="600" frameborder="0" style="border:0; overflow:hidden;" allowtransparency="true"></iframe>`;
+
+  const copyEmbedCode = () => {
+    navigator.clipboard.writeText(embedCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -148,6 +180,54 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                   description={description}
                 />
 
+                {/* Embed Tool Feature - NEW */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center">
+                      <Code className="h-4 w-4 mr-2 text-primary" />
+                      Embed This Tool
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Add this tool to your website or blog for free.
+                    </p>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                          <Code className="h-4 w-4 mr-2" />
+                          Get Embed Code
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Embed {title}</DialogTitle>
+                          <DialogDescription>
+                            Copy and paste this code into your website's HTML.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex items-center space-x-2">
+                          <div className="grid flex-1 gap-2">
+                            <Label htmlFor="link" className="sr-only">
+                              Link
+                            </Label>
+                            <Input
+                              id="link"
+                              defaultValue={embedCode}
+                              readOnly
+                              className="h-24 font-mono text-xs"
+                            />
+                          </div>
+                          <Button type="submit" size="sm" className="px-3" onClick={copyEmbedCode}>
+                            <span className="sr-only">Copy</span>
+                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </CardContent>
+                </Card>
+
                 {/* Tool Info */}
                 <Card>
                   <CardHeader>
@@ -190,22 +270,22 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                   </Card>
                 )}
 
-                {/* Related Tools */}
+                {/* Dynamic Related Tools - NEW */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Related Tools</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      <Link to="/tools/password-generator" className="block text-sm text-primary hover:text-accent transition-colors hover:scale-105 transform">
-                        Password Generator
-                      </Link>
-                      <Link to="/tools/qr-generator" className="block text-sm text-primary hover:text-accent transition-colors hover:scale-105 transform">
-                        QR Code Generator
-                      </Link>
-                      <Link to="/tools/color-picker" className="block text-sm text-primary hover:text-accent transition-colors hover:scale-105 transform">
-                        Color Picker
-                      </Link>
+                      {relatedTools.map(tool => (
+                        <Link
+                          key={tool.id}
+                          to={tool.path}
+                          className="block text-sm text-primary hover:text-accent transition-colors hover:scale-105 transform py-1"
+                        >
+                          {tool.name}
+                        </Link>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
