@@ -20,7 +20,7 @@ interface ScheduledPost {
 }
 
 const BlogManager = () => {
-    const [apiKey, setApiKey] = useState('AIzaSyApnoNTD58tRsN3nICUQCaEYMeV-rh_mGM');
+    const [apiKey, setApiKey] = useState('');
     const [githubToken, setGithubToken] = useState('');
     const [topicsInput, setTopicsInput] = useState('');
     const [schedule, setSchedule] = useState<ScheduledPost[]>([]);
@@ -88,8 +88,7 @@ const BlogManager = () => {
     // The Magic Button
     const handleGenerateAll = async () => {
         if (!apiKey) {
-            toast.error("Please enter your Gemini API Key first.");
-            return;
+            toast.info("No Gemini Key found. Switching to Free Unlimited Mode (Pollinations.ai).");
         }
 
         setIsGenerating(true);
@@ -219,7 +218,7 @@ const BlogManager = () => {
                 <CardContent className="space-y-4">
                     <div className="flex gap-4">
                         <div className="flex-1">
-                            <label className="text-sm font-medium mb-1 block">Gemini API Key</label>
+                            <label className="text-sm font-medium mb-1 block">Gemini API Key (Optional - Leave empty for Free Mode)</label>
                             <div className="flex gap-2">
                                 <Input
                                     type="password"

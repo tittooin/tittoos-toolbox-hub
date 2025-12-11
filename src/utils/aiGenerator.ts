@@ -24,11 +24,49 @@ export class BlogGenerator {
   ];
 
   constructor(apiKey: string) {
-    this.genAI = new GoogleGenerativeAI(apiKey);
+    if (apiKey) {
+      this.genAI = new GoogleGenerativeAI(apiKey);
+    }
+  }
+
+  // 0. Pollinations.ai Integration (Keyless Fallback)
+  private async generateViaPollinations(prompt: string): Promise<string> {
+    try {
+      console.log("[BlogGenerator] Using Pollinations.ai (Keyless Mode)...");
+      const response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: 'You are an expert SEO Blog Writer. Output valid HTML when requested.' },
+            { role: 'user', content: prompt }
+          ],
+          model: 'openai', // Triggers GPT-4o-mini or similar free tier
+          seed: Math.floor(Math.random() * 1000)
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Pollinations API Error: ${response.statusText}`);
+      }
+
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error("Pollinations.ai failed:", error);
+      throw error;
+    }
   }
 
   // Helper to try models until one works
   private async generateWithFallback(prompt: string): Promise<string> {
+    // 1. If No Gemini Instance (No Key), go straight to Pollinations
+    if (!this.genAI) {
+      return this.generateViaPollinations(prompt);
+    }
+
     const candidates = this.preferredModelName
       ? [this.preferredModelName, ...this.MODEL_CANDIDATES.filter(m => m !== this.preferredModelName)]
       : this.MODEL_CANDIDATES;
@@ -48,13 +86,13 @@ export class BlogGenerator {
         }
         return text;
       } catch (error: any) {
-        // CRITICAL: Fail fast on Auth errors
-        if (error.message.includes("403") || error.message.includes("leaked") || error.message.includes("API key")) {
-          console.error(`[BlogGenerator] Critical Auth Error: ${error.message}`);
-          throw new Error("Your Gemini API Key is invalid or leaked. Please generate a new one at aistudio.google.com.");
+        // CRITICAL: If Auth fails, Drop to Pollinations immediately
+        if (error.message.includes("403") || error.message.includes("API key")) {
+          console.warn(`[BlogGenerator] Gemini Auth Failed (${error.message}). Falling back to Pollinations.ai...`);
+          return this.generateViaPollinations(prompt);
         }
 
-        // Handle Rate Limiting (429)
+        // Handle Rate Limiting (429) -> Try next Gemini Model
         if (error.message.includes("429") || error.message.includes("Quota exceeded")) {
           console.warn(`[BlogGenerator] Rate limit hit for ${modelName}. Switching to next model...`);
           // Don't retry same model 3 times on free tier, just move to next candidate immediately
@@ -66,7 +104,9 @@ export class BlogGenerator {
       }
     }
 
-    throw lastError || new Error("All AI models failed. Please check your API Key and Network.");
+    // If All Gemini Models Failed (Rate Limits etc), Final Fallback to Pollinations
+    console.warn("[BlogGenerator] All Gemini models failed. Falling back to Pollinations.ai...");
+    return this.generateViaPollinations(prompt);
   }
 
   private async generateImage(prompt: string): Promise<string> {
