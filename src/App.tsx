@@ -103,6 +103,7 @@ const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
 const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
 const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
 const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
+const BlogManager = lazy(() => import("./pages/admin/BlogManager"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -264,6 +265,9 @@ const App = () => (
               <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
               <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
               <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
+
+              {/* Admin Routes */}
+              <Route path="/admin/blog" element={<BlogManager />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

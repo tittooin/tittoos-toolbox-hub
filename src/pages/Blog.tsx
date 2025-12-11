@@ -5,7 +5,7 @@ import BlogSubmissionForm from "@/components/BlogSubmissionForm";
 import AIBlogGenerator from "@/components/AIBlogGenerator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, User, Plus, Wand2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Plus, Wand2, Share2, ExternalLink } from "lucide-react";
 import { toast } from 'sonner';
 
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
@@ -13,6 +13,11 @@ import { Link, useParams } from "react-router-dom";
 import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
 
 const Blog = () => {
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1499750310159-5b5f38e31638?auto=format&fit=crop&q=80&w=800", // Tech/Laptop
+    "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=800", // Code/Security
+    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800"  // Design/Files
+  ];
   const { slug } = useParams<{ slug: string }>();
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
   const [showSubmissionForm, setShowSubmissionForm] = useState(false);
@@ -26,6 +31,19 @@ const Blog = () => {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
+  useEffect(() => {
+    const generatedRaw = localStorage.getItem('generated_blogs');
+    if (generatedRaw) {
+      try {
+        const parsed = JSON.parse(generatedRaw);
+        // Load ALL posts into state so they can be accessed via URL
+        setUserBlogs(prev => [...parsed, ...prev]);
+      } catch (e) {
+        console.error("Failed to parse auto-generated blogs", e);
+      }
+    }
+  }, []);
+
   const defaultBlogPosts = [
     {
       id: 1,
@@ -34,6 +52,7 @@ const Blog = () => {
       date: "2024-01-15",
       readTime: "8 min read",
       author: "Axevora Team",
+      image: "https://images.unsplash.com/photo-1499750310159-5b5f38e31638?auto=format&fit=crop&q=80&w=800",
       content: `
         <p>In today's fast-paced digital world, having the right tools at your fingertips can make the difference between struggling with daily tasks and completing them efficiently. Whether you're a professional, student, or entrepreneur, these essential online tools will revolutionize how you work and manage your digital life.</p>
 
@@ -89,6 +108,7 @@ const Blog = () => {
       date: "2024-01-10",
       readTime: "12 min read",
       author: "Security Expert",
+      image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=800",
       content: `
         <p>Password security isn't just about IT departments anymore—it's everyone's responsibility. With data breaches affecting millions of users annually and cybercriminals becoming increasingly sophisticated, understanding password security has never been more critical.</p>
 
@@ -190,6 +210,7 @@ const Blog = () => {
       date: "2024-01-05",
       readTime: "10 min read",
       author: "Digital Workflow Specialist",
+      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800",
       content: `
         <p>In our interconnected digital world, file compatibility issues can be workflow killers. Whether you're a content creator, business professional, or casual user, understanding file conversion is essential for seamless collaboration and efficient work processes.</p>
 
@@ -384,6 +405,72 @@ const Blog = () => {
     }
   }, [selectedPostData]);
 
+  // Smart Failover Image Logic
+  // Smart Failover Image Logic
+  const getFallbackImage = (title: string) => {
+    const lowerTitle = title.toLowerCase();
+    let collection = [
+      "https://images.unsplash.com/photo-1499750310159-5b5f38e31638?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800"
+    ]; // Default
+
+    // Tech & Coding
+    if (lowerTitle.includes('code') || lowerTitle.includes('programming') || lowerTitle.includes('developer') || lowerTitle.includes('web')) {
+      collection = [
+        "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800"
+      ];
+    }
+
+    // Tools & Productivity
+    else if (lowerTitle.includes('tool') || lowerTitle.includes('app') || lowerTitle.includes('software') || lowerTitle.includes('productivity')) {
+      collection = [
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800"
+      ];
+    }
+
+    // AI & Future
+    else if (lowerTitle.includes('ai') || lowerTitle.includes('artificial') || lowerTitle.includes('smart') || lowerTitle.includes('robot')) {
+      collection = [
+        "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=800"
+      ];
+    }
+
+    // Money & Business
+    else if (lowerTitle.includes('money') || lowerTitle.includes('business') || lowerTitle.includes('finance') || lowerTitle.includes('marketing')) {
+      collection = [
+        "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+      ];
+    }
+
+    // Security
+    else if (lowerTitle.includes('security') || lowerTitle.includes('password') || lowerTitle.includes('hack') || lowerTitle.includes('privacy')) {
+      collection = [
+        "https://images.unsplash.com/photo-1563206767-5b1d972b9fb4?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=800",
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800"
+      ];
+    }
+
+    // Deterministic Selection based on Title Character Codes
+    // This ensures the same title always gets the same random image
+    let hash = 0;
+    for (let i = 0; i < title.length; i++) {
+      hash = title.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % collection.length;
+
+    return collection[index];
+  };
+
   if (selectedPostData) {
     return (
       <div className="min-h-screen bg-background">
@@ -397,40 +484,42 @@ const Blog = () => {
 
             <article className="bg-card rounded-lg shadow-lg p-8">
               <header className="mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-4">
-                  {selectedPostData.title}
-                </h1>
-
-                <div className="flex items-center space-x-6 text-muted-foreground text-sm">
-                  <div className="flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    {selectedPostData.authorSlug ? (
-                      <Link to={`/author/${selectedPostData.authorSlug}`} className="text-primary hover:text-accent">
+                {/* Hero Image for Article */}
+                <div className="w-full h-64 md:h-96 mb-8 rounded-xl overflow-hidden relative">
+                  <img
+                    src={selectedPostData.image || getFallbackImage(selectedPostData.title)}
+                    alt={selectedPostData.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = getFallbackImage(selectedPostData.title);
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                      {selectedPostData.title}
+                    </h1>
+                    <div className="flex items-center space-x-6 text-white/90 text-sm">
+                      <div className="flex items-center">
+                        <User className="h-4 w-4 mr-2" />
                         {selectedPostData.author}
-                      </Link>
-                    ) : (
-                      selectedPostData.author
-                    )}
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        {new Date(selectedPostData.date).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2" />
+                        {selectedPostData.readTime}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {new Date(selectedPostData.date).toLocaleDateString()}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-2" />
-                    {selectedPostData.readTime}
-                  </div>
-                  {selectedPostData.isAIGenerated && (
-                    <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                      AI Generated
-                    </span>
-                  )}
                 </div>
               </header>
 
 
               <div
-                className="prose prose-lg max-w-none"
+                className="prose prose-lg max-w-none dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
               />
 
@@ -472,45 +561,93 @@ const Blog = () => {
 
 
           <div className="space-y-8">
-            {allBlogPosts.map((post, index) => (
-              <Fragment key={post.id}>
-                <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Link to={`/blog/${post.slug}`}>
-                            <CardTitle
-                              className="text-2xl hover:text-primary transition-colors cursor-pointer"
-                            >
-                              {post.title}
-                            </CardTitle>
-                          </Link>
+            {allBlogPosts
+              .filter(post => {
+                // Start showing from today.
+                // If no date, show it. If date, check if <= today.
+                if (!post.date) return true;
+                // Comparison: just check if date is not in future
+                return new Date(post.date) <= new Date();
+              })
+              .map((post, index) => (
+                <Fragment key={post.id || index}>
+                  <Card className="hover:shadow-lg transition-shadow overflow-hidden flex flex-col h-full">
+                    <div className="w-full h-48 overflow-hidden relative group">
+                      <img
+                        src={post.image || getFallbackImage(post.title)}
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getFallbackImage(post.title);
+                        }}
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-8 text-xs"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Copy content logic or link
+                            navigator.clipboard.writeText(`${window.location.origin}/blog/${post.slug}`);
+                            toast.success("Link copied to clipboard!");
+                          }}
+                        >
+                          <Share2 className="w-3 h-3 mr-1" /> Share
+                        </Button>
+                      </div>
+                    </div>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+                              <CardTitle className="text-xl line-clamp-2">
+                                {post.title}
+                              </CardTitle>
+                            </Link>
+                          </div>
+
                           {post.isAIGenerated && (
-                            <span className="bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
+                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase mb-2 inline-block">
                               AI Generated
                             </span>
                           )}
-                        </div>
-                        <CardDescription className="text-base mb-4">
-                          {post.excerpt}
-                        </CardDescription>
-                        <Link to={`/blog/${post.slug}`} className="inline-block">
-                          <Button variant="outline">Read More</Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center text-sm text-muted-foreground">
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
-                      <span>{post.readTime}</span>
-                    </div>
-                  </CardContent>
-                </Card>
 
-              </Fragment>
-            ))}
+                          <CardDescription className="text-sm line-clamp-3 mb-4">
+                            {post.excerpt}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="mt-auto border-t bg-muted/50 p-4">
+                      <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
+                        <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {new Date(post.date).toLocaleDateString()}</span>
+                        <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {post.readTime}</span>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Link to={`/blog/${post.slug}`} className="flex-1">
+                          <Button variant="default" size="sm" className="w-full">Read Article</Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs"
+                          onClick={() => {
+                            // "Direct Share" to Medium (Opening New Story page)
+                            window.open('https://medium.com/new-story', '_blank');
+                            toast.info("Opened Medium Editor. Copy-paste your content there!");
+                          }}
+                        >
+                          <ExternalLink className="w-3 h-3 mr-1" /> Medium
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                </Fragment>
+              ))}
           </div>
 
           <div className="text-center mt-12">

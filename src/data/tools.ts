@@ -305,7 +305,34 @@ const allTools = [
     description: "Generate strong, secure passwords with customizable options.",
     category: "generator",
     icon: Lock,
-    path: "/tools/password-generator"
+    path: "/tools/password-generator",
+    longDescription: "<p>Protect your digital identity with strong, unique passwords. Weak passwords are the #1 cause of data breaches. Our random Password Generator creates high-entropy credentials that are mathematically impossible to guess. You can customize the length and character types to meet specific requirements for any website or app.</p><p>Unlike other tools that might send your data to a server, this tool generates passwords locally on your device for maximum security.</p>",
+    howToUse: [
+      "Select the desired password length (we recommend at least 12 characters).",
+      "Check the boxes to include Uppercase, Lowercase, Numbers, and Symbols.",
+      "Click the 'Generate' button to create a new, random password.",
+      "Click the Copy icon to save it to your clipboard."
+    ],
+    benefits: [
+      "Cryptographically secure randomness using the Web Crypto API.",
+      "100% Client-side generation – passwords never leave your browser.",
+      "Fully customizable to meet strict website requirements.",
+      "Prevents credential stuffing by helping you use unique passwords everywhere."
+    ],
+    faqs: [
+      {
+        question: "Is it safe to generate passwords online?",
+        answer: "Yes. This tool runs entirely in your web browser using JavaScript. The passwords you generate are never sent to our servers or stored anywhere."
+      },
+      {
+        question: "How long should my password be?",
+        answer: "Security experts recommend a minimum of 12 characters. For critical accounts like email or banking, 16+ characters is even better."
+      },
+      {
+        question: "Can I use this for my WiFi password?",
+        answer: "Absolutely. A long, random password is the best defense against neighbors or hackers trying to access your network."
+      }
+    ]
   },
   {
     id: "qr-generator",
@@ -361,7 +388,35 @@ const allTools = [
     description: "Analyze web pages for SEO optimization opportunities.",
     category: "analyzer",
     icon: TrendingUp,
-    path: "/tools/seo-analyzer"
+    path: "/tools/seo-analyzer",
+    longDescription: "<p>Get a comprehensive analysis of your website's SEO performance. Our free SEO Analyzer scans your pages for technical errors, keyword optimization, mobile responsiveness, and more. It provides a detailed report with actionable insights to help you rank higher on search engines like Google and Bing.</p><p>Whether you're a beginner launching your first blog/site or a seasoned expert performing a quick audit, this tool gives you the data you need to succeed without the expensive subscription fees.</p>",
+    howToUse: [
+      "Enter the full URL of the website you want to analyze (e.g., https://example.com).",
+      "Click the 'Analyze' button to start the scanning process.",
+      "Wait a few seconds while our bot crawls your page metadata.",
+      "Review the Score and the detailed breakdown of errors and warnings.",
+      "Follow the actionable recommendations to fix issues."
+    ],
+    benefits: [
+      "Identify critical technical SEO errors instantly.",
+      "Check for missing meta tags, headers, and alt text.",
+      "Analyze keyword presence and content structure.",
+      "Completely free with no daily limits or signup required."
+    ],
+    faqs: [
+      {
+        question: "Is this SEO tool really free?",
+        answer: "Yes, Axevora's SEO Analyzer is 100% free to use for unlimited analyses. We believe basic SEO data should be accessible to everyone."
+      },
+      {
+        question: "How often should I check my SEO?",
+        answer: "We recommend running an audit whenever you publish new content, make design changes, or at least once a month to catch any new issues."
+      },
+      {
+        question: "Does this checking affect my rankings?",
+        answer: "No. Checking your site with our tool is just like a normal visitor visiting your page. It does not negatively impact your rankings."
+      }
+    ]
   },
   {
     id: "website-analyzer",
@@ -379,7 +434,34 @@ const allTools = [
     description: "Test website loading speed and get optimization recommendations.",
     category: "analyzer",
     icon: Gauge,
-    path: "/tools/website-speed-checker"
+    path: "/tools/website-speed-checker",
+    longDescription: "<p>Speed is a critical factor for both user experience and SEO rankings. Slow websites frustrate users, increase bounce rates, and are penalized by Google's Core Web Vitals algorithms. Our Website Speed Checker simulates a real user visit to measure exactly how fast your site loads.</p><p>It provides clear metrics like Time to First Byte (TTFB), total load time, and resource size, giving you a clear picture of your website's health.</p>",
+    howToUse: [
+      "Enter the URL of the page you want to test.",
+      "Click 'Check Speed' to initiate the test.",
+      "The tool will ping your server and measure response times.",
+      "View the results dashboard to see your Load Time and Performance Score."
+    ],
+    benefits: [
+      "Accurate loading time measurements from an external server.",
+      "Helps identify slow hosting or unoptimized assets.",
+      "Simple, fast, and jargon-free interface.",
+      "Helps you benchmark your site against competitors."
+    ],
+    faqs: [
+      {
+        question: "Why is my website slow?",
+        answer: "Common reasons include large unoptimized images, slow server hosting, too many plugins, or render-blocking JavaScript."
+      },
+      {
+        question: "What is a good load time?",
+        answer: "Generally, a load time under 2-3 seconds is considered good. Under 1 second is excellent. Anything over 4 seconds risks losing significant traffic."
+      },
+      {
+        question: "Does this tool check mobile speed?",
+        answer: "Our standard test checks desktop performance consistency. However, a fast response time here usually indicates good server health for mobile devices as well."
+      }
+    ]
   },
   {
     id: "text-analyzer",

@@ -143,7 +143,9 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                     {(() => {
                       const location = typeof window !== 'undefined' ? { pathname: window.location.pathname } : { pathname: '' };
                       const pathContent = getToolContent(location.pathname || '');
-                      const generalContent = `
+
+                      // Fallback content if no specific content is found
+                      const generalContent = !content && !pathContent ? `
                       <h2>About ${title}</h2>
                       <p>${description}</p>
                       <h3>How to Use</h3>
@@ -152,12 +154,59 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                         <li>Adjust settings or options relevant to your task.</li>
                         <li>Run the action and copy or download results.</li>
                       </ol>
-                    `;
+                    ` : '';
+
                       const resolved = content ?? pathContent ?? generalContent;
+
                       return (
                         <>
                           <div className="prose prose-lg max-w-none mb-8" dangerouslySetInnerHTML={{ __html: resolved }} />
                           {children}
+
+                          {/* Dynamic Rich Content from currentTool (tools.ts) */}
+                          {currentTool && (currentTool as any).longDescription && (
+                            <div className="mt-12 prose prose-lg max-w-none text-foreground">
+                              <h2>Overview</h2>
+                              <div dangerouslySetInnerHTML={{ __html: (currentTool as any).longDescription }} />
+                            </div>
+                          )}
+
+                          {currentTool && (currentTool as any).howToUse && (
+                            <div className="mt-8 prose prose-lg max-w-none text-foreground">
+                              <h2>How to Use {(currentTool as any).name}</h2>
+                              <ul className="list-decimal pl-6">
+                                {(currentTool as any).howToUse.map((step: string, idx: number) => (
+                                  <li key={idx} className="mb-2">{step}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {currentTool && (currentTool as any).benefits && (
+                            <div className="mt-8 prose prose-lg max-w-none text-foreground">
+                              <h2>Benefits of Using This Tool</h2>
+                              <ul className="list-disc pl-6">
+                                {(currentTool as any).benefits.map((benefit: string, idx: number) => (
+                                  <li key={idx} className="mb-2">{benefit}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {currentTool && (currentTool as any).faqs && (currentTool as any).faqs.length > 0 && (
+                            <div className="mt-12">
+                              <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+                              <div className="space-y-6">
+                                {(currentTool as any).faqs.map((faq: { question: string; answer: string }, idx: number) => (
+                                  <div key={idx} className="bg-muted/30 p-6 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
+                                    <p className="text-muted-foreground">{faq.answer}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           <div className="mt-6 text-center">
                             <p className="text-sm font-medium text-muted-foreground">
                               Free Online {title} Tool – No Download Required
