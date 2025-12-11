@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 import { Link, useParams } from "react-router-dom";
 import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
+import GENERATED_BLOGS from "@/data/generated_blogs.json";
 
 const Blog = () => {
   const defaultImages = [
@@ -339,7 +340,18 @@ const Blog = () => {
     }
   ];
 
-  const allBlogPosts = [...userBlogs, ...DEFAULT_BLOG_POSTS];
+  // Merge Static (Default + JSON) and Dynamic (LocalStorage) blogs with Deduplication
+  const staticBlogs = [...DEFAULT_BLOG_POSTS, ...GENERATED_BLOGS];
+  // Create a Set of static slugs for O(1) lookup
+  const staticSlugs = new Set(staticBlogs.map(p => p.slug || slugify(p.title)));
+
+  // Filter out local blogs that conflict with static ones (prefer static/deployment version)
+  const uniqueUserBlogs = userBlogs.filter(p => !staticSlugs.has(p.slug || slugify(p.title)));
+
+  // Combine: Newest user blogs on top? Or sort by date later?
+  // The rendering logic sorts by date later anyway if needed, but here we just merge.
+  // Actually, let's keep userBlogs on top if they are unique (new drafts).
+  const allBlogPosts = [...uniqueUserBlogs, ...staticBlogs];
 
   const handleSaveBlog = (blog: any) => {
     const now = Date.now();

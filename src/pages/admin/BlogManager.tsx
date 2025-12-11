@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, CheckCircle, AlertTriangle, Save, Play } from "lucide-react";
+import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github } from "lucide-react";
 import { BlogGenerator, BlogPostGenerated } from "@/utils/aiGenerator";
+import { GitHubClient } from "@/utils/githubClient";
 import { toast } from "sonner";
 
 // Type for the schedule
@@ -20,9 +21,11 @@ interface ScheduledPost {
 
 const BlogManager = () => {
     const [apiKey, setApiKey] = useState('AIzaSyApnoNTD58tRsN3nICUQCaEYMeV-rh_mGM');
+    const [githubToken, setGithubToken] = useState('');
     const [topicsInput, setTopicsInput] = useState('');
     const [schedule, setSchedule] = useState<ScheduledPost[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isDeploying, setIsDeploying] = useState(false);
     const [currentProgress, setCurrentProgress] = useState('');
 
     // Load data on mount
@@ -30,14 +33,22 @@ const BlogManager = () => {
         const savedKey = localStorage.getItem('gemini_api_key');
         if (savedKey) setApiKey(savedKey);
 
+        const savedToken = localStorage.getItem('github_token');
+        if (savedToken) setGithubToken(savedToken);
+
         const savedSchedule = localStorage.getItem('blog_schedule');
         if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
     }, []);
 
-    // Save API Key
+    // Save API Keys
     const handleSaveKey = () => {
         localStorage.setItem('gemini_api_key', apiKey);
-        toast.success("API Key saved securely!");
+        toast.success("Gemini API Key saved!");
+    };
+
+    const handleSaveGithubToken = () => {
+        localStorage.setItem('github_token', githubToken);
+        toast.success("GitHub Token saved securely!");
     };
 
     // Parse topics and create schedule
@@ -122,6 +133,58 @@ const BlogManager = () => {
         localStorage.removeItem('blog_schedule');
     };
 
+    const handleDownloadForDeployment = () => {
+        const blogs = localStorage.getItem('generated_blogs');
+        if (!blogs) {
+            toast.error("No generated blogs found to download.");
+            return;
+        }
+
+        const blob = new Blob([blogs], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'generated_blogs.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success("Downloaded! Move this file to src/data/generated_blogs.json");
+    };
+
+    const handleAutoDeploy = async () => {
+        if (!githubToken) {
+            toast.error("Please enter your GitHub Token first.");
+            return;
+        }
+
+        const blogs = localStorage.getItem('generated_blogs');
+        if (!blogs) {
+            toast.error("No generated blogs to deploy.");
+            return;
+        }
+
+        try {
+            setIsDeploying(true);
+            const client = new GitHubClient(githubToken);
+            const path = 'src/data/generated_blogs.json';
+
+            // 1. Get current SHA
+            const currentFile = await client.getFile(path);
+            const sha = currentFile ? currentFile.sha : undefined;
+
+            // 2. Update File
+            await client.updateFile(path, blogs, "feat: auto-deploy new blogs from admin panel", sha);
+
+            toast.success("Successfully deployed to GitHub! Live site will update in a few minutes.");
+        } catch (error) {
+            console.error(error);
+            toast.error("Deployment failed. Check console and token.");
+        } finally {
+            setIsDeploying(false);
+        }
+    };
+
     return (
         <div className="container mx-auto py-10 max-w-4xl space-y-8">
             <div className="flex justify-between items-center">
@@ -132,20 +195,39 @@ const BlogManager = () => {
                 <Button variant="destructive" onClick={clearSchedule} size="sm">Clear Schedule</Button>
             </div>
 
-            {/* API Key Section */}
+            {/* Configuration Section */}
             <Card>
                 <CardHeader>
                     <CardTitle>1. Configuration</CardTitle>
-                    <CardDescription>Enter your Gemini API Key (get it from Google AI Studio)</CardDescription>
+                    <CardDescription>Setup your API keys for AI generation and Auto-Deployment.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex gap-4">
-                    <Input
-                        type="password"
-                        placeholder="Ex: AIzaSy..."
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                    />
-                    <Button onClick={handleSaveKey}><Save className="w-4 h-4 mr-2" /> Save Key</Button>
+                <CardContent className="space-y-4">
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <label className="text-sm font-medium mb-1 block">Gemini API Key</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="password"
+                                    placeholder="Ex: AIzaSy..."
+                                    value={apiKey}
+                                    onChange={(e) => setApiKey(e.target.value)}
+                                />
+                                <Button onClick={handleSaveKey} size="icon"><Save className="w-4 h-4" /></Button>
+                            </div>
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-sm font-medium mb-1 block">GitHub Token (for Auto-Deploy)</label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="password"
+                                    placeholder="Ex: ghp_..."
+                                    value={githubToken}
+                                    onChange={(e) => setGithubToken(e.target.value)}
+                                />
+                                <Button onClick={handleSaveGithubToken} size="icon"><Save className="w-4 h-4" /></Button>
+                            </div>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
 
@@ -206,6 +288,41 @@ const BlogManager = () => {
                     >
                         {isGenerating ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Play className="w-5 h-5 mr-2" />}
                         {isGenerating ? 'Generating Content (This takes time)...' : 'Start Auto-Generation Sequence'}
+                    </Button>
+                </CardContent>
+            </Card>
+
+            {/* Deployment Section */}
+            <Card className="border-purple-500 bg-purple-50/10">
+                <CardHeader>
+                    <CardTitle className="flex items-center"><Rocket className="w-5 h-5 mr-2" /> 4. Auto-Deploy</CardTitle>
+                    <CardDescription>
+                        Push your new blogs directly to GitHub. The live site will rebuild automatically.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Button
+                        size="lg"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                        onClick={handleAutoDeploy}
+                        disabled={isDeploying || !githubToken}
+                    >
+                        {isDeploying ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Github className="w-5 h-5 mr-2" />}
+                        {isDeploying ? 'Deploying to GitHub...' : 'Auto-Deploy to Live Site'}
+                    </Button>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">Or Manual fallback</span>
+                        </div>
+                    </div>
+
+                    <Button variant="outline" className="w-full" onClick={handleDownloadForDeployment}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download JSON (Manual Upload)
                     </Button>
                 </CardContent>
             </Card>
