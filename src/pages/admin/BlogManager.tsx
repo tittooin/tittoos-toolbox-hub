@@ -54,9 +54,23 @@ const BlogManager = () => {
     // Parse topics and create schedule
     const handleSchedule = () => {
         const topics = topicsInput.split('\n').filter(t => t.trim());
+
+        // Determine start date (Last scheduled date + 1 day, or Today)
+        let startDate = new Date();
+        if (schedule.length > 0) {
+            const lastPost = schedule[schedule.length - 1];
+            // Safe parsing of the date string
+            const lastDate = new Date(lastPost.publishDate);
+            if (!isNaN(lastDate.getTime())) {
+                startDate = new Date(lastDate);
+                startDate.setDate(startDate.getDate() + 1); // Start from next day
+            }
+        }
+
         const newSchedule: ScheduledPost[] = topics.map((topic, index) => {
-            const date = new Date();
-            date.setDate(date.getDate() + index); // Schedule starting today
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + index); // Increment from determined start date
+
             return {
                 id: Math.random().toString(36).substr(2, 9),
                 topic: topic.trim(),
@@ -64,9 +78,10 @@ const BlogManager = () => {
                 status: 'pending'
             };
         });
+
         setSchedule(prev => [...prev, ...newSchedule]);
         setTopicsInput('');
-        toast.success(`Scheduled ${newSchedule.length} posts!`);
+        toast.success(`Scheduled ${newSchedule.length} posts! Starting from ${startDate.toISOString().split('T')[0]}`);
         localStorage.setItem('blog_schedule', JSON.stringify([...schedule, ...newSchedule]));
     };
 
