@@ -37,7 +37,7 @@ const SubmitBlog = () => {
       <Helmet>
         <title>Submit Your Blog | Axevora</title>
         <meta name="description" content="Submit your blog post for review and publishing on Axevora." />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="index, follow" />
       </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-16">
