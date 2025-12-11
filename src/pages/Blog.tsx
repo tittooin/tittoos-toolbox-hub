@@ -574,92 +574,98 @@ const Blog = () => {
 
           <div className="space-y-8">
             {allBlogPosts
-              .filter(post => {
-                // Start showing from today.
-                // If no date, show it. If date, check if <= today.
-                if (!post.date) return true;
-                // Comparison: just check if date is not in future
-                return new Date(post.date) <= new Date();
-              })
-              .map((post, index) => (
-                <Fragment key={post.id || index}>
-                  <Card className="hover:shadow-lg transition-shadow overflow-hidden flex flex-col h-full">
-                    <div className="w-full h-48 overflow-hidden relative group">
-                      <img
-                        src={post.image || getFallbackImage(post.title)}
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = getFallbackImage(post.title);
-                        }}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-8 text-xs"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            // Copy content logic or link
-                            navigator.clipboard.writeText(`${window.location.origin}/blog/${post.slug}`);
-                            toast.success("Link copied to clipboard!");
+              // Removed strict date filter to show upcoming posts
+              .map((post, index) => {
+                const isScheduled = post.date && new Date(post.date) > new Date();
+                return (
+                  <Fragment key={post.id || index}>
+                    <Card className={`hover:shadow-lg transition-shadow overflow-hidden flex flex-col h-full ${isScheduled ? 'opacity-75 border-dashed' : ''}`}>
+                      <div className="w-full h-48 overflow-hidden relative group">
+                        <img
+                          src={post.image || getFallbackImage(post.title)}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 filter"
+                          style={isScheduled ? { filter: 'grayscale(100%)' } : {}}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = getFallbackImage(post.title);
                           }}
-                        >
-                          <Share2 className="w-3 h-3 mr-1" /> Share
-                        </Button>
-                      </div>
-                    </div>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
-                              <CardTitle className="text-xl line-clamp-2">
-                                {post.title}
-                              </CardTitle>
-                            </Link>
-                          </div>
-
-                          {post.isAIGenerated && (
-                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase mb-2 inline-block">
-                              AI Generated
-                            </span>
-                          )}
-
-                          <CardDescription className="text-sm line-clamp-3 mb-4">
-                            {post.excerpt}
-                          </CardDescription>
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="h-8 text-xs"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              // Copy content logic or link
+                              navigator.clipboard.writeText(`${window.location.origin}/blog/${post.slug}`);
+                              toast.success("Link copied to clipboard!");
+                            }}
+                          >
+                            <Share2 className="w-3 h-3 mr-1" /> Share
+                          </Button>
                         </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="mt-auto border-t bg-muted/50 p-4">
-                      <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
-                        <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {new Date(post.date).toLocaleDateString()}</span>
-                        <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {post.readTime}</span>
-                      </div>
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+                                <CardTitle className="text-xl line-clamp-2">
+                                  {post.title}
+                                </CardTitle>
+                              </Link>
+                            </div>
 
-                      <div className="flex gap-2">
-                        <Link to={`/blog/${post.slug}`} className="flex-1">
-                          <Button variant="default" size="sm" className="w-full">Read Article</Button>
-                        </Link>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-xs"
-                          onClick={() => {
-                            // "Direct Share" to Medium (Opening New Story page)
-                            window.open('https://medium.com/new-story', '_blank');
-                            toast.info("Opened Medium Editor. Copy-paste your content there!");
-                          }}
-                        >
-                          <ExternalLink className="w-3 h-3 mr-1" /> Medium
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                            <div className="flex gap-2 mb-2">
+                              {post.isAIGenerated && (
+                                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase inline-block">
+                                  AI Generated
+                                </span>
+                              )}
+                              {isScheduled && (
+                                <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase inline-block border border-yellow-200">
+                                  Scheduled ({new Date(post.date).toLocaleDateString()})
+                                </span>
+                              )}
+                            </div>
 
-                </Fragment>
-              ))}
+
+                            <CardDescription className="text-sm line-clamp-3 mb-4">
+                              {post.excerpt}
+                            </CardDescription>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="mt-auto border-t bg-muted/50 p-4">
+                        <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
+                          <span className="flex items-center"><Calendar className="w-3 h-3 mr-1" /> {new Date(post.date).toLocaleDateString()}</span>
+                          <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {post.readTime}</span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Link to={`/blog/${post.slug}`} className="flex-1">
+                            <Button variant="default" size="sm" className="w-full">Read Article</Button>
+                          </Link>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs"
+                            onClick={() => {
+                              // "Direct Share" to Medium (Opening New Story page)
+                              window.open('https://medium.com/new-story', '_blank');
+                              toast.info("Opened Medium Editor. Copy-paste your content there!");
+                            }}
+                          >
+                            <ExternalLink className="w-3 h-3 mr-1" /> Medium
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                  </Fragment>
+                );
+              })}
           </div>
 
           <div className="text-center mt-12">
