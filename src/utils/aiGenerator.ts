@@ -20,9 +20,7 @@ export class BlogGenerator {
   private readonly MODEL_CANDIDATES = [
     "gemini-1.5-flash",
     "gemini-1.5-pro",
-    "gemini-pro",
-    "gemini-2.0-flash-exp",
-    "gemini-flash-latest"
+    "gemini-pro"
   ];
 
   constructor(apiKey: string) {
@@ -50,42 +48,25 @@ export class BlogGenerator {
         }
         return text;
       } catch (error: any) {
-        // Handle Rate Limiting (429)
+        // CRITICAL: Fail fast on Auth errors
+        if (error.message.includes("403") || error.message.includes("leaked") || error.message.includes("API key")) {
+          console.error(`[BlogGenerator] Critical Auth Error: ${error.message}`);
+          throw new Error("Your Gemini API Key is invalid or leaked. Please generate a new one at aistudio.google.com.");
+        }
+
         // Handle Rate Limiting (429)
         if (error.message.includes("429") || error.message.includes("Quota exceeded")) {
-          console.warn(`[BlogGenerator] Rate limit hit for ${modelName}. Starting exponential backoff...`);
-
-          // Retry up to 3 times with increasing delays
-          for (let retryCount = 1; retryCount <= 3; retryCount++) {
-            const waitTime = 20000 * retryCount; // 20s, 40s, 60s
-            console.log(`[BlogGenerator] Retry ${retryCount}/3 for ${modelName} in ${waitTime / 1000}s...`);
-
-            await new Promise(resolve => setTimeout(resolve, waitTime));
-
-            try {
-              const model = this.genAI.getGenerativeModel({ model: modelName });
-              const result = await model.generateContent(prompt);
-
-              if (!this.preferredModelName) {
-                this.preferredModelName = modelName;
-              }
-              return result.response.text();
-            } catch (retryError: any) {
-              console.warn(`[BlogGenerator] Retry ${retryCount} failed: ${retryError.message}`);
-              if (!retryError.message.includes("429") && !retryError.message.includes("Quota exceeded")) {
-                break; // If unauthorized or other error, stop retrying this model
-              }
-            }
-          }
-          // If all retries failed, let it fall through to try the next model candidate
+          console.warn(`[BlogGenerator] Rate limit hit for ${modelName}. Switching to next model...`);
+          // Don't retry same model 3 times on free tier, just move to next candidate immediately
+          // This allows "Rapid Failover" to other free models
         } else {
           console.warn(`[BlogGenerator] Model ${modelName} failed: ${error.message}`);
-          lastError = error;
         }
+        lastError = error;
       }
     }
 
-    throw lastError || new Error("All AI models failed to respond. Please check your API Key and Google Cloud Project settings.");
+    throw lastError || new Error("All AI models failed. Please check your API Key and Network.");
   }
 
   private async generateImage(prompt: string): Promise<string> {
