@@ -26,8 +26,23 @@
   <meta name="keywords"
     content="free online tools, web utilities, video converter, audio converter, image converter, password generator, QR code, JSON formatter, URL encoder, AI tools, SEO analyzer, website speed checker, AI content creation, AI art generator, AI video from text, machine learning art tools, AI digital assets, website speed test, SEO audit tools, website analytics, performance insights, web optimization, privacy online tools, data security, privacy-first utilities, local data processing, secure document conversion" />
   <meta name="author" content="Axevora" />
+  <meta name="author" content="Axevora" />
   <meta name="robots" content="index, follow" />
-  <!-- Canonical link removed: It is injected dynamically by JS to avoid SPA mismatch issues -->
+
+  <!-- Immediate Canonical Generation for SEO Crawlers -->
+  <script>
+    (function () {
+      try {
+        var link = document.createElement('link');
+        link.rel = 'canonical';
+        var origin = "https://axevora.com";
+        var path = window.location.pathname.replace(/\/$/, "") || "/";
+        link.href = origin + (path === "/" ? "/" : path);
+        document.head.appendChild(link);
+      } catch (e) { }
+    })();
+  </script>
+
   <meta name="p:domain_verify" content="67e79144493013fc7a4e0e293d36dc92" />
   <meta name="msvalidate.01" content="6FF04156CF7B5D43EDAAF753964FF316" />
 
@@ -131,9 +146,15 @@
         <li><a href="/tools">All Tools</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/categories">Categories</a></li>
+        <!-- Expanded Category Links for Crawler Discovery -->
         <li><a href="/tools/pdf-converter">PDF Tools</a></li>
         <li><a href="/tools/video-converter">Video Tools</a></li>
-        <li><a href="/tools/seo-analyzer">SEO Tools</a></li>
+        <li><a href="/tools/image-converter">Image Tools</a></li>
+        <li><a href="/tools/text-editor">Editor Tools</a></li>
+        <li><a href="/tools/json-formatter">Formatter Tools</a></li>
+        <li><a href="/tools/calculator">Calculator Tools</a></li>
+        <li><a href="/tools/password-generator">Generator Tools</a></li>
+        <li><a href="/tools/seo-analyzer">Analyzer Tools</a></li>
       </ul>
     </nav>
   </div>
