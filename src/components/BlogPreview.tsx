@@ -2,25 +2,44 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { DEFAULT_BLOG_POSTS } from '@/data/blogs';
+import GENERATED_BLOGS from "@/data/generated_blogs.json";
 
 const BlogPreview = () => {
   const [displayedPosts, setDisplayedPosts] = useState<any[]>(DEFAULT_BLOG_POSTS.slice(0, 4));
 
   useEffect(() => {
-    // Load generated blogs from local storage
+    // 1. Load generated blogs from local storage (Drafts/Local)
     const generatedRaw = localStorage.getItem('generated_blogs');
-    let generatedPosts: any[] = [];
-
+    let localBlogs: any[] = [];
     if (generatedRaw) {
       try {
-        generatedPosts = JSON.parse(generatedRaw);
+        localBlogs = JSON.parse(generatedRaw);
       } catch (e) {
         console.error("Failed to parse generated blogs in preview", e);
       }
     }
 
-    // Combine and Sort by Date (Newest First)
-    const allPosts = [...generatedPosts, ...DEFAULT_BLOG_POSTS].sort((a, b) => {
+    // 2. Merge Static (Repo) and Local
+    // Priority: Local > JSON > Default (But we usually want Repo to be the source of truth if duplicates)
+    // Actually, deduplicate by Slug.
+    const allStatic = [...DEFAULT_BLOG_POSTS, ...GENERATED_BLOGS];
+    const staticSlugs = new Set(allStatic.map(p => p.slug));
+
+    // Only add local blogs if they aren't already in static (repo)
+    const uniqueLocal = localBlogs.filter(p => !staticSlugs.has(p.slug));
+
+    // Combine all
+    let allPosts = [...uniqueLocal, ...allStatic];
+
+    // 3. Filter: Hide Future Posts (Homepage should usually only show Published)
+    // User said: "Mean future post na bhi dikhe to chalega"
+    allPosts = allPosts.filter(post => {
+      if (!post.date) return true;
+      return new Date(post.date) <= new Date();
+    });
+
+    // 4. Sort by Date (Newest First)
+    allPosts.sort((a, b) => {
       return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime();
     });
 
