@@ -56,14 +56,36 @@ export const setSEO = (data: SEOData) => {
     setMeta({ name: 'twitter:image' }, data.image);
   }
 
-  if (data.url) {
+  // Canonical URL Logic
+  // 1. Prefer passed URL, otherwise build from window.location
+  // 2. Force https://axevora.com origin (Avoids localhost/preview URL leaks in index)
+  // 3. Strip trailing slashes and query parameters
+  const origin = "https://axevora.com";
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  const cleanUrl = `${origin}${path === "/" ? "/" : path}`;
+
+  // If consumer passed a specific URL (like for paginated content), use it but sanitize
+  let finalCanonical = data.url;
+  if (!finalCanonical) {
+    finalCanonical = cleanUrl;
+  } else {
+    // If passed URL is separate, still try to clean it if it matches our domain
+    try {
+      const u = new URL(finalCanonical, origin);
+      if (u.hostname === "axevora.com" || u.hostname === "www.axevora.com") {
+        finalCanonical = `${origin}${u.pathname.replace(/\/$/, "")}`;
+      }
+    } catch (e) { }
+  }
+
+  if (finalCanonical) {
     const link = ensureTag('link[rel="canonical"]', () => {
       const l = document.createElement('link');
       l.setAttribute('rel', 'canonical');
       return l;
     });
-    link.setAttribute('href', data.url);
-    setMeta({ property: 'og:url' }, data.url);
+    link.setAttribute('href', finalCanonical);
+    setMeta({ property: 'og:url' }, finalCanonical);
   }
 
   if (data.type) {
