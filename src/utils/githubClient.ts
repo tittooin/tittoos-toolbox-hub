@@ -50,6 +50,8 @@ export class GitHubClient {
             body.sha = sha;
         }
 
+        console.log(`[GitHubClient] ${sha ? 'Updating' : 'Creating'} file at ${path}...`);
+
         const response = await fetch(`https://api.github.com/repos/${this.owner}/${this.repo}/contents/${path}`, {
             method: 'PUT',
             headers: {
@@ -60,8 +62,12 @@ export class GitHubClient {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Failed to update file: ${errorData.message || response.statusText}`);
+            const errorData = await response.json().catch(() => ({ message: response.statusText }));
+            // Specific help for 404
+            if (response.status === 404) {
+                throw new Error(`GitHub 404 Error: Repo '${this.owner}/${this.repo}' not found. Check your GitHub Token (needs 'repo' scope) and Repo Name.`);
+            }
+            throw new Error(`Failed to update file: ${errorData.message}`);
         }
     }
 }
