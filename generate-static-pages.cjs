@@ -160,7 +160,7 @@ uniqueRoutes.forEach(route => {
 
         const seoContent = `
         <div id="static-sitemap-content" style="display:none; visibility:hidden;">
-            <h1>Axevora Static Sitemap</h1>
+            <h2>Axevora Static Sitemap</h2>
             <ul>
                 ${sitemapLinks}
             </ul>
