@@ -110,8 +110,7 @@ uniqueRoutes.forEach(route => {
     // Determine canonical URL for this route
     // Logic: Force trailing slash for everything (Directory structure behavior)
     let normalizedRoute = route.replace(/\/$/, "");
-    if (normalizedRoute === "") normalizedRoute = "/"; // Root
-    else normalizedRoute += "/"; // Append slash for subpaths
+    if (normalizedRoute === "") normalizedRoute = "/"; // Root stays / (it's the only one)
 
     const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute}`;
 

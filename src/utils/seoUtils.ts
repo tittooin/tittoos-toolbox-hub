@@ -59,11 +59,11 @@ export const setSEO = (data: SEOData) => {
   // Canonical URL Logic
   // 1. Prefer passed URL, otherwise build from window.location
   // 2. Force https://axevora.com origin (Avoids localhost/preview URL leaks in index)
-  // Canonical URL Logic: Force Trailing Slash to match SSG/Sitemap
+  // Canonical URL Logic: NO Trailing Slash (Vercel Clean URLs)
   const origin = "https://axevora.com";
   let path = window.location.pathname.replace(/\/$/, "");
   // Root becomes empty string here, so check
-  path = (path === "") ? "/" : (path + "/");
+  path = (path === "") ? "/" : path;
 
   const cleanUrl = `${origin}${path}`;
 
