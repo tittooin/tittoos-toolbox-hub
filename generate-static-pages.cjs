@@ -112,8 +112,8 @@ uniqueRoutes.forEach(route => {
     let normalizedRoute = route.replace(/\/$/, "");
     if (normalizedRoute === "") normalizedRoute = "/";
 
-    // Canonical HAS trailing slash (Matches Vercel trailingSlash: true)
-    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute + "/"}`;
+    // Canonical NO trailing slash (Matches Cloudflare Clean URLs)
+    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute}`;
 
     // Prepare target file path
     // OLD: /tools/pdf -> dist/tools/pdf/index.html

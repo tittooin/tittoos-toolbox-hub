@@ -130,9 +130,9 @@ for (const p of collected) {
 const entries = Array.from(uniquePaths)
   .sort()
   .map((p) => {
-    // Ensure Trailing Slash for Sitemap (Vercel TrailingSlash: true)
+    // Ensure NO Trailing Slash (Cloudflare/Clean URLs)
     const normalized = p.replace(/^\//, "").replace(/\/$/, "");
-    return `<url><loc>${baseUrl}${normalized}/</loc></url>`;
+    return `<url><loc>${baseUrl}${normalized}</loc></url>`;
   })
   .join("\n");
 
