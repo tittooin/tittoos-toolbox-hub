@@ -1,7 +1,9 @@
 {
+    "cleanUrls": true,
+    "trailingSlash": false,
     "rewrites": [
         {
-            "source": "/((?!ads\\.txt|robots\\.txt|sitemap\\.xml|favicon\\.ico|_headers|_redirects|sw\\.js|.*\\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|json|woff|woff2|ttf|eot)).*)",
+            "source": "/((?!ads\\.txt|robots\\.txt|sitemap\\.xml|favicon\\.ico|_headers|_redirects|sw\\.js|.*\\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|json|woff|woff2|ttf|eot|html)).*)",
             "destination": "/index.html"
         }
     ]
