@@ -32,20 +32,20 @@ export class BlogGenerator {
   // 0. Pollinations.ai Integration (Keyless Fallback)
   private async generateViaPollinations(prompt: string): Promise<string> {
     try {
-      console.log("[BlogGenerator] Using Pollinations.ai (Keyless Mode)...");
-      const response = await fetch('https://text.pollinations.ai/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: 'You are an expert SEO Blog Writer. Output valid HTML when requested.' },
-            { role: 'user', content: prompt }
-          ],
-          model: 'openai', // Triggers GPT-4o-mini or similar free tier
-          seed: Math.floor(Math.random() * 1000)
-        }),
+      console.log("[BlogGenerator] Using Pollinations.ai (Keyless Mode/GET)...");
+      // Use GET request to avoid CORS preflight issues with POST JSON
+      // Construct URL: https://text.pollinations.ai/URL_ARGUMENT?model=openai&seed=...
+      // We prepend the system instruction to the prompt since we can't send messages array in GET easily.
+      const systemContext = "You are an expert SEO Blog Writer. Output valid HTML.";
+      const finalPrompt = `${systemContext}\n\nUser: ${prompt}`;
+
+      const encodedPrompt = encodeURIComponent(finalPrompt);
+      const seed = Math.floor(Math.random() * 1000);
+      const url = `https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`;
+
+      const response = await fetch(url, {
+        method: 'GET', // Explicitly GET
+        // No custom headers to keep it a "Simple Request" (avoids preflight if possible)
       });
 
       if (!response.ok) {
