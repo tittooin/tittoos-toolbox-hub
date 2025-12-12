@@ -56,6 +56,10 @@ export const setSEO = (data: SEOData) => {
     setMeta({ name: 'twitter:image' }, data.image);
   }
 
+  // Always ensure Basic Twitter Card Tags
+  setMeta({ name: 'twitter:card' }, 'summary_large_image');
+  setMeta({ name: 'twitter:site' }, '@Axevora'); // Or whatever the handle is, verifying from user request or context. User didn't specify handle, using generic brand name.
+
   // Canonical URL Logic
   // 1. Prefer passed URL, otherwise build from window.location
   // 2. Force https://axevora.com origin (Avoids localhost/preview URL leaks in index)
