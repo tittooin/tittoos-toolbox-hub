@@ -108,12 +108,8 @@ let successCount = 0;
 
 uniqueRoutes.forEach(route => {
     // Determine canonical URL for this route
-    // Logic: NO trailing slash (Matches Vercel Clean URLs for .html files)
-    let normalizedRoute = route.replace(/\/$/, "");
-    if (normalizedRoute === "") normalizedRoute = "/";
-
-    // Canonical stays clean (no slash)
-    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute}`;
+    // Canonical HAS trailing slash (Matches Vercel trailingSlash: true)
+    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute + "/"}`;
 
     // Prepare target file path
     // OLD: /tools/pdf -> dist/tools/pdf/index.html
@@ -154,6 +150,4 @@ uniqueRoutes.forEach(route => {
 } catch (e) {
     console.error(`Failed to generate ${route}:`, e);
 }
-});
-
 console.log(`✅ Successfully generated ${successCount} static pages.`);

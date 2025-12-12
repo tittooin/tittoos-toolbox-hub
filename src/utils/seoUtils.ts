@@ -59,13 +59,13 @@ export const setSEO = (data: SEOData) => {
   // Canonical URL Logic
   // 1. Prefer passed URL, otherwise build from window.location
   // 2. Force https://axevora.com origin (Avoids localhost/preview URL leaks in index)
-  // Canonical URL Logic: NO Trailing Slash (Vercel Clean URLs)
+  // Canonical URL Logic: FORCE Trailing Slash (Vercel trailingSlash: true)
   const origin = "https://axevora.com";
   let path = window.location.pathname.replace(/\/$/, "");
   // Root becomes empty string here, so check
-  path = (path === "") ? "/" : path;
+  path = (path === "") ? "" : path; // We want /tool/
 
-  const cleanUrl = `${origin}${path}`;
+  const cleanUrl = `${origin}${path}/`;
 
   // If consumer passed a specific URL (like for paginated content), use it but sanitize
   let finalCanonical = data.url;

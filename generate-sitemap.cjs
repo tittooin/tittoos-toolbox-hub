@@ -130,9 +130,9 @@ for (const p of collected) {
 const entries = Array.from(uniquePaths)
   .sort()
   .map((p) => {
-    // Ensure NO trailing slash for Vercel Clean URLs
+    // Ensure Trailing Slash for Sitemap (Vercel TrailingSlash: true)
     const normalized = p.replace(/^\//, "").replace(/\/$/, "");
-    return `<url><loc>${baseUrl}${normalized}</loc></url>`;
+    return `<url><loc>${baseUrl}${normalized}/</loc></url>`;
   })
   .join("\n");
 
