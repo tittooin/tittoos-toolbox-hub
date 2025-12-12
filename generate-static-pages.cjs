@@ -108,49 +108,52 @@ let successCount = 0;
 
 uniqueRoutes.forEach(route => {
     // Determine canonical URL for this route
-    // Logic: Force trailing slash for everything (Directory structure behavior)
+    // Logic: NO trailing slash (Matches Vercel Clean URLs for .html files)
     let normalizedRoute = route.replace(/\/$/, "");
-    if (normalizedRoute === "") normalizedRoute = "/"; // Root stays / (it's the only one)
+    if (normalizedRoute === "") normalizedRoute = "/";
 
-    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute}`;
+    // Canonical stays clean (no slash)
+    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute}`;
 
-    // Prepare target directory
-    // E.g. /tools/pdf -> dist/tools/pdf/index.html
-    const relativePath = route === '/' ? '' : route.replace(/^\//, '');
-    const validRelativePath = relativePath.split('/').filter(Boolean).join(path.sep); // Cross-platform
+    // Prepare target file path
+    // OLD: /tools/pdf -> dist/tools/pdf/index.html
+    // NEW: /tools/pdf -> dist/tools/pdf.html
 
-    const targetDir = path.join(distDir, validRelativePath);
+    let targetFile = "";
+
+    if (route === "/" || route === "") {
+        // Root must still be index.html in valid dist location? 
+        // Actually root is handled by Main index.html. 
+        // But we want to inject our Canonical.
+        targetFile = path.join(distDir, "index.html");
+    } else {
+        const relativePath = route.replace(/^\//, ''); // tools/pdf-converter
+        targetFile = path.join(distDir, `${relativePath}.html`);
+    }
 
     try {
+        const targetDir = path.dirname(targetFile);
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
         }
 
-        // Inject Metadata into the template
         let html = template;
 
-        // 1. Remove the inline script we customized earlier (optional, but cleaner to replace it)
-        // Actually, let's just inject a STATIC <link rel="canonical"> at the end of head
-        // The inline script might still run but check if tag exists? 
-        // Better: We aggressively inject the CORRECT static tag.
-
-        const staticCanonicalTag = `<link rel="canonical" href="${canonicalUrl}"data-generated="static" />`;
-
-        // Remove any existing canonical tags (if any slipped in) or our previous hardcoded one
-        // Also simpler: Just replace </head> with the tag + </head>
-        // But we want to be clean.
-
-        // We will remove the "Immediate Canonical Generation" script if possible, or just append the static tag 
-        // which most crawlers will prefer if found in source.
-
+        // Inject Canonical
+        const staticCanonicalTag = `<link rel="canonical" href="${canonicalUrl}" data-generated="static-flat" />`;
+        // Remove existing canonical hooks or tags
+        html = html.replace(/<link rel="canonical" href=".*?" \/>/g, ""); // regex kill old ones
+        // Inject new one before head close
         html = html.replace('</head>', `${staticCanonicalTag}\n</head>`);
 
-        // Write file
-        fs.writeFileSync(path.join(targetDir, 'index.html'), html);
+        fs.writeFileSync(targetFile, html);
         successCount++;
     } catch (e) {
         console.error(`Failed to generate ${route}:`, e);
     }
+} catch (e) {
+    console.error(`Failed to generate ${route}:`, e);
+}
 });
 
 console.log(`✅ Successfully generated ${successCount} static pages.`);
