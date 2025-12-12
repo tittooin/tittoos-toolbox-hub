@@ -106,6 +106,32 @@ console.log(`🚀 Generating static HTML for ${uniqueRoutes.size} routes...`);
 
 let successCount = 0;
 
+// --- DYNAMIC CONTENT INJECTION SETUP ---
+// Read tools.ts to map paths to names for SEO (Title/H1 uniqueness)
+let toolMap = {};
+try {
+    const toolsFileContent = fs.readFileSync(path.join(__dirname, 'src/data/tools.ts'), 'utf8');
+    // Regex to capture name and path from the object structure
+    // Matches: name: "Tool Name", ... path: "/tools/tool-path"
+    // We use a global match with exec in a loop
+    const toolRegex = /name:\s*"([^"]+)",[\s\S]*?path:\s*"([^"]+)"/g;
+    let match;
+    while ((match = toolRegex.exec(toolsFileContent)) !== null) {
+        // match[1] = Name, match[2] = Path
+        const toolName = match[1];
+        const toolPath = match[2];
+        // Normalize path for map key (remove trailing slash if any, though tools.ts usually doesn't have them)
+        const checkPath = toolPath.replace(/\/$/, "");
+        toolMap[checkPath] = toolName;
+    }
+    console.log(`Loaded ${Object.keys(toolMap).length} tools for SEO Injection.`);
+} catch (e) {
+    console.warn("Could not load tools.ts for SEO injection, using defaults.", e);
+}
+
+const defaultTitleStart = "Axevora - 40+ Essential";
+const defaultH1 = "Axevora - Free Online Tools & Utilities";
+
 uniqueRoutes.forEach(route => {
     // Determine canonical URL for this route
     // Logic: NO trailing slash (Matches Vercel Clean URLs for .html files)
@@ -139,12 +165,31 @@ uniqueRoutes.forEach(route => {
 
         let html = template;
 
-        // Inject Canonical
+        // --- SEO INJECTION: CANONICAL ---
         const staticCanonicalTag = `<link rel="canonical" href="${canonicalUrl}" data-generated="static-flat" />`;
         // Remove existing canonical hooks or tags
         html = html.replace(/<link rel="canonical" href=".*?" \/>/g, ""); // regex kill old ones
         // Inject new one before head close
         html = html.replace('</head>', `${staticCanonicalTag}\n</head>`);
+
+        // --- SEO INJECTION: DYNAMIC TITLE & H1 ---
+        // Lookup tool name
+        // route is like "/tools/pdf-converter"
+        const toolName = toolMap[normalizedRoute];
+
+        if (toolName) {
+            // Replace Title
+            // <title>Axevora - 40+ Essential Online Utilities | Free Web Tools</title>
+            const newTitle = `${toolName} - Axevora Free Tools`;
+            html = html.replace(/<title>.*?<\/title>/, `<title>${newTitle}</title>`);
+
+            // Replace H1
+            // <h1>Axevora - Free Online Tools & Utilities</h1>
+            html = html.replace(/<h1>.*?<\/h1>/, `<h1>${toolName}</h1>`);
+        }
+        // If not found (e.g. blog pages or categories not in tools.ts), leave default or we could improve logic later.
+
+
 
         // INJECT FULL STATIC SITE MAP (Hidden/SEO-only)
         // This ensures NO ORPHAN PAGES even if JS fails or Crawler ignores JS.
