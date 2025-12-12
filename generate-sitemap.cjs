@@ -129,7 +129,11 @@ for (const p of collected) {
 
 const entries = Array.from(uniquePaths)
   .sort()
-  .map((p) => `<url><loc>${baseUrl}${p.replace(/^\//, "")}</loc></url>`) // ensure single slash
+  .map((p) => {
+    // Ensure trailing slash for directory-style URLs
+    const normalized = p.replace(/^\//, "").replace(/\/$/, "") + "/";
+    return `<url><loc>${baseUrl}${normalized}</loc></url>`;
+  })
   .join("\n");
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>${baseUrl}</loc></url>\n${entries}\n</urlset>`;

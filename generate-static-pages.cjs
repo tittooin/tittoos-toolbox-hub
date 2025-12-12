@@ -108,9 +108,12 @@ let successCount = 0;
 
 uniqueRoutes.forEach(route => {
     // Determine canonical URL for this route
-    // Logic: Root gets slash, others get no trailing slash (matching sitemap)
-    const normalizedRoute = route === '/' ? '/' : route.replace(/\/$/, "");
-    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute}`;
+    // Logic: Force trailing slash for everything (Directory structure behavior)
+    let normalizedRoute = route.replace(/\/$/, "");
+    if (normalizedRoute === "") normalizedRoute = "/"; // Root
+    else normalizedRoute += "/"; // Append slash for subpaths
+
+    const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute}`;
 
     // Prepare target directory
     // E.g. /tools/pdf -> dist/tools/pdf/index.html

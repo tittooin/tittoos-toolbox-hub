@@ -59,10 +59,13 @@ export const setSEO = (data: SEOData) => {
   // Canonical URL Logic
   // 1. Prefer passed URL, otherwise build from window.location
   // 2. Force https://axevora.com origin (Avoids localhost/preview URL leaks in index)
-  // 3. Strip trailing slashes and query parameters
+  // Canonical URL Logic: Force Trailing Slash to match SSG/Sitemap
   const origin = "https://axevora.com";
-  const path = window.location.pathname.replace(/\/$/, "") || "/";
-  const cleanUrl = `${origin}${path === "/" ? "/" : path}`;
+  let path = window.location.pathname.replace(/\/$/, "");
+  // Root becomes empty string here, so check
+  path = (path === "") ? "/" : (path + "/");
+
+  const cleanUrl = `${origin}${path}`;
 
   // If consumer passed a specific URL (like for paginated content), use it but sanitize
   let finalCanonical = data.url;
