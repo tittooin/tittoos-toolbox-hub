@@ -30,32 +30,51 @@ export class BlogGenerator {
   }
 
   // 0. Pollinations.ai Integration (Keyless Fallback)
-  private async generateViaPollinations(prompt: string): Promise<string> {
+  private async generateViaPollinations(prompt: string, retries = 3): Promise<string> {
     try {
-      console.log("[BlogGenerator] Using Pollinations.ai (Keyless Mode/GET)...");
-      // Use GET request to avoid CORS preflight issues with POST JSON
-      // Construct URL: https://text.pollinations.ai/URL_ARGUMENT?model=openai&seed=...
-      // We prepend the system instruction to the prompt since we can't send messages array in GET easily.
+      console.log(`[BlogGenerator] Using Pollinations.ai (Keyless Mode/GET) - Attempt ${4 - retries}...`);
+
       const systemContext = "You are an expert SEO Blog Writer. Output valid HTML.";
       const finalPrompt = `${systemContext}\n\nUser: ${prompt}`;
 
+      // Safety: Truncate if insanely long (browser URLs have limits ~2k-4k chars usually)
       const encodedPrompt = encodeURIComponent(finalPrompt);
-      const seed = Math.floor(Math.random() * 1000);
+      const seed = Math.floor(Math.random() * 1000000);
+      // Uses 'openai' model alias which usually points to GPT-4o or similar. 
       const url = `https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`;
 
       const response = await fetch(url, {
-        method: 'GET', // Explicitly GET
-        // No custom headers to keep it a "Simple Request" (avoids preflight if possible)
+        method: 'GET',
+        signal: AbortSignal.timeout(30000) // 30s timeout
       });
 
       if (!response.ok) {
-        throw new Error(`Pollinations API Error: ${response.statusText}`);
+        // If 5xx or 429, retry
+        if ((response.status >= 500 || response.status === 429) && retries > 0) {
+          console.warn(`[BlogGenerator] Pollinations Error ${response.status}. Retrying in 3s...`);
+          await new Promise(r => setTimeout(r, 3000));
+          return this.generateViaPollinations(prompt, retries - 1);
+        }
+        throw new Error(`Pollinations API Error: ${response.status} ${response.statusText}`);
       }
 
       const text = await response.text();
+      // Basic validation
+      if (!text || (text.includes("Error") && text.length < 100)) {
+        if (retries > 0) {
+          await new Promise(r => setTimeout(r, 3000));
+          return this.generateViaPollinations(prompt, retries - 1);
+        }
+      }
       return text;
-    } catch (error) {
+
+    } catch (error: any) {
       console.error("Pollinations.ai failed:", error);
+      if (retries > 0) {
+        console.log("Retrying after network error...");
+        await new Promise(r => setTimeout(r, 3000));
+        return this.generateViaPollinations(prompt, retries - 1);
+      }
       throw error;
     }
   }
@@ -152,21 +171,25 @@ export class BlogGenerator {
   }
 
   // ... (keeping tools list same) ...
-  private readonly AVAILABLE_TOOLS = `
-    - PDF Converter: /tools/pdf-converter
-    - PDF to JPG: /tools/pdf-to-jpg
-    - Image Compressor: /tools/image-compressor
-    - SEO Analyzer: /tools/seo-analyzer
-    - Website Speed Checker: /tools/website-speed-checker
-    - Password Generator: /tools/password-generator
-    - Text Analyzer: /tools/text-analyzer
-    - AI Text to Image: /tools/text-to-image
-    - QR Generator: /tools/qr-generator
-    - Video Converter: /tools/video-converter
-  `;
+  private readonly AVAILABLE_TOOLS_LIST = [
+    "PDF Converter: /tools/pdf-converter",
+    "PDF to JPG: /tools/pdf-to-jpg",
+    "Image Compressor: /tools/image-compressor",
+    "SEO Analyzer: /tools/seo-analyzer",
+    "Website Speed Checker: /tools/website-speed-checker",
+    "Password Generator: /tools/password-generator",
+    "Text Analyzer: /tools/text-analyzer",
+    "AI Text to Image: /tools/text-to-image",
+    "QR Generator: /tools/qr-generator",
+    "Video Converter: /tools/video-converter"
+  ];
 
   // 2. Write a single section with depth, human touch, and SMART LINKS
   async writeSection(topic: string, sectionTitle: string): Promise<string> {
+    // Optimization: Pick 3 random tools to avoid huge prompts that break GET requests
+    const shuffled = [...this.AVAILABLE_TOOLS_LIST].sort(() => 0.5 - Math.random());
+    const selectedTools = shuffled.slice(0, 3).map(t => "         - " + t).join("\n");
+
     const prompt = `
       Act as a professional human copywriter with 10 years of experience.
       Write the content for ONE specific section of a blog post about: "${topic}".
@@ -179,7 +202,7 @@ export class BlogGenerator {
       1. **INTERNAL LINKS (Priority):** Naturally mention and link to at least 1 relevant tool from the list below if it fits contextually.
          - Use relative paths (e.g., <a href="/tools/seo-analyzer" class="text-primary hover:underline">SEO Analyzer</a>).
          - Available Tools:
-         ${this.AVAILABLE_TOOLS}
+${selectedTools}
          
       2. **EXTERNAL LINKS:** Include 1 high-authority external link (Wikipedia, MDN, reputable news) if necessary to back up a claim.
          - Open in new tab: <a href="https://..." target="_blank" rel="noopener noreferrer">Source</a>.
@@ -235,7 +258,8 @@ export class BlogGenerator {
     // Sections
     for (let i = 0; i < outline.length; i++) {
       // Small delay to prevent rate limiting bursting
-      if (i > 0) await new Promise(resolve => setTimeout(resolve, 5000));
+      // Pollinations free tier: ~1 req/15s. We use 15s to be safe.
+      if (i > 0) await new Promise(resolve => setTimeout(resolve, 15000));
 
       const sectionHeader = outline[i];
       if (onProgress) onProgress(`Writing Section ${i + 1}/${outline.length}: ${sectionHeader}...`);
