@@ -104,6 +104,11 @@ const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
 const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
 const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
 const BlogManager = lazy(() => import("./pages/admin/BlogManager"));
+const ChatWithPDF = lazy(() => import("./pages/tools/ChatWithPDF"));
+const PDFSummarizer = lazy(() => import("./pages/tools/PDFSummarizer"));
+const PDFQuizGenerator = lazy(() => import("./pages/tools/PDFQuizGenerator"));
+const PDFStudyNotes = lazy(() => import("./pages/tools/PDFStudyNotes"));
+const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -257,6 +262,13 @@ const App = () => (
               <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
               <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
               <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+
+              {/* AI PDF Tools */}
+              <Route path="/tools/chat-with-pdf" element={<ChatWithPDF />} />
+              <Route path="/tools/pdf-summarizer" element={<PDFSummarizer />} />
+              <Route path="/tools/pdf-quiz-generator" element={<PDFQuizGenerator />} />
+              <Route path="/tools/pdf-study-notes" element={<PDFStudyNotes />} />
+              <Route path="/tools/pdf-translator" element={<PDFTranslator />} />
 
               {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
