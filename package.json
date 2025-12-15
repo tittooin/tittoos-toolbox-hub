@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node generate-sitemap.cjs && node generate-static-pages.cjs",
+    "build": "vite build && node generate-sitemap.cjs && node generate-static-pages.cjs && npx tsx generate-rss.ts",
     "build:review": "vite build --mode review",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

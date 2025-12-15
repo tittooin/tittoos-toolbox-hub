@@ -109,6 +109,8 @@ const PDFSummarizer = lazy(() => import("./pages/tools/PDFSummarizer"));
 const PDFQuizGenerator = lazy(() => import("./pages/tools/PDFQuizGenerator"));
 const PDFStudyNotes = lazy(() => import("./pages/tools/PDFStudyNotes"));
 const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
+const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
+const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -269,6 +271,8 @@ const App = () => (
               <Route path="/tools/pdf-quiz-generator" element={<PDFQuizGenerator />} />
               <Route path="/tools/pdf-study-notes" element={<PDFStudyNotes />} />
               <Route path="/tools/pdf-translator" element={<PDFTranslator />} />
+              <Route path="/tools/image-resizer" element={<ImageResizer />} />
+              <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
 
               {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
