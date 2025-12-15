@@ -8,7 +8,7 @@ import {
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit,
-  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2
+  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book
 } from "lucide-react";
 
 const allCategories = [
@@ -843,6 +843,52 @@ const allTools = [
     category: "utility",
     icon: Image,
     path: "/tools/image-compressor"
+  },
+  // AI PDF Tools
+  {
+    id: "chat-with-pdf",
+    name: "Chat with PDF",
+    subheading: "Talk to your documents",
+    description: "Upload a PDF and ask questions, get summaries, and find answers instantly using AI.",
+    category: "ai",
+    icon: MessageSquare,
+    path: "/tools/chat-with-pdf"
+  },
+  {
+    id: "pdf-summarizer",
+    name: "PDF Summarizer",
+    subheading: "Summarize long documents",
+    description: "Turn long PDFs into concise summaries, bullet points, or detailed breakdowns.",
+    category: "ai",
+    icon: FileText,
+    path: "/tools/pdf-summarizer"
+  },
+  {
+    id: "pdf-quiz-generator",
+    name: "PDF Quiz Generator",
+    subheading: "Create quizzes from PDF",
+    description: "Generate interactive quizzes and MCQs from your study materials automatically.",
+    category: "ai",
+    icon: FileQuestion,
+    path: "/tools/pdf-quiz-generator"
+  },
+  {
+    id: "pdf-study-notes",
+    name: "PDF Study Notes",
+    subheading: "Auto-generate study aids",
+    description: "Create structured study notes, key definitions, and concept lists from textbooks.",
+    category: "ai",
+    icon: GraduationCap,
+    path: "/tools/pdf-study-notes"
+  },
+  {
+    id: "pdf-translator",
+    name: "PDF Translator",
+    subheading: "Translate documents instantly",
+    description: "Translate PDF text into any language while preserving meaning.",
+    category: "ai",
+    icon: Languages,
+    path: "/tools/pdf-translator"
   }
 ];
 

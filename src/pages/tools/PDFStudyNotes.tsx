@@ -175,7 +175,109 @@ const PDFStudyNotes = () => {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+
+
+            {/* Detailed SEO Content */}
+            <div className="prose dark:prose-invert max-w-none mt-20">
+                <h2 className="text-3xl font-bold mb-6">Automate Your Revision: The AI Study Notes Generator</h2>
+                <p className="lead text-xl text-muted-foreground mb-8">
+                    Imagine reading a 30-page textbook chapter and having a perfectly structured 1-page summary waiting for you
+                    by the time you finish your coffee. That's not magic; it's our **AI Study Notes Generator**.
+                    We turn dense academic jargon into clear, actionable bullet points, dates, and definitions.
+                </p>
+
+                <img
+                    src="https://images.unsplash.com/photo-1456324504439-367cee84d27c?q=80&w=1000&auto=format&fit=crop"
+                    alt="Organized study desk with iPad and notes"
+                    className="w-full h-64 object-cover rounded-xl shadow-lg mb-8"
+                />
+
+                <h3>The Problem: Drowning in Information</h3>
+                <p>
+                    Students today face a unique challenge: too much data. Lecture slides, supplementary readings, handouts...
+                    it's overwhelming. The traditional method of re-reading and highlighting is inefficient.
+                    You need to <strong>synthesize</strong> information, not just consume it.
+                </p>
+
+                <p>
+                    Our tool adopts the principles of the **Cornell Note-Taking System** and **Zettelkasten method**.
+                    It forces structure upon unstructured text, separating core arguments from supporting evidence.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-8 my-10">
+                    <div className="p-6 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-200 dark:border-orange-800">
+                        <h4 className="font-bold text-xl mb-3 text-orange-800 dark:text-orange-300">
+                            🧠 Cognitive Load Reduction
+                        </h4>
+                        <p className="text-sm">
+                            By outsourcing the initial "sorting" of information to AI, you free up your brain power for
+                            <em>understanding</em> and <em>memorizing</em>.
+                        </p>
+                    </div>
+                    <div className="p-6 bg-yellow-50 dark:bg-yellow-900/10 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                        <h4 className="font-bold text-xl mb-3 text-yellow-800 dark:text-yellow-300">
+                            ⚡ Speed Revision
+                        </h4>
+                        <p className="text-sm">
+                            Before an exam, you don't want to re-read the book. You want a "Cheat Sheet". We generate that
+                            cheat sheet for you automatically.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>What exactly does it generate?</h3>
+                <p>
+                    We don't just "summarize". We structure the output specifically for students and researchers:
+                </p>
+                <ul className="list-disc pl-5 space-y-2">
+                    <li><strong>Key Concepts:</strong> A glossary of important terms and their definitions found in the text.</li>
+                    <li><strong>Core Arguments:</strong> The main thesis statements or theories presented by the author.</li>
+                    <li><strong>Important Dates/Figures:</strong> If it's a history text, we extract the timeline. If it's science, we extract the formulas.</li>
+                    <li><strong>Summary Checklist:</strong> A quick bullet-point list to ensure you haven't missed anything.</li>
+                </ul>
+
+                <img
+                    src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1000&auto=format&fit=crop"
+                    alt="Student highlighting text in a library"
+                    className="w-full h-80 object-cover rounded-xl shadow-lg my-8"
+                />
+
+                <h3>Perfect for every major</h3>
+                <ul>
+                    <li><strong>History & PolSci:</strong> Extract timelines, treaties, and cause-and-effect relationships.</li>
+                    <li><strong>Biology & Med:</strong> Create lists of diseases, symptoms, and biological processes.</li>
+                    <li><strong>Literature:</strong> Summarize plot points, character arcs, and thematic elements.</li>
+                    <li><strong>Computer Science:</strong> Extract algorithm steps and coding definitions.</li>
+                </ul>
+
+                <h3>Frequently Asked Questions</h3>
+                <div className="space-y-4">
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Can I edit the notes?</h4>
+                        <p className="text-sm">Yes, the output is standard text. You can copy it to Notion, Obsidian, or Google Docs and edit it further.</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Does it replace reading?</h4>
+                        <p className="text-sm">No tool should 100% replace reading the source material. Think of this as a "Companion" that helps you navigate the text faster.</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Is it free for students?</h4>
+                        <p className="text-sm">Yes! Just bring your own free Google Gemini API key. There are no hidden subscription fees from us.</p>
+                    </div>
+                </div>
+
+                <div className="mt-12 text-center">
+                    <h3 className="text-2xl font-bold">Your Exam Prep Starts Here</h3>
+                    <Button
+                        size="lg"
+                        className="mt-4 bg-orange-600 hover:bg-orange-700 text-white"
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    >
+                        Generate My Notes
+                    </Button>
+                </div>
+            </div>
+        </div >
     );
 };
 

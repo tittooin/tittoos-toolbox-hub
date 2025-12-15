@@ -219,8 +219,8 @@ const ChatWithPDF = () => {
                                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div
                                             className={`max-w-[80%] rounded-2xl px-4 py-3 ${m.role === 'user'
-                                                    ? 'bg-primary text-primary-foreground rounded-tr-sm'
-                                                    : 'bg-muted border rounded-tl-sm'
+                                                ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                                                : 'bg-muted border rounded-tl-sm'
                                                 }`}
                                         >
                                             {m.role === 'ai' ? (
@@ -267,21 +267,122 @@ const ChatWithPDF = () => {
                 </Card>
             </div>
 
-            {/* Content Section for SEO */}
-            <div className="prose dark:prose-invert max-w-none">
-                <h2>Why use our AI PDF Chat?</h2>
-                <p>
-                    Stop reading long documents. Just upload and ask. Our AI engine (powered by Google Gemini) reads the document
-                    instantly and answers your specific questions. It's perfect for:
+            {/* Detailed SEO Content */}
+            <div className="prose dark:prose-invert max-w-none mt-16">
+
+                <h2 className="text-3xl font-bold mb-6 text-foreground">Unlock the Power of Conversation: The Ultimate "Chat with PDF" AI Tool</h2>
+                <p className="lead text-xl text-muted-foreground mb-8">
+                    Imagine if your textbooks, legal contracts, or research papers could talk back. What if you could ask a 100-page report,
+                    <em>"What are the top 3 risks mentioned in section 4?"</em> and get an instant, accurate answer? That is the reality
+                    with our **Chat with PDF** tool. Powered by Google's Gemini AI, we transform static documents into interactive
+                    knowledge bases, saving you hours of reading time.
                 </p>
+
+                <img
+                    src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1000&auto=format&fit=crop"
+                    alt="AI chatting with digital documents using neural networks"
+                    className="w-full h-64 object-cover rounded-xl shadow-lg mb-8"
+                />
+
+                <h3>Why "Chatting" with Documents is the Future of Research</h3>
+                <p>
+                    We live in an information-heavy world. Students drown in course materials, lawyers sift through endless case files,
+                    and researchers battle with dense academic papers. The traditional method—Control+F (Find) searching—is broken.
+                    It only finds matching keywords, not <strong>context</strong> or <strong>meaning</strong>.
+                </p>
+                <p>
+                    Our AI Document Assistant changes the game. It doesn't just "read" the text; it <em>understands</em> it.
+                    It connects the dots between a paragraph on page 5 and a footnote on page 50. This allows for a level of
+                    interaction that feels like you're talking to the author themselves.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-8 my-12">
+                    <div className="bg-muted/50 p-6 rounded-lg border hover:border-primary transition-colors">
+                        <h4 className="font-bold text-xl mb-2 flex items-center"><GraduationCap className="w-5 h-5 mr-2 text-primary" /> For Students</h4>
+                        <p>
+                            Stop highlighting everything. Upload your textbook chapters and ask the AI to "Create a review quiz for Chapter 3"
+                            or "Explain Quantum Entanglement like I'm 5". It's your 24/7 personal tutor.
+                        </p>
+                    </div>
+                    <div className="bg-muted/50 p-6 rounded-lg border hover:border-primary transition-colors">
+                        <h4 className="font-bold text-xl mb-2 flex items-center"><Briefcase className="w-5 h-5 mr-2 text-primary" /> For Professionals</h4>
+                        <p>
+                            Analyzing a competitor's annual report? Upload it and ask, "What is their strategy for the Asian market?"
+                            Get the exact answer in seconds without scrolling through 200 slides.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>How It Works: The Magic Behind the Screen</h3>
+                <p>
+                    While the interface feels simple (Upload &rarr; Chat), the technology underneath is sophisticated. We utilize
+                    <strong>Google's Gemini 1.5 Flash</strong> model, a state-of-the-art Large Language Model (LLM) designed for high-speed
+                    text comprehension.
+                </p>
+                <ol>
+                    <li><strong>Text Extraction:</strong> When you upload a PDF, we use a specialized parsing engine to strip away formatting and extract raw text.</li>
+                    <li><strong>Context Injection:</strong> This text is fed into the AI's "context window". Think of this as the AI's short-term memory.</li>
+                    <li><strong>Semantic Analysis:</strong> The AI analyzes the text, identifying key entities (names, dates, concepts) and their relationships.</li>
+                    <li><strong>Response Generation:</strong> When you ask a question, the AI formulates an answer based <em>strictly</em> on the provided document, minimizing hallucinations.</li>
+                </ol>
+
+                <img
+                    src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop"
+                    alt="Software engineer analyzing code on a computer screen"
+                    className="w-full h-80 object-cover rounded-xl shadow-lg my-8"
+                />
+
+                <h3>Top 5 Use Cases for AI PDF Chat</h3>
                 <ul>
-                    <li><strong>Students:</strong> Quickly find answers in textbooks or research papers.</li>
-                    <li><strong>Professionals:</strong> Analyze contracts, reports, and manuals in seconds.</li>
-                    <li><strong>Researchers:</strong> Extract key data points without manual searching.</li>
+                    <li><strong>Legal Contract Review:</strong> "Are there any clauses about early termination penalties?"</li>
+                    <li><strong>Scientific Research:</strong> "Summarize the methodology used in this study and list the limitations."</li>
+                    <li><strong>User Manuals:</strong> "How do I reset the factory settings on this device? (Page 45)"</li>
+                    <li><strong>Financial Reports:</strong> "Compare the Q3 revenue with Q2 and explain the main driver of growth."</li>
+                    <li><strong>Coding Documentation:</strong> "Show me the example code for the authentication API endpoint."</li>
                 </ul>
+
+                <h3>Frequently Asked Questions (FAQ)</h3>
+
+                <h4>Is my document safe?</h4>
+                <p>
+                    Absolutely. We prioritize your privacy. The PDF processing happens in your browser session and the text is sent
+                    securely to the AI API for processing. We do not store your documents on our servers. Once you close the tab,
+                    the data is gone.
+                </p>
+
+                <h4>Does it work with scanned PDFs?</h4>
+                <p>
+                    Currently, our tool works best with <strong>text-based PDFs</strong> (files where you can select the text).
+                    Scanned images of documents require OCR (Optical Character Recognition) technology, which we are working on
+                    adding in the next update. If your PDF is an image, try converting it to text first!
+                </p>
+
+                <h4>Is it really free?</h4>
+                <p>
+                    Yes! This tool utilizes your own free API key from Google, meaning there are no monthly subscriptions from us.
+                    Google provides a generous free tier that covers the needs of almost all individual users.
+                </p>
+
+                <h4>Can it handle large files?</h4>
+                <p>
+                    The Gemini 1.5 model we support has a massive context window (up to 1 million tokens depending on availability).
+                    This means you can upload very large documents—even full books—and the AI can "read" the whole thing at once.
+                </p>
+
+                <div className="bg-primary/5 p-8 rounded-2xl mt-12 border border-primary/20 text-center">
+                    <h3 className="text-2xl font-bold mb-4">Ready to start conversation?</h3>
+                    <p className="mb-6">Upload your first document above and experience the future of reading.</p>
+                    <Button size="lg" onClick={() => document.getElementById('pdf-upload')?.click()}>
+                        Upload PDF Now
+                    </Button>
+                </div>
+
             </div>
         </div>
     );
 };
+
+// Add missing icon import
+import { Briefcase, GraduationCap } from "lucide-react";
 
 export default ChatWithPDF;

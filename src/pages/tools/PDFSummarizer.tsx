@@ -209,7 +209,108 @@ const PDFSummarizer = () => {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+
+
+            {/* Detailed SEO Content */}
+            <div className="prose dark:prose-invert max-w-none mt-20">
+                <h2 className="text-3xl font-bold mb-6">The Smartest Way to Read: AI PDF Summarizer</h2>
+                <p className="lead text-xl text-muted-foreground mb-8">
+                    In today's fast-paced world, information is power, but <em>reading</em> 50-page reports is
+                    a bottleneck. Our **AI PDF Summarizer** breaks that bottleneck. By leveraging the advanced cognitive
+                    capabilities of Google's Gemini AI, we condense hours of reading into minutes of insight.
+                </p>
+
+                <img
+                    src="https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=1000&auto=format&fit=crop"
+                    alt="Efficient document processing with artificial intelligence"
+                    className="w-full h-64 object-cover rounded-xl shadow-lg mb-8"
+                />
+
+                <h3>Why Summarize? The "TL;DR" Revolution</h3>
+                <p>
+                    "Too Long; Didn't Read" isn't just internet slang; it's a productivity crisis. Professionals spend
+                    over 30% of their work week just reading emails and reports. Imagine reclaiming that time.
+                    Our tool isn't just about making things shorter; it's about making them <strong>clearer</strong>.
+                    It strips away the fluff, the jargon, and the filler to reveal the core arguments and data points that matter.
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-6 my-10">
+                    <div className="p-6 border rounded-xl bg-card">
+                        <h4 className="font-bold mb-2">⚡ Accelerated Learning</h4>
+                        <p className="text-sm text-muted-foreground">
+                            Grasp complex topics in key concepts quickly. Perfect for cramming before an exam or meeting.
+                        </p>
+                    </div>
+                    <div className="p-6 border rounded-xl bg-card">
+                        <h4 className="font-bold mb-2">🎯 Decision Making</h4>
+                        <p className="text-sm text-muted-foreground">
+                            Executives don't need details; they need the bottom line. Get the "Executive Summary" instantly.
+                        </p>
+                    </div>
+                    <div className="p-6 border rounded-xl bg-card">
+                        <h4 className="font-bold mb-2">🔍 Content Triage</h4>
+                        <p className="text-sm text-muted-foreground">
+                            Decide if a paper is worth reading fully by checking the summary first.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Features that set us apart</h3>
+                <p>
+                    Unlike basic "keyword extractors" of the past, our tool uses a neural network that understands
+                    narrative flow and logical argumentation.
+                </p>
+                <ul>
+                    <li><strong>Adaptive Length:</strong> Choose "Short" for a quick bulleted list, "Medium" for a standard overview, or "Detailed" for a comprehensive deep-dive.</li>
+                    <li><strong>Context Retention:</strong> The AI remembers the start of the document while reading the end, ensuring the conclusion matches the introduction.</li>
+                    <li><strong>Secure Processing:</strong> Your files are processed in real-time and are never stored on our servers.</li>
+                </ul>
+
+                <h3>Real-World Use Cases</h3>
+
+                <h4>For University Students</h4>
+                <p>
+                    You have 5 papers to read for tomorrow's seminar. Upload them one by one. Get the main thesis, methodology,
+                    and conclusion for each. Walk into class prepared without pulling an all-nighter.
+                </p>
+
+                <h4>For Legal Professionals</h4>
+                <p>
+                    Contracts are dense. Use the "Detailed" summary mode to extract obligations, dates, and financial figures
+                    without getting lost in the "legalese".
+                </p>
+
+                <h3>Frequently Asked Questions</h3>
+
+                <div className="space-y-4">
+                    <div>
+                        <h4 className="font-bold">How accurate is the summary?</h4>
+                        <p>
+                            Extremely accurate. We use Google's Gemini 1.5 Pro/Flash models, which are currently among the
+                            top-performing LLMs in the world for text comprehension benchmarks.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-bold">Does it work on phone?</h4>
+                        <p>
+                            Yes! Our tool is fully responsive. You can summarize PDFs directly from your mobile browser while on the go.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-bold">Is there a page limit?</h4>
+                        <p>
+                            Technically, the AI can handle up to 1 million tokens (hundreds of pages). However, for best performance
+                            on the free tier, we recommend documents under 50 pages.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-2xl mt-12 text-center">
+                    <h3 className="text-2xl font-bold mb-4 text-white">Stop Drowning in Data. Start Surfing.</h3>
+                    <p className="mb-6 opacity-90">Experience the magic of AI summarization today.</p>
+                </div>
+            </div>
+        </div >
     );
 };
 

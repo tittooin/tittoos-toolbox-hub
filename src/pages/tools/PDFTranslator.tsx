@@ -189,6 +189,110 @@ const PDFTranslator = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Detailed SEO Content */}
+            <div className="prose dark:prose-invert max-w-none mt-20">
+                <h2 className="text-3xl font-bold mb-6">Globalize Your Documents: The AI PDF Translator</h2>
+                <p className="lead text-xl text-muted-foreground mb-8">
+                    Language should never be a barrier to knowledge. Whether you're a student studying foreign literature,
+                    a lawyer reviewing international contracts, or an expat dealing with immigration paperwork, our
+                    **AI PDF Translator** bridges the gap instanly. Powered by Google's Gemini LLM, it doesn't just swap words;
+                    it translates <em>meaning</em>, capturing nuance, tone, and context.
+                </p>
+
+                <img
+                    src="https://images.unsplash.com/photo-1546422904-90eab23c3d7e?q=80&w=1000&auto=format&fit=crop"
+                    alt="Global communication network with multiple languages"
+                    className="w-full h-64 object-cover rounded-xl shadow-lg mb-8"
+                />
+
+                <h3>Why AI Translation is Superior to Old Methods</h3>
+                <p>
+                    Traditional translation tools (like older statistical machine translation) often produce "word salad"—sentences
+                    that are technically correct but make no sense to a native speaker.
+                </p>
+                <p>
+                    <strong>Large Language Models (LLMs)</strong> work differently. They have "read" billions of documents in
+                    dozens of languages. When they translate, they understand that the English word "Bank" means something different
+                    in a financial report versus a geography textbook.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-8 my-10">
+                    <div className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-200 dark:border-blue-800">
+                        <h4 className="font-bold text-xl mb-3 flex items-center text-blue-800 dark:text-blue-300">
+                            🌍 Context-Aware Accuracy
+                        </h4>
+                        <p className="text-sm">
+                            It understands idioms, metaphors, and professional jargon. Example: It translates "break a leg"
+                            correctly as "good luck" in most contexts, not literally breaking a bone.
+                        </p>
+                    </div>
+                    <div className="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                        <h4 className="font-bold text-xl mb-3 flex items-center text-indigo-800 dark:text-indigo-300">
+                            🚀 Speed & Efficiency
+                        </h4>
+                        <p className="text-sm">
+                            Translate entire pages in seconds. No need to copy-paste text paragraph by paragraph into a separate tab.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Top Use Cases</h3>
+                <ul className="list-disc pl-5 space-y-2">
+                    <li><strong>Academic Research:</strong> Access papers written in Chinese, German, or Japanese without waiting for an official translation.</li>
+                    <li><strong>Legal & Immigration:</strong> Quickly understand visa forms, rental agreements, or birth certificates from other countries.</li>
+                    <li><strong>Business Expansion:</strong> Localize your product manuals or marketing brochures for a new region to test the market.</li>
+                    <li><strong>Personal Learning:</strong> Read news or books in their original language and check your understanding.</li>
+                </ul>
+
+                <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop"
+                    alt="Diverse team collaborating on documents"
+                    className="w-full h-80 object-cover rounded-xl shadow-lg my-8"
+                />
+
+                <h3>Supported Languages</h3>
+                <p>
+                    We currently support major global languages including:
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center font-medium text-muted-foreground">
+                    <div className="p-2 bg-muted rounded">🇪🇸 Spanish</div>
+                    <div className="p-2 bg-muted rounded">🇫🇷 French</div>
+                    <div className="p-2 bg-muted rounded">🇩🇪 German</div>
+                    <div className="p-2 bg-muted rounded">🇮🇳 Hindi</div>
+                    <div className="p-2 bg-muted rounded">🇨🇳 Chinese</div>
+                    <div className="p-2 bg-muted rounded">🇯🇵 Japanese</div>
+                    <div className="p-2 bg-muted rounded">🇷🇺 Russian</div>
+                    <div className="p-2 bg-muted rounded">🇸🇦 Arabic</div>
+                </div>
+
+                <h3 className="mt-8">Frequently Asked Questions</h3>
+                <div className="space-y-4">
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Does it preserve formatting?</h4>
+                        <p className="text-sm">Currently, we extract the text and provide a translated text version. We are working on a "Pro" feature that will rebuild the PDF with original styling.</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Is the translation certified?</h4>
+                        <p className="text-sm">No. While highly accurate, this is an AI translation. For official legal proceedings (like court documents), you should always use a certified human translator.</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-bold">Is my data private?</h4>
+                        <p className="text-sm">Yes. We do not store your documents. The translation happens via secure API and data is discarded immediately after processing.</p>
+                    </div>
+                </div>
+
+                <div className="mt-12 text-center">
+                    <h3 className="text-2xl font-bold">Start Breaking Barriers</h3>
+                    <Button
+                        size="lg"
+                        className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    >
+                        Translate Document Now
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 };
