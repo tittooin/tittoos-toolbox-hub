@@ -17,6 +17,7 @@
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^3.9.0",
     "@huggingface/transformers": "^3.6.1",
+    "@hyvor/hyvor-talk-react": "^1.0.2",
     "@imgly/background-removal": "^1.7.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
