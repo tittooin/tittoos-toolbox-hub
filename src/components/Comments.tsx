@@ -7,8 +7,7 @@ const Comments = () => {
     const location = useLocation();
 
     // Website ID provided by Hyvor Talk
-    // TODO: Replace with user's actual website ID
-    const WEBSITE_ID = 11187; // Placeholder ID, or use env variable
+    const WEBSITE_ID = 14708;
 
     return (
         <div className="mt-16 pt-8 border-t" id="comments-section">
