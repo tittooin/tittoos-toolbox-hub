@@ -111,6 +111,7 @@ const PDFStudyNotes = lazy(() => import("./pages/tools/PDFStudyNotes"));
 const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
 const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
+const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -273,6 +274,7 @@ const App = () => (
               <Route path="/tools/pdf-translator" element={<PDFTranslator />} />
               <Route path="/tools/image-resizer" element={<ImageResizer />} />
               <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
+              <Route path="/tools/number-flow" element={<NumberFlow />} />
 
               {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
