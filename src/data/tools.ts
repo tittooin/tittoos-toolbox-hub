@@ -800,6 +800,33 @@ const allTools = [
     path: "/tools/2048-game"
   },
   {
+    id: "number-flow",
+    name: "Number Flow",
+    subheading: "Connect numbers logic puzzle",
+    description: "Connect the numbered dots in order to fill the entire grid. A relaxing logic puzzle.",
+    category: "games",
+    icon: Gamepad2, // Or a specific icon if available
+    path: "/tools/number-flow"
+  },
+  {
+    id: "image-resizer",
+    name: "Image Resizer",
+    subheading: "Resize images online",
+    description: "Resize images by pixel dimensions or percentage quickly and easily.",
+    category: "editor",
+    icon: Image,
+    path: "/tools/image-resizer"
+  },
+  {
+    id: "text-to-handwriting",
+    name: "Text to Handwriting",
+    subheading: "Convert digital text to notes",
+    description: "Convert typed text into realistic handwritten notes with customizable fonts and paper.",
+    category: "generator",
+    icon: Edit,
+    path: "/tools/text-to-handwriting"
+  },
+  {
     id: "click-speed-test",
     name: "Click Speed Test",
     subheading: "Check your CPS",

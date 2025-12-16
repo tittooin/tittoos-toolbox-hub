@@ -21,7 +21,7 @@ import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 import SocialShare from "@/components/SocialShare";
-import Comments from "@/components/Comments";
+
 
 interface ToolTemplateProps {
   title: string;
@@ -217,7 +217,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                       );
                     })()}
 
-                    <Comments />
+
 
                   </CardContent>
                 </Card>
