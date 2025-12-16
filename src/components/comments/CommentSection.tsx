@@ -19,6 +19,7 @@ import { db, auth } from '@/lib/firebase';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, MessageSquare } from 'lucide-react';
 
 import AuthButton from './AuthButton';
