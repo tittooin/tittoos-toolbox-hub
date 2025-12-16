@@ -190,7 +190,7 @@ const CompressPDF = () => {
 
                     <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
                         <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-600">
-                            Compress PDF Online - Reduce File Size Instantly
+                            Online PDF Compressor
                         </h1>
 
                         <div className="my-10 flex justify-center">
@@ -246,15 +246,15 @@ const CompressPDF = () => {
                         </div>
 
                         <p className="lead text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-light">
-                            "File too large." It's the error message we all dread when trying to email a report or upload a document to a government portal. High-resolution images and embedded fonts can bloat your PDF files to unmanageable sizes.
+                            <strong>Reduce PDF file size online</strong> without compromising quality. Our free tool optimizes your documents for faster sharing, emailing, and uploading.
                         </p>
                         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                            Our <strong>PDF Compressor</strong> solves this problem instantly. It intelligently analyzes your document to remove redundant data and optimize images, reducing file size by up to 90% while maintaining the visual quality you need for professional use.
+                            Need to <strong>compress PDF online</strong>? Our intelligent compression engine removes redundant data while keeping your text sharp and images clear. Perfect for job applications, government portals, and email attachments.
                         </p>
 
                         <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
                             <span className="bg-blue-100 text-blue-800 p-2 rounded-md mr-4 text-2xl">📉</span>
-                            Why Compress Your PDFs?
+                            Why Use Our PDF Compressor?
                         </h2>
                         <p className="mb-6">
                             Smaller files are easier to handle, share, and store. Here is why optimization matters:
