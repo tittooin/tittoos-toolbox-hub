@@ -218,7 +218,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                       );
                     })()}
 
-                    <Comments title={title} />
+                    <Comments />
 
                   </CardContent>
                 </Card>
