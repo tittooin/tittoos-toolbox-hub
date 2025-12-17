@@ -84,7 +84,28 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
         'priceCurrency': 'USD'
       }
     }, 'jsonld-webapp');
-  }, [title, description]);
+
+    // Inject FAQPage JSON-LD if FAQs exist
+    // We find the current tool from the imported 'tools' list using the current path
+    const currentToolPath = location.pathname;
+    const currentTool = tools.find(t => t.path === currentToolPath);
+
+    if (currentTool && (currentTool as any).faqs && (currentTool as any).faqs.length > 0) {
+      const faqData = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': (currentTool as any).faqs.map((faq: { question: string; answer: string }) => ({
+          '@type': 'Question',
+          'name': faq.question,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': faq.answer
+          }
+        }))
+      };
+      injectJsonLd(faqData, 'jsonld-faq');
+    }
+  }, [title, description, location.pathname]);
 
   // Find related tools based on category
   const currentToolPath = location.pathname;
