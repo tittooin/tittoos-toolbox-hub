@@ -148,10 +148,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <CookieConsent />
-      {ADS_ENABLED && <ConsentBanner />}
       <HelmetProvider>
         <BrowserRouter>
+          <CookieConsent />
           <GoogleAnalytics />
           <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
             <Routes>
