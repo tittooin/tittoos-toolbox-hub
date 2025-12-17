@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import ConsentBanner from "./components/ConsentBanner";
-const ADS_ENABLED = false;
+import CookieConsent from "@/components/CookieConsent";
+const ADS_ENABLED = false; // Toggle this when AdSense is live
 
 // Lazily load pages to reduce initial bundle size
 const Index = lazy(() => import("./pages/Index"));
@@ -147,6 +148,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <CookieConsent />
       {ADS_ENABLED && <ConsentBanner />}
       <HelmetProvider>
         <BrowserRouter>
