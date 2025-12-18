@@ -12,6 +12,7 @@
 <url><loc>https://axevora.com/blog-posts/analyzers-category</loc></url>
 <url><loc>https://axevora.com/blog-posts/calculators-category</loc></url>
 <url><loc>https://axevora.com/blog-posts/converters-category</loc></url>
+<url><loc>https://axevora.com/blog-posts/dev-tools-category</loc></url>
 <url><loc>https://axevora.com/blog-posts/editors-category</loc></url>
 <url><loc>https://axevora.com/blog-posts/formatters-category</loc></url>
 <url><loc>https://axevora.com/blog-posts/games-category</loc></url>
@@ -45,6 +46,7 @@
 <url><loc>https://axevora.com/tools/ai-prompt-assistant</loc></url>
 <url><loc>https://axevora.com/tools/ai-tool-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-website-generator</loc></url>
+<url><loc>https://axevora.com/tools/android-adb-gen</loc></url>
 <url><loc>https://axevora.com/tools/audio-converter</loc></url>
 <url><loc>https://axevora.com/tools/barcode-generator</loc></url>
 <url><loc>https://axevora.com/tools/base64-converter</loc></url>
@@ -74,9 +76,11 @@
 <url><loc>https://axevora.com/tools/jpg-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/json-editor</loc></url>
 <url><loc>https://axevora.com/tools/json-formatter</loc></url>
+<url><loc>https://axevora.com/tools/linux-cmd-gen</loc></url>
 <url><loc>https://axevora.com/tools/loan-calculator</loc></url>
 <url><loc>https://axevora.com/tools/lock-pdf</loc></url>
 <url><loc>https://axevora.com/tools/lorem-generator</loc></url>
+<url><loc>https://axevora.com/tools/mac-cmd-gen</loc></url>
 <url><loc>https://axevora.com/tools/markdown-editor</loc></url>
 <url><loc>https://axevora.com/tools/math-speed-challenge</loc></url>
 <url><loc>https://axevora.com/tools/memory-match-game</loc></url>
@@ -124,6 +128,7 @@
 <url><loc>https://axevora.com/tools/website-analyzer</loc></url>
 <url><loc>https://axevora.com/tools/website-speed-checker</loc></url>
 <url><loc>https://axevora.com/tools/whois-lookup</loc></url>
+<url><loc>https://axevora.com/tools/windows-cmd-gen</loc></url>
 <url><loc>https://axevora.com/tools/word-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/xml-formatter</loc></url>
 </urlset>
