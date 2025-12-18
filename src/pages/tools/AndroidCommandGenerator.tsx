@@ -1,7 +1,7 @@
 
 import React from 'react';
 import GenericCommandTool from "@/components/GenericCommandTool";
-import { Smartphone, Usb, Cpu, Settings } from 'lucide-react';
+import { Smartphone, Usb, Settings, List } from 'lucide-react';
 
 const AndroidCommandGenerator = () => {
     return (
@@ -19,9 +19,7 @@ const AndroidCommandGenerator = () => {
                     <h2 className="text-3xl font-bold mb-6">Unlocking Android's Potential</h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                         Android Debug Bridge (ADB) is a versatile command-line tool that lets you communicate with a device.
-                        The <code>adb</code> command facilitates a variety of device actions, such as installing and debugging apps,
-                        and it provides access to a Unix shell that you can use to run a variety of commands on a device.
-                        Whether you are a developer debugging an app or an enthusiast debloating your Samsung phone, ADB is the key.
+                        The <code>adb</code> command facilitates a variety of device actions, such as installing and debugging apps.
                     </p>
                 </div>
 
@@ -34,7 +32,7 @@ const AndroidCommandGenerator = () => {
                         <h3 className="text-xl font-bold mb-2">ADB vs Fastboot</h3>
                         <p className="text-muted-foreground">
                             <strong>ADB</strong> works when Android is fully booted. It helps with file transfers and app management.<br />
-                            <strong>Fastboot</strong> works when Android is NOT booted (in the Bootloader mode). It is used to flash firmware, recovery images (TWRP), or unlock the bootloader.
+                            <strong>Fastboot</strong> works when Android is NOT booted (in the Bootloader mode). It is used to flash firmware.
                         </p>
                     </div>
 
@@ -45,40 +43,65 @@ const AndroidCommandGenerator = () => {
                         <h3 className="text-xl font-bold mb-2">Developer Options</h3>
                         <p className="text-muted-foreground">
                             To use ADB, you must first enable "USB Debugging" on your phone. Go to
-                            <em> Settings {`>`} About Phone</em> and tap <strong>Build Number</strong> 7 times to unlock Developer Options.
+                            <em> Settings {`>`} About Phone</em> and tap <strong>Build Number</strong> 7 times.
                         </p>
                     </div>
                 </div>
 
-                {/* Deep Dive */}
+                {/* Reference Table */}
                 <div className="space-y-6">
-                    <h2 className="text-3xl font-bold">Common ADB Use Cases</h2>
+                    <div className="flex items-center gap-3 border-b pb-4">
+                        <List className="w-8 h-8 text-primary" />
+                        <h2 className="text-3xl font-bold m-0">Essential ADB & Fastboot Commands</h2>
+                    </div>
 
-                    <div className="prose dark:prose-invert max-w-none">
-                        <h3>1. Debloating (Removing Pre-installed Apps)</h3>
-                        <p>
-                            Manufacturers often install apps you can't uninstall via the UI.
-                            However, you can uninstall them for the current user via ADB:
-                        </p>
-                        <div className="bg-muted p-4 rounded-lg font-mono text-sm not-prose">
-                            adb shell pm uninstall -k --user 0 com.samsung.android.bloatware
-                        </div>
-
-                        <h3>2. File Transfer</h3>
-                        <p>
-                            Moving files over MTP (standard USB file transfer) can be slow or buggy on Mac/Linux.
-                            ADB Push/Pull is reliable.
-                        </p>
-                        <ul>
-                            <li><code>adb push movie.mkv /sdcard/Movies/</code> (PC to Phone)</li>
-                            <li><code>adb pull /sdcard/DCIM/Camera .</code> (Phone to PC)</li>
-                        </ul>
-
-                        <h3>3. Screen Recording & Mirroring</h3>
-                        <p>
-                            You can record your phone's screen directly to your PC via CLI:
-                            <code>adb shell screenrecord /sdcard/demo.mp4</code>.
-                        </p>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b">
+                                    <th className="p-4 font-bold text-lg w-1/3">Command</th>
+                                    <th className="p-4 font-bold text-lg">Function</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb devices</td>
+                                    <td className="p-4">Check if your device is connected and authorized.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb shell</td>
+                                    <td className="p-4">Enter a remote Linux shell on your device.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb install app.apk</td>
+                                    <td className="p-4">Install an APK file from your computer to the phone.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb push local remote</td>
+                                    <td className="p-4">Copy file FROM Computer TO Phone. <br /><code className="text-xs bg-muted p-1">adb push song.mp3 /sdcard/Music/</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb pull remote local</td>
+                                    <td className="p-4">Copy file FROM Phone TO Computer. <br /><code className="text-xs bg-muted p-1">adb pull /sdcard/DCIM/Camera .</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb logcat</td>
+                                    <td className="p-4">Stream system logs (useful for debugging crashes).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">adb reboot bootloader</td>
+                                    <td className="p-4">Restart the phone into Fastboot mode.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">fastboot oem unlock</td>
+                                    <td className="p-4">Unlock the bootloader (WARNING: Wipes valid data).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-green-600 dark:text-green-400">fastboot flash recovery twrp.img</td>
+                                    <td className="p-4">Flash a custom recovery partition (Advanced).</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -93,10 +116,6 @@ const AndroidCommandGenerator = () => {
                         <div className="flex items-start gap-3">
                             <span className="font-bold text-red-500">2. Device not found?</span>
                             <p className="text-sm text-muted-foreground mt-1">Ensure you have the correct USB Drivers (Google USB Driver for Pixel, Samsung Drivers for Samsung) installed on Windows.</p>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <span className="font-bold text-red-500">3. Fastboot Waiting?</span>
-                            <p className="text-sm text-muted-foreground mt-1">If stuck on "waiting for device" in fastboot, use a USB 2.0 port. USB 3.0/C ports sometimes cause handshake issues on older devices.</p>
                         </div>
                     </div>
                 </div>

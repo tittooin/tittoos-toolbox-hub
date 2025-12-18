@@ -1,7 +1,7 @@
 
 import React from 'react';
 import GenericCommandTool from "@/components/GenericCommandTool";
-import { Terminal, Server, Lock, Database } from 'lucide-react';
+import { Terminal, Server, Lock, Database, List } from 'lucide-react';
 
 const LinuxCommandGenerator = () => {
     return (
@@ -20,7 +20,6 @@ const LinuxCommandGenerator = () => {
                     <p className="text-lg text-muted-foreground leading-relaxed">
                         Linux powers 90% of the public cloud, the world's top 500 supercomputers, and most of the internet's infrastructure.
                         Mastering the <strong>Bash (Bourne Again SHell)</strong> is the single most valuable skill for any developer or sysadmin.
-                        Unlike graphical interfaces, the Linux terminal allows you to chain small, single-purpose utilities together to perform incredibly complex data processing tasks efficiently.
                     </p>
                 </div>
 
@@ -44,8 +43,65 @@ const LinuxCommandGenerator = () => {
                         <h3 className="text-xl font-bold mb-2">Permissions (rwx)</h3>
                         <p className="text-muted-foreground">
                             Linux security is built on file ownership. Every file belongs to a <strong>User</strong> and a <strong>Group</strong>.
-                            Permissions are defined as Read (4), Write (2), and Execute (1). A permission code like <code>755</code> means the owner has full control (7), while everyone else can only read and execute (5).
+                            Permissions are defined as Read (4), Write (2), and Execute (1).
                         </p>
+                    </div>
+                </div>
+
+                {/* Reference Table */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 border-b pb-4">
+                        <List className="w-8 h-8 text-primary" />
+                        <h2 className="text-3xl font-bold m-0">Essential Linux Commands</h2>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b">
+                                    <th className="p-4 font-bold text-lg w-1/4">Command</th>
+                                    <th className="p-4 font-bold text-lg">Use Case</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">ls -lah</td>
+                                    <td className="p-4">List all files including hidden ones, with details and human-readable sizes.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">cd /path/to</td>
+                                    <td className="p-4">Change Directory. Use <code>cd ..</code> to go back comfortably.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">grep -r "text" .</td>
+                                    <td className="p-4">Search for "text" recursively inside all files in the current folder.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">chmod +x file</td>
+                                    <td className="p-4">Make a file executable (usually a script).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">chown user:group file</td>
+                                    <td className="p-4">Change the owner and group of a file.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">top / htop</td>
+                                    <td className="p-4">Display real-time system resource usage (CPU, RAM).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">curl -O url</td>
+                                    <td className="p-4">Download a file from the internet via the terminal.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">tar -czvf name.tar.gz folder</td>
+                                    <td className="p-4">Compress a folder into a .tar.gz archive.</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">ssh user@host</td>
+                                    <td className="p-4">Secure Shell. Connect to a remote server securely.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -79,21 +135,6 @@ const LinuxCommandGenerator = () => {
                             <li><code>{`>>`}</code> : Append output to a file.</li>
                             <li><code>|</code> (Pipe): Send the output of Command A into the input of Command B. Example: <code>cat logs.txt | grep "Error"</code></li>
                         </ul>
-                    </div>
-                </div>
-
-                {/* Cheatsheet */}
-                <div className="bg-slate-950 p-8 rounded-2xl border border-slate-800">
-                    <h2 className="text-2xl font-bold text-white mb-6">Survival Cheatsheet</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-sm">
-                        <div className="text-slate-400"><span className="text-green-400">pwd</span> - Print working directory</div>
-                        <div className="text-slate-400"><span className="text-green-400">ls -la</span> - List all files detailed</div>
-                        <div className="text-slate-400"><span className="text-green-400">cd ..</span> - Go up one directory</div>
-                        <div className="text-slate-400"><span className="text-green-400">cp -r src dest</span> - Copy folder recursively</div>
-                        <div className="text-slate-400"><span className="text-green-400">rm -rf folder</span> - Force delete folder (Careful!)</div>
-                        <div className="text-slate-400"><span className="text-green-400">grep "text" file</span> - Search text in file</div>
-                        <div className="text-slate-400"><span className="text-green-400">chmod +x script</span> - Make file executable</div>
-                        <div className="text-slate-400"><span className="text-green-400">top</span> - View running processes</div>
                     </div>
                 </div>
 

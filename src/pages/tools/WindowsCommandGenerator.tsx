@@ -1,7 +1,7 @@
 
 import React from 'react';
 import GenericCommandTool from "@/components/GenericCommandTool";
-import { Terminal, Shield, Zap, FileText, AlertTriangle } from 'lucide-react';
+import { Terminal, Shield, Zap, FileText, AlertTriangle, List } from 'lucide-react';
 
 const WindowsCommandGenerator = () => {
     return (
@@ -20,7 +20,7 @@ const WindowsCommandGenerator = () => {
                     <p className="text-lg text-muted-foreground leading-relaxed">
                         PowerShell is not just a command-line shell; it's a powerful configuration management framework derived from the .NET Common Language Runtime (CLR).
                         Unlike traditional shells that accept and return text, PowerShell accepts and returns <strong>.NET objects</strong>. This fundamental difference allows you to pipe data
-                        between commands (called "cmdlets") in incredibly robust ways, manipulating properties rather than parsing raw text strings.
+                        between commands (called "cmdlets") in incredibly robust ways.
                     </p>
                 </div>
 
@@ -49,12 +49,63 @@ const WindowsCommandGenerator = () => {
                     </div>
                 </div>
 
+                {/* Comprehensive Command Reference */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3 border-b pb-4">
+                        <List className="w-8 h-8 text-primary" />
+                        <h2 className="text-3xl font-bold m-0">Essential PowerShell Commands</h2>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b">
+                                    <th className="p-4 font-bold text-lg w-1/3">Cmdlet</th>
+                                    <th className="p-4 font-bold text-lg">Description & Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Help</td>
+                                    <td className="p-4">The most important command. Displays help for other commands. <br /><code className="text-xs bg-muted p-1">Get-Help Get-Service -Examples</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Command</td>
+                                    <td className="p-4">Finds all commands installed on your system. <br /><code className="text-xs bg-muted p-1">Get-Command *service*</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Service</td>
+                                    <td className="p-4">Lists all installed services and their status (Running/Stopped).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Process</td>
+                                    <td className="p-4">Shows currently running processes (like Task Manager).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Set-ExecutionPolicy</td>
+                                    <td className="p-4">Controls permission to run scripts. <br /><code className="text-xs bg-muted p-1">Set-ExecutionPolicy RemoteSigned</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Select-Object</td>
+                                    <td className="p-4">Selects specific properties from an object (e.g., just Name and ID).</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Where-Object (?)</td>
+                                    <td className="p-4">Filters data based on criteria. <br /><code className="text-xs bg-muted p-1">Get-Service | ? Status -eq 'Running'</code></td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Test-NetConnection</td>
+                                    <td className="p-4">Checks network connectivity and ports (Ping/Telnet replacement). <br /><code className="text-xs bg-muted p-1">Test-NetConnection google.com -Port 443</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 {/* Core Concepts */}
                 <div className="space-y-6">
-                    <h2 className="text-3xl font-bold">Essential PowerShell Concepts</h2>
-
+                    <h2 className="text-3xl font-bold">1. Execution Policies</h2>
                     <div className="prose dark:prose-invert max-w-none">
-                        <h3>1. Execution Policies</h3>
                         <p>
                             By default, Windows prevents the execution of scripts for security reasons. This is controlled by the Execution Policy.
                             Common policies include:
@@ -67,17 +118,6 @@ const WindowsCommandGenerator = () => {
                         <p>
                             To change your policy (requires Admin): <code>Set-ExecutionPolicy RemoteSigned</code>
                         </p>
-
-                        <h3>2. Aliases</h3>
-                        <p>
-                            PowerShell includes aliases to make Linux users feel at home.
-                        </p>
-                        <ul>
-                            <li><code>ls</code> → <code>Get-ChildItem</code></li>
-                            <li><code>cp</code> → <code>Copy-Item</code></li>
-                            <li><code>mv</code> → <code>Move-Item</code></li>
-                            <li><code>cat</code> → <code>Get-Content</code></li>
-                        </ul>
                     </div>
                 </div>
 
