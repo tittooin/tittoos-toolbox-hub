@@ -325,8 +325,8 @@ const PDFCategoryPage = () => {
                   <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
                     <li><strong>Binarization:</strong> Convert varied gray to pure Black/White.</li>
                     <li><strong>Segmentation:</strong> Detect blobs of black pixels (potential letters).</li>
-                    <li><strong>Feature Extraction:</strong> "Has a vertical line and a top hat?" -> Probably 'T'.</li>
-                    <li><strong>Dictionary Match:</strong> "Thx" -> Likely "The" (Context correction).</li>
+                    <li><strong>Feature Extraction:</strong> "Has a vertical line and a top hat?" &rarr; Probably 'T'.</li>
+                    <li><strong>Dictionary Match:</strong> "Thx" &rarr; Likely "The" (Context correction).</li>
                   </ol>
                 </div>
               </div>
