@@ -16,12 +16,13 @@ interface GenericCommandToolProps {
     osName: string; // e.g., "Windows PowerShell", "Linux Bash", "MacOS Terminal", "Android ADB"
     icon?: React.ElementType;
     keywords: string;
+    children?: React.ReactNode;
 }
 
 const generator = new CommandGenerator();
 
 const GenericCommandTool: React.FC<GenericCommandToolProps> = ({
-    title, description, osName, icon: Icon = Terminal, keywords
+    title, description, osName, icon: Icon = Terminal, keywords, children
 }) => {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -131,15 +132,19 @@ const GenericCommandTool: React.FC<GenericCommandToolProps> = ({
                         </CardContent>
                     </Card>
 
-                    {/* Educational Content */}
-                    <div className="prose dark:prose-invert max-w-none">
-                        <h2>How to use this tool</h2>
-                        <ol>
-                            <li>Type your task in plain English (the more specific, the better).</li>
-                            <li>Click <strong>Generate</strong> to let AI construct the command.</li>
-                            <li>Review the explanation to ensure it does what you expect.</li>
-                            <li>Copy and paste it into your terminal.</li>
-                        </ol>
+                    {/* Educational Content Injection */}
+                    <div className="prose dark:prose-invert max-w-none pt-12 border-t">
+                        {children || (
+                            <>
+                                <h2>How to use this tool</h2>
+                                <ol>
+                                    <li>Type your task in plain English (the more specific, the better).</li>
+                                    <li>Click <strong>Generate</strong> to let AI construct the command.</li>
+                                    <li>Review the explanation to ensure it does what you expect.</li>
+                                    <li>Copy and paste it into your terminal.</li>
+                                </ol>
+                            </>
+                        )}
                     </div>
 
                 </div>
