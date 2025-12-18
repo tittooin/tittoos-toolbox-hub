@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gamepad2, Brain, Zap, Trophy, Target, Timer, MousePointer2, Keyboard, Skull } from 'lucide-react';
+import { Gamepad2, Brain, Zap, Trophy, Target, Timer, MousePointer2, Keyboard, Activity } from 'lucide-react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";

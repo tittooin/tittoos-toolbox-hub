@@ -30,11 +30,10 @@ export class BlogGenerator {
   }
 
   // 0. Pollinations.ai Integration (Keyless Fallback)
-  private async generateViaPollinations(prompt: string, retries = 3): Promise<string> {
+  private async generateViaPollinations(prompt: string, retries = 3, systemContext = "You are an expert SEO Blog Writer. Output valid HTML."): Promise<string> {
     try {
       console.log(`[BlogGenerator] Using Pollinations.ai (Keyless Mode/GET) - Attempt ${4 - retries}...`);
 
-      const systemContext = "You are an expert SEO Blog Writer. Output valid HTML.";
       const finalPrompt = `${systemContext}\n\nUser: ${prompt}`;
 
       // Safety: Truncate if insanely long (browser URLs have limits ~2k-4k chars usually)
@@ -53,7 +52,7 @@ export class BlogGenerator {
         if ((response.status >= 500 || response.status === 429) && retries > 0) {
           console.warn(`[BlogGenerator] Pollinations Error ${response.status}. Retrying in 3s...`);
           await new Promise(r => setTimeout(r, 3000));
-          return this.generateViaPollinations(prompt, retries - 1);
+          return this.generateViaPollinations(prompt, retries - 1, systemContext);
         }
         throw new Error(`Pollinations API Error: ${response.status} ${response.statusText}`);
       }
@@ -63,7 +62,7 @@ export class BlogGenerator {
       if (!text || (text.includes("Error") && text.length < 100)) {
         if (retries > 0) {
           await new Promise(r => setTimeout(r, 3000));
-          return this.generateViaPollinations(prompt, retries - 1);
+          return this.generateViaPollinations(prompt, retries - 1, systemContext);
         }
       }
       return text;
@@ -73,17 +72,17 @@ export class BlogGenerator {
       if (retries > 0) {
         console.log("Retrying after network error...");
         await new Promise(r => setTimeout(r, 3000));
-        return this.generateViaPollinations(prompt, retries - 1);
+        return this.generateViaPollinations(prompt, retries - 1, systemContext);
       }
       throw error;
     }
   }
 
   // Helper to try models until one works
-  private async generateWithFallback(prompt: string): Promise<string> {
+  private async generateWithFallback(prompt: string, systemContext: string = "You are an expert SEO Blog Writer. Output valid HTML."): Promise<string> {
     // 1. If No Gemini Instance (No Key), go straight to Pollinations
     if (!this.genAI) {
-      return this.generateViaPollinations(prompt);
+      return this.generateViaPollinations(prompt, 3, systemContext);
     }
 
     const candidates = this.preferredModelName
@@ -108,7 +107,7 @@ export class BlogGenerator {
         // CRITICAL: If Auth fails, Drop to Pollinations immediately
         if (error.message.includes("403") || error.message.includes("API key")) {
           console.warn(`[BlogGenerator] Gemini Auth Failed (${error.message}). Falling back to Pollinations.ai...`);
-          return this.generateViaPollinations(prompt);
+          return this.generateViaPollinations(prompt, 3, systemContext);
         }
 
         // Handle Rate Limiting (429) -> Try next Gemini Model
@@ -125,7 +124,7 @@ export class BlogGenerator {
 
     // If All Gemini Models Failed (Rate Limits etc), Final Fallback to Pollinations
     console.warn("[BlogGenerator] All Gemini models failed. Falling back to Pollinations.ai...");
-    return this.generateViaPollinations(prompt);
+    return this.generateViaPollinations(prompt, 3, systemContext);
   }
 
   private async generateImage(prompt: string): Promise<string> {
@@ -150,7 +149,7 @@ export class BlogGenerator {
     `;
 
     try {
-      const text = await this.generateWithFallback(prompt);
+      const text = await this.generateWithFallback(prompt, "You are an expert SEO Strategist. Output valid JSON array.");
       // rigorous cleanup to get just the array
       const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
       return JSON.parse(jsonStr);
@@ -298,8 +297,8 @@ ${selectedTools}
     `;
 
     // Metadata Generation
-    const excerptPrompt = `Write a compelling 150-character meta description for a guide about "${topic}".`;
-    const excerpt = (await this.generateWithFallback(excerptPrompt)).trim();
+    const excerptPrompt = `Write a compelling 150-character meta description for a guide about "${topic}". Output ONLY plain text. No HTML.`;
+    const excerpt = (await this.generateWithFallback(excerptPrompt, "You are an expert copywriter. Output plain text only.")).trim();
 
     return {
       title: topic, // Or ask AI for a clickbait title
