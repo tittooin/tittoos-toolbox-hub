@@ -7,6 +7,7 @@ const appFile = path.join(__dirname, "src", "App.tsx");
 const toolsDataFile = path.join(__dirname, "src", "data", "tools.ts");
 const blogPostsDir = path.join(__dirname, "src", "pages", "blog-posts");
 const blogsDataFile = path.join(__dirname, "src", "data", "blogs.ts");
+const generatedBlogsFile = path.join(__dirname, "src", "data", "generated_blogs.json");
 const authorsDataFile = path.join(__dirname, "src", "data", "authors.ts");
 
 function extractRoutesFromApp() {
@@ -70,6 +71,21 @@ function extractBlogSlugRoutes() {
   }
 }
 
+function extractGeneratedBlogRoutes() {
+  try {
+    if (!fs.existsSync(generatedBlogsFile)) return [];
+    const content = fs.readFileSync(generatedBlogsFile, "utf8");
+    const blogs = JSON.parse(content);
+    if (Array.isArray(blogs)) {
+      return blogs.map(blog => `/blog/${blog.slug}`);
+    }
+    return [];
+  } catch (e) {
+    console.error("Error reading generated blogs for sitemap:", e);
+    return [];
+  }
+}
+
 function extractAuthorSlugRoutes() {
   try {
     const content = fs.readFileSync(authorsDataFile, "utf8");
@@ -117,6 +133,7 @@ const collected = [
   ...extractToolPaths(),
   ...extractBlogCategoryRoutes(),
   ...extractBlogSlugRoutes(),
+  ...extractGeneratedBlogRoutes(),
   ...extractAuthorSlugRoutes(),
 ];
 
