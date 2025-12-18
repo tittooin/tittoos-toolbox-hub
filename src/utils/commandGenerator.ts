@@ -11,11 +11,13 @@ export class CommandGenerator {
     }
 
     // Pollinations.ai Keyless Fallback
-    private async generateViaPollinations(prompt: string, retries = 3): Promise<string> {
+    private async generateViaPollinations(prompt: string, retries = 3, model = 'searchgpt'): Promise<string> {
         try {
             const encodedPrompt = encodeURIComponent(prompt);
             const seed = Math.floor(Math.random() * 1000000);
-            const url = `https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`;
+            // If model is empty string, don't append param (let server pick default)
+            const modelParam = model ? `&model=${model}` : '';
+            const url = `https://text.pollinations.ai/${encodedPrompt}?seed=${seed}${modelParam}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -23,9 +25,21 @@ export class CommandGenerator {
             });
 
             if (!response.ok) {
+                // If 403/Forbidden, try fallback models
+                if (response.status === 403) {
+                    if (model === 'searchgpt') {
+                        console.warn("Pollinations 'searchgpt' 403, falling back to 'mistral'");
+                        return this.generateViaPollinations(prompt, retries, 'mistral');
+                    }
+                    if (model === 'mistral') {
+                        console.warn("Pollinations 'mistral' 403, falling back to default");
+                        return this.generateViaPollinations(prompt, retries, '');
+                    }
+                }
+
                 if ((response.status >= 500 || response.status === 429) && retries > 0) {
                     await new Promise(r => setTimeout(r, 2000));
-                    return this.generateViaPollinations(prompt, retries - 1);
+                    return this.generateViaPollinations(prompt, retries - 1, model);
                 }
                 throw new Error(`Pollinations API Error: ${response.status}`);
             }
@@ -34,7 +48,7 @@ export class CommandGenerator {
         } catch (error) {
             if (retries > 0) {
                 await new Promise(r => setTimeout(r, 2000));
-                return this.generateViaPollinations(prompt, retries - 1);
+                return this.generateViaPollinations(prompt, retries - 1, model);
             }
             throw error;
         }
