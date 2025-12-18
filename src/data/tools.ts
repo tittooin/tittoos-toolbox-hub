@@ -20,7 +20,7 @@ const allCategories = [
   { id: "calculator", name: "Calculators", guidePath: "/blog-posts/calculators-category" },
   { id: "formatter", name: "Formatters", guidePath: "/blog-posts/formatters-category" },
   { id: "ai", name: "AI Tools", guidePath: "/blog-posts/ai-tools-category" },
-  { id: "dev", name: "Dev Tools", guidePath: "/blog-posts/dev-tools-category" },
+  { id: "dev", name: "Developer Tools", guidePath: "/blog-posts/dev-tools-category" },
   { id: "games", name: "Games & Brain", guidePath: "/blog-posts/games-category" },
   { id: "utility", name: "Utilities", guidePath: "/blog-posts/analyzers-category" }, // Fallback to analyzers or create utility if needed
 ];
