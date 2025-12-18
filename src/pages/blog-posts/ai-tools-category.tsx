@@ -1,168 +1,206 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ToolTemplate from '@/components/ToolTemplate';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Bot, Sparkles, Brain, Wand2, MessageSquare, Image as ImageIcon, Video, Fingerprint, StopCircle } from 'lucide-react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { tools } from "@/data/tools";
 
 const AIToolsCategoryPage = () => {
-  const blogContent = `
-  <img src="/assets/blog/ai-tools-guide.png" alt="AI Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
-  <h1>AI-Powered Creativity: The Complete Handbook for 2024</h1>
-  
-  <p>Artificial Intelligence has transformed digital creativity from a single-tool workflow into a structured, repeatable production system. Whether you’re writing long-form content, generating visuals, building websites, or prototyping utilities, AI augments human judgment with speed, scale, and consistency. This handbook translates buzzwords into practical methods you can apply immediately using Axevora. It focuses on four pillars: AI content creation, AI art generation, AI video from text, and machine learning art tools — with a pragmatic layer for managing AI digital assets.</p>
-  
-  <h2>1) Foundations: How Modern Generative AI Works</h2>
-  <p>Generative systems convert intent into output. Under the hood, most creative AI uses transformer models for language, diffusion models or GANs for imagery, and multimodal models that blend text, image, and audio. You don’t need to be a researcher to use them well — but understanding the building blocks helps you make better decisions:</p>
-  <ul>
-    <li><strong>Transformers (Text):</strong> Predict the next token to craft coherent paragraphs, outlines, scripts, and meta content. Ideal for planning, narration, and SEO-friendly structure.</li>
-    <li><strong>Diffusion (Images):</strong> Iteratively denoise latent representations into final images. Great for style control, lighting, and complex compositions.</li>
-    <li><strong>GANs (Legacy Graphics):</strong> Adversarial training can produce striking visuals but is less stable than diffusion for everyday workflows.</li>
-    <li><strong>Multimodal Models:</strong> Map text to visuals or video, align semantics across modalities, and enable “describe → generate” pipelines.</li>
-  </ul>
-  
-  <h2>2) Prompt Engineering: Turning Ideas into Reliable Output</h2>
-  <p>Prompts are project briefs. Treat them as micro-specifications with five parts: role, goal, constraints, structure, and review. Iterate quickly — small changes produce large differences in results.</p>
-  <ol>
-    <li><strong>Role:</strong> Define the creative persona (e.g., “You are a senior brand designer”).</li>
-    <li><strong>Goal:</strong> State the outcome (“Produce a landing page hero image in warm colors”).</li>
-    <li><strong>Constraints:</strong> Add boundaries (resolution, tone, target audience, style references).</li>
-    <li><strong>Structure:</strong> Use bullet points or numbered steps for clarity.</li>
-    <li><strong>Review:</strong> Request multiple options and a rationale for each choice.</li>
-  </ol>
-  <p>For visual work, add <em>negative prompts</em> (what to avoid), composition hints (rule of thirds, symmetry), and lighting cues (soft studio light, ambient dusk). For text, specify voice, pacing, and depth — then ask for outlines before full drafts.</p>
-  
-  <h2>3) AI Content Creation: From Idea to Publishable Draft</h2>
-  <p>Great content combines structure and substance. Use AI for scaffolding, research synthesis, and consistent tone. Then add your expertise.</p>
-  <h3>Workflow</h3>
-  <ul>
-    <li><strong>Outline:</strong> Generate multiple outlines and merge the best parts.</li>
-    <li><strong>Section Drafts:</strong> Write each section independently for focus; unify later.</li>
-    <li><strong>Evidence Layer:</strong> Add data points, examples, and practical steps.</li>
-    <li><strong>Readability Pass:</strong> Simplify sentences, improve transitions, add subheadings.</li>
-    <li><strong>Optimization:</strong> Generate meta title, description, and FAQ from your own draft.</li>
-  </ul>
-  <p>Use Axevora helpers during production:</p>
-  <ul>
-    <li><a href="/tools/text-editor">Text Editor</a> for drafting and polishing.</li>
-    <li><a href="/tools/seo-analyzer">SEO Analyzer</a> to validate headings, meta tags, and internal links.</li>
-    <li><a href="/tools/json-formatter">JSON Formatter</a> for clean structured data (FAQs, product specs).</li>
-    <li><a href="/tools/url-encoder">URL Encoder/Decoder</a> to safely embed references.</li>
-  </ul>
-  
-  <h2>4) AI Art Generator: Designing Striking Visuals</h2>
-  <p>AI art blends art direction with model capabilities. Your prompts play the role of a creative brief. Plan style, palette, composition, and subject before generating.</p>
-  <h3>Core Techniques</h3>
-  <ul>
-    <li><strong>Style Systems:</strong> Choose a style family (minimalist, editorial, cinematic, watercolor) and stick to it per project.</li>
-    <li><strong>Lighting & Lens:</strong> Include lighting type (softbox, natural morning), focal length, depth of field, and textures.</li>
-    <li><strong>Composition:</strong> Use framing (“medium shot,” “wide angle”), symmetry cues, and foreground/background separation.</li>
-    <li><strong>Color Direction:</strong> Define palette (warm oranges, muted blues) and saturation range.</li>
-    <li><strong>Negative Prompts:</strong> Explicitly exclude artifacts (extra fingers, blurry eyes, text overlay).</li>
-  </ul>
-  <h3>Iteration</h3>
-  <ul>
-    <li>Generate sets of 4–8 variations.</li>
-    <li>Label choices and reasons (“chosen for clarity, lighting, brand fit”).</li>
-    <li>Upscale finalists and apply minor edits.</li>
-  </ul>
-  <p>Refine outputs with Axevora:</p>
-  <ul>
-    <li><a href="/tools/text-to-image">Text to Image</a> for initial generations.</li>
-    <li><a href="/tools/ai-image-editor">AI Image Editor</a> for retouching, layering, and typography overlays.</li>
-    <li><a href="/tools/image-converter">Image Converter</a> for WebP/PNG/JPG exports and size optimization.</li>
-    <li><a href="/tools/color-analyzer">Color Analyzer</a> to verify accessibility and brand consistency.</li>
-  </ul>
-  
-  <h2>5) AI Video from Text: Directing Motion with Prompts</h2>
-  <p>Text-to-video requires storyboard-level clarity. Treat each shot as a scene with purpose, duration, and movement. Include pacing and transitions in your prompt plan.</p>
-  <h3>Shot Planning</h3>
-  <ul>
-    <li><strong>Duration & FPS:</strong> 5–12 seconds per shot at 24–30 fps for social clips.</li>
-    <li><strong>Camera Motion:</strong> Static, pan left/right, dolly-in, tilt for emphasis.</li>
-    <li><strong>Scene Composition:</strong> Foreground subject, clean background, controlled lighting.</li>
-    <li><strong>Narrative Flow:</strong> Hook → Value → Proof → CTA; keep captions concise.</li>
-  </ul>
-  <p>Use Axevora to assemble your pipeline:</p>
-  <ul>
-    <li><a href="/tools/text-to-video">Text to Video</a> for generation experiments.</li>
-    <li><a href="/tools/video-editor">Video Editor</a> to stitch scenes, add transitions, and balance audio.</li>
-    <li><a href="/tools/video-converter">Video Converter</a> for platform-specific formats and bitrates.</li>
-  </ul>
-  
-  <h2>6) Machine Learning Art Tools: Systems for Exploration</h2>
-  <p>Creative ML tools help you discover styles and evolve them systematically. Use them to build style libraries, generative patterns, and interactive pieces.</p>
-  <ul>
-    <li><strong>Style Transfer:</strong> Apply consistent look across varied inputs; perfect for brand harmonization.</li>
-    <li><strong>Procedural Systems:</strong> Generate abstract forms, gradients, and textured backdrops.</li>
-    <li><strong>Generative Design:</strong> Evolve motifs with constraints, ideal for packaging and print.</li>
-    <li><strong>Interactive Visuals:</strong> Create reactive assets that move or shift based on user input.</li>
-  </ul>
-  
-  <h2>7) Managing AI Digital Assets</h2>
-  <p>As outputs scale, asset management becomes essential. Create a lightweight system so teams can find, reuse, and update work reliably.</p>
-  <ul>
-    <li><strong>Metadata:</strong> Store prompt, negative prompt, model version, seed, and rationale.</li>
-    <li><strong>Versioning:</strong> Keep v1/v2/v3 plus a changelog for quick comparison.</li>
-    <li><strong>Licensing:</strong> Track usage rights for fonts, stock, and training sources.</li>
-    <li><strong>Distribution:</strong> Export platform-optimized formats (image/video) with naming conventions.</li>
-  </ul>
-  <p>Axevora utilities that help:</p>
-  <ul>
-    <li><a href="/tools/qr-generator">QR Generator</a> to link assets to documentation.</li>
-    <li><a href="/tools/hash-generator">Hash Generator</a> to fingerprint versions.</li>
-    <li><a href="/tools/base64-converter">Base64 Converter</a> for embedding small assets into configs.</li>
-  </ul>
-  
-  <h2>8) Quality Evaluation: Make Good Work Repeatable</h2>
-  <p>Define success criteria before generating. Score outputs with a simple rubric to reduce subjective debates.</p>
-  <ul>
-    <li><strong>Clarity:</strong> Is the subject readable at mobile sizes?</li>
-    <li><strong>Composition:</strong> Do focal points guide attention?</li>
-    <li><strong>Color & Contrast:</strong> Is the palette accessible and on-brand?</li>
-    <li><strong>Message Fit:</strong> Does the output support the intended CTA?</li>
-    <li><strong>Technical Quality:</strong> Resolution, artifacts, noise, and compression.</li>
-  </ul>
-  
-  <h2>9) Ethics, Privacy, and Safe Use</h2>
-  <p>Responsible AI respects privacy, avoids misleading representations, and complies with platform policies. Use anonymized references, avoid real-person impersonation, and disclose AI-generated content when relevant. Prefer local processing when feasible, and never embed sensitive information into prompts or outputs.</p>
-  
-  <h2>10) End-to-End Project Blueprint</h2>
-  <p>Here’s a reproducible blueprint you can reuse for content campaigns, product launches, or educational material:</p>
-  <ol>
-    <li><strong>Objective:</strong> Define audience, channel, and conversion goal.</li>
-    <li><strong>Research:</strong> Summarize sources; distill insights into bullet themes.</li>
-    <li><strong>Outline:</strong> Create section structure (intro → value → proof → FAQ → CTA).</li>
-    <li><strong>Draft:</strong> Write sections; interlink related tools and references.</li>
-    <li><strong>Visuals:</strong> Generate 6–12 images with clear style notes; select finalists.</li>
-    <li><strong>Video:</strong> Produce 3–5 short clips; assemble with captions and transitions.</li>
-    <li><strong>Review:</strong> Apply rubric; fix issues; run accessibility and SEO checks.</li>
-    <li><strong>Publish:</strong> Export assets; add metadata; link related articles.</li>
-    <li><strong>Measure:</strong> Track performance; iterate based on audience behavior.</li>
-  </ol>
-  
-  <h2>11) FAQs</h2>
-  <p><strong>Q:</strong> How do I get consistent style across images?<br/><strong>A:</strong> Document palette, lighting, camera cues, and negative prompts; reuse them as a template.</p>
-  <p><strong>Q:</strong> What resolution should I generate for social?<br/><strong>A:</strong> Square 1080×1080 or vertical 1080×1920; upscale final picks if needed.</p>
-  <p><strong>Q:</strong> How do I avoid repetitive AI text?<br/><strong>A:</strong> Force structure: outline → section drafts → example layer → edit pass; add unique details from your work.</p>
-  
-  <h2>12) Conclusion</h2>
-  <p>AI becomes powerful when you combine creative direction with repeatable systems. Use prompts as briefs, score outputs with rubrics, and manage assets with metadata. With Axevora, you have practical utilities to operate this workflow: draft content, generate imagery and video, validate SEO, and export platform-ready formats — all while respecting privacy and performance.</p>
-  
-  <p>Start experimenting today with <a href="/tools/text-to-image">Text to Image</a>, <a href="/tools/text-to-video">Text to Video</a>, and <a href="/tools/ai-website-generator">AI Website Generator</a>, then refine results in the <a href="/tools/ai-image-editor">AI Image Editor</a> and <a href="/tools/video-editor">Video Editor</a>. Document choices, iterate, and build a creative system that scales.</p>
-  `;
+  const categoryTools = tools.filter(tool => tool.category === 'ai');
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>AI Tools and Automation Guide 2024 | Axevora</title>
-        <meta name="description" content="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation." />
-        <meta property="og:title" content="AI Tools and Automation Guide 2024 | Axevora" />
-        <meta property="og:description" content="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation." />
+        <title>Free AI Tools - Generators, Chatbots & Assistants | Axevora</title>
+        <meta name="description" content="Explore the future of creativity with our free AI tools. Generate images, text, code, and more using advanced artificial intelligence models. Learn prompt engineering hacks." />
+        <meta name="keywords" content="ai tools, artificial intelligence, image generator, text generator, chatbot, prompt engineering, chatgpt alternatives, free ai" />
+        <meta property="og:title" content="Free AI Tools - Generators, Chatbots & Assistants | Axevora" />
+        <meta property="og:description" content="Explore the future of creativity with our free AI tools. Generate images, text, code, and more." />
       </Helmet>
-      <ToolTemplate
-        title="AI Tools and Automation Guide 2024"
-        description="Enhance your productivity with our comprehensive suite of AI tools for content creation, website generation, tool development, and image generation."
-        content={blogContent}
-        showContentAds
-      />
-    </>
+
+      <Header />
+
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-16">
+
+          {/* Hero Section */}
+          <div className="text-center space-y-8">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border bg-card">
+              <img
+                src="/assets/blog/ai-tools-guide.png"
+                alt="Artificial Intelligence Tools"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center justify-center p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                <Sparkles className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+                Augment Your Reality
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                AI isn't about replacing humans; it's about giving them superpowers.
+                Write faster, design bolder, and solve harder problems with our suite of Generative AI tools.
+              </p>
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categoryTools.map((tool) => (
+              <Link key={tool.id} to={tool.path} className="group">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-purple-500/50">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl group-hover:bg-purple-100 dark:group-hover:bg-purple-900/40 transition-colors">
+                        <tool.icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                      </div>
+                    </div>
+                    <CardTitle className="group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-xl">
+                      {tool.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {tool.subheading}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm font-medium text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Try AI Tool <span className="ml-1">→</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* EXTENDED CONTENT START */}
+          <div className="prose dark:prose-invert max-w-none space-y-16">
+
+            {/* Prompt Engineering Masterclass */}
+            <div className="bg-card border rounded-2xl p-8 shadow-sm">
+              <h2 className="flex items-center gap-3 text-3xl font-bold mb-6 mt-0">
+                <Brain className="w-8 h-8 text-pink-500" />
+                Master Class: Prompt Engineering
+              </h2>
+              <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+                The quality of AI output is directly proportional to the quality of your input.
+                This new skill—<strong>Prompt Engineering</strong>—is the art of talking to machines.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div className="space-y-4">
+                  <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-900/50">
+                    <h3 className="text-lg font-bold text-red-700 dark:text-red-400 m-0 mb-2">The Amateur Approach</h3>
+                    <p className="text-sm font-mono m-0">"Write a marketing email."</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    <strong>Result:</strong> A generic, robotic spam email that no one reads. It lacks context, tone, and specific goals.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-900/50">
+                    <h3 className="text-lg font-bold text-green-700 dark:text-green-400 m-0 mb-2">The Pro Approach</h3>
+                    <p className="text-sm font-mono m-0">"Act as a direct-response copywriter. Write a 150-word email promoting a 50% off sale on high-end headphones. Tone: Urgent but sophisticated. Target Audience: Audiophiles."</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    <strong>Result:</strong> A high-converting asset with a distinct voice, clear call-to-action, and psychological triggers.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 p-6 bg-muted/50 rounded-xl">
+                <h3 className="text-lg font-bold m-0 mb-2">The Formula: C-C-O</h3>
+                <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+                  <li><strong>Context:</strong> Who is the AI? (e.g., "Act as a lawyer")</li>
+                  <li><strong>Constraints:</strong> What are the limits? (e.g., "Under 280 characters", "No jargon")</li>
+                  <li><strong>Output:</strong> What format do you want? (e.g., "A bulleted list", "A JSON object", "A 3-paragraph essay")</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Modalities Explained */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">Understanding AI Modalities</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="bg-muted/30 p-6 rounded-2xl border hover:border-purple-500/30 transition-colors">
+                  <div className="p-2 bg-background w-fit rounded-lg mb-4">
+                    <ImageIcon className="w-6 h-6 text-purple-500" />
+                  </div>
+                  <h3 className="text-xl font-bold m-0 mb-2">Diffusion Models</h3>
+                  <p className="text-muted-foreground text-sm m-0">
+                    Tools like Midjourney work by starting with "noise" (static) and slowly hallucinating patterns that match your text description. They are great for concept art but struggle with specific text rendering within images.
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-6 rounded-2xl border hover:border-blue-500/30 transition-colors">
+                  <div className="p-2 bg-background w-fit rounded-lg mb-4">
+                    <MessageSquare className="w-6 h-6 text-blue-500" />
+                  </div>
+                  <h3 className="text-xl font-bold m-0 mb-2">LLMs (Text)</h3>
+                  <p className="text-muted-foreground text-sm m-0">
+                    Large Language Models are essentially super-advanced "autocomplete" engines. They predict the statistically most likely next word. This makes them brilliant creative writers but occasional liars when it comes to hard facts.
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-6 rounded-2xl border hover:border-orange-500/30 transition-colors">
+                  <div className="p-2 bg-background w-fit rounded-lg mb-4">
+                    <Video className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="text-xl font-bold m-0 mb-2">Multimodal</h3>
+                  <p className="text-muted-foreground text-sm m-0">
+                    The future is hybrid. New models can "see" images and describe them, or take a sketch and turn it into website code. This cross-pollination is where the biggest productivity gains live.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Ethics & Safety */}
+            <div className="bg-blue-50 dark:bg-blue-900/10 p-8 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+              <div className="flex items-center gap-3 mb-6">
+                <Fingerprint className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-300 m-0">The Ethics of AI</h2>
+              </div>
+
+              <div className="space-y-6">
+                <p className="text-blue-800 dark:text-blue-400 m-0">
+                  With great power comes great responsibility. Using AI requires a new kind of digital literacy emphasizing verification and ethics.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-background/80 p-4 rounded-xl">
+                    <strong className="block text-foreground mb-2 flex items-center gap-2">
+                      <StopCircle className="w-4 h-4 text-red-500" /> Hallucinations
+                    </strong>
+                    <p className="text-sm text-muted-foreground m-0">
+                      AI will confidently state false facts. Always fact-check citations, dates, and names—especially for legal or medical content.
+                    </p>
+                  </div>
+                  <div className="bg-background/80 p-4 rounded-xl">
+                    <strong className="block text-foreground mb-2 flex items-center gap-2">
+                      <StopCircle className="w-4 h-4 text-red-500" /> Plagiarism & Bias
+                    </strong>
+                    <p className="text-sm text-muted-foreground m-0">
+                      Models are trained on the open internet, which includes copyrighted work and societal biases. Be critical of the output and edit it to reflect YOUR inclusive values.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          {/* EXTENDED CONTENT END */}
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

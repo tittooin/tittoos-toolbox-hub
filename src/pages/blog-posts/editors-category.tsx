@@ -1,187 +1,232 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ToolTemplate from '@/components/ToolTemplate';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Edit3, Type, Code, FileCode, Coffee, Eye, Rocket, HelpCircle } from 'lucide-react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { tools } from "@/data/tools";
 
 const EditorsCategoryPage = () => {
-  const blogContent = `
-  <img src="/assets/blog/editors-tools-guide.png" alt="Online Editors Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
-  # Comprehensive Guide to Online Editor Tools 2024
-
-In the digital age, having powerful and flexible editing tools is essential for content creation and code development. Our suite of online editors provides professional-grade capabilities for various file types and formats.
-
-## Text Editor: Versatile Content Creation
-
-Powerful text editing features:
-
-- Syntax highlighting
-- Auto-completion
-- Multiple formats
-- Collaboration tools
-- Version control
-
-## JSON Editor: Data Structure Management
-
-Efficient JSON editing capabilities:
-
-- Tree view
-- Validation
-- Formatting
-- Schema support
-- Error detection
-
-## CSV Editor: Spreadsheet Simplification
-
-Streamline CSV file management:
-
-- Grid view
-- Data validation
-- Format conversion
-- Import/export
-- Column management
-
-## HTML Editor: Web Code Creation
-
-Professional HTML editing:
-
-- Live preview
-- Syntax highlighting
-- Tag completion
-- CSS integration
-- JavaScript support
-
-## Advanced Features
-
-### Editor Intelligence
-- Smart suggestions
-- Error detection
-- Auto-formatting
-- Code snippets
-- Integration options
-
-### Customization Options
-- Theme selection
-- Keyboard shortcuts
-- Plugin support
-- Layout options
-- Collaboration tools
-
-## Best Practices for Editing
-
-### Editing Strategy
-1. Version control
-2. Regular saving
-3. Code organization
-4. Documentation
-5. Testing procedures
-
-### Efficiency Tips
-1. Keyboard shortcuts
-2. Template usage
-3. Auto-completion
-4. Code snippets
-5. Regular backups
-
-## Industry Applications
-
-### Web Development
-- Code editing
-- Debugging
-- Testing
-- Documentation
-- Collaboration
-
-### Data Management
-- JSON editing
-- CSV processing
-- Data validation
-- Format conversion
-- Structure optimization
-
-### Content Creation
-- Text editing
-- Format conversion
-- Style management
-- Version control
-- Collaboration
-
-## Future Trends in Editor Tools
-
-The editing landscape is evolving with:
-
-- AI-powered assistance
-- Real-time collaboration
-- Cloud integration
-- Advanced automation
-- Cross-platform support
-
-## Tips for Choosing Editors
-
-### Consider Your Needs
-1. File type support
-2. Feature requirements
-3. Integration needs
-4. Performance demands
-5. Collaboration options
-
-### Technical Requirements
-1. Platform compatibility
-2. Plugin support
-3. API availability
-4. Security features
-5. Backup capabilities
-
-## Maximizing Editor Efficiency
-
-### Workflow Integration
-- Version control
-- Automated backups
-- Team collaboration
-- Documentation
-- Testing procedures
-
-### Quality Assurance
-- Code validation
-- Error checking
-- Style consistency
-- Performance testing
-- Security verification
-
-## Security Considerations
-
-### Data Protection
-- Secure editing
-- Version control
-- Access management
-- Backup security
-- Compliance verification
-
-### Compliance
-- Industry standards
-- Security protocols
-- Privacy regulations
-- Documentation requirements
-- Audit capabilities
-
-## Conclusion
-
-Our suite of editor tools provides comprehensive solutions for all your editing needs. Whether you're working with text, JSON, CSV, or HTML files, these tools offer the features and functionality you need for professional-grade editing.
-
-Start using our editor tools today to enhance your content creation and code development workflow with powerful, flexible editing capabilities.`;
+  // Filter by 'editor' category
+  const categoryTools = tools.filter(tool => tool.category === 'editor');
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>Online Editor Tools Guide 2024 | Axevora</title>
-        <meta name="description" content="Create and edit content professionally with our comprehensive suite of online editors for text, JSON, CSV, and HTML." />
-        <meta property="og:title" content="Online Editor Tools Guide 2024 | Axevora" />
-        <meta property="og:description" content="Create and edit content professionally with our comprehensive suite of online editors for text, JSON, CSV, and HTML." />
+        <title>Online Code & Text Editors - Markdown, HTML, JSON | Axevora</title>
+        <meta name="description" content="Write, edit, and preview code and text instantly. Free online editors for Markdown, HTML, JSON, and more. No installation required." />
+        <meta name="keywords" content="online editor, markdown editor, code editor, html editor, json editor, text editor, distraction free writing" />
+        <meta property="og:title" content="Online Code & Text Editors - Markdown, HTML, JSON | Axevora" />
+        <meta property="og:description" content="Write, edit, and preview code and text instantly. Free online editors for Markdown, HTML, JSON, and more." />
       </Helmet>
-      <ToolTemplate
-        title="Online Editor Tools Guide 2024"
-        description="Create and edit content professionally with our comprehensive suite of online editors for text, JSON, CSV, and HTML."
-        content={blogContent}
-        showContentAds
-      />
-    </>
+
+      <Header />
+
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-16">
+
+          {/* Hero Section */}
+          <div className="text-center space-y-8">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border bg-card">
+              <img
+                src="/assets/blog/editors-tools-guide.png"
+                alt="Online Editors Guide"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center justify-center p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                <Edit3 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+                The Modern Digital Canvas
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                From distraction-free prose to complex code structures, the right editor amplifies your thought process.
+                Experience the power of our browser-based tools—zero setup, 100% focus.
+              </p>
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categoryTools.map((tool) => (
+              <Link key={tool.id} to={tool.path} className="group">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-blue-500/50">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
+                        <tool.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                    </div>
+                    <CardTitle className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-xl">
+                      {tool.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {tool.subheading}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Start Editing <span className="ml-1">→</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* Rich Educational Content */}
+          <div className="prose dark:prose-invert max-w-none space-y-16">
+
+            {/* Evolution */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">1. The Evolution of Editing</h2>
+              <p className="text-lg text-muted-foreground">
+                Editing has moved from the desktop to the cloud. You no longer need to install a 500MB IDE just to tweak a JSON file or specific software to write a blog post.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-muted/30 p-6 rounded-xl border">
+                  <Type className="w-8 h-8 text-indigo-500 mb-4" />
+                  <h3 className="font-bold text-lg mt-0">WYSIWYG</h3>
+                  <p className="text-sm m-0 text-muted-foreground">
+                    "What You See Is What You Get". Perfect for visualized content like documents and emails where layout matters more than the underlying code.
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-6 rounded-xl border">
+                  <Code className="w-8 h-8 text-pink-500 mb-4" />
+                  <h3 className="font-bold text-lg mt-0">Markdown</h3>
+                  <p className="text-sm m-0 text-muted-foreground">
+                    The developer's favorite. Plain text formatting that converts to HTML. It separates content from presentation, allowing for pure writing focus.
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-6 rounded-xl border">
+                  <FileCode className="w-8 h-8 text-emerald-500 mb-4" />
+                  <h3 className="font-bold text-lg mt-0">Code Editors</h3>
+                  <p className="text-sm m-0 text-muted-foreground">
+                    Features like syntax highlighting, bracket matching, and auto-indentation turn a wall of text into a structured, readable program.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Power User Workflows */}
+            <div className="bg-card border rounded-2xl p-8 shadow-sm">
+              <h2 className="text-3xl font-bold mb-6 mt-0 flex items-center gap-3">
+                <Rocket className="w-8 h-8 text-orange-500" />
+                Power User Workflows
+              </h2>
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">For Content Creators</h3>
+                  <p className="text-muted-foreground">
+                    Use our <strong>Markdown Editor</strong> to draft articles. Why? Because Markdown works everywhere.
+                    You can write here, copy the plain text to GitHub, WordPress, or Discord, and the formatting (bold, lists, headers) stays perfect.
+                    No more "paste from Word" formatting nightmares.
+                  </p>
+                </div>
+                <div className="h-px bg-border" />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">For Developers</h3>
+                  <p className="text-muted-foreground">
+                    Receiving a payload from an API? Paste it into our <strong>JSON Editor</strong>.
+                    We don't just show text; we validate strict syntax, highlight keys vs values, and allow you to collapse nested objects.
+                    It's the quickest way to debug a "Bad Request" error without opening Postman.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature Deep Dive */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <h2 className="text-3xl font-bold m-0">Why Use Online Editors?</h2>
+                <ul className="space-y-4 list-none pl-0">
+                  <li className="flex gap-4">
+                    <div className="p-2 bg-primary/10 rounded-lg h-fit">
+                      <Coffee className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <strong className="block text-foreground">Zero Friction</strong>
+                      <span className="text-muted-foreground">No npm install, no updates, no config files. Just open the URL and start typing.</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-4">
+                    <div className="p-2 bg-primary/10 rounded-lg h-fit">
+                      <Eye className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <strong className="block text-foreground">Instant Preview</strong>
+                      <span className="text-muted-foreground">See your HTML or Markdown render in real-time side-by-side. Catch typos before you publish.</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-muted/30 p-8 rounded-2xl border">
+                <h3 className="text-2xl font-bold mb-6 mt-0">Safety First</h3>
+                <p className="text-muted-foreground mb-4">
+                  "Is it safe to paste my API keys?"
+                </p>
+                <div className="p-4 bg-background border rounded-lg">
+                  <p className="m-0 text-sm font-medium">
+                    <strong className="text-green-600 dark:text-green-400">Answer:</strong> While our tools are client-side (your code doesn't leave your browser),
+                    best practice dictates you should <strong className="text-red-500">NEVER</strong> paste live production secrets (API Keys, Passwords, Private Keys) into any online tool.
+                    Use dummy data for testing structure, then swap in secrets locally.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">Frequently Asked Questions</h2>
+              <div className="space-y-4">
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <div className="flex items-center gap-3">
+                      <HelpCircle className="w-5 h-5 text-blue-500" />
+                      <span>Does the Markdown Editor support GitHub Flavored Markdown (GFM)?</span>
+                    </div>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    Yes! We support standard tables, task lists `[ ]`, strikethrough `~~text~~`, and code blocks with language syntax highlighting.
+                  </div>
+                </details>
+
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <div className="flex items-center gap-3">
+                      <HelpCircle className="w-5 h-5 text-blue-500" />
+                      <span>Can I save my work?</span>
+                    </div>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    Currently, our editors are session-based. If you refresh, you may lose data. We recommend copying your work to a local file regularly.
+                    Future updates may include local storage caching.
+                  </div>
+                </details>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

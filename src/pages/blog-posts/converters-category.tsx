@@ -1,229 +1,204 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ToolTemplate from '@/components/ToolTemplate';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw, FileInput, ImageLike, Music, FileType2, Database, Layers, ArrowLeftRight, Check, AlertOctagon } from 'lucide-react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { tools } from "@/data/tools";
 
 const ConvertersCategoryPage = () => {
-  const blogContent = `
-  <div class="space-y-12 text-gray-800">
-    <!-- Hero Section -->
-    <div class="relative">
-      <img src="/assets/blog/converters-tools-guide.png" alt="Ultimate Guide to File Conversion" class="w-full h-auto rounded-xl shadow-2xl mb-8" />
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-blue-900 mb-6">The Ultimate Guide to Digital File Conversion: Mastering Formats in 2024</h1>
-      <p class="text-xl md:text-2xl leading-relaxed text-gray-600">
-        In an increasingly interconnected digital world, the ability to seamlessly transform files between formats is not just a convenience—it's a necessity. Whether you are a designer needing transparency, a lawyer archiving contracts, or a developer optimizing web assets, understanding the science of file conversion is the key to efficiency.
-      </p>
-    </div>
-
-    <!-- Chapter 1: The Landscape -->
-    <section>
-      <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">1. Understanding the File Format Landscape</h2>
-      <p class="mb-4 text-lg">
-        Every digital file is encoded with a specific structure designed for a unique purpose. Misunderstanding these purposes leads to bloated files, pixelated images, and broken documents. Let's decode the three major categories of digital assets.
-      </p>
-      
-      <h3 class="text-2xl font-semibold text-blue-700 mt-8 mb-4">Image Formats: Raster vs. Vector</h3>
-      <p class="mb-4">
-        Images rule the web, but not all images are created equal. Choosing the wrong format can slow down your website by seconds—an eternity in user attention time.
-      </p>
-      
-      <div class="overflow-x-auto my-8">
-        <table class="w-full border-collapse bg-white shadow-lg rounded-lg overflow-hidden">
-          <thead class="bg-blue-600 text-white">
-            <tr>
-              <th class="p-4 text-left">Format</th>
-              <th class="p-4 text-left">Full Name</th>
-              <th class="p-4 text-left">Best Use Case</th>
-              <th class="p-4 text-left">Pros & Cons</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr class="hover:bg-blue-50 transition-colors">
-              <td class="p-4 font-bold">JPG/JPEG</td>
-              <td class="p-4">Joint Photographic Experts Group</td>
-              <td class="p-4">Photographs, Web Banners</td>
-              <td class="p-4"><span class="text-green-600 font-semibold">Pros:</span> Small size, universal support.<br/><span class="text-red-600 font-semibold">Cons:</span> Lossy compression (artifacts), no transparency.</td>
-            </tr>
-            <tr class="hover:bg-blue-50 transition-colors">
-              <td class="p-4 font-bold">PNG</td>
-              <td class="p-4">Portable Network Graphics</td>
-              <td class="p-4">Logos, Screenshots, Graphics with Text</td>
-              <td class="p-4"><span class="text-green-600 font-semibold">Pros:</span> Lossless, supports transparency.<br/><span class="text-red-600 font-semibold">Cons:</span> Larger file sizes for photos.</td>
-            </tr>
-            <tr class="hover:bg-blue-50 transition-colors">
-              <td class="p-4 font-bold">WebP</td>
-              <td class="p-4">Web Picture Format</td>
-              <td class="p-4">Modern Websites</td>
-              <td class="p-4"><span class="text-green-600 font-semibold">Pros:</span> Superior compression, transparency support.<br/><span class="text-red-600 font-semibold">Cons:</span> Older browsers (IE) don't support it.</td>
-            </tr>
-            <tr class="hover:bg-blue-50 transition-colors">
-              <td class="p-4 font-bold">SVG</td>
-              <td class="p-4">Scalable Vector Graphics</td>
-              <td class="p-4">Icons, Logos, Illustrations</td>
-              <td class="p-4"><span class="text-green-600 font-semibold">Pros:</span> Infinitely scalable, code-based.<br/><span class="text-red-600 font-semibold">Cons:</span> Not suitable for complex photographs.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Chapter 2: Documents -->
-    <section>
-      <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">2. The Document Dilemma: Editability vs. Consistency</h2>
-      <p class="mb-4 text-lg">
-        The battle between <a href="https://en.wikipedia.org/wiki/PDF" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">PDF (Portable Document Format)</a> and editable formats like DOCX is about specific needs.
-      </p>
-
-      <div class="grid md:grid-cols-2 gap-8 my-8">
-        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-          <h4 class="text-xl font-bold text-red-700 mb-3">Why Convert to PDF?</h4>
-          <ul class="space-y-2">
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Universality:</strong> Looks the same on any device (phone, laptop, tablet).</li>
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Security:</strong> Can be encrypted and password protected easily.</li>
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Compactness:</strong> Compresses text and fonts into a lightweight file.</li>
-          </ul>
-          <div class="mt-4 pt-4 border-t border-gray-200">
-            <a href="/tools/pdf-converter" class="text-blue-600 font-semibold hover:text-blue-800">Try PDF Converter →</a>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-          <h4 class="text-xl font-bold text-blue-700 mb-3">Why Convert to Word/DOCX?</h4>
-          <ul class="space-y-2">
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Editability:</strong> Essential for drafting, rewriting, and collaborating.</li>
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Reflowable:</strong> Text adjusts to page margins, unlike fixed PDF layouts.</li>
-            <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> <strong>Familiarity:</strong> The standard format for office work worldwide.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Chapter 3: Audio/Video -->
-    <section>
-      <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">3. Multimedia Mastery: Audio & Video Codecs</h2>
-      <p class="mb-4 text-lg">
-        Multimedia files are containers wrapping a video stream, audio stream, and metadata. Converting them isn't just about changing the extension (.mp4 to .avi); it's about <strong>transcoding</strong>.
-      </p>
-
-      <div class="bg-blue-900 text-white p-8 rounded-xl shadow-xl my-8">
-        <h3 class="text-2xl font-bold mb-4 text-yellow-400">Pro Tip: Bitrapte Matters</h3>
-        <p class="mb-4">
-          When converting video, "Bitrate" defines quality. High bitrate = crisp video vs. Low bitrate = blocky/pixelated.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-          <div class="bg-blue-800 p-4 rounded-lg">
-            <span class="block text-3xl font-bold mb-1">Low</span>
-            <span class="text-sm opacity-80">Email / Preview</span>
-          </div>
-          <div class="bg-blue-700 p-4 rounded-lg border-2 border-yellow-400">
-            <span class="block text-3xl font-bold mb-1">Medium</span>
-            <span class="text-sm opacity-80">Streaming (YouTube/Netflix)</span>
-          </div>
-          <div class="bg-blue-800 p-4 rounded-lg">
-            <span class="block text-3xl font-bold mb-1">High</span>
-            <span class="text-sm opacity-80">Archival / Cinema</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Chapter 4: Troubleshooting -->
-    <section>
-      <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">4. Troubleshooting Common Conversion Errors</h2>
-      <p class="mb-4">Even with the best tools, things can go wrong. Here is how to fix common issues:</p>
-      
-      <div class="space-y-4">
-        <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white open:shadow-md transition-all">
-          <summary class="flex items-center justify-between p-4 cursor-pointer font-semibold text-gray-800">
-            <span>Problem: "File Corrupted" after conversion</span>
-            <span class="transition-transform group-open:rotate-180">▼</span>
-          </summary>
-          <div class="p-4 pt-0 text-gray-600">
-            This often happens if the download was interrupted. Try converting again preferably on a stable connection. Also, ensure the source file opens correctly on your computer before uploading.
-          </div>
-        </details>
-        
-        <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white open:shadow-md transition-all">
-          <summary class="flex items-center justify-between p-4 cursor-pointer font-semibold text-gray-800">
-            <span>Problem: Formatting Lost in PDF to Word</span>
-            <span class="transition-transform group-open:rotate-180">▼</span>
-          </summary>
-          <div class="p-4 pt-0 text-gray-600">
-            PDFs are fixed-layout. Complex tables or floating images might shift. Try using <a href="/tools/ocr-pdf" class="text-blue-600 hover:underline">OCR (Optical Character Recognition)</a> tools if the PDF is a scan, or use advanced converters that detect layout structures.
-          </div>
-        </details>
-
-        <details class="group border border-gray-200 rounded-lg bg-gray-50 open:bg-white open:shadow-md transition-all">
-          <summary class="flex items-center justify-between p-4 cursor-pointer font-semibold text-gray-800">
-            <span>Problem: Image lost transparency (turned black/white background)</span>
-            <span class="transition-transform group-open:rotate-180">▼</span>
-          </summary>
-          <div class="p-4 pt-0 text-gray-600">
-            You likely converted a PNG/WebP/GIF to JPG. <strong>JPG does not support transparency</strong> and will fill transparent areas with white or black. Convert back to PNG or WebP to keep the background transparent.
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <!-- Chapter 5: FAQ -->
-    <section>
-      <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">Frequently Asked Questions (FAQ)</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h4 class="font-bold text-lg mb-2">Is converting files online safe?</h4>
-          <p class="text-gray-600 mb-4">
-            Most reputable tools (like Axevora) process files securely. For highly sensitive data (bank statements, legal IDs), look for "Client-Side" processing tools where the file never leaves your browser, or offline software.
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-2">Does converting reduce quality?</h4>
-          <p class="text-gray-600 mb-4">
-            It depends. <strong>Lossless</strong> conversions (PNG to TIFF, WAV to FLAC) keep quality. <strong>Lossy</strong> conversions (WAV to MP3, PNG to JPG) throw away some data to save space.
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-2">What is the best format for printing?</h4>
-          <p class="text-gray-600 mb-4">
-            <strong>PDF</strong> or <strong>TIFF</strong>. Avoid JPG for text-heavy prints as compression artifacts can make text fuzzy.
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg mb-2">Can I batch convert files?</h4>
-          <p class="text-gray-600 mb-4">
-            Yes, many tools allow you to upload multiple files at once to save time. Check the specific tool's limits on file count and total size.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Conclusion -->
-    <div class="bg-blue-50 p-8 rounded-2xl text-center border-2 border-blue-100 mt-12">
-      <h2 class="text-3xl font-bold text-blue-900 mb-4">Ready to Transform Your Files?</h2>
-      <p class="text-xl text-blue-700 mb-8 max-w-2xl mx-auto">
-        Don't let file compatibility hold you back. Explore our massive suite of free, fast, and secure conversion tools designed for modern creators.
-      </p>
-      <div class="flex justify-center gap-4 flex-wrap">
-        <a href="/tools/pdf-converter" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Convert PDF</a>
-        <a href="/tools/image-converter" class="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Convert Images</a>
-        <a href="/categories" class="bg-white text-gray-700 px-8 py-3 rounded-full font-bold border border-gray-300 hover:bg-gray-50 transition shadow-sm hover:shadow-md">View All Categories</a>
-      </div>
-    </div>
-  </div>
-  `;
+  // Filter tools that are primarily converters
+  const converterTools = tools.filter(tool =>
+    tool.category === 'converter' ||
+    tool.name.includes('Converter') ||
+    tool.description.toLowerCase().includes('convert')
+  );
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>Online File Converters Guide 2024 | Axevora</title>
-        <meta name="description" content="Transform your files effortlessly with our comprehensive suite of online converters for documents, images, videos, and audio." />
-        <meta property="og:title" content="Online File Converters Guide 2024 | Axevora" />
-        <meta property="og:description" content="Transform your files effortlessly with our comprehensive suite of online converters for documents, images, videos, and audio." />
+        <title>Free Online File Converters - Image, Audio, Data & Base64 | Axevora</title>
+        <meta name="description" content="Convert any file format instantly. Free online tools for images (JPG/PNG/WebP), data (JSON/CSV), and encoding (Base64). Fast, secure, and client-side processing." />
+        <meta name="keywords" content="file converter, image converter, json to csv, base64 encoder, data conversion, webp converter, free online tools" />
+        <meta property="og:title" content="Free Online File Converters - Image, Audio, Data & Base64 | Axevora" />
+        <meta property="og:description" content="Convert any file format instantly. Free online tools for images, data, and encoding." />
       </Helmet>
-      <ToolTemplate
-        title="Online File Converters Guide 2024"
-        description="Transform your files effortlessly with our comprehensive suite of online converters for documents, images, videos, and audio."
-        content={blogContent}
-        showContentAds
-      />
-    </>
+
+      <Header />
+
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-16">
+
+          {/* Hero Section */}
+          <div className="text-center space-y-8">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border bg-card">
+              <img
+                src="/assets/blog/converters-tools-guide.png"
+                alt="File Transformation Tools"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center justify-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full">
+                <RefreshCcw className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400">
+                Fluid Data
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Technology evolves, but file formats stick around. Bridge the gap between legacy systems and modern web standards
+                with our universal conversion suite.
+              </p>
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {converterTools.map((tool) => (
+              <Link key={tool.id} to={tool.path} className="group">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-orange-500/50">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl group-hover:bg-orange-100 dark:group-hover:bg-orange-900/40 transition-colors">
+                        <tool.icon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                      </div>
+                    </div>
+                    <CardTitle className="group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors text-xl">
+                      {tool.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {tool.subheading}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm font-medium text-orange-600 dark:text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Convert Now <span className="ml-1">→</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* EXTENDED CONTENT START */}
+          <div className="prose dark:prose-invert max-w-none space-y-16">
+
+            {/* Lossy vs Lossless */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">Lossy vs. Lossless: The Great Debate</h2>
+              <p className="text-lg text-muted-foreground">
+                All conversions involve a trade-off. Do you prioritize <strong>Quality</strong> (keeping every pixel perfect) or <strong>Size</strong> (fast loading speed)?
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-card border rounded-xl p-6 shadow-sm">
+                  <h3 className="text-xl font-bold text-red-600 dark:text-red-400 flex items-center gap-2 m-0 mb-4">
+                    <Layers className="w-5 h-5" />
+                    Lossy Compression
+                  </h3>
+                  <ul className="space-y-3 pl-0 list-none m-0">
+                    <li className="text-sm border-b pb-2">
+                      <strong>Formats:</strong> JPG, MP3, WebP (standard)
+                    </li>
+                    <li className="text-sm border-b pb-2">
+                      <strong>How it works:</strong> It throws away data that the human eye/ear is unlikely to notice.
+                    </li>
+                    <li className="text-sm pt-2">
+                      <strong>Best For:</strong> Website photos, streaming audio, social media.
+                    </li>
+                  </ul>
+                </div>
+                <div className="bg-card border rounded-xl p-6 shadow-sm">
+                  <h3 className="text-xl font-bold text-green-600 dark:text-green-400 flex items-center gap-2 m-0 mb-4">
+                    <Database className="w-5 h-5" />
+                    Lossless Compression
+                  </h3>
+                  <ul className="space-y-3 pl-0 list-none m-0">
+                    <li className="text-sm border-b pb-2">
+                      <strong>Formats:</strong> PNG, FLAC, WAV, ZIP
+                    </li>
+                    <li className="text-sm border-b pb-2">
+                      <strong>How it works:</strong> Like a ZIP file, it compresses data patterns but restores them 100% perfectly upon opening.
+                    </li>
+                    <li className="text-sm pt-2">
+                      <strong>Best For:</strong> Logos, transparent images, archival storage, medical data.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Encoding Explained */}
+            <div className="bg-muted/30 p-8 rounded-2xl border">
+              <h2 className="text-2xl font-bold mb-6 mt-0">Why do we need Base64?</h2>
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="flex-1">
+                  <p className="text-muted-foreground m-0">
+                    Computers speak binary (0s and 1s). The Internet protocols (HTTP, SMTP email) were originally built to only transmit text (ASCII).
+                    If you try to send a raw image file through an old email system, it corrupts the data.
+                    <br /><br />
+                    <strong>Base64</strong> is a translation layer. It takes binary data (like an image) and turns it into safe printable text characters (A-Z, 0-9).
+                    This makes the file 33% larger but ensures it can travel safely across any network without getting mangled.
+                  </p>
+                </div>
+                <div className="w-full md:w-1/3 bg-background p-4 rounded-lg border font-mono text-xs overflow-hidden">
+                  <div className="text-orange-500 mb-2">// Raw Image (Binary)</div>
+                  <div className="mb-4 text-muted-foreground">PNG...IHDR...</div>
+                  <ArrowLeftRight className="w-4 h-4 mx-auto my-2 text-muted-foreground" />
+                  <div className="text-green-500 mb-2">// Base64 (Safe Text)</div>
+                  <div className="break-all text-muted-foreground">iVBORw0KGgoAAAANSUhEUgAA...</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Use Cases */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">Common Conversion Scenarios</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <ImageLike className="w-5 h-5 text-primary" />
+                    Web Optimization
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Converting massive PNG screenshots to <strong>WebP</strong> format can reduce page load size by 80%, directly improving your Google SEO score (Core Web Vitals).
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <Database className="w-5 h-5 text-primary" />
+                    Data Migration
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Moving from Excel to a Web App? You need to convert <strong>CSV to JSON</strong>. Developers use JSON because it nests data hierarchically, unlike the flat rows of a CSV.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <FileType2 className="w-5 h-5 text-primary" />
+                    Legacy Support
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Some old government websites or printers only accept <strong>TIFF</strong> or <strong>JPG</strong>. Modern iPhones shoot in HEIC. Converters are the translator between these eras.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          {/* EXTENDED CONTENT END */}
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

@@ -42,7 +42,38 @@ const allTools = [
     description: "Merge multiple PDF documents into a single file easily online.",
     category: "pdf",
     icon: FileText,
-    path: "/merge-pdf-online"
+    path: "/merge-pdf-online",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Combine Multiple PDFs into One Organized Document</h2>
+        <p>Project reports, invoices, legal contracts—documents often come in scattered pieces. Our <strong>Merge PDF tool</strong> is the digital stapler you've been looking for. Combine unlimited files into a single, professional document in the exact order you want.</p>
+        
+        <h3>Why Merge PDFs?</h3>
+        <ul>
+          <li><strong>Organization:</strong> Keep related documents together.</li>
+          <li><strong>Sharing:</strong> Send one link or attachment instead of ten.</li>
+          <li><strong>Printing:</strong> Print a cohesive packet without opening multiple files.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Select or drag multiple PDF files at once.",
+      "Drag the thumbnails to rearrange the page order.",
+      "Click 'Merge PDF' to combine them.",
+      "Download your single, unified document."
+    ],
+    benefits: [
+      "100% Free with no page limits.",
+      "Drag-and-drop reordering.",
+      "Works on Mac, Windows, and Linux.",
+      "Secure processing."
+    ],
+    faqs: [
+      {
+        question: "Can I merge different page sizes?",
+        answer: "Yes! You can combine A4, Letter, and Landscape pages. The final PDF will maintain the original dimensions of each page."
+      }
+    ]
   },
   {
     id: "split-pdf",
@@ -51,7 +82,38 @@ const allTools = [
     description: "Split PDF files or extract specific pages into new documents.",
     category: "pdf",
     icon: FileText,
-    path: "/split-pdf-online"
+    path: "/split-pdf-online",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Extract Only the Pages You Need</h2>
+        <p>Have a massive 100-page report but only need Chapter 4? Or maybe a scanned bank statement where you only want to share one specific transaction page? Our <strong>Split PDF tool</strong> gives you surgical precision to separate, extract, and save specific pages.</p>
+        
+        <h3>Flexible Splitting Options</h3>
+        <ul>
+          <li><strong>Extract Custom Ranges:</strong> e.g., "Pages 1-5, 10, 12-15".</li>
+          <li><strong>Burst Split:</strong> Save every single page as a separate PDF file.</li>
+          <li><strong>Delete Unwanted Pages:</strong> Simply uncheck the pages you don't want to include.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF.",
+      "Select the pages you want to keep (click to select/deselect).",
+      "Or enter a specific range (e.g. 1-5).",
+      "Click 'Split PDF' and download your new file(s)."
+    ],
+    benefits: [
+      "Instant page visualization.",
+      "No quality loss.",
+      "Handle large files with ease.",
+      "Browser-based privacy."
+    ],
+    faqs: [
+      {
+        question: "Will this break my links/bookmarks?",
+        answer: "Extracted pages retain their content, but internal links to pages that were removed will obviously no longer work."
+      }
+    ]
   },
   {
     id: "compress-pdf",
@@ -60,7 +122,49 @@ const allTools = [
     description: "Compress and optimize PDF files to reduce file size online.",
     category: "pdf",
     icon: FileText,
-    path: "/compress-pdf-online"
+    path: "/compress-pdf-online",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Reduce PDF Size Without Losing Quality</h2>
+        <p>Large PDF files are a hassle. They clog up email inboxes, take forever to upload, and eat up storage space. Our <strong>PDF Compressor</strong> solves this by intelligently optimizing your file's internal structure.</p>
+
+        <h3>How Compression Works</h3>
+        <p>We use advanced algorithms to:</p>
+        <ul>
+          <li><strong>Resample Images:</strong> Reduce the DPI of embedded images to a web-friendly standard (144dpi or 72dpi).</li>
+          <li><strong>Remove Redundancy:</strong> Strip out duplicate fonts, unused metadata, and hidden layers.</li>
+          <li><strong>Optimize Structure:</strong> Reorganize the internal objects of the PDF for efficiency.</li>
+        </ul>
+
+        <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg my-6 border-l-4 border-green-500">
+          <h4>🚀 Performance Boost</h4>
+          <p>Compressing a 20MB scanned contract down to 2MB makes it 10x faster to share and download, without making the text unreadable.</p>
+        </div>
+      </article>
+    `,
+    howToUse: [
+      "Upload your large PDF file.",
+      "Select compression level (Medium is recommended for most docs).",
+      "Wait for the optimization process to finish.",
+      "See exactly how much space you saved (e.g., -85%).",
+      "Download your lightweight PDF."
+    ],
+    benefits: [
+      "Bypass email attachment limits (usually 25MB).",
+      "Faster uploads to portals (government, university, jobs).",
+      "Save device storage space.",
+      "Cloud-based processing saves your CPU."
+    ],
+    faqs: [
+      {
+        question: "Will the text become blurry?",
+        answer: "No. Text in PDFs is usually vector-based, which scales perfectly at any size. Only embedded images might lose some detail, but they will still be readable."
+      },
+      {
+        question: "Is it safe for sensitive docs?",
+        answer: "Yes. All processing happens securely. We auto-delete all uploaded files from our servers after 1 hour."
+      }
+    ]
   },
   {
     id: "pdf-to-word",
@@ -69,7 +173,38 @@ const allTools = [
     description: "Convert PDF files to editable Word documents.",
     category: "pdf",
     icon: FileText,
-    path: "/tools/pdf-to-word"
+    path: "/tools/pdf-to-word",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Convert PDF to Editable Word Docs</h2>
+        <p>PDFs are great for sharing, but terrible for editing. Our <strong>PDF to Word Converter</strong> changes that. It accurately transforms your static PDF into a fully editable Microsoft Word (.docx) file.</p>
+        
+        <h3>What Gets Preserved?</h3>
+        <ul>
+          <li><strong>Text & Fonts:</strong> We match the original fonts as closely as possible.</li>
+          <li><strong>Images:</strong> Photos and graphics stay in place.</li>
+          <li><strong>Layout:</strong> Paragraphs, columns, and tables remain intact.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Drag and drop your PDF.",
+      "Wait for the conversion (usually 5-10 seconds).",
+      "Download your new .docx file.",
+      "Open in MS Word or Google Docs to edit."
+    ],
+    benefits: [
+      "Stop retyping documents.",
+      "Edit contracts and resumes easily.",
+      "Free for everyone.",
+      "Secure deletion after processing."
+    ],
+    faqs: [
+      {
+        question: "Can I convert scanned PDFs?",
+        answer: "Yes! Our OCR technology can recognize text even in non-selectable scanned documents."
+      }
+    ]
   },
   {
     id: "word-to-pdf",
@@ -78,7 +213,30 @@ const allTools = [
     description: "Convert Word documents to PDF format.",
     category: "pdf",
     icon: FileText,
-    path: "/tools/word-to-pdf"
+    path: "/tools/word-to-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Turn Word Docs into Professional PDFs</h2>
+        <p>Sending a Word doc can be risky—formatting often breaks on different computers (missing fonts, shifted images). Converting to <strong>PDF</strong> ensures your document looks exactly the same on every device, from iPhones to Windows desktops.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your DOC or DOCX file.",
+      "The tool automatically converts it.",
+      "Download your high-quality PDF."
+    ],
+    benefits: [
+      "Locks your formatting.",
+      "Universal compatibility.",
+      "Smaller file sizes.",
+      "Ready for professional printing."
+    ],
+    faqs: [
+      {
+        question: "Does it support .doc files?",
+        answer: "Yes, we support both the modern .docx and the older .doc formats."
+      }
+    ]
   },
   {
     id: "pdf-to-jpg",
@@ -87,7 +245,30 @@ const allTools = [
     description: "Convert each page of a PDF into a high-quality JPG image.",
     category: "pdf",
     icon: Image,
-    path: "/tools/pdf-to-jpg"
+    path: "/tools/pdf-to-jpg",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Extract Images from PDF</h2>
+        <p>Need to share a single page of a PDF on Instagram or use it in a PowerPoint presentation? Our <strong>PDF to JPG</strong> tool converts every page of your document into a separate, high-resolution image file.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF.",
+      "Choose 'Convert Entire Pages' or 'Extract Single Images'.",
+      "Download your images as a ZIP file or individually."
+    ],
+    benefits: [
+      "High Resolution (300 DPI).",
+      "Great for social media sharing.",
+      "No watermarks.",
+      "Fast processing."
+    ],
+    faqs: [
+      {
+        question: "JPG vs PNG?",
+        answer: "JPG is best for photos and smaller file sizes. Use our PDF to PNG tool if you need higher quality text rendering."
+      }
+    ]
   },
   {
     id: "pdf-to-png",
@@ -96,7 +277,30 @@ const allTools = [
     description: "Convert each page of a PDF into a high-quality PNG image.",
     category: "pdf",
     icon: Image,
-    path: "/tools/pdf-to-png"
+    path: "/tools/pdf-to-png",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Convert PDF to High-Quality PNGs</h2>
+        <p>Unlike JPG which compresses images (losing quality), <strong>PNG is a lossless format</strong>. This means when you convert your PDF pages to PNG, you get razor-sharp text and graphics, making it perfect for archiving or professional editing.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF.",
+      "Wait for the conversion.",
+      "Download your pristine PNG images."
+    ],
+    benefits: [
+      "Lossless quality.",
+      "Transparent background support.",
+      "Ideal for screenshots and text.",
+      "Batch downloading."
+    ],
+    faqs: [
+      {
+        question: "Why are the files larger than JPG?",
+        answer: "Because PNG preserves all the detail. If file size is a concern, use our PDF to JPG tool instead."
+      }
+    ]
   },
   {
     id: "jpg-to-pdf",
@@ -105,7 +309,31 @@ const allTools = [
     description: "Combine multiple JPG images into a single PDF document.",
     category: "pdf",
     icon: Image,
-    path: "/tools/jpg-to-pdf"
+    path: "/tools/jpg-to-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Turn Photos into a Document</h2>
+        <p>Taken photos of a contract or receipt with your phone? Use our <strong>JPG to PDF converter</strong> to combine all those separate images into a single, clean PDF file that's easy to email.</p>
+      </article>
+    `,
+    howToUse: [
+      "Select your JPG/PNG images.",
+      "Drag to reorder them.",
+      "Choose page size (A4, Letter, Auto).",
+      "Click 'Create PDF' to merge them all."
+    ],
+    benefits: [
+      "Combine unlimited photos.",
+      "Adjust margins and orientation.",
+      "Supports JPG, PNG, GIF, BMP.",
+      "Instant download."
+    ],
+    faqs: [
+      {
+        question: "Can I print this?",
+        answer: "Yes! The resulting PDF is formatted perfectly for standard printing."
+      }
+    ]
   },
   {
     id: "pdf-to-excel",
@@ -182,7 +410,31 @@ const allTools = [
     description: "Convert PDF pages into PowerPoint slides.",
     category: "pdf",
     icon: Presentation,
-    path: "/tools/pdf-to-ppt"
+    path: "/tools/pdf-to-ppt",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Present with Confidence: PDF to PowerPoint</h2>
+        <p>Locked in a PDF? Our <strong>PDF to PPT converter</strong> unlocks your content, transforming static pages into editable PowerPoint slides. This is a lifesaver for professionals who need to present data from reports or teachers who want to use textbook materials in class.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF document.",
+      "The tool extracts content and places it onto slides.",
+      "Download your new .pptx file.",
+      "Open in PowerPoint or Google Slides to present."
+    ],
+    benefits: [
+      "No need to re-type slides.",
+      "Preserves original layout.",
+      "Editable text and images.",
+      "Works with Keynote and Google Slides too."
+    ],
+    faqs: [
+      {
+        question: "Is the text editable?",
+        answer: "Yes! We strive to make text blocks editable so you can change fonts, colors, and content."
+      }
+    ]
   },
   {
     id: "ppt-to-pdf",
@@ -191,7 +443,30 @@ const allTools = [
     description: "Convert PowerPoint presentations to PDF format.",
     category: "pdf",
     icon: Presentation,
-    path: "/tools/ppt-to-pdf"
+    path: "/tools/ppt-to-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Share Presentations Fearlessly</h2>
+        <p>Sending a PowerPoint file is risky—fonts go missing, videos don't play, and formatting shifts. Converting your <strong>PPT to PDF</strong> freezes everything in place. It guarantees your audience sees exactly what you designed, whether they are on a phone, tablet, or PC.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your .ppt or .pptx file.",
+      "We convert each slide into a PDF page.",
+      "Download your professional handout."
+    ],
+    benefits: [
+      "Locks all formatting.",
+      "Reduces file size for email.",
+      "Great for lecture notes/handouts.",
+      "Prevent accidental edits."
+    ],
+    faqs: [
+      {
+        question: "What about animations?",
+        answer: "PDF is a static format. Animations and transitions will not play, but the final visual state of the slide will be captured."
+      }
+    ]
   },
   {
     id: "lock-pdf",
@@ -200,7 +475,31 @@ const allTools = [
     description: "Encrypt PDF files with a password for security.",
     category: "pdf",
     icon: Lock,
-    path: "/tools/lock-pdf"
+    path: "/tools/lock-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Bank-Grade Security for Your Documents</h2>
+        <p>Sending a contract via email? Storing tax returns on the cloud? Don't leave them exposed. Our <strong>Lock PDF</strong> tool uses industry-standard 256-bit AES encryption to password-protect your files. Only people with the password can view the content.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your confidential PDF.",
+      "Type a strong password.",
+      "Click 'Encrypt PDF'.",
+      "Download your secured file."
+    ],
+    benefits: [
+      "Prevent unauthorized access.",
+      "Compliant with GDPR privacy standards.",
+      "Cannot be opened without the key.",
+      "Files are not stored on our server."
+    ],
+    faqs: [
+      {
+        question: "Can you recover my password if I forget it?",
+        answer: "No. For your security, we do not store passwords. If you lose it, the file cannot be opened."
+      }
+    ]
   },
   {
     id: "unlock-pdf",
@@ -209,7 +508,30 @@ const allTools = [
     description: "Remove password protection from PDF files.",
     category: "pdf",
     icon: Lock,
-    path: "/tools/unlock-pdf"
+    path: "/tools/unlock-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Remove Passwords from PDFs</h2>
+        <p>Tired of typing a password every time you open your bank statement or payslip? If you know the password and want to remove it permanently, our <strong>Unlock PDF</strong> tool creates a new, unencrypted version of your file for easy access.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload the locked PDF.",
+      "Enter the *current* password once (to prove you have access).",
+      "Click 'Unlock'.",
+      "Download the password-free version."
+    ],
+    benefits: [
+      "Save time opening frequent files.",
+      "Enable editing on previously restricted files.",
+      "Share with others without sharing the password."
+    ],
+    faqs: [
+      {
+        question: "Can it crack a password I don't know?",
+        answer: "No. This is a legitimate tool for owners to remove their own protection. It is not a hacking tool."
+      }
+    ]
   },
   {
     id: "rotate-pdf",
@@ -218,7 +540,30 @@ const allTools = [
     description: "Rotate PDF pages 90, 180, or 270 degrees.",
     category: "pdf",
     icon: RotateCw,
-    path: "/tools/rotate-pdf"
+    path: "/tools/rotate-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Fix Upside-Down Scans Instantly</h2>
+        <p>Scanned a document in the wrong orientation? Don't rescan it. Our <strong>Rotate PDF</strong> tool lets you fix the orientation of single pages or the entire document with a click.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF.",
+      "Hover over any page to rotate it individually.",
+      "Or use 'Rotate All' buttons.",
+      "Download the fixed PDF."
+    ],
+    benefits: [
+      "Fix landscape/portrait mix-ups.",
+      "No quality loss.",
+      "Visual interface."
+    ],
+    faqs: [
+      {
+        question: "Is the rotation permanent?",
+        answer: "Yes, once you download the file, the new orientation is saved permanently."
+      }
+    ]
   },
   {
     id: "delete-pdf-pages",
@@ -227,7 +572,30 @@ const allTools = [
     description: "Remove specific pages from a PDF document.",
     category: "pdf",
     icon: Trash2,
-    path: "/tools/delete-pdf-pages"
+    path: "/tools/delete-pdf-pages",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Clean Up Your Documents</h2>
+        <p>Accidentally scanned a blank page? Need to remove a sensitive page before sharing? Our <strong>Delete PDF Pages</strong> tool lets you remove unwanted content simply by clicking 'X'.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF.",
+      "See all pages as thumbnails.",
+      "Click the trash icon on pages you want to remove.",
+      "Download the cleaned PDF."
+    ],
+    benefits: [
+      "Reduce file size.",
+      "Remove sensitive info.",
+      "Fix scanning errors."
+    ],
+    faqs: [
+      {
+        question: "Can I undo?",
+        answer: "You can re-upload the original file if you make a mistake, but the downloaded file will not have the deleted pages."
+      }
+    ]
   },
   {
     id: "extract-pdf-pages",
@@ -236,7 +604,25 @@ const allTools = [
     description: "Create a new PDF containing only selected pages.",
     category: "pdf",
     icon: Scissors,
-    path: "/tools/extract-pdf-pages"
+    path: "/tools/extract-pdf-pages",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Cherry-Pick Your Pages</h2>
+        <p>Unlike splitting (which divides a file), <strong>Extraction</strong> is about curating. Pick the exact 3 pages you want from a 50-page document and create a brand new, lightweight PDF containing just those highlights.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload PDF.",
+      "Click on the pages you want to KEEP.",
+      "Click 'Extract'.",
+      "Download your new mini-PDF."
+    ],
+    benefits: [
+      "Create focused documents.",
+      "Send only relevant info.",
+      "Simple visual selector."
+    ],
+    faqs: []
   },
   {
     id: "watermark-pdf",
@@ -245,7 +631,30 @@ const allTools = [
     description: "Add custom text watermarks to PDF pages.",
     category: "pdf",
     icon: Stamp,
-    path: "/tools/watermark-pdf"
+    path: "/tools/watermark-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Claim Ownership of Your Work</h2>
+        <p>Prevent unauthorized copying or mark documents as 'DRAFT' or 'CONFIDENTIAL'. Our <strong>Watermark PDF</strong> tool stamps your custom text over every page of your document.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload PDF.",
+      "Type watermark text (e.g. 'Copyright 2024').",
+      "Choose transparency, color, and position.",
+      "Download watermarked file."
+    ],
+    benefits: [
+      "Protect intellectual property.",
+      "Indicate document status.",
+      "Professional branding."
+    ],
+    faqs: [
+      {
+        question: "Can I remove the watermark later?",
+        answer: "It is very difficult to remove a baked-in watermark, which is the point! Always keep your original clean file safe."
+      }
+    ]
   },
   {
     id: "rearrange-pdf",
@@ -254,7 +663,25 @@ const allTools = [
     description: "Reorder pages within a PDF document.",
     category: "pdf",
     icon: Move,
-    path: "/tools/rearrange-pdf"
+    path: "/tools/rearrange-pdf",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Organize Your PDF</h2>
+        <p>Scanned pages in the wrong order? Need to move the conclusion to the front? <strong>Rearrange PDF</strong> lets you drag and drop pages into the perfect sequence.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload PDF.",
+      "Drag thumbnails to new positions.",
+      "Click 'Save Order'.",
+      "Download."
+    ],
+    benefits: [
+      "Fix scanning mistakes.",
+      "Improve document flow.",
+      "No technical skills needed."
+    ],
+    faqs: []
   },
   {
     id: "pdf-text-extractor",
@@ -263,7 +690,25 @@ const allTools = [
     description: "Extract raw text from PDF files.",
     category: "pdf",
     icon: AlignLeft,
-    path: "/tools/pdf-text-extractor"
+    path: "/tools/pdf-text-extractor",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Get the Text, Leave the Formatting</h2>
+        <p>Need to copy text from a PDF but it's all garbled or locked? Our <strong>Text Extractor</strong> pulls out the raw plain text from your document, ready for pasting into Notepad, Word, or code editors.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload PDF.",
+      "We strip images and layout.",
+      "You get a clean stream of text.",
+      "Copy or download as .txt."
+    ],
+    benefits: [
+      "Analysis ready data.",
+      "Smallest file size.",
+      "Works on essays and reports."
+    ],
+    faqs: []
   },
   {
     id: "pdf-editor",
@@ -272,7 +717,25 @@ const allTools = [
     description: "Add text, shapes, and annotations to PDFs.",
     category: "pdf",
     icon: Edit,
-    path: "/tools/pdf-editor"
+    path: "/tools/pdf-editor",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Edit PDFs in Your Browser</h2>
+        <p>Forgot to add a date? Need to fill out a form? Our <strong>Online PDF Editor</strong> lets you add text, checkmarks, signatures, and shapes directly onto your PDF pages.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload PDF.",
+      "Select 'Text Tool' to type.",
+      "Select 'Freehand' to sign or draw.",
+      "Download your specific edits."
+    ],
+    benefits: [
+      "Fill forms without printing.",
+      "Sign documents digitally.",
+      "Annotate and markup."
+    ],
+    faqs: []
   },
   {
     id: "image-converter",
@@ -1064,7 +1527,37 @@ const allTools = [
     description: "Calculate age in years, months, days, and more.",
     category: "calculator",
     icon: Calendar,
-    path: "/tools/age-calculator"
+    path: "/tools/age-calculator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Calculate Your Exact Age to the Scroll</h2>
+        <p>You know you are 25 years old, but do you know how many days you've been alive? Or how many seconds? Our <strong>Age Calculator</strong> helps you find your precise chronological age based on your Date of Birth (DOB).</p>
+
+        <h3>Why Calculate Precise Age?</h3>
+        <ul>
+          <li><strong>Astrology:</strong> Exact time is crucial for birth charts.</li>
+          <li><strong>Milestones:</strong> Celebrate your 10,000th day alive!</li>
+          <li><strong>Legal Documents:</strong> Verify eligibility for age-restricted services.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Select your Date of Birth from the calendar picker.",
+      "Enter the Time of Birth (optional, for extra precision).",
+      "Click 'Calculate'.",
+      "View your age in Years, Months, Weeks, Days, Hours, and Minutes."
+    ],
+    benefits: [
+      "Fun facts about your birthday.",
+      "Determine age difference between two people.",
+      "Planning for retirement or events."
+    ],
+    faqs: [
+      {
+        question: "Does it account for Leap Years?",
+        answer: "Yes, our algorithm correctly accounts for all leap years (every 4 years) when calculating your total days alive."
+      }
+    ]
   },
 
   // Formatters
@@ -1210,7 +1703,38 @@ const allTools = [
     description: "Generate stunning images from text descriptions using AI.",
     category: "ai",
     icon: Image,
-    path: "/tools/text-to-image"
+    path: "/tools/text-to-image",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Turn Words into Art with AI</h2>
+        <p>You don't need to be an artist to create breathtaking visuals. With our <strong>AI Text to Image Generator</strong>, you simply describe what you see in your mind's eye, and our advanced diffusion models paint it into reality in seconds.</p>
+
+        <h3>How to Write Better Prompts</h3>
+        <p>The secret to great AI art is the "prompt" (your instruction). Use this formula:</p>
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md font-mono text-sm mb-4">
+          <strong>[Subject] + [Action/Context] + [Art Style] + [Lighting/Mood]</strong>
+        </div>
+        <p><em>Example: "A futuristic city (Subject) floating in the clouds (Context), cyberpunk style with neon lights (Style), cinematic 8k resolution (Mood)."</em></p>
+      </article>
+    `,
+    howToUse: [
+      "Type a detailed description of the image you want.",
+      "Select an aspect ratio (Square, Portrait, Landscape).",
+      "Click 'Generate'.",
+      "Upscale and download your favorite result."
+    ],
+    benefits: [
+      "Copyright-free images for your blog.",
+      "Visualize concepts instantly.",
+      "No design skills required.",
+      "Create unique assets found nowhere else."
+    ],
+    faqs: [
+      {
+        question: "Can I use these images commercially?",
+        answer: "Yes, you own full commercial rights to the images you generate with our tool."
+      }
+    ]
   },
   {
     id: "text-to-video",
@@ -1219,7 +1743,30 @@ const allTools = [
     description: "Create videos from text prompts with AI generation.",
     category: "ai",
     icon: Video,
-    path: "/tools/text-to-video"
+    path: "/tools/text-to-video",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>AI Video Generation: The New Frontier</h2>
+        <p>Video production used to cost thousands of dollars and weeks of time. Now, you can script scenes with text and have our AI animate them. <strong>Text to Video</strong> is perfect for creating social media ads, storyboards, or visualizing scenes for a movie.</p>
+      </article>
+    `,
+    howToUse: [
+      "Describe the scene (e.g., 'A drone flying over a snowy mountain at sunset').",
+      "Choose a duration (e.g., 5 seconds).",
+      "Click 'Generate Video'.",
+      "Download the MP4 file."
+    ],
+    benefits: [
+      "Rapid prototyping.",
+      "Unique stock footage.",
+      "Engage audiences better than static images."
+    ],
+    faqs: [
+      {
+        question: "Is there audio?",
+        answer: "Currently, we generate visual video only. You can add music tracks separately using our Video Editor."
+      }
+    ]
   },
   {
     id: "ai-prompt-assistant",
@@ -1228,7 +1775,32 @@ const allTools = [
     description: "Get help crafting perfect prompts for AI tools and chatbots.",
     category: "ai",
     icon: Bot,
-    path: "/tools/ai-prompt-assistant"
+    path: "/tools/ai-prompt-assistant",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Master the Language of AI</h2>
+        <p>AI models like ChatGPT, Midjourney, and Claude are powerful, but they are only as smart as the instructions you give them. The <strong>AI Prompt Assistant</strong> helps you rewrite basic requests into highly optimized engineered prompts that unlock the full potential of these LLMs.</p>
+
+        <h3>What We Optimize</h3>
+        <ul>
+          <li><strong>Clarity:</strong> Removing ambiguity.</li>
+          <li><strong>Context:</strong> Adding personas (e.g., "Act as a Senior Developer").</li>
+          <li><strong>Constraints:</strong> Setting word limits or formatting rules.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Enter your basic idea (e.g., 'Write a blog about coffee').",
+      "Select your target AI (ChatGPT, Midjourney, Stable Diffusion).",
+      "Click 'Optimize'.",
+      "Copy the enhanced, detailed prompt."
+    ],
+    benefits: [
+      "Get better answers on the first try.",
+      "Learn prompt engineering techniques.",
+      "Save time iterating."
+    ],
+    faqs: []
   },
   {
     id: "ai-website-generator",
@@ -1237,7 +1809,25 @@ const allTools = [
     description: "Generate complete website layouts and content using AI.",
     category: "ai",
     icon: Wand2,
-    path: "/tools/ai-website-generator"
+    path: "/tools/ai-website-generator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Build a Website in 60 Seconds</h2>
+        <p>Need a landing page for your startup? A portfolio for your photography? Don't spend months coding. Our <strong>AI Website Generator</strong> builds a responsive, modern HTML/CSS website based on a simple description of your business.</p>
+      </article>
+    `,
+    howToUse: [
+      "Describe your site purpose (e.g., 'A bakery in New York selling custom cupcakes').",
+      "Choose a color theme.",
+      "Click 'Build Website'.",
+      "Preview the live site and download the code."
+    ],
+    benefits: [
+      "Includes copy, images, and layout.",
+      "Mobile-friendly design.",
+      "Clean, semantic HTML code."
+    ],
+    faqs: []
   },
   {
     id: "ai-tool-generator",
@@ -1246,7 +1836,29 @@ const allTools = [
     description: "Create custom AI-powered tools and utilities on demand.",
     category: "ai",
     icon: Sparkles,
-    path: "/tools/ai-tool-generator"
+    path: "/tools/ai-tool-generator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>If It Doesn't Exist, Build It</h2>
+        <p>Can't find the specific tool you need? Tell our <strong>AI Tool Generator</strong> what logic you need (e.g., "A calculator that estimates standard deviation based on a list of numbers" or "A text parser that extracts email addresses"). We will generate a working mini-app for you instantly.</p>
+      </article>
+    `,
+    howToUse: [
+      "Describe the tool functionality.",
+      "Wait for the AI to code it.",
+      "Use the tool immediately in the preview window."
+    ],
+    benefits: [
+      "Limitless possibilities.",
+      "Solve niche problems.",
+      "No coding knowledge needed."
+    ],
+    faqs: [
+      {
+        question: "Is the code safe?",
+        answer: "Yes, the generated tools run in a sandboxed environment within your browser."
+      }
+    ]
   },
 
 
@@ -1327,7 +1939,32 @@ const allTools = [
     description: "Test your typing speed and accuracy with our free online typing test.",
     category: "games",
     icon: Keyboard,
-    path: "/tools/typing-speed-test"
+    path: "/tools/typing-speed-test",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>How Fast Can You Type?</h2>
+        <p>Typing speed is a critical skill in today's digital age. Whether you are a programmer coding all day, a writer working on a novel, or a student finishing a paper, typing faster saves you hundreds of hours per year. Our <strong>Typing Speed Test</strong> measures your WPM (Words Per Minute) and Accuracy.</p>
+
+        <h3>What is a good WPM?</h3>
+        <ul>
+          <li><strong>40 WPM:</strong> Average typing speed.</li>
+          <li><strong>60-70 WPM:</strong> Professional typing speed (secretaries, writers).</li>
+          <li><strong>100+ WPM:</strong> Elite speed (competitive typists).</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Click on the text input area.",
+      "Start typing the highlighted words as accurately as possible.",
+      "Correction of mistakes is allowed (backspace).",
+      "The timer stops when you finish the paragraph."
+    ],
+    benefits: [
+      "Improve your muscle memory.",
+      "Identify weak keys.",
+      "Train for speed and accuracy simultaneously."
+    ],
+    faqs: []
   },
   {
     id: "2048-game",
@@ -1336,7 +1973,27 @@ const allTools = [
     description: "Play the addictive 2048 puzzle game online. Merge numbers to win!",
     category: "games",
     icon: Gamepad2,
-    path: "/tools/2048-game"
+    path: "/tools/2048-game",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>The Addiction of Powers of Two</h2>
+        <p>2048 is the legendary sliding block puzzle game that took the internet by storm. The goal is deceptively simple: slide numbered tiles on a grid to combine them to create a tile with the number 2048.</p>
+
+        <h3>Strategy Tips</h3>
+        <p>The key to winning is keeping your highest number in a secure corner. Never move it from there! Build a chain of descending numbers next to it so you can easily merge them upwards.</p>
+      </article>
+    `,
+    howToUse: [
+      "Use Arrow Keys (or Swipe) to move tiles.",
+      "Tiles with the same number merge into one when they touch.",
+      "Add them up to reach 2048 to win!"
+    ],
+    benefits: [
+      "Great mental workout.",
+      "Improves strategic planning.",
+      "Relaxing yet challenging."
+    ],
+    faqs: []
   },
   {
     id: "number-flow",
@@ -1344,8 +2001,26 @@ const allTools = [
     subheading: "Connect numbers logic puzzle",
     description: "Connect the numbered dots in order to fill the entire grid. A relaxing logic puzzle.",
     category: "games",
-    icon: Gamepad2, // Or a specific icon if available
-    path: "/tools/number-flow"
+    icon: Gamepad2,
+    path: "/tools/number-flow",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Connect the Dots - Logic Edition</h2>
+        <p>Number Flow is a minimalist puzzle game where you must connect matching numbers with continuous lines (pipes) without the lines crossing each other. It sounds easy, but you must also fill <em>every single square</em> on the grid to solve the level.</p>
+      </article>
+    `,
+    howToUse: [
+      "Click/Tap on a colored number.",
+      "Drag a line to its matching pair.",
+      "Ensure lines do not cross.",
+      "Fill the entire board to win."
+    ],
+    benefits: [
+      "Enhances spatial reasoning.",
+      "Calming, Zen-like gameplay.",
+      "Hundreds of levels of increasing difficulty."
+    ],
+    faqs: []
   },
   {
     id: "image-resizer",
@@ -1500,7 +2175,32 @@ const allTools = [
     description: "Measure your visual reaction time in milliseconds. Are you fast enough?",
     category: "games",
     icon: Timer,
-    path: "/tools/reaction-time-test"
+    path: "/tools/reaction-time-test",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Reflex Check: How Fast Are You?</h2>
+        <p>Reaction time is the duration between a stimulus and your response. The average human visual reaction time is around 250 milliseconds (0.25 seconds). Professional F1 drivers and Esports athletes clock in closer to 150-180ms.</p>
+
+        <h3>Factors Affecting Reaction Time</h3>
+        <ul>
+          <li><strong>Age:</strong> Reactions peak in your 20s.</li>
+          <li><strong>Fatigue:</strong> Being tired significantly slows you down.</li>
+          <li><strong>Hydration:</strong> Dehydration works like mild intoxication.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Wait for the screen to turn GREEN.",
+      "Click as fast as you can once it changes color.",
+      "Do NOT click too early (false start).",
+      "Repeat 5 times to get your average score."
+    ],
+    benefits: [
+      "Benchmark your nervous system health.",
+      "Compete for the lowest millisecond score.",
+      "fun warm-up before gaming."
+    ],
+    faqs: []
   },
   {
     id: "memory-match-game",
@@ -1509,7 +2209,25 @@ const allTools = [
     description: "Classic card matching game to improve your short-term memory and focus.",
     category: "games",
     icon: Brain,
-    path: "/tools/memory-match-game"
+    path: "/tools/memory-match-game",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Sharpen Your Focus</h2>
+        <p>Memory Match (also known as Concentration) is a timeless game where you must find pairs of matching cards. It forces you to hold visual information in your working memory, strengthening your short-term recall abilities.</p>
+      </article>
+    `,
+    howToUse: [
+      "Click a card to flip it over.",
+      "Click another card to find its match.",
+      "If they match, they stay face up.",
+      "If they don't, remember their positions for next time!"
+    ],
+    benefits: [
+      "Improves visual memory.",
+      "Enhances concentration span.",
+      "Great brain-training exercise for all ages."
+    ],
+    faqs: []
   },
   {
     id: "math-speed-challenge",
@@ -1518,7 +2236,28 @@ const allTools = [
     description: "Solve rapid-fire arithmetic problems against the clock. Great for students!",
     category: "games",
     icon: Calculator,
-    path: "/tools/math-speed-challenge"
+    path: "/tools/math-speed-challenge",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Mental Math Gymnastics</h2>
+        <p>Ditch the calculator. The <strong>Math Speed Challenge</strong> throws random arithmetic problems (Addition, Subtraction, Multiplication, Division) at you. Your goal? Solve as many as you can before time runs out.</p>
+
+        <h3>Why Practice Mental Math?</h3>
+        <p>It strengthens your "number sense," helping you estimate costs, split bills, and catch errors in daily life without relying on a phone.</p>
+      </article>
+    `,
+    howToUse: [
+      "Select your difficulty (Easy/Medium/Hard).",
+      "Read the problem (e.g., 15 + 7).",
+      "Type the answer.",
+      "Be quick! The timer is ticking."
+    ],
+    benefits: [
+      "Boosts calculation speed.",
+      "Improves numerical fluency.",
+      "Keeps your brain sharp."
+    ],
+    faqs: []
   },
   {
     id: "image-compressor",
@@ -1585,6 +2324,11 @@ const allTools = [
           <li>The model answers your question using <em>only</em> the information in your document, ensuring accuracy.</li>
         </ol>
 
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-6 border-l-4 border-blue-500">
+          <h4>🔒 Data Privacy Guarantee</h4>
+          <p>We understand that your documents may contain sensitive info. <strong>Your files are processed in ephemeral memory.</strong> We do not store your PDFs on our servers after the session ends, and we do not use your data to train our models.</p>
+        </div>
+
         <h3>Who Is This For?</h3>
         <ul>
           <li><strong>Students:</strong> "Explain the key concepts in Chapter 3 in simple terms."</li>
@@ -1637,8 +2381,8 @@ const allTools = [
           <li><strong>Action Items:</strong> Extracts tasks and next steps (perfect for meeting minutes).</li>
         </ul>
 
-        <h3>Why usage AI Summarization?</h3>
-        <p>Human summarization is slow and biased. AI offers an objective, comprehensive overview instantly. It doesn't get tired and doesn't skip boring sections.</p>
+        <h3>Tips for Best Results</h3>
+        <p>To get the highest quality summary, ensure your PDF has selectable text (not just images). Documents with clear headings and structure allow the AI to understand the hierarchy of information much better.</p>
       </article>
     `,
     howToUse: [
@@ -1673,15 +2417,15 @@ const allTools = [
         <h2>Auto-Generate Quizzes from Your Study Materials</h2>
         <p>Active Recall is the #1 scientifically proven way to learn faster. Instead of checking reading, you should test yourself. Our <strong>PDF Quiz Generator</strong> uses AI to create multiple-choice questions (MCQs), true/false questions, and flashcards directly from your textbooks or lecture slides.</p>
 
+        <h3>The Science of Active Recall</h3>
+        <p>Testing yourself forces your brain to retrieve information, strengthening neural pathways. This tool automates the tedious process of creating flashcards, so you can spend 100% of your time actually learning.</p>
+
         <h3>Perfect For:</h3>
         <ul>
           <li><strong>Exam Prep:</strong> Turn your syllabus into a mock exam.</li>
           <li><strong>Teachers:</strong> Create quick pop quizzes for your class in minutes.</li>
           <li><strong>Corporate Training:</strong> verify employees read the new policy handbook.</li>
         </ul>
-
-        <h3>How It Works</h3>
-        <p>The AI analyzes the semantic meaning of your text, identifies key facts and definitions, and formulates challenging questions to test your understanding—complete with correct answers and explanations.</p>
       </article>
     `,
     howToUse: [
@@ -1752,7 +2496,49 @@ const allTools = [
     description: "Translate PDF text into any language while preserving meaning.",
     category: "ai",
     icon: Languages,
-    path: "/tools/pdf-translator"
+    path: "/tools/pdf-translator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Break Language Barriers with AI PDF Translation</h2>
+        <p>Need to read a research paper in Japanese? Or a user manual in German? Traditional copy-pasting into Google Translate destroys the document's layout. Our <strong>AI PDF Translator</strong> translates the text <em>in-place</em>, preserving your original formatting, images, and tables.</p>
+
+        <h3>Supported Languages</h3>
+        <p>We support over 50+ major languages including:</p>
+        <ul className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <li>🇺🇸 English</li>
+          <li>🇪🇸 Spanish</li>
+          <li>🇫🇷 French</li>
+          <li>🇩🇪 German</li>
+          <li>🇨🇳 Chinese (Mandarin)</li>
+          <li>🇮🇳 Hindi</li>
+          <li>🇯🇵 Japanese</li>
+          <li>🇷🇺 Russian</li>
+          <li>...and many more.</li>
+        </ul>
+
+        <h3>Why Use AI Translation?</h3>
+        <p>Unlike simple word-for-word substitution, our Neural Machine Translation (NMT) models understand context, idioms, and technical jargon, ensuring that the translated document reads naturally.</p>
+      </article>
+    `,
+    howToUse: [
+      "Upload your PDF file.",
+      "Select the 'Source Language' (or use Auto-Detect).",
+      "Select the 'Target Language'.",
+      "Click 'Translate'.",
+      "Download your new, localized PDF."
+    ],
+    benefits: [
+      "Preserves original layout and formatting.",
+      "High accuracy for technical documents.",
+      "Translate entire books in minutes.",
+      "Secure and private."
+    ],
+    faqs: [
+      {
+        question: "Is it perfect?",
+        answer: "AI translation is incredibly good (95%+ accuracy), but legal or safety-critical documents should always be reviewed by a human professional."
+      }
+    ]
   }
 ];
 

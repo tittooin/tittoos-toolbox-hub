@@ -1,121 +1,211 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ToolTemplate from '@/components/ToolTemplate';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Check, ShieldCheck, FileCheck, Search, FileJson, AlertTriangle, BadgeCheck, Bug, Code2, Lock } from 'lucide-react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { tools } from "@/data/tools";
 
 const ValidatorsCategoryPage = () => {
-  const blogContent = `
-  <img src="/assets/blog/validators-tools-guide.png" alt="Validation Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
-  <h1>Secure Data Handling & Privacy: Validation Playbook for 2024</h1>
-  
-  <p>Security begins with correctness. If data is malformed, ambiguous, or non-compliant, downstream systems become fragile and vulnerable. Validation tools are your first line of defense: they prevent errors before they spread, protect users, and reduce operational risk. This playbook covers privacy-first practices, local data processing, and secure document conversion — with deep guidance for JSON, XML, HTML, and CSS validation.</p>
-  
-  <h2>1) Privacy-First Architecture</h2>
-  <p>Privacy is not a switch — it is a design principle. Build systems that minimize data collection, isolate sensitive flows, and perform checks locally whenever possible.</p>
-  <ul>
-    <li><strong>Data Minimization:</strong> Collect only what is necessary; avoid storing identifiers without clear purpose.</li>
-    <li><strong>Local Processing:</strong> Validate and transform content in the browser when feasible to keep data on the user’s device.</li>
-    <li><strong>Explicit Consent:</strong> Gate non-essential scripts and telemetry behind clear consent choices.</li>
-    <li><strong>Secure Defaults:</strong> Prefer secure settings out of the box: HTTPS only, strong headers, and sanitized output.</li>
-  </ul>
-  
-  <h2>2) Secure Document Conversion</h2>
-  <p>Converting documents is routine but risky if done poorly. The goal is predictable output with no hidden payloads or leaked metadata.</p>
-  <ul>
-    <li><strong>Trusted Converters:</strong> Use well-known libraries and keep them updated.</li>
-    <li><strong>Metadata Hygiene:</strong> Strip sensitive metadata where appropriate.</li>
-    <li><strong>Format Validation:</strong> Verify input type and size before conversion; avoid rendering mixed content.</li>
-    <li><strong>Output Checks:</strong> Re-validate the converted file to ensure compliance and readability.</li>
-  </ul>
-  <p>Start with Axevora utilities:</p>
-  <ul>
-    <li><a href="/tools/pdf-converter">PDF Converter</a> for consistent, shareable documents.</li>
-    <li><a href="/tools/base64-converter">Base64 Converter</a> for safe embedding and transport of small payloads.</li>
-    <li><a href="/tools/hash-generator">Hash Generator</a> to verify file integrity across transfers.</li>
-  </ul>
-  
-  <h2>3) JSON Validation: Structure and Meaning</h2>
-  <p>JSON powers APIs, configs, and structured content. Validating syntax and schema prevents subtle bugs and security gaps.</p>
-  <ul>
-    <li><strong>Syntax:</strong> Check commas, quotes, and nesting. Parse early to fail fast.</li>
-    <li><strong>Schema:</strong> Define types, required fields, and format constraints (email, URL, date).</li>
-    <li><strong>Normalization:</strong> Enforce consistent casing, key names, and units.</li>
-    <li><strong>Safety:</strong> Reject unexpected fields to avoid injection vectors.</li>
-  </ul>
-  <p>Use <a href="/tools/json-formatter">JSON Formatter</a> to format, validate, and visualize complex structures.</p>
-  
-  <h2>4) XML Validation: Contracts and Compliance</h2>
-  <p>XML persists in enterprise systems and document workflows. Validation ensures that contracts between services remain predictable.</p>
-  <ul>
-    <li><strong>DTD/Schema:</strong> Validate structure, attributes, and allowed values.</li>
-    <li><strong>Namespaces:</strong> Maintain clarity when combining schemas.</li>
-    <li><strong>Security:</strong> Disable dangerous features (external entities) to prevent XXE attacks.</li>
-  </ul>
-  <p>Use <a href="/tools/xml-formatter">XML Formatter</a> to clean and verify markup.</p>
-  
-  <h2>5) HTML Validation: Accessibility and Safety</h2>
-  <p>Valid HTML enables accessibility tools, reduces rendering quirks, and prevents broken layouts. It also protects against unsafe injection.</p>
-  <ul>
-    <li><strong>Semantics:</strong> Use headings, landmarks, and lists correctly.</li>
-    <li><strong>Attributes:</strong> Validate required attributes and avoid deprecated ones.</li>
-    <li><strong>Accessibility:</strong> Provide alt text, labels, and keyboard navigation paths.</li>
-    <li><strong>Sanitization:</strong> Escape user-provided content and strip unsafe HTML.</li>
-  </ul>
-  <p>Use <a href="/tools/html-formatter">HTML Formatter</a> to organize markup and spot errors.</p>
-  
-  <h2>6) CSS Validation: Predictable Styling</h2>
-  <p>CSS errors often hide behind visual anomalies. Validation helps you catch typos, unsupported properties, and layout thrashing.</p>
-  <ul>
-    <li><strong>Syntax:</strong> Check selectors, blocks, and values.</li>
-    <li><strong>Compatibility:</strong> Prefer broadly supported properties; add progressive enhancement where needed.</li>
-    <li><strong>Performance:</strong> Avoid overly complex selectors and frequent layout changes.</li>
-  </ul>
-  <p>Use <a href="/tools/css-formatter">CSS Formatter</a> to keep styles clean and maintainable.</p>
-  
-  <h2>7) Validation Workflow: Make It Routine</h2>
-  <ol>
-    <li>Validate inputs at boundaries (client and server).</li>
-    <li>Transform with strict schemas and strip unknown fields.</li>
-    <li>Log validation failures with context for debugging.</li>
-    <li>Automate checks in CI and pre-deploy pipelines.</li>
-    <li>Re-validate documents after conversion; compare hashes.</li>
-  </ol>
-  
-  <h2>8) Threat Modeling for Everyday Apps</h2>
-  <p>Even simple apps face risks. Consider how attackers might misuse inputs or outputs, then block those paths with validation and sanitization.</p>
-  <ul>
-    <li><strong>Injection:</strong> Untrusted content rendered unsafely.</li>
-    <li><strong>Exfiltration:</strong> Sensitive metadata leaking in conversions.</li>
-    <li><strong>Tampering:</strong> Modified files or payloads without detection.</li>
-    <li><strong>Impersonation:</strong> Misuse of identity fields without verification.</li>
-  </ul>
-  
-  <h2>9) Using Axevora</h2>
-  <ul>
-    <li><a href="/tools/json-formatter">JSON Formatter</a> for structure verification.</li>
-    <li><a href="/tools/xml-formatter">XML Formatter</a> for schema-focused cleaning.</li>
-    <li><a href="/tools/html-formatter">HTML Formatter</a> for semantic validation.</li>
-    <li><a href="/tools/css-formatter">CSS Formatter</a> for style sanity checks.</li>
-    <li><a href="/tools/pdf-converter">PDF Converter</a> to create shareable documents with consistent formatting.</li>
-  </ul>
-  
-  <h2>10) Conclusion</h2>
-  <p>Validation is the foundation of secure, private, and reliable software. By enforcing strict structures, minimizing data, and preferring local processing, you protect users and your own systems. Axevora helps you implement these principles day-to-day — from formatting JSON to converting documents safely — so you can ship with confidence.</p>
-  `;
+  // Filter tools that are useful for validation
+  const validatorTools = tools.filter(tool =>
+    tool.category === 'formatter' ||
+    tool.name.includes('Validator') ||
+    tool.description.toLowerCase().includes('validate')
+  );
 
   return (
-    <>
+    <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>Online Validation Tools Guide 2024 | Axevora</title>
-        <meta name="description" content="Ensure code quality and data integrity with our comprehensive suite of online validators for JSON, XML, HTML, CSS, and more." />
-        <meta property="og:title" content="Online Validation Tools Guide 2024 | Axevora" />
-        <meta property="og:description" content="Ensure code quality and data integrity with our comprehensive suite of online validators for JSON, XML, HTML, CSS, and more." />
+        <title>Online Validator Tools - HTML, JSON, XML & CSS Checker | Axevora</title>
+        <meta name="description" content="Validate your code and data instantly. Free online validators for JSON, XML, HTML, CSS and more to ensure standards compliance and error-free development." />
+        <meta name="keywords" content="json validator, xml validator, html validator, css validator, code checker, syntax validation, W3C compliance" />
+        <meta property="og:title" content="Online Validator Tools - HTML, JSON, XML & CSS Checker | Axevora" />
+        <meta property="og:description" content="Validate your code and data instantly. Free online validators for JSON, XML, HTML, CSS and more." />
       </Helmet>
-      <ToolTemplate
-        title="Online Validation Tools Guide 2024"
-        description="Ensure code quality and data integrity with our comprehensive suite of online validators for JSON, XML, HTML, CSS, and more."
-        content={blogContent}
-        showContentAds
-      />
-    </>
+
+      <Header />
+
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-16">
+
+          {/* Hero Section */}
+          <div className="text-center space-y-8">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border bg-card">
+              <img
+                src="/assets/blog/validators-tools-guide.png"
+                alt="Code & Data Validators"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center justify-center p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                <ShieldCheck className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400">
+                Trust, but Verify
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                In the world of software, one wrong character can crash a system.
+                Our validators analyze your code against strict industry standards to catch errors before deployment.
+              </p>
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {validatorTools.map((tool) => (
+              <Link key={tool.id} to={tool.path} className="group">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-green-500/50">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl group-hover:bg-green-100 dark:group-hover:bg-green-900/40 transition-colors">
+                        <tool.icon className="h-6 w-6 text-green-600 dark:text-green-400" />
+                      </div>
+                    </div>
+                    <CardTitle className="group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors text-xl">
+                      {tool.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {tool.subheading}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm font-medium text-green-600 dark:text-green-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Start Validating <span className="ml-1">→</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* EXTENDED CONTENT START */}
+          <div className="prose dark:prose-invert max-w-none space-y-16">
+
+            {/* Why Validation Matters */}
+            <div className="bg-card border rounded-2xl p-8 shadow-sm">
+              <h2 className="flex items-center gap-3 text-3xl font-bold mb-6 mt-0">
+                <BadgeCheck className="w-8 h-8 text-emerald-500" />
+                Why Validation is Non-Negotiable
+              </h2>
+              <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+                "It works on my machine" is the famous last words of a developer. Validation ensures that your code works on
+                <em>everyone's</em> machine by adhering to agreed-upon standards (Schemas, RFCs, W3C specs).
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div className="p-6 bg-background rounded-xl border space-y-3">
+                  <Bug className="w-8 h-8 text-red-500" />
+                  <h3 className="text-lg font-bold m-0">Syntax Errors</h3>
+                  <p className="text-sm text-muted-foreground m-0">
+                    A single missing comma in a JSON config file can take down a server. Validators parse the structure to find these "invisible" breaking changes.
+                  </p>
+                </div>
+                <div className="p-6 bg-background rounded-xl border space-y-3">
+                  <Lock className="w-8 h-8 text-blue-500" />
+                  <h3 className="text-lg font-bold m-0">Security</h3>
+                  <p className="text-sm text-muted-foreground m-0">
+                    "Input Validation" is web security 101. verifying data types (e.g., ensuring "age" is a number, not a script) prevents injection attacks.
+                  </p>
+                </div>
+                <div className="p-6 bg-background rounded-xl border space-y-3">
+                  <Search className="w-8 h-8 text-purple-500" />
+                  <h3 className="text-lg font-bold m-0">Interoperability</h3>
+                  <p className="text-sm text-muted-foreground m-0">
+                    APIs talk to each other using strict schemas. If your XML or JSON output deviates even slightly, third-party integrations will fail.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Deep Dive */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">Understanding Schemas</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold">What is a Schema?</h3>
+                  <p className="text-muted-foreground">
+                    Think of a <strong>Schema</strong> as a blueprint or contract.
+                    A JSON file contains the data (the house), but the JSON Schema describes the rules (the blueprints: "Must have 2 doors", "Roof must be red").
+                  </p>
+                  <p className="text-muted-foreground">
+                    Our validators check for <strong>Well-Formedness</strong> (is the syntax correct?) first.
+                    Advanced validation checks <strong>Logic</strong> (does key "email" actually contain a valid email address?).
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-8 rounded-2xl border font-mono text-sm overflow-x-auto">
+                  <div className="mb-2 text-green-600 text-xs uppercase tracking-wider font-bold">JSON Example</div>
+                  <div className="text-muted-foreground">
+                    {"{"}<br />
+                    &nbsp;&nbsp;"id": 123, <span className="text-green-500">// Valid Number</span><br />
+                    &nbsp;&nbsp;"isActive": "true" <span className="text-red-500">// Error: Expected Boolean, got String</span><br />
+                    {"}"}
+                  </div>
+                  <p className="mt-4 text-xs text-muted-foreground border-t pt-4">
+                    A validator catches type mismatches that manual review often misses.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Common Pitfalls Section */}
+            <div className="bg-muted/30 p-8 rounded-2xl border">
+              <h3 className="text-2xl font-bold mb-6 mt-0 flex items-center gap-3">
+                <AlertTriangle className="w-6 h-6 text-yellow-500" />
+                Common Validation Pitfalls
+              </h3>
+              <div className="space-y-4">
+                <details className="group pb-4 border-b last:border-0 last:pb-0">
+                  <summary className="flex justify-between items-center font-medium cursor-pointer list-none hover:text-primary transition-colors">
+                    <span>Trailing Commas (JSON)</span>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <p className="text-muted-foreground mt-3 group-open:animate-fadeIn text-sm">
+                    In JavaScript objects, trailing commas `{"{"} a: 1, {"}"}` are fine. In standard JSON, they are <strong>invalid</strong> and will cause parsing errors in many languages (Python, Java). Always validate before saving config files.
+                  </p>
+                </details>
+                <details className="group pb-4 border-b last:border-0 last:pb-0">
+                  <summary className="flex justify-between items-center font-medium cursor-pointer list-none hover:text-primary transition-colors">
+                    <span>Unclosed Tags (HTML)</span>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <p className="text-muted-foreground mt-3 group-open:animate-fadeIn text-sm">
+                    Browsers are forgiving—they try to guess where a `&lt;/div&gt;` should go if you forget it. But this "Quirks Mode" can cause massive layout shifts and CSS bugs that are impossible to debug without a validator.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="flex justify-between items-center font-medium cursor-pointer list-none hover:text-primary transition-colors">
+                    <span>Hidden Characters</span>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <p className="text-muted-foreground mt-3 group-open:animate-fadeIn text-sm">
+                    Copy-pasting from websites often brings invisible "Zero Width Spaces" or "Smart Quotes" (curled quotes) instead of standard quotes. These break code compilers instantly. Our tools strip these out.
+                  </p>
+                </details>
+              </div>
+            </div>
+
+          </div>
+          {/* EXTENDED CONTENT END */}
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

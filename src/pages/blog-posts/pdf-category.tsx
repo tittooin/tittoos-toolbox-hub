@@ -1,85 +1,292 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ToolTemplate from '@/components/ToolTemplate';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { FileText, Lock, FileOutput, Merge, Scissors, RotateCw, MonitorPlay, BookOpen, Shield, Zap, HelpCircle, AlertTriangle } from 'lucide-react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { tools } from "@/data/tools";
 
 const PDFCategoryPage = () => {
-    const blogContent = `
-  <img src="/assets/blog/pdf-tools-guide.png" alt="PDF Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
-  <h1>Mastering PDF Workflows: The Complete 2024 Guide</h1>
-  
-  <p>The Portable Document Format (PDF) is the global standard for digital documents. Whether you're a student submitting a thesis, a business professional sending contracts, or a designer sharing proofs, mastering PDF tools is essential. This guide covers everything from basic conversion to advanced manipulation and security.</p>
-  
-  <h2>1) Why PDF Dominates the Digital World</h2>
-  <p>PDFs are designed to look the same on every device—from a tiny smartphone screen to a massive print shop plotter. Unlike Word documents, which can shift formatting when fonts are missing, a PDF locks in your layout, fonts, and images.</p>
-  <ul>
-    <li><strong>Universality:</strong> Opens on Windows, Mac, Linux, iOS, and Android without special software.</li>
-    <li><strong>Security:</strong> Supports encryption, password protection, and digital signatures.</li>
-    <li><strong>Compression:</strong> Can reduce massive scanned documents to email-friendly sizes without losing legibility.</li>
-  </ul>
-  
-  <h2>2) Essential PDF Actions</h2>
-  <p>Most workflows revolve around three core actions: Converting, Editing, and Optimizing.</p>
-  
-  <h3>Converting (Getting Into and Out of PDF)</h3>
-  <p>The most common task is converting <em>to</em> PDF to freeze a document, or <em>from</em> PDF to edit it.</p>
-  <ul>
-    <li><strong>Word/Excel/PPT to PDF:</strong> Use <a href="/tools/word-to-pdf">Word to PDF</a> or <a href="/tools/excel-to-pdf">Excel to PDF</a> to professionalize your documents before sharing.</li>
-    <li><strong>PDF to Editable Formats:</strong> Need to change a contract? Use <a href="/tools/pdf-to-word">PDF to Word</a> to recover the text and formatting for editing.</li>
-    <li><strong>PDF to Images:</strong> Use <a href="/tools/pdf-to-jpg">PDF to JPG</a> to turn document pages into easy-to-share social media images.</li>
-  </ul>
+  // Filter by 'pdf' category
+  const categoryTools = tools.filter(tool => tool.category === 'pdf');
 
-  <h3>Manipulation (Changing the Structure)</h3>
-  <p>Sometimes you have the right content but in the wrong order.</p>
-  <ul>
-    <li><strong>Merge:</strong> Combine a cover letter and a resume into one file using <a href="/merge-pdf-online">Merge PDF</a>.</li>
-    <li><strong>Split:</strong> Extract just the invoice page from a 50-page statement using <a href="/split-pdf-online">Split PDF</a> or <a href="/tools/extract-pdf-pages">Extract Pages</a>.</li>
-    <li><strong>Rotate/Delete:</strong> Fix scanned pages that are upside down with <a href="/tools/rotate-pdf">Rotate PDF</a>.</li>
-  </ul>
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Ultimate PDF Tools Guide: Convert, Merge, Split & Secure | Axevora</title>
+        <meta name="description" content="The definitive guide to PDF management. Learn how to merge, split, compress, and secure documents. Free online tools for students, professionals, and businesses." />
+        <meta name="keywords" content="pdf tools, merge pdf, split pdf, compress pdf, pdf security, ocr, pdf workflows, document management" />
+        <meta property="og:title" content="Ultimate PDF Tools Guide: Convert, Merge, Split & Secure | Axevora" />
+        <meta property="og:description" content="Master your digital documents. Comprehensive guide to editing, securing, and optimizing PDFs." />
+      </Helmet>
 
-  <h2>3) Advanced Security & Optimization</h2>
-  <p>For sensitive or large documents, you need specialized tools.</p>
-  <ul>
-    <li><strong>Security:</strong> Protect sensitive financial data with <a href="/tools/lock-pdf">Lock PDF</a>. If you forgot an old password (and own the file), <a href="/tools/unlock-pdf">Unlock PDF</a> can help remove restrictions.</li>
-    <li><strong>Optimization:</strong> Sending files via email? <a href="/compress-pdf-online">Compress PDF</a> can reduce file size by up to 80% while keeping text sharp.</li>
-  </ul>
+      <Header />
 
-  <h2>4) Educational & AI Tools</h2>
-  <p>The new wave of PDF tools triggers a revolution in how we study.</p>
-  <ul>
-    <li><a href="/tools/chat-with-pdf">Chat with PDF</a>: Upload a textbook and ask questions like "Summarize chapter 3" or "What are the key dates mentioned?".</li>
-    <li><a href="/tools/pdf-quiz-generator">Quiz Generator</a>: Turn your study notes into a multiple-choice test instantly.</li>
-  </ul>
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto space-y-16">
 
-  <h2>5) Workflows for different users</h2>
-  
-  <h3>For Students</h3>
-  <p>Merge your assignment components into one file before submission. Use the Compressor to meet upload size limits on portals like Blackboard or Canvas.</p>
-  
-  <h3>For Business Owners</h3>
-  <p>Protect invoices with passwords before emailing. Convert signed contracts (Images) to PDF and merge them with your terms of service.</p>
-  
-  <h3>For Designers</h3>
-  <p>Convert your vector proofs to PDF for client review. Extract specific pages from a large brand guide to share with contractors.</p>
+          {/* Hero Section */}
+          <div className="text-center space-y-8">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border bg-card">
+              <img
+                src="/assets/blog/pdf-tools-guide.png"
+                alt="Ultimate PDF Tools Guide"
+                className="w-full h-auto object-cover"
+              />
+            </div>
 
-  <h2>6) Conclusion</h2>
-  <p>You don't need expensive software like Adobe Acrobat Pro for 99% of your daily tasks. Axevora's suite of free PDF tools runs entirely in your browser, keeping your data private and your workflow fast.</p>
-  `;
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center justify-center p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+                <FileText className="w-8 h-8 text-red-600 dark:text-red-400" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-400 dark:to-orange-400">
+                The Complete Guide to PDF Mastery
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                PDF (Portable Document Format) is the backbone of digital business.
+                Yet, most users only scratch the surface of what's possible.
+                This guide will turn you from a passive reader into a document power user.
+              </p>
+            </div>
+          </div>
 
-    return (
-        <>
-            <Helmet>
-                <title>Ultimate PDF Tools Guide 2024 | Convert, Edit, Secure | Axevora</title>
-                <meta name="description" content="The comprehensive guide to managing PDF workflows. Learn how to convert, merge, split, secure, and optimize PDFs using free online tools." />
-                <meta property="og:title" content="Ultimate PDF Tools Guide 2024 | Axevora" />
-                <meta property="og:description" content="Master your documents with our complete guide to PDF tools. Convert, edit, and secure files for free." />
-            </Helmet>
-            <ToolTemplate
-                title="The Ultimate PDF Workflow Guide"
-                description="Master your digital documents with strategies for converting, securing, and optimizing PDFs efficiently."
-                content={blogContent}
-                showContentAds
-            />
-        </>
-    );
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categoryTools.map((tool) => (
+              <Link key={tool.id} to={tool.path} className="group">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-red-500/50">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl group-hover:bg-red-100 dark:group-hover:bg-red-900/40 transition-colors">
+                        <tool.icon className="h-6 w-6 text-red-600 dark:text-red-400" />
+                      </div>
+                    </div>
+                    <CardTitle className="group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors text-xl">
+                      {tool.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {tool.subheading}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tool.description}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm font-medium text-red-600 dark:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Launch Tool <span className="ml-1">→</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* EXTENDED CONTENT START */}
+          <div className="prose dark:prose-invert max-w-none space-y-16">
+
+            {/* Chapter 1: The Why */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">1. Why PDF Rules the World</h2>
+              <p className="text-lg text-muted-foreground">
+                Before PDF, sharing documents was a nightmare. Fonts would vanish, layouts would break, and images would disappear when moving from Windows to Mac.
+                Adobe created the PDF in the 1990s to solve one specific problem: <strong>Portability</strong>.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-muted/30 p-6 rounded-xl border">
+                  <h3 className="font-bold flex items-center gap-2 mt-0">
+                    <Lock className="w-5 h-5 text-red-500" />
+                    Immutable Layouts
+                  </h3>
+                  <p className="m-0 text-sm">
+                    What you see is exactly what they get. Fonts, images, and vectors are encapsulated within the file itself.
+                    This makes it crucial for legal contracts, print-ready designs, and official forms.
+                  </p>
+                </div>
+                <div className="bg-muted/30 p-6 rounded-xl border">
+                  <h3 className="font-bold flex items-center gap-2 mt-0">
+                    <Shield className="w-5 h-5 text-blue-500" />
+                    Security Features
+                  </h3>
+                  <p className="m-0 text-sm">
+                    Unlike a Word doc, a PDF can be encrypted with AES-256 bit security. You can restrict printing, copying text,
+                    or even opening the file without a password.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 2: Essential Workflows */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">2. Essential Workflows for 2024</h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Student Workflow */}
+                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                  <div className="h-12 w-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <BookOpen className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mt-0">The Student Stack</h3>
+                  <ul className="space-y-3 pl-0 list-none mt-4 text-sm text-muted-foreground">
+                    <li className="flex gap-2">
+                      <span className="text-indigo-500 font-bold">1.</span>
+                      <span>Scan notes with phone → <strong>Image to PDF</strong></span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-indigo-500 font-bold">2.</span>
+                      <span>Combine chapters → <strong>Merge PDF</strong></span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-indigo-500 font-bold">3.</span>
+                      <span>Reduce size for upload → <strong>Compress PDF</strong></span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Business Workflow */}
+                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                  <div className="h-12 w-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <Zap className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mt-0">The Business Pro</h3>
+                  <ul className="space-y-3 pl-0 list-none mt-4 text-sm text-muted-foreground">
+                    <li className="flex gap-2">
+                      <span className="text-emerald-500 font-bold">1.</span>
+                      <span>Extract invoice page → <strong>Split PDF</strong></span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-emerald-500 font-bold">2.</span>
+                      <span>Secure sensitive data → <strong>Lock PDF</strong></span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-emerald-500 font-bold">3.</span>
+                      <span>Convert for editing → <strong>PDF to Word</strong></span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Designer Workflow */}
+                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                  <div className="h-12 w-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <MonitorPlay className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mt-0">The Creative</h3>
+                  <ul className="space-y-3 pl-0 list-none mt-4 text-sm text-muted-foreground">
+                    <li className="flex gap-2">
+                      <span className="text-pink-500 font-bold">1.</span>
+                      <span>Portfolio export → <strong>PDF to JPG</strong> (for social)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-pink-500 font-bold">2.</span>
+                      <span>Fix orientation → <strong>Rotate PDF</strong></span>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-pink-500 font-bold">3.</span>
+                      <span>Client Proofs → <strong>Watermark</strong> (coming soon)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 3: Technical Deep Dive */}
+            <div className="bg-card border rounded-2xl p-8">
+              <h2 className="text-3xl font-bold mb-6 mt-0">3. Under the Hood: How it Works</h2>
+
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Merge className="w-5 h-5 text-primary" />
+                    Data Compression vs. Quality
+                  </h3>
+                  <p className="text-muted-foreground">
+                    When you use our <strong>Compress PDF</strong> tool, we aren't just "zipping" the file. We actively analyze the internal structure.
+                    High-resolution images (often 300 DPI for print) are downsampled to screen resolution (72 or 150 DPI).
+                    Redundant font data is stripped. This can reduce a 20MB scan to 2MB with barely noticeable visual difference.
+                  </p>
+                </div>
+
+                <div className="h-px bg-border" />
+
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Scissors className="w-5 h-5 text-primary" />
+                    Vector vs. Raster PDF
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Not all PDFs are the same. A "True PDF" (created from Word/Docs) contains search-able text and crisp vector fonts.
+                    A "Scanned PDF" is just a wrapper around a giant image. Our <strong>PDF to Word</strong> converters use basic OCR (Optical Character Recognition) principles
+                    to try and reconstruct the text layer from these images.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 4: Troubleshooting */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">4. Troubleshooting Common Issues</h2>
+
+              <div className="space-y-4">
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                      <span>Why is my converted Word doc formatting messy?</span>
+                    </div>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    PDFs don't store "paragraphs" or "tables" like Word does. They store "draw text 'Hello' at coordinates x:10, y:20".
+                    Converting back requires guessing the logical structure. Complex layouts with floating images often result in imperfect reconstruction.
+                  </div>
+                </details>
+
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <div className="flex items-center gap-3">
+                      <Lock className="w-5 h-5 text-red-500" />
+                      <span>I lost my PDF password. Can you open it?</span>
+                    </div>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    If the file uses strong encryption (AES-128/256), it is mathematically impossible to break efficiently without a supercomputer.
+                    Our <strong>Unlock PDF</strong> tool works best for files where you are the owner and need to remove <em>permissions</em> (like printing restrictions), not for hacking files.
+                  </div>
+                </details>
+
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <div className="flex items-center gap-3">
+                      <HelpCircle className="w-5 h-5 text-blue-500" />
+                      <span>Why is my merged PDF so huge?</span>
+                    </div>
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    Merging adds the size of all files together. If you merge ten 5MB files, you get a 50MB file.
+                    Always run the final result through our <strong>Compress PDF</strong> tool to deduplicate embedded fonts and optimize images.
+                  </div>
+                </details>
+              </div>
+            </div>
+
+          </div>
+          {/* EXTENDED CONTENT END */}
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
 };
 
 export default PDFCategoryPage;
