@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import ToolTemplate from '@/components/ToolTemplate';
 
 const EditorsCategoryPage = () => {
-  const blogContent = `# Comprehensive Guide to Online Editor Tools 2024
+  const blogContent = `
+  <img src="/assets/blog/editors-tools-guide.png" alt="Online Editors Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
+  # Comprehensive Guide to Online Editor Tools 2024
 
 In the digital age, having powerful and flexible editing tools is essential for content creation and code development. Our suite of online editors provides professional-grade capabilities for various file types and formats.
 

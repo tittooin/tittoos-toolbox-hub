@@ -12,16 +12,16 @@ import {
 } from "lucide-react";
 
 const allCategories = [
-  { id: "converter", name: "Converters" },
-  { id: "pdf", name: "PDF Tools" },
-  { id: "generator", name: "Generators" },
-  { id: "analyzer", name: "Analyzers" },
-  { id: "editor", name: "Editors" },
-  { id: "calculator", name: "Calculators" },
-  { id: "formatter", name: "Formatters" },
-  { id: "ai", name: "AI Tools" },
-  { id: "games", name: "Games & Brain" },
-  { id: "utility", name: "Utilities" },
+  { id: "converter", name: "Converters", guidePath: "/blog-posts/converters-category" },
+  { id: "pdf", name: "PDF Tools", guidePath: "/blog-posts/pdf-category" },
+  { id: "generator", name: "Generators", guidePath: "/blog-posts/generators-category" },
+  { id: "analyzer", name: "Analyzers", guidePath: "/blog-posts/analyzers-category" },
+  { id: "editor", name: "Editors", guidePath: "/blog-posts/editors-category" },
+  { id: "calculator", name: "Calculators", guidePath: "/blog-posts/calculators-category" },
+  { id: "formatter", name: "Formatters", guidePath: "/blog-posts/formatters-category" },
+  { id: "ai", name: "AI Tools", guidePath: "/blog-posts/ai-tools-category" },
+  { id: "games", name: "Games & Brain", guidePath: "/blog-posts/games-category" },
+  { id: "utility", name: "Utilities", guidePath: "/blog-posts/analyzers-category" }, // Fallback to analyzers or create utility if needed
 ];
 
 const allTools = [

@@ -26,6 +26,11 @@ const GamesCategoryPage = () => {
 
                     {/* Hero Section */}
                     <div className="text-center space-y-6">
+                        <img
+                            src="/assets/blog/games-tools-guide.png"
+                            alt="Brain Games & Educational Tools"
+                            className="w-full md:w-2/3 mx-auto h-auto rounded-xl shadow-lg mb-8"
+                        />
                         <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
                             <Brain className="w-12 h-12 text-primary" />
                         </div>

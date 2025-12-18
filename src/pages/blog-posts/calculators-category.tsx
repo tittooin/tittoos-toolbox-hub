@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import ToolTemplate from '@/components/ToolTemplate';
 
 const CalculatorsCategoryPage = () => {
-  const blogContent = `# Essential Online Calculator Tools Guide 2024
+  const blogContent = `
+  <img src="/assets/blog/calculators-tools-guide.png" alt="Online Calculators Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
+  # Essential Online Calculator Tools Guide 2024
 
 In today's digital world, having access to reliable calculator tools is crucial for both personal and professional tasks. Our comprehensive suite of calculators helps you perform calculations accurately and efficiently.
 

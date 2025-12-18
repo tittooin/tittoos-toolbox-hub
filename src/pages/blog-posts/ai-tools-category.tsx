@@ -3,6 +3,7 @@ import ToolTemplate from '@/components/ToolTemplate';
 
 const AIToolsCategoryPage = () => {
   const blogContent = `
+  <img src="/assets/blog/ai-tools-guide.png" alt="AI Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
   <h1>AI-Powered Creativity: The Complete Handbook for 2024</h1>
   
   <p>Artificial Intelligence has transformed digital creativity from a single-tool workflow into a structured, repeatable production system. Whether you’re writing long-form content, generating visuals, building websites, or prototyping utilities, AI augments human judgment with speed, scale, and consistency. This handbook translates buzzwords into practical methods you can apply immediately using Axevora. It focuses on four pillars: AI content creation, AI art generation, AI video from text, and machine learning art tools — with a pragmatic layer for managing AI digital assets.</p>

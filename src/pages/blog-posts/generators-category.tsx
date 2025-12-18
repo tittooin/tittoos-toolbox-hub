@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import ToolTemplate from '@/components/ToolTemplate';
 
 const GeneratorsCategoryPage = () => {
-  const blogContent = `# Comprehensive Guide to Online Generator Tools 2024
+  const blogContent = `
+  <img src="/assets/blog/generators-tools-guide.png" alt="Generator Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
+  # Comprehensive Guide to Online Generator Tools 2024
 
 In the digital era, generator tools have become indispensable for creating various types of content and data. Our suite of online generators helps you produce everything from secure passwords to complex data structures with ease and precision.
 

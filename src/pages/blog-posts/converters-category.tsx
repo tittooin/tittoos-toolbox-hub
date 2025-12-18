@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import ToolTemplate from '@/components/ToolTemplate';
 
 const ConvertersCategoryPage = () => {
-  const blogContent = `# Ultimate Guide to Online File Converters 2024
+  const blogContent = `
+  <img src="/assets/blog/converters-tools-guide.png" alt="File Converters Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
+  # Ultimate Guide to Online File Converters 2024
 
 In today's digital landscape, the ability to convert files between different formats is essential for both personal and professional use. Our comprehensive suite of online converters streamlines this process, making it easier than ever to transform your files with precision and reliability.
 

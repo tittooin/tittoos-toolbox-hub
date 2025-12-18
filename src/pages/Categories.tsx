@@ -34,6 +34,17 @@ const Categories = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
+                    <div className="mb-4">
+                      {/* @ts-ignore - guidePath is dynamically added */}
+                      {category.guidePath && (
+                        <Link
+                          to={category.guidePath}
+                          className="text-xs font-semibold uppercase tracking-wide text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 mb-3"
+                        >
+                          View Guide & Tips →
+                        </Link>
+                      )}
+                    </div>
                     <div className="space-y-2">
                       {categoryTools.map((tool) => (
                         <Link

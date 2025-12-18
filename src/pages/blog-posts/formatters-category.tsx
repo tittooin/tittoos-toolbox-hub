@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import ToolTemplate from '@/components/ToolTemplate';
 
 const FormattersCategoryPage = () => {
-  const blogContent = `# Complete Guide to Online Formatting Tools 2024
+  const blogContent = `
+  <img src="/assets/blog/formatters-tools-guide.png" alt="Code Formatters Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
+  # Complete Guide to Online Formatting Tools 2024
 
 Formatting tools are essential for maintaining code quality, readability, and consistency. Our comprehensive suite of formatters helps you structure and beautify various file formats efficiently.
 

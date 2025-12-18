@@ -3,6 +3,7 @@ import ToolTemplate from '@/components/ToolTemplate';
 
 const AnalyzersCategoryPage = () => {
   const blogContent = `
+  <img src="/assets/blog/analyzers-tools-guide.png" alt="Website Analysis Tools Guide Illustration" class="w-full h-auto rounded-lg shadow-md mb-8" />
   <h1>Website Performance & Optimization: Deep-Dive Guide for 2024</h1>
   
   <p>Performance and analysis are two sides of the same coin. Performance determines user experience and discoverability, while analysis explains what to fix and why. This guide converts abstract metrics into clear actions using Axevora: run a website speed test, perform an SEO audit, analyze pages and assets, and turn insights into measurable improvements.</p>
