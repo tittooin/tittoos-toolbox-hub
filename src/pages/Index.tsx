@@ -16,7 +16,7 @@ import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showBlogPreview, setShowBlogPreview] = useState(false);
+
 
   useEffect(() => {
     // Apply global SEO meta and structured data
@@ -110,15 +110,8 @@ const Index = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const reveal = () => setShowBlogPreview(true);
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      // @ts-ignore
-      (window as any).requestIdleCallback(reveal);
-    } else {
-      setTimeout(reveal, 400);
-    }
-  }, []);
+  // Removed showBlogPreview state and effect to show blog immediately
+
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -521,6 +514,12 @@ const Index = () => {
           </div>
         </section>
 
+        <section className="container mx-auto px-4 pb-16">
+          <Suspense fallback={<div className="p-8 text-center">Loading articles…</div>}>
+            <BlogPreview />
+          </Suspense>
+        </section>
+
         {/* FAQ Section for human-written SEO and trust */}
         <section className="container mx-auto px-4 pb-16">
           <div className="max-w-4xl mx-auto">
@@ -593,13 +592,7 @@ const Index = () => {
           </div>
         </section>
 
-        {showBlogPreview && (
-          <section className="container mx-auto px-4 pb-16">
-            <Suspense fallback={<div className="p-8 text-center">Loading articles…</div>}>
-              <BlogPreview />
-            </Suspense>
-          </section>
-        )}
+
       </main>
       <Footer />
     </div>

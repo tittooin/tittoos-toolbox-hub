@@ -535,7 +535,42 @@ const Blog = () => {
                 dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
               />
 
+
             </article>
+
+            {/* Related Articles Section for Internal Linking */}
+            <div className="mt-12">
+              <h3 className="text-2xl font-bold mb-6 text-foreground">Related Articles</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {allBlogPosts
+                  .filter(p => p.slug !== selectedPostData.slug) // Exclude current
+                  .sort(() => 0.5 - Math.random()) // Shuffle
+                  .slice(0, 3) // Take 3
+                  .map(post => (
+                    <Link key={post.slug} to={`/blog/${post.slug}`} className="group">
+                      <Card className="h-full hover:shadow-md transition-all overflow-hidden border-border/50">
+                        <div className="h-32 overflow-hidden relative">
+                          <img
+                            src={post.image || getFallbackImage(post.title)}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <CardHeader className="p-4 pb-2">
+                          <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0">
+                          <p className="text-xs text-muted-foreground line-clamp-2">
+                            {post.excerpt}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+              </div>
+            </div>
           </div>
         </div>
 
