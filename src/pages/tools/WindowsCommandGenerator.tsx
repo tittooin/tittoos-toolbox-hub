@@ -1,155 +1,154 @@
 
 import React from 'react';
 import GenericCommandTool from "@/components/GenericCommandTool";
-import { Terminal, Shield, Zap, FileText, AlertTriangle, List } from 'lucide-react';
+import { Terminal, Shield, Zap, FileText, Server, Wifi, User, HardDrive, List } from 'lucide-react';
 
 const WindowsCommandGenerator = () => {
     return (
         <GenericCommandTool
-            title="Windows PowerShell Generator"
-            description="Translate plain English into advanced PowerShell commands instantly."
+            title="Windows PowerShell & CMD Generator"
+            description="The ultimate cheat sheet for Windows Terminal. Generate PowerShell scripts and learn CMD commands."
             osName="Windows PowerShell 7+"
             icon={Terminal}
-            keywords="powershell generator, windows terminal commands, ps1 script generator, windows cli helper"
+            keywords="windows cmd commands, powershell cheatsheet, cls, dir, ipconfig, systeminfo, net user, diskpart"
         >
             <div className="space-y-12">
 
                 {/* Intro */}
                 <div>
-                    <h2 className="text-3xl font-bold mb-6">Mastering Windows PowerShell</h2>
+                    <h2 className="text-3xl font-bold mb-6">Master Windows Terminal</h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                        PowerShell is not just a command-line shell; it's a powerful configuration management framework derived from the .NET Common Language Runtime (CLR).
-                        Unlike traditional shells that accept and return text, PowerShell accepts and returns <strong>.NET objects</strong>. This fundamental difference allows you to pipe data
-                        between commands (called "cmdlets") in incredibly robust ways.
+                        Whether you are using the classic <strong>Command Prompt (CMD)</strong> or the modern <strong>PowerShell</strong>, master the command line to control your PC like a pro.
+                        Below is a comprehensive categorized list of essential commands.
                     </p>
                 </div>
 
-                {/* Feature Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-                            <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                {/* Categories Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+                    {/* Basic & Files */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <FileText className="text-blue-500" />
+                            <h3 className="text-2xl font-bold m-0">Basic & File Commands</h3>
                         </div>
-                        <h3 className="text-xl font-bold mb-2">Cmdlets (Command-Lets)</h3>
-                        <p className="text-muted-foreground">
-                            PowerShell commands follow a rigid <code>Verb-Noun</code> naming convention (e.g., <code>Get-Service</code>, <code>Start-Process</code>).
-                            This makes commands easy to guess and remember. If you want to get something, start with <code>Get-</code>. If you want to stop something, try <code>Stop-</code>.
-                        </p>
-                    </div>
-
-                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
-                            <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2">The Pipeline |</h3>
-                        <p className="text-muted-foreground">
-                            In Linux Bash, piping passes text. In PowerShell, piping passes <strong>entire live objects</strong>.
-                            Running <code>Get-Service | Stop-Service</code> doesn't match text; it passes the actual ServiceController object to the stop command.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Comprehensive Command Reference */}
-                <div className="space-y-6">
-                    <div className="flex items-center gap-3 border-b pb-4">
-                        <List className="w-8 h-8 text-primary" />
-                        <h2 className="text-3xl font-bold m-0">Essential PowerShell Commands</h2>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full text-left text-sm">
                             <thead>
-                                <tr className="border-b">
-                                    <th className="p-4 font-bold text-lg w-1/3">Cmdlet</th>
-                                    <th className="p-4 font-bold text-lg">Description & Usage</th>
-                                </tr>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Function</th></tr>
                             </thead>
                             <tbody className="divide-y">
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Help</td>
-                                    <td className="p-4">The most important command. Displays help for other commands. <br /><code className="text-xs bg-muted p-1">Get-Help Get-Service -Examples</code></td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Command</td>
-                                    <td className="p-4">Finds all commands installed on your system. <br /><code className="text-xs bg-muted p-1">Get-Command *service*</code></td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Service</td>
-                                    <td className="p-4">Lists all installed services and their status (Running/Stopped).</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Get-Process</td>
-                                    <td className="p-4">Shows currently running processes (like Task Manager).</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Set-ExecutionPolicy</td>
-                                    <td className="p-4">Controls permission to run scripts. <br /><code className="text-xs bg-muted p-1">Set-ExecutionPolicy RemoteSigned</code></td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Select-Object</td>
-                                    <td className="p-4">Selects specific properties from an object (e.g., just Name and ID).</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Where-Object (?)</td>
-                                    <td className="p-4">Filters data based on criteria. <br /><code className="text-xs bg-muted p-1">Get-Service | ? Status -eq 'Running'</code></td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-blue-600 dark:text-blue-400">Test-NetConnection</td>
-                                    <td className="p-4">Checks network connectivity and ports (Ping/Telnet replacement). <br /><code className="text-xs bg-muted p-1">Test-NetConnection google.com -Port 443</code></td>
-                                </tr>
+                                <tr><td className="py-2 font-mono text-blue-600">help</td><td>List all commands</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">cls</td><td>Clear screen</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">ver</td><td>Show Windows version</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">dir</td><td>List files & folders</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">cd [folder]</td><td>Change directory</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">cd..</td><td>Go back one step</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">mkdir / md</td><td>Create new folder</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">copy [file]</td><td>Copy file</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">move [file]</td><td>Move file</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">del [file]</td><td>Delete file</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">ren [old] [new]</td><td>Rename file</td></tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
 
-                {/* Core Concepts */}
-                <div className="space-y-6">
-                    <h2 className="text-3xl font-bold">1. Execution Policies</h2>
-                    <div className="prose dark:prose-invert max-w-none">
-                        <p>
-                            By default, Windows prevents the execution of scripts for security reasons. This is controlled by the Execution Policy.
-                            Common policies include:
-                        </p>
-                        <ul>
-                            <li><code>Restricted</code>: No scripts can run. (Default on many systems)</li>
-                            <li><code>RemoteSigned</code>: Scripts created locally can run; downloaded scripts must be signed by a trusted publisher.</li>
-                            <li><code>Unrestricted</code>: Any script can run, but you might be warned.</li>
-                        </ul>
-                        <p>
-                            To change your policy (requires Admin): <code>Set-ExecutionPolicy RemoteSigned</code>
-                        </p>
-                    </div>
-                </div>
-
-                {/* Security Alert */}
-                <div className="bg-red-50 dark:bg-red-900/10 p-8 rounded-2xl border border-red-100 dark:border-red-900/30">
-                    <div className="flex items-center gap-3 mb-4">
-                        <Shield className="w-8 h-8 text-red-600 dark:text-red-400" />
-                        <h2 className="text-2xl font-bold text-red-900 dark:text-red-300 m-0">Security Best Practices</h2>
-                    </div>
-                    <div className="space-y-4 text-red-800 dark:text-red-300">
-                        <p>
-                            <strong>Never Run Obfuscated Code:</strong> PowerShell is a favorite tool for malware due to its deep system access.
-                            If you see a command that looks like random string formatting (e.g., <code>iex $env:x</code>), do not run it.
-                        </p>
-                        <p>
-                            <strong>Understand "Run as Administrator":</strong> Many commands generated by this tool (like changing system settings or installing software via Winget/Chocolatey)
-                            require elevated privileges. If a command fails with "Access Denied", try opening your terminal as Administrator.
-                        </p>
-                    </div>
-                </div>
-
-                {/* FAQ */}
-                <div className="space-y-6">
-                    <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
-                    <div className="grid gap-4">
-                        <div className="border rounded-lg p-4">
-                            <h4 className="font-bold mb-2">What is the difference between PowerShell and CMD?</h4>
-                            <p className="text-muted-foreground">CMD (Command Prompt) is a legacy shell from the DOS days, primarily for basic file batch operations. PowerShell is a modern, object-oriented scripting environment capable of managing complex Azure cloud infrastructures, Exchange servers, and Windows internals.</p>
+                    {/* System Info */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <Server className="text-purple-500" />
+                            <h3 className="text-2xl font-bold m-0">System & Hardware</h3>
                         </div>
-                        <div className="border rounded-lg p-4">
-                            <h4 className="font-bold mb-2">Can I run Linux commands in PowerShell?</h4>
-                            <p className="text-muted-foreground">Yes! Through WSL (Windows Subsystem for Linux), you can run a full Linux kernel alongside Windows. Type <code>wsl ls -la</code> to run a Linux command from PowerShell.</p>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Function</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-purple-600">systeminfo</td><td>Detailed system specs</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">tasklist</td><td>Show running apps</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">taskkill /IM [name]</td><td>Force close app</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">hostname</td><td>Show computer name</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">wmic cpu get name</td><td>Show CPU specific model</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">sfc /scannow</td><td>Repair corrupt system files</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">shutdown /s</td><td>Shutdown PC</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">shutdown /r</td><td>Restart PC</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Network */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <Wifi className="text-green-500" />
+                            <h3 className="text-2xl font-bold m-0">Network Commands</h3>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Function</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-green-600">ipconfig</td><td>Show IP address</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">ping google.com</td><td>Check internet connection</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">tracert [site]</td><td>Trace connection route</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">netstat -an</td><td>Show active ports</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">nslookup [site]</td><td>Check DNS records</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">getmac</td><td>Show Physical MAC address</td></tr>
+                                <tr><td className="py-2 font-mono text-green-600">netsh wlan show profiles</td><td>Show saved Wi-Fi networks</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* User & Disk */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <User className="text-orange-500" />
+                            <h3 className="text-2xl font-bold m-0">User & Disk Mgmt</h3>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Function</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-orange-600">whoami</td><td>Current user name</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">net user</td><td>List all users</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">net user [name] *</td><td>Change password</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">diskpart</td><td>Advanced disk partition tool</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">chkdsk /f</td><td>Check & fix disk errors</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">format [drive]:</td><td>Format a drive (Warning!)</td></tr>
+                                <tr><td className="py-2 font-mono text-orange-600">vol</td><td>Volume label/serial number</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                {/* PowerShell Special */}
+                <div className="bg-slate-900 text-slate-100 p-8 rounded-2xl border border-slate-700">
+                    <div className="flex items-center gap-3 mb-6">
+                        <Terminal className="w-8 h-8 text-blue-400" />
+                        <h2 className="text-2xl font-bold m-0">PowerShell Power-User</h2>
+                    </div>
+
+                    <p className="text-slate-400 mb-6">
+                        PowerShell has over 1000+ cmdlets. It creates "Aliases" so standard commands work too.
+                        But for real power, use the Verb-Noun syntax.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-slate-800 p-4 rounded-xl">
+                            <code className="text-blue-400 font-bold block mb-2">Get-Command</code>
+                            <p className="text-sm text-slate-300">Find any command. <br />Example: <code>Get-Command *service*</code> finds all service related tools.</p>
+                        </div>
+                        <div className="bg-slate-800 p-4 rounded-xl">
+                            <code className="text-blue-400 font-bold block mb-2">Get-Help</code>
+                            <p className="text-sm text-slate-300">The manual. <br />Example: <code>Get-Help Get-Process -Examples</code> showing you how to use it.</p>
+                        </div>
+                        <div className="bg-slate-800 p-4 rounded-xl">
+                            <code className="text-blue-400 font-bold block mb-2">Get-Service | Where Status -eq 'Stopped'</code>
+                            <p className="text-sm text-slate-300">Filters data logically. Lists only services that are currently stopped.</p>
+                        </div>
+                        <div className="bg-slate-800 p-4 rounded-xl">
+                            <code className="text-blue-400 font-bold block mb-2">Stop-Process -Name chrome</code>
+                            <p className="text-sm text-slate-300">Kill command. Instantly closes all Chrome windows.</p>
                         </div>
                     </div>
                 </div>

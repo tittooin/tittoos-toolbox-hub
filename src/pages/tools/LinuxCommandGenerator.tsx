@@ -1,141 +1,126 @@
 
 import React from 'react';
 import GenericCommandTool from "@/components/GenericCommandTool";
-import { Terminal, Server, Lock, Database, List } from 'lucide-react';
+import { Terminal, Lock, Server, Wifi, FolderOpen, Package, List } from 'lucide-react';
 
 const LinuxCommandGenerator = () => {
     return (
         <GenericCommandTool
-            title="Linux Terminal Generator"
-            description="Generate Bash commands for Ubuntu, Debian, CentOS, and more."
+            title="Linux Bash Cheat Sheet & Generator"
+            description="The definitive guide for Linux Terminal. Ubuntu, Debian, CentOS commands categorized."
             osName="Linux Bash"
             icon={Terminal}
-            keywords="linux command generator, bash script generator, ubuntu terminal helper, linux cli"
+            keywords="linux cli commands, bash cheatsheet, ubuntu terminal, chmod, grep, tar, ssh, top"
         >
             <div className="space-y-12">
 
                 {/* Intro */}
                 <div>
-                    <h2 className="text-3xl font-bold mb-6">The Language of the Cloud</h2>
+                    <h2 className="text-3xl font-bold mb-6">Master the Linux Shell</h2>
                     <p className="text-lg text-muted-foreground leading-relaxed">
-                        Linux powers 90% of the public cloud, the world's top 500 supercomputers, and most of the internet's infrastructure.
-                        Mastering the <strong>Bash (Bourne Again SHell)</strong> is the single most valuable skill for any developer or sysadmin.
+                        Linux powers the internet. Whether you are managing a server or just learning Ubuntu, these commands are your daily drivers.
+                        Below is a categorized list of essential Bash commands.
                     </p>
                 </div>
 
-                {/* Concepts Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mb-4">
-                            <Server className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                {/* Categories Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+                    {/* File & Directory */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <FolderOpen className="text-amber-500" />
+                            <h3 className="text-2xl font-bold m-0">Files & Navigation</h3>
                         </div>
-                        <h3 className="text-xl font-bold mb-2">Everything is a File</h3>
-                        <p className="text-muted-foreground">
-                            In Linux, hardware devices, network sockets, and processes are all represented as files.
-                            This means you can read data from a hard drive (<code>/dev/sda</code>) or a random number generator (<code>/dev/urandom</code>) using the same commands you use to read a text file.
-                        </p>
-                    </div>
-
-                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
-                            <Lock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2">Permissions (rwx)</h3>
-                        <p className="text-muted-foreground">
-                            Linux security is built on file ownership. Every file belongs to a <strong>User</strong> and a <strong>Group</strong>.
-                            Permissions are defined as Read (4), Write (2), and Execute (1).
-                        </p>
-                    </div>
-                </div>
-
-                {/* Reference Table */}
-                <div className="space-y-6">
-                    <div className="flex items-center gap-3 border-b pb-4">
-                        <List className="w-8 h-8 text-primary" />
-                        <h2 className="text-3xl font-bold m-0">Essential Linux Commands</h2>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full text-left text-sm">
                             <thead>
-                                <tr className="border-b">
-                                    <th className="p-4 font-bold text-lg w-1/4">Command</th>
-                                    <th className="p-4 font-bold text-lg">Use Case</th>
-                                </tr>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Usage</th></tr>
                             </thead>
                             <tbody className="divide-y">
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">ls -lah</td>
-                                    <td className="p-4">List all files including hidden ones, with details and human-readable sizes.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">cd /path/to</td>
-                                    <td className="p-4">Change Directory. Use <code>cd ..</code> to go back comfortably.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">grep -r "text" .</td>
-                                    <td className="p-4">Search for "text" recursively inside all files in the current folder.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">chmod +x file</td>
-                                    <td className="p-4">Make a file executable (usually a script).</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">chown user:group file</td>
-                                    <td className="p-4">Change the owner and group of a file.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">top / htop</td>
-                                    <td className="p-4">Display real-time system resource usage (CPU, RAM).</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">curl -O url</td>
-                                    <td className="p-4">Download a file from the internet via the terminal.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">tar -czvf name.tar.gz folder</td>
-                                    <td className="p-4">Compress a folder into a .tar.gz archive.</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-4 font-mono text-amber-600 dark:text-amber-400">ssh user@host</td>
-                                    <td className="p-4">Secure Shell. Connect to a remote server securely.</td>
-                                </tr>
+                                <tr><td className="py-2 font-mono text-amber-600">ls -lah</td><td>List all files + hidden + sizes</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">cd /home</td><td>Change directory</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">pwd</td><td>Show current path</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">mkdir [name]</td><td>Create folder</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">rm -rf [folder]</td><td>Delete folder (Force)</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">cp -r [src] [dst]</td><td>Copy folder</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">mv [old] [new]</td><td>Move or Rename</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">cat [file]</td><td>Read file content</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">nano [file]</td><td>Edit file text</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">find . -name "x"</td><td>Find file by name</td></tr>
+                                <tr><td className="py-2 font-mono text-amber-600">grep -r "txt" .</td><td>Search text inside files</td></tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
 
-                {/* Deep Dive */}
-                <div className="space-y-6">
-                    <h2 className="text-3xl font-bold">Key Command Patterns</h2>
-
-                    <div className="prose dark:prose-invert max-w-none">
-                        <h3>1. The Sudo Command</h3>
-                        <p>
-                            <code>sudo</code> stands for "SuperUser DO". It grants you administrative privileges for a single command.
-                            You should never log in as the root user directly; instead, use <code>sudo</code> only when necessary.
-                        </p>
-
-                        <h3>2. Package Management</h3>
-                        <p>
-                            Unlike Windows, you don't download .exe installers from websites. You use a repository.
-                        </p>
-                        <ul>
-                            <li><strong>Debian/Ubuntu:</strong> <code>apt update && apt install package-name</code></li>
-                            <li><strong>Fedora/CentOS:</strong> <code>dnf install package-name</code></li>
-                            <li><strong>Arch Linux:</strong> <code>pacman -S package-name</code></li>
-                        </ul>
-
-                        <h3>3. IO Redirection</h3>
-                        <p>
-                            The power of Linux comes from streams.
-                        </p>
-                        <ul>
-                            <li><code>{`>`}</code> : Redirect output to a file (overwrite). Example: <code>ls {`>`} file.txt</code></li>
-                            <li><code>{`>>`}</code> : Append output to a file.</li>
-                            <li><code>|</code> (Pipe): Send the output of Command A into the input of Command B. Example: <code>cat logs.txt | grep "Error"</code></li>
-                        </ul>
+                    {/* System Info */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <Server className="text-purple-500" />
+                            <h3 className="text-2xl font-bold m-0">System & Ops</h3>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Usage</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-purple-600">sudo [cmd]</td><td>Run as Admin (Root)</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">htop / top</td><td>Task manager (CPU/RAM)</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">df -h</td><td>Disk space usage</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">free -m</td><td>Check RAM usage</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">uname -a</td><td>Kernel version info</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">ps aux</td><td>List running processes</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">kill [pid]</td><td>Stop specific process</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">history</td><td>Show recent commands</td></tr>
+                                <tr><td className="py-2 font-mono text-purple-600">reboot</td><td>Restart server</td></tr>
+                            </tbody>
+                        </table>
                     </div>
+
+                    {/* Network */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <Wifi className="text-blue-500" />
+                            <h3 className="text-2xl font-bold m-0">Network & Web</h3>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Usage</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-blue-600">ip a</td><td>Show IP info (Modern)</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">ifconfig</td><td>Show IP (Legacy)</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">ping google.com</td><td>Test connection</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">curl [url]</td><td>Fetch web page source</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">wget [url]</td><td>Download file</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">ssh user@ip</td><td>Remote login</td></tr>
+                                <tr><td className="py-2 font-mono text-blue-600">netstat -tulpn</td><td>Show listening ports</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Permissions & Packages */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                            <Lock className="text-red-500" />
+                            <h3 className="text-2xl font-bold m-0">Permissions & Apps</h3>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                            <thead>
+                                <tr className="text-muted-foreground border-b"><th className="pb-2">Command</th><th className="pb-2">Usage</th></tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                <tr><td className="py-2 font-mono text-red-600">chmod +x [file]</td><td>Make executable</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">chmod 777 [file]</td><td>Give Full Permissions</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">chown user:group</td><td>Change ownership</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">apt update</td><td>Update app list (Ubuntu)</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">apt install [app]</td><td>Install app (Ubuntu)</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">dnf install [app]</td><td>Install app (Fedora)</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">tar -czvf x.tar.gz</td><td>Compress Archive</td></tr>
+                                <tr><td className="py-2 font-mono text-red-600">tar -xzvf x.tar.gz</td><td>Extract Archive</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
 
             </div>
