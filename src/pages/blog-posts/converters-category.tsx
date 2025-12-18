@@ -89,105 +89,173 @@ const ConvertersCategoryPage = () => {
           {/* EXTENDED CONTENT START */}
           <div className="prose dark:prose-invert max-w-none space-y-16">
 
-            {/* Lossy vs Lossless */}
+            {/* Chapter 1: Visual Media Formats */}
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold border-b pb-4">Lossy vs. Lossless: The Great Debate</h2>
+              <h2 className="text-3xl font-bold border-b pb-4">1. Image Formats: The Visual Showdown</h2>
               <p className="text-lg text-muted-foreground">
-                All conversions involve a trade-off. Do you prioritize <strong>Quality</strong> (keeping every pixel perfect) or <strong>Size</strong> (fast loading speed)?
+                Not all pixels are created equal. Choosing the wrong format can double your website's load time or ruin a print job.
+                Here is the definitive comparison:
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-card border rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-red-600 dark:text-red-400 flex items-center gap-2 m-0 mb-4">
-                    <Layers className="w-5 h-5" />
-                    Lossy Compression
-                  </h3>
-                  <ul className="space-y-3 pl-0 list-none m-0">
-                    <li className="text-sm border-b pb-2">
-                      <strong>Formats:</strong> JPG, MP3, WebP (standard)
-                    </li>
-                    <li className="text-sm border-b pb-2">
-                      <strong>How it works:</strong> It throws away data that the human eye/ear is unlikely to notice.
-                    </li>
-                    <li className="text-sm pt-2">
-                      <strong>Best For:</strong> Website photos, streaming audio, social media.
-                    </li>
-                  </ul>
-                </div>
-                <div className="bg-card border rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-green-600 dark:text-green-400 flex items-center gap-2 m-0 mb-4">
-                    <Database className="w-5 h-5" />
-                    Lossless Compression
-                  </h3>
-                  <ul className="space-y-3 pl-0 list-none m-0">
-                    <li className="text-sm border-b pb-2">
-                      <strong>Formats:</strong> PNG, FLAC, WAV, ZIP
-                    </li>
-                    <li className="text-sm border-b pb-2">
-                      <strong>How it works:</strong> Like a ZIP file, it compresses data patterns but restores them 100% perfectly upon opening.
-                    </li>
-                    <li className="text-sm pt-2">
-                      <strong>Best For:</strong> Logos, transparent images, archival storage, medical data.
-                    </li>
-                  </ul>
-                </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted/50 text-xs uppercase font-bold">
+                    <tr>
+                      <th className="px-4 py-3 rounded-tl-lg">Format</th>
+                      <th className="px-4 py-3">Best Use Case</th>
+                      <th className="px-4 py-3">Transparency?</th>
+                      <th className="px-4 py-3 rounded-tr-lg">Compression</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    <tr className="bg-card">
+                      <td className="px-4 py-3 font-medium">JPG / JPEG</td>
+                      <td className="px-4 py-3">Photographs, Social Media</td>
+                      <td className="px-4 py-3 text-red-500 font-bold">No</td>
+                      <td className="px-4 py-3">Lossy (High)</td>
+                    </tr>
+                    <tr className="bg-card">
+                      <td className="px-4 py-3 font-medium">PNG</td>
+                      <td className="px-4 py-3">Logos, Screenshots, UI</td>
+                      <td className="px-4 py-3 text-green-500 font-bold">Yes</td>
+                      <td className="px-4 py-3">Lossless (Heavy)</td>
+                    </tr>
+                    <tr className="bg-card">
+                      <td className="px-4 py-3 font-medium">WebP</td>
+                      <td className="px-4 py-3">Modern Websites (Fast)</td>
+                      <td className="px-4 py-3 text-green-500 font-bold">Yes</td>
+                      <td className="px-4 py-3">Both (Superior)</td>
+                    </tr>
+                    <tr className="bg-card">
+                      <td className="px-4 py-3 font-medium">SVG</td>
+                      <td className="px-4 py-3">Icons, Illustrations</td>
+                      <td className="px-4 py-3 text-green-500 font-bold">Yes</td>
+                      <td className="px-4 py-3">Vector (Infinite Scaling)</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
-            {/* Encoding Explained */}
+            {/* Chapter 2: Audio Quality Explained */}
             <div className="bg-muted/30 p-8 rounded-2xl border">
-              <h2 className="text-2xl font-bold mb-6 mt-0">Why do we need Base64?</h2>
+              <h2 className="text-3xl font-bold mb-6 mt-0">2. Audio Bitrates: 128kbps vs 320kbps</h2>
               <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1">
-                  <p className="text-muted-foreground m-0">
-                    Computers speak binary (0s and 1s). The Internet protocols (HTTP, SMTP email) were originally built to only transmit text (ASCII).
-                    If you try to send a raw image file through an old email system, it corrupts the data.
-                    <br /><br />
-                    <strong>Base64</strong> is a translation layer. It takes binary data (like an image) and turns it into safe printable text characters (A-Z, 0-9).
-                    This makes the file 33% larger but ensures it can travel safely across any network without getting mangled.
-                  </p>
+                <div className="flex-1 space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <Music className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg">What is Bitrate?</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Think of bitrate as "water pressure" in a pipe. The higher the kbps (kilobits per second), the more data flows to your ears every second.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="p-4 bg-background rounded-lg border">
+                      <span className="text-xs font-bold text-red-500 uppercase">Streaming (Spotify Low)</span>
+                      <div className="text-2xl font-bold">128 kbps</div>
+                      <p className="text-xs text-muted-foreground mt-1">Removes high-pitch details. Good for speech.</p>
+                    </div>
+                    <div className="p-4 bg-background rounded-lg border">
+                      <span className="text-xs font-bold text-green-500 uppercase">High Quality (MP3 Max)</span>
+                      <div className="text-2xl font-bold">320 kbps</div>
+                      <p className="text-xs text-muted-foreground mt-1">Near CD quality. Indistinguishable for most.</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="w-full md:w-1/3 bg-background p-4 rounded-lg border font-mono text-xs overflow-hidden">
-                  <div className="text-orange-500 mb-2">// Raw Image (Binary)</div>
-                  <div className="mb-4 text-muted-foreground">PNG...IHDR...</div>
-                  <ArrowLeftRight className="w-4 h-4 mx-auto my-2 text-muted-foreground" />
-                  <div className="text-green-500 mb-2">// Base64 (Safe Text)</div>
-                  <div className="break-all text-muted-foreground">iVBORw0KGgoAAAANSUhEUgAA...</div>
+
+                <div className="w-full md:w-1/3 text-center">
+                  <div className="text-sm font-mono text-muted-foreground mb-2">Waveform Sampling</div>
+                  {/* Simplified Visualization */}
+                  <div className="flex items-end justify-center gap-1 h-32 border-b border-foreground/20 pb-1">
+                    <div className="w-2 bg-red-400 h-12 rounded-t opacity-50"></div>
+                    <div className="w-2 bg-red-500 h-16 rounded-t"></div>
+                    <div className="w-2 bg-red-400 h-10 rounded-t opacity-50"></div>
+                    <div className="w-2 bg-red-600 h-24 rounded-t"></div>
+                    <div className="w-2 bg-red-500 h-20 rounded-t"></div>
+                    <div className="w-2 bg-red-600 h-28 rounded-t shadow-[0_0_10px_rgba(255,0,0,0.5)]"></div>
+                    <div className="w-2 bg-red-500 h-20 rounded-t"></div>
+                    <div className="w-2 bg-red-600 h-24 rounded-t"></div>
+                    <div className="w-2 bg-red-400 h-16 rounded-t opacity-50"></div>
+                  </div>
+                  <p className="text-xs mt-2 text-muted-foreground">Higher Bitrate = More detailed peaks</p>
                 </div>
               </div>
             </div>
 
-            {/* Use Cases */}
+            {/* Chapter 3: Encoding & Data Serialization */}
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold border-b pb-4">Common Conversion Scenarios</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5 text-primary" />
-                    Web Optimization
+              <h2 className="text-3xl font-bold border-b pb-4">3. Data & Encoding: Speaking Computer</h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Base64 Section */}
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2 mb-3">
+                    <ArrowLeftRight className="w-5 h-5 text-orange-500" />
+                    Why Base64?
                   </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Converting massive PNG screenshots to <strong>WebP</strong> format can reduce page load size by 80%, directly improving your Google SEO score (Core Web Vitals).
+                  <p className="text-muted-foreground text-sm mb-4">
+                    The internet was built for text. Binary files (images) break when sent as raw text.
+                    <strong>Base64</strong> converts binary data into safe text characters (A-Z, 0-9) so it can travel anywhere safely.
                   </p>
+                  <div className="bg-muted p-4 rounded-lg font-mono text-xs overflow-x-auto">
+                    <span className="text-green-600">iVBORw0KGgoAAAANSUhEUgAA...</span>
+                    <span className="block mt-1 text-muted-foreground opacity-50">// This string IS an image</span>
+                  </div>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold flex items-center gap-2">
-                    <Database className="w-5 h-5 text-primary" />
-                    Data Migration
+
+                {/* CSV vs JSON */}
+                <div>
+                  <h3 className="text-xl font-bold flex items-center gap-2 mb-3">
+                    <Database className="w-5 h-5 text-blue-500" />
+                    CSV vs. JSON
                   </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Moving from Excel to a Web App? You need to convert <strong>CSV to JSON</strong>. Developers use JSON because it nests data hierarchically, unlike the flat rows of a CSV.
-                  </p>
+                  <ul className="space-y-3">
+                    <li className="text-sm">
+                      <strong>CSV (Comma Separated):</strong> Flat tables. Great for Excel and humans. Bad for complex data.
+                    </li>
+                    <li className="text-sm">
+                      <strong>JSON (JavaScript Object):</strong> Nested trees. Great for APIs and Web Apps. Can store lists inside lists.
+                    </li>
+                  </ul>
+                  <div className="mt-4 grid grid-cols-2 gap-2 font-mono text-[10px]">
+                    <div className="border p-2 rounded bg-background">
+                      id,name<br />1,John
+                    </div>
+                    <div className="border p-2 rounded bg-background">
+                      &#123; "id": 1, "name": "John" &#125;
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold flex items-center gap-2">
-                    <FileType2 className="w-5 h-5 text-primary" />
-                    Legacy Support
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Some old government websites or printers only accept <strong>TIFF</strong> or <strong>JPG</strong>. Modern iPhones shoot in HEIC. Converters are the translator between these eras.
-                  </p>
-                </div>
+              </div>
+            </div>
+
+            {/* Chapter 4: Troubleshooting */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">4. Troubleshooting & FAQ</h2>
+              <div className="space-y-4">
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <span>Why did my image lose quality after conversion?</span>
+                    <span className="transition group-open:rotate-180">▼</span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    You likely converted to a <strong>Lossy</strong> format like JPG. Once compressed, that data is gone forever. Always keep a PNG master copy.
+                  </div>
+                </details>
+                <details className="group border rounded-lg bg-background">
+                  <summary className="flex justify-between items-center p-4 font-medium cursor-pointer list-none">
+                    <span>Can I convert a low-quality MP3 to high-quality WAV?</span>
+                    <span className="transition group-open:rotate-180">▼</span>
+                  </summary>
+                  <div className="p-4 pt-0 text-muted-foreground text-sm group-open:animate-fadeIn">
+                    No. You cannot add quality that isn't there. Converting 128kbps MP3 to WAV just creates a huge file with the same poor audio quality.
+                  </div>
+                </details>
               </div>
             </div>
 

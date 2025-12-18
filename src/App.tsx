@@ -113,6 +113,10 @@ const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
 const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
 const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
+const WindowsCommandGenerator = lazy(() => import("./pages/tools/WindowsCommandGenerator"));
+const LinuxCommandGenerator = lazy(() => import("./pages/tools/LinuxCommandGenerator"));
+const MacCommandGenerator = lazy(() => import("./pages/tools/MacCommandGenerator"));
+const AndroidCommandGenerator = lazy(() => import("./pages/tools/AndroidCommandGenerator"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -125,6 +129,7 @@ const GeneratorsCategoryPage = lazy(() => import("./pages/blog-posts/generators-
 const EditorsCategoryPage = lazy(() => import("./pages/blog-posts/editors-category"));
 const GamesCategoryPage = lazy(() => import("./pages/blog-posts/games-category"));
 const PDFCategoryPage = lazy(() => import("./pages/blog-posts/pdf-category"));
+const DevToolsCategoryPage = lazy(() => import("./pages/blog-posts/dev-tools-category"));
 
 // Google Analytics pageview tracker
 const GoogleAnalytics = () => {
@@ -180,6 +185,7 @@ const App = () => (
               <Route path="/blog-posts/editors-category" element={<EditorsCategoryPage />} />
               <Route path="/blog-posts/games-category" element={<GamesCategoryPage />} />
               <Route path="/blog-posts/pdf-category" element={<PDFCategoryPage />} />
+              <Route path="/blog-posts/dev-tools-category" element={<DevToolsCategoryPage />} />
 
               {/* Converter Tools */}
               <Route path="/tools/pdf-converter" element={<PDFConverter />} />
@@ -278,6 +284,12 @@ const App = () => (
               <Route path="/tools/image-resizer" element={<ImageResizer />} />
               <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
               <Route path="/tools/number-flow" element={<NumberFlow />} />
+
+              {/* Dev Tools */}
+              <Route path="/tools/windows-cmd-gen" element={<WindowsCommandGenerator />} />
+              <Route path="/tools/linux-cmd-gen" element={<LinuxCommandGenerator />} />
+              <Route path="/tools/mac-cmd-gen" element={<MacCommandGenerator />} />
+              <Route path="/tools/android-adb-gen" element={<AndroidCommandGenerator />} />
 
               {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />

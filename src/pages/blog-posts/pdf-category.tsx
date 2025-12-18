@@ -223,9 +223,118 @@ const PDFCategoryPage = () => {
               </div>
             </div>
 
-            {/* Chapter 4: Troubleshooting */}
+            {/* Chapter 4: The Science of Compression */}
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold border-b pb-4">4. Troubleshooting Common Issues</h2>
+              <h2 className="text-3xl font-bold border-b pb-4">4. The Science of Compression</h2>
+              <p className="text-lg text-muted-foreground">
+                Ever wonder how a 50MB PDF shrinks to 2MB? It's not magic; it's math.
+                PDF compression uses two main techniques: <strong>Lossless (Deflate/LZW)</strong> and <strong>Lossy (JPEG/downsampling)</strong>.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-card border rounded-xl p-6 shadow-sm">
+                  <h3 className="font-bold text-lg mb-3">1. Downsampling</h3>
+                  <p className="text-sm text-muted-foreground">
+                    If an image is 3000px wide but only shown in a 300px box, it's wasting space.
+                    We calculate the displayed size (DPI) and physically resize the image to match the target output (e.g., 72 DPI for screens).
+                  </p>
+                </div>
+                <div className="bg-card border rounded-xl p-6 shadow-sm">
+                  <h3 className="font-bold text-lg mb-3">2. Stream Deflation</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Text in PDFs is just code. We use algorithms like <strong>FlateDecode</strong> to replace repeated patterns (like "the", "and") with short references, reducing text size by 40-60%.
+                  </p>
+                </div>
+                <div className="bg-card border rounded-xl p-6 shadow-sm">
+                  <h3 className="font-bold text-lg mb-3">3. Font Subsetting</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Instead of embedding the entire "Arial" font file (all 50,000 characters), we only embed the 50 characters actually used in your document.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 5: Security Standards */}
+            <div className="bg-muted/30 p-8 rounded-2xl border">
+              <h2 className="text-3xl font-bold mb-6 mt-0">5. PDF Security: AES & Permissions</h2>
+              <div className="flex flex-col lg:flex-row gap-8 items-center">
+                <div className="flex-1 space-y-4">
+                  <p className="text-muted-foreground">
+                    Protecting a PDF isn't just about a password. It's about encryption strength.
+                    Axevora uses <strong>AES-256</strong> (Advanced Encryption Standard), the same standard used by banks and governments.
+                  </p>
+                  <div>
+                    <h4 className="font-bold flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-red-500" />
+                      User Password (Open password)
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">Required just to view the file.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-blue-500" />
+                      Owner Password (Permissions)
+                    </h4>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      Allows viewing, but blocks printing, copying text, or editing. Ideal for sending drafts or copyrighted material.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full lg:w-1/3 bg-background p-6 rounded-xl border shadow-inner">
+                  <div className="text-center mb-4">
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Secure</span>
+                  </div>
+                  <div className="space-y-3 font-mono text-xs">
+                    <div className="flex justify-between border-b pb-2">
+                      <span>Encryption</span>
+                      <span>AES-256-GCM</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <span>Key Length</span>
+                      <span>256 bit</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <span>Hardening</span>
+                      <span>100k Iterations</span>
+                    </div>
+                    <div className="flex justify-between text-red-500 font-bold">
+                      <span>Brute Force</span>
+                      <span>~Millions of Years</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 6: OCR Explained */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">6. How OCR Turns Pixels into Text</h2>
+              <p className="text-lg text-muted-foreground">
+                Optical Character Recognition (OCR) is the bridge between a "dumb" image scan and a "smart" searchable document.
+                Here's how our engine sees your page:
+              </p>
+
+              <div className="relative overflow-hidden rounded-xl border bg-background grid grid-cols-1 md:grid-cols-2">
+                <div className="p-8 border-b md:border-b-0 md:border-r flex flex-col justify-center items-center text-center space-y-4 bg-muted/20">
+                  <div className="text-6xl font-serif font-bold text-gray-400 blur-[2px]">T</div>
+                  <p className="text-sm font-bold text-muted-foreground">Input: A grid of pixels</p>
+                  <p className="text-xs text-muted-foreground">To a computer, this is just a collection of gray dots.</p>
+                </div>
+                <div className="p-8 space-y-4">
+                  <h3 className="font-bold text-lg">The Analysis Pipeline</h3>
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                    <li><strong>Binarization:</strong> Convert varied gray to pure Black/White.</li>
+                    <li><strong>Segmentation:</strong> Detect blobs of black pixels (potential letters).</li>
+                    <li><strong>Feature Extraction:</strong> "Has a vertical line and a top hat?" -> Probably 'T'.</li>
+                    <li><strong>Dictionary Match:</strong> "Thx" -> Likely "The" (Context correction).</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            {/* Chapter 7: Troubleshooting */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold border-b pb-4">7. Troubleshooting Common Issues</h2>
 
               <div className="space-y-4">
                 <details className="group border rounded-lg bg-background">

@@ -7,7 +7,7 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
-  Facebook, Twitter, Linkedin, Scissors, Gauge, Edit,
+  Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book
 } from "lucide-react";
 
@@ -20,6 +20,7 @@ const allCategories = [
   { id: "calculator", name: "Calculators", guidePath: "/blog-posts/calculators-category" },
   { id: "formatter", name: "Formatters", guidePath: "/blog-posts/formatters-category" },
   { id: "ai", name: "AI Tools", guidePath: "/blog-posts/ai-tools-category" },
+  { id: "dev", name: "Dev Tools", guidePath: "/blog-posts/dev-tools-category" },
   { id: "games", name: "Games & Brain", guidePath: "/blog-posts/games-category" },
   { id: "utility", name: "Utilities", guidePath: "/blog-posts/analyzers-category" }, // Fallback to analyzers or create utility if needed
 ];
@@ -1829,6 +1830,44 @@ const allTools = [
     ],
     faqs: []
   },
+  // Dev Tools
+  {
+    id: "windows-cmd-gen",
+    name: "Windows Command Gen",
+    subheading: "PowerShell AI Assistant",
+    description: "Generate complex PowerShell commands from plain English.",
+    category: "dev",
+    icon: Terminal,
+    path: "/tools/windows-cmd-gen"
+  },
+  {
+    id: "linux-cmd-gen",
+    name: "Linux Terminal Gen",
+    subheading: "Bash AI Assistant",
+    description: "Translate your requests into executable Bash commands.",
+    category: "dev",
+    icon: Terminal,
+    path: "/tools/linux-cmd-gen"
+  },
+  {
+    id: "mac-cmd-gen",
+    name: "MacOS Terminal Gen",
+    subheading: "Zsh AI Assistant",
+    description: "Master the Mac terminal with AI-generated Zsh commands.",
+    category: "dev",
+    icon: Command,
+    path: "/tools/mac-cmd-gen"
+  },
+  {
+    id: "android-adb-gen",
+    name: "ADB Command Gen",
+    subheading: "Android Debug Bridge",
+    description: "Generate ADB and Fastboot commands for Android management.",
+    category: "dev",
+    icon: Smartphone,
+    path: "/tools/android-adb-gen"
+  },
+
   {
     id: "ai-tool-generator",
     name: "AI Tool Generator",

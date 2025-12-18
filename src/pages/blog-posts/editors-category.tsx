@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit3, Type, Code, FileCode, Coffee, Eye, Rocket, HelpCircle } from 'lucide-react';
+import { Edit3, Type, Code, FileCode, Coffee, Eye, Rocket, HelpCircle, Palette } from 'lucide-react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
@@ -140,6 +140,66 @@ const EditorsCategoryPage = () => {
                     It's the quickest way to debug a "Bad Request" error without opening Postman.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Chapter 3: Digital Design Essentials */}
+            <div className="bg-muted/30 p-8 rounded-2xl border">
+              <h2 className="text-3xl font-bold mb-6 mt-0">3. Digital Design Essentials</h2>
+              <p className="text-muted-foreground mb-8">
+                Whether you use our <strong>AI Image Editor</strong> or <strong>Background Remover</strong>, understanding these three concepts will instantly make your work look more professional.
+              </p>
+
+              {/* Grid for Concepts */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                {/* Resolution / DPI */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-5 h-5 text-indigo-500" />
+                    <h3 className="text-lg font-bold m-0">Resolution & DPI</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    <strong>DPI (Dots Per Inch)</strong> matters for print, not screens.
+                  </p>
+                  <ul className="text-xs space-y-2 list-disc pl-4 text-muted-foreground">
+                    <li><strong>Screens (Web):</strong> 72 PPI is standard. All that matters is pixel dimensions (e.g., 1920x1080).</li>
+                    <li><strong>Print (Paper):</strong> You need 300 DPI. A 1000px image will only print cleanly at 3 inches wide.</li>
+                  </ul>
+                </div>
+
+                {/* Color Theory */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-pink-500" />
+                    <h3 className="text-lg font-bold m-0">RGB vs. CMYK</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Why do colors look dull when printed?
+                  </p>
+                  <ul className="text-xs space-y-2 list-disc pl-4 text-muted-foreground">
+                    <li><strong>RGB (Red Green Blue):</strong> Used by screens. Light is additive. Can create neon/bright colors.</li>
+                    <li><strong>CMYK (Cyan Magenta Yellow Key):</strong> Used by printers. Ink is subtractive. Cannot reproduce neon colors.</li>
+                  </ul>
+                </div>
+
+                {/* Aspect Ratios */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Rocket className="w-5 h-5 text-orange-500" />
+                    <h3 className="text-lg font-bold m-0">Aspect Ratios</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    The shape of your canvas dictates compatibility.
+                  </p>
+                  <ul className="text-xs space-y-2 list-disc pl-4 text-muted-foreground">
+                    <li><strong>16:9 :</strong> YouTube, TV, Presentations.</li>
+                    <li><strong>9:16 :</strong> TikTok, Reels, Shorts.</li>
+                    <li><strong>1:1 :</strong> Instagram Posts, Profile Pics.</li>
+                    <li><strong>4:5 :</strong> IG Portrait (Takes up more screen).</li>
+                  </ul>
+                </div>
+
               </div>
             </div>
 
