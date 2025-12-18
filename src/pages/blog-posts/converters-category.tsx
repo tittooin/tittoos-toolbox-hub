@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, FileInput, ImageLike, Music, FileType2, Database, Layers, ArrowLeftRight, Check, AlertOctagon } from 'lucide-react';
+import { RefreshCcw, FileInput, Image as ImageIcon, Music, FileType2, Database, Layers, ArrowLeftRight, Check, AlertOctagon } from 'lucide-react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
@@ -163,7 +163,7 @@ const ConvertersCategoryPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold flex items-center gap-2">
-                    <ImageLike className="w-5 h-5 text-primary" />
+                    <ImageIcon className="w-5 h-5 text-primary" />
                     Web Optimization
                   </h3>
                   <p className="text-muted-foreground text-sm">
