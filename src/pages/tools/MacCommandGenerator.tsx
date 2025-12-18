@@ -98,6 +98,67 @@ const MacCommandGenerator = () => {
                     </div>
                 </div>
 
+                {/* SEO Blog Article */}
+                <article className="prose dark:prose-invert max-w-none pt-12 border-t mt-12">
+                    <h1>Unlock Your Mac: The Guide to Terminal & Zsh</h1>
+
+                    <p className="lead text-xl text-muted-foreground">
+                        Your Mac is a Unix workstation with a beautiful interface. Most users never touch the Terminal, but for developers, it is home.
+                        Since macOS Catalina, Apple switched the default shell to <strong>Zsh (Z Shell)</strong>. Let's see how to use it.
+                    </p>
+
+                    <h2>Why is Zsh better than Bash?</h2>
+                    <p>
+                        Zsh is essentially "Bash 2.0". It does everything Bash does but adds quality-of-life improvements:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2">
+                        <li><strong>Spelling Correction:</strong> If you type <code>cd dekstop</code>, Zsh will ask if you meant "Desktop".</li>
+                        <li><strong>Better Tab Completion:</strong> Pressing Tab shows a selectable menu of files, not just a text list.</li>
+                        <li><strong>Plugin Support:</strong> Frameworks like "Oh My Zsh" allow you to add themes, git status powerlines, and auto-suggestions.</li>
+                    </ul>
+
+                    <h2>Must-Have Tool: Homebrew</h2>
+                    <p>
+                        If you open Terminal and type <code>wget</code> or <code>python</code>, you might find they are missing or outdated.
+                        <strong>Homebrew</strong> solves this. It is a package manager for macOS.
+                    </p>
+                    <p>
+                        To install it, you run one command from their website. Once installed, you can download thousands of free, open-source tools:
+                    </p>
+                    <div className="bg-muted p-4 rounded-lg my-4 font-mono text-sm">
+                        brew install node          # Installs Node.js<br />
+                        brew install git           # Installs latest Git<br />
+                        brew install --cask vlc    # Installs the VLC Video Player app
+                    </div>
+
+                    <h2>Hidden MacOS Commands</h2>
+                    <p>
+                        Did you know you can control the GUI from the CLI?
+                    </p>
+                    <div className="space-y-4 not-prose mt-4">
+                        <div className="flex gap-4 items-start">
+                            <div className="min-w-[120px] font-bold font-mono text-primary">caffeinate</div>
+                            <p className="text-sm">Stops your screen from dimming or sleeping. Essential for long downloads or presentations.</p>
+                        </div>
+                        <div className="flex gap-4 items-start">
+                            <div className="min-w-[120px] font-bold font-mono text-primary">pbcopy</div>
+                            <p className="text-sm">"Pasteboard Copy". Pipe command output directly to your clipboard. <code>cat secret.txt | pbcopy</code>.</p>
+                        </div>
+                        <div className="flex gap-4 items-start">
+                            <div className="min-w-[120px] font-bold font-mono text-primary">say</div>
+                            <p className="text-sm">Uses the built-in TTS engine. Great for notifying you when a long script finishes: <code>sleep 10 && say "Process Done"</code>.</p>
+                        </div>
+                    </div>
+
+                    <h2>Troubleshooting: "Command Not Found"</h2>
+                    <p>
+                        If you install something but the terminal says "command not found", it's usually a <strong>PATH</strong> issue.
+                        The system doesn't know where to look for the file.
+                        In Zsh, you fix this by editing the <code>~/.zshrc</code> file and adding the folder path.
+                    </p>
+
+                </article>
+
             </div>
         </GenericCommandTool>
     );
