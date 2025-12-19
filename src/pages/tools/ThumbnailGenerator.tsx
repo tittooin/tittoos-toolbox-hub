@@ -755,6 +755,134 @@ const ThumbnailGenerator = () => {
 
     const handleMouseUp = () => { draggingRef.current = null; };
 
+    // --- TOUCH EVENTS FOR MOBILE ---
+    const getTouchPos = (e: React.TouchEvent, touchIndex: number = 0) => {
+        const rect = canvasRef.current!.getBoundingClientRect();
+        const scaleX = canvasRef.current!.width / rect.width;
+        const scaleY = canvasRef.current!.height / rect.height;
+        const touch = e.touches[touchIndex];
+        return {
+            x: (touch.clientX - rect.left) * scaleX,
+            y: (touch.clientY - rect.top) * scaleY
+        };
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        // Prevent default scrolling to ensure smooth dragging
+        // e.preventDefault(); // Sometimes this is too aggressive, let's see. Browsers might complain about passive listeners.
+
+        if (!canvasRef.current) return;
+        const { x, y } = getTouchPos(e);
+
+        // Reuse Logic from MouseDown
+        // 1. Check Handles
+        if (selectedId) {
+            const el = elements.find(e => e.id === selectedId);
+            if (el) {
+                const w = el.width || (el.type === 'text' ? el.fontSize * el.content.length * 0.6 : 100);
+                const h = el.height || (el.type === 'text' ? el.fontSize : 100);
+                const halfW = w / 2;
+                const halfH = h / 2;
+
+                const corners = [
+                    { h: 'tl', cx: -halfW, cy: -halfH },
+                    { h: 'tr', cx: halfW, cy: -halfH },
+                    { h: 'bl', cx: -halfW, cy: halfH },
+                    { h: 'br', cx: halfW, cy: halfH },
+                ];
+
+                for (let c of corners) {
+                    const p = rotatePoint(el.x + c.cx, el.y + c.cy, el.x, el.y, el.rotation);
+                    if (Math.hypot(x - p.x, y - p.y) < 25) { // Slightly larger hit area for touch (25 vs 15)
+                        draggingRef.current = {
+                            id: selectedId,
+                            startX: x,
+                            startY: y,
+                            elemX: el.x,
+                            elemY: el.y,
+                            handle: c.h,
+                            startW: w,
+                            startH: h,
+                            startRot: el.rotation,
+                            originalFontSize: el.fontSize
+                        };
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 2. Check Elements
+        let clickedId: string | null = null;
+        for (let i = elements.length - 1; i >= 0; i--) {
+            const el = elements[i];
+            const w = el.width || (el.type === 'text' ? el.fontSize * el.content.length * 0.5 : 100);
+            const h = el.height || (el.type === 'text' ? el.fontSize : 100);
+
+            if (isPointInRotatedRect(x, y, el.x, el.y, w, h, el.rotation)) {
+                clickedId = el.id;
+                break;
+            }
+        }
+
+        if (clickedId) {
+            setSelectedId(clickedId);
+            const el = elements.find(e => e.id === clickedId)!;
+            draggingRef.current = {
+                id: clickedId,
+                startX: x,
+                startY: y,
+                elemX: el.x,
+                elemY: el.y
+            };
+        } else {
+            setSelectedId(null);
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!draggingRef.current) return;
+        // e.preventDefault(); // Prevent scrolling while dragging
+
+        const { x, y } = getTouchPos(e);
+        const { id, startX, startY, elemX, elemY, handle, startW, startH } = draggingRef.current;
+        const dx = x - startX;
+        const dy = y - startY;
+
+        if (handle && startW && startH) {
+            // RESIZING LOGIC
+            const el = elements.find(e => e.id === id)!;
+            const rad = (Math.PI / 180) * el.rotation;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+
+            const localDx = (dx * cos) + (dy * sin);
+            const localDy = (dy * cos) - (dx * sin);
+
+            let newW = startW;
+            let newH = startH;
+
+            if (handle === 'br') { newW += localDx; newH += localDy; }
+            if (handle === 'bl') { newW -= localDx; newH += localDy; }
+            if (handle === 'tr') { newW += localDx; newH -= localDy; }
+            if (handle === 'tl') { newW -= localDx; newH -= localDy; }
+
+            if (el.type === 'text') {
+                const scaleFactor = newH / startH;
+                const newFontSize = (draggingRef.current.originalFontSize || 100) * scaleFactor;
+                updateSelectedElement({ fontSize: Math.max(10, newFontSize) });
+            } else {
+                updateSelectedElement({ width: Math.max(20, newW), height: Math.max(20, newH) });
+            }
+
+        } else {
+            // MOVING logic
+            updateSelectedElement({ x: elemX + dx, y: elemY + dy });
+        }
+    };
+
+    const handleTouchEnd = () => { draggingRef.current = null; };
+
     const downloadThumbnail = () => {
         if (!canvasRef.current) return;
         const link = document.createElement('a');
@@ -1075,11 +1203,14 @@ const ThumbnailGenerator = () => {
                             ref={canvasRef}
                             width={1280}
                             height={720}
-                            className="w-full h-full object-contain cursor-move"
+                            className="w-full h-full object-contain cursor-move touch-none"
                             onMouseDown={handleMouseDown}
                             onMouseMove={handleMouseMove}
                             onMouseUp={handleMouseUp}
                             onMouseLeave={handleMouseUp}
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
                         />
                         {isGeneratingImage && (
                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm z-10 text-white">
