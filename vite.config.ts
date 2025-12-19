@@ -16,6 +16,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  assetsInclude: ['**/*.wasm', '**/*.onnx'],
+  optimizeDeps: {
+    exclude: ['@imgly/background-removal']
+  },
   build: {
     rollupOptions: {
       output: {

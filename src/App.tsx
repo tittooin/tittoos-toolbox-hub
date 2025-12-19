@@ -80,6 +80,7 @@ const CSSFormatter = lazy(() => import("./pages/tools/CSSFormatter"));
 const TimestampConverter = lazy(() => import("./pages/tools/TimestampConverter"));
 const URLEncoder = lazy(() => import("./pages/tools/URLEncoder"));
 const MarkdownEditor = lazy(() => import("./pages/tools/MarkdownEditor"));
+const ThumbnailGenerator = lazy(() => import("./pages/tools/ThumbnailGenerator"));
 const TextToImage = lazy(() => import("./pages/tools/TextToImage"));
 const TextToVideo = lazy(() => import("./pages/tools/TextToVideo"));
 const AIPromptAssistant = lazy(() => import("./pages/tools/AIPromptAssistant"));
@@ -266,6 +267,7 @@ const App = () => (
               {/* Encoders */}
               <Route path="/tools/url-encoder" element={<URLEncoder />} />
               <Route path="/tools/text-to-image" element={<TextToImage />} />
+              <Route path="/tools/thumbnail-generator" element={<ThumbnailGenerator />} />
               <Route path="/tools/text-to-video" element={<TextToVideo />} />
               <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
               <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />

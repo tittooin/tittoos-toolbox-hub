@@ -366,9 +366,7 @@ const Blog = () => {
     ? allBlogPosts.find(post => post.slug === slug)
     : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
 
-  const selectedPostData = slug
-    ? allBlogPosts.find(post => post.slug === slug)
-    : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
+
 
   // Smart SEO Generation (Moved to Render)
   const seoTitle = selectedPostData

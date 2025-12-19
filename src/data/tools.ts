@@ -1698,6 +1698,46 @@ const allTools = [
 
   // AI Tools
   {
+    id: "thumbnail-generator",
+    name: "AI Thumbnail Generator",
+    subheading: "Create Viral YouTube Thumbnails",
+    description: "Auto-generate clickbait-worthy thumbnails with AI background and text overlay.",
+    category: "ai",
+    icon: Youtube,
+    path: "/tools/thumbnail-generator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Stop Spending Hours on Thumbnails</h2>
+        <p>Your video deserves a click, but creating thumbnails is a pain. Our <strong>AI Thumbnail Generator</strong> does the heavy lifting for you.</p>
+        <p>Just tell us your video title, and our AI will:</p>
+        <ul>
+          <li><strong>Dream up a Background:</strong> It hallucinates a dramatic, high-quality scene that fits your topic.</li>
+          <li><strong>Write the Copy:</strong> It generates punchy, 2-word sticker text and heavy titles that scream "Click Me".</li>
+          <li><strong>Composite It:</strong> It layers everything perfectly in 1280x720 HD format.</li>
+        </ul>
+      </article>
+    `,
+    howToUse: [
+      "Enter your Video Title (e.g., 'I Built a House Underwater').",
+      "Click 'Generate Thumbnail'.",
+      "AI will generate background, title, and CTA.",
+      "Customize text or colors if needed.",
+      "Download the finished PNG instantly."
+    ],
+    benefits: [
+      "100% Free AI Generation.",
+      "Perfect YouTube Aspect Ratio (16:9).",
+      "No Watermarks.",
+      "Instant 'Burn-In' of Text."
+    ],
+    faqs: [
+      {
+        question: "Can I use these on YouTube?",
+        answer: "Yes! The images are copyright-free and ready for monetization."
+      }
+    ]
+  },
+  {
     id: "text-to-image",
     name: "AI Text to Image",
     subheading: "Generate stunning visuals",
@@ -1706,18 +1746,18 @@ const allTools = [
     icon: Image,
     path: "/tools/text-to-image",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Turn Words into Art with AI</h2>
-        <p>You don't need to be an artist to create breathtaking visuals. With our <strong>AI Text to Image Generator</strong>, you simply describe what you see in your mind's eye, and our advanced diffusion models paint it into reality in seconds.</p>
+  < article className = "prose prose-lg max-w-none" >
+  <h2>Turn Words into Art with AI </h2>
+  < p > You don't need to be an artist to create breathtaking visuals. With our <strong>AI Text to Image Generator</strong>, you simply describe what you see in your mind's eye, and our advanced diffusion models paint it into reality in seconds.</p>
 
-        <h3>How to Write Better Prompts</h3>
-        <p>The secret to great AI art is the "prompt" (your instruction). Use this formula:</p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md font-mono text-sm mb-4">
-          <strong>[Subject] + [Action/Context] + [Art Style] + [Lighting/Mood]</strong>
-        </div>
-        <p><em>Example: "A futuristic city (Subject) floating in the clouds (Context), cyberpunk style with neon lights (Style), cinematic 8k resolution (Mood)."</em></p>
-      </article>
-    `,
+    < h3 > How to Write Better Prompts </h3>
+      < p > The secret to great AI art is the "prompt"(your instruction).Use this formula: </p>
+        < div className = "bg-gray-100 dark:bg-gray-800 p-4 rounded-md font-mono text-sm mb-4" >
+          <strong>[Subject] + [Action / Context] + [Art Style] + [Lighting / Mood] </strong>
+          </div>
+          < p > <em>Example: "A futuristic city (Subject) floating in the clouds (Context), cyberpunk style with neon lights (Style), cinematic 8k resolution (Mood)." < /em></p >
+            </article>
+              `,
     howToUse: [
       "Type a detailed description of the image you want.",
       "Select an aspect ratio (Square, Portrait, Landscape).",
@@ -1746,11 +1786,11 @@ const allTools = [
     icon: Video,
     path: "/tools/text-to-video",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>AI Video Generation: The New Frontier</h2>
-        <p>Video production used to cost thousands of dollars and weeks of time. Now, you can script scenes with text and have our AI animate them. <strong>Text to Video</strong> is perfect for creating social media ads, storyboards, or visualizing scenes for a movie.</p>
-      </article>
-    `,
+            < article className = "prose prose-lg max-w-none" >
+              <h2>AI Video Generation: The New Frontier </h2>
+                < p > Video production used to cost thousands of dollars and weeks of time.Now, you can script scenes with text and have our AI animate them. < strong > Text to Video < /strong> is perfect for creating social media ads, storyboards, or visualizing scenes for a movie.</p >
+                  </article>
+                    `,
     howToUse: [
       "Describe the scene (e.g., 'A drone flying over a snowy mountain at sunset').",
       "Choose a duration (e.g., 5 seconds).",
@@ -1778,18 +1818,18 @@ const allTools = [
     icon: Bot,
     path: "/tools/ai-prompt-assistant",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Master the Language of AI</h2>
-        <p>AI models like ChatGPT, Midjourney, and Claude are powerful, but they are only as smart as the instructions you give them. The <strong>AI Prompt Assistant</strong> helps you rewrite basic requests into highly optimized engineered prompts that unlock the full potential of these LLMs.</p>
+                  < article className = "prose prose-lg max-w-none" >
+                    <h2>Master the Language of AI </h2>
+                      < p > AI models like ChatGPT, Midjourney, and Claude are powerful, but they are only as smart as the instructions you give them.The < strong > AI Prompt Assistant < /strong> helps you rewrite basic requests into highly optimized engineered prompts that unlock the full potential of these LLMs.</p >
 
-        <h3>What We Optimize</h3>
-        <ul>
-          <li><strong>Clarity:</strong> Removing ambiguity.</li>
-          <li><strong>Context:</strong> Adding personas (e.g., "Act as a Senior Developer").</li>
-          <li><strong>Constraints:</strong> Setting word limits or formatting rules.</li>
-        </ul>
-      </article>
-    `,
+                        <h3>What We Optimize </h3>
+                          < ul >
+                          <li><strong>Clarity: </strong> Removing ambiguity.</li >
+                            <li><strong>Context: </strong> Adding personas (e.g., "Act as a Senior Developer").</li >
+                              <li><strong>Constraints: </strong> Setting word limits or formatting rules.</li >
+                                </ul>
+                                </article>
+                                  `,
     howToUse: [
       "Enter your basic idea (e.g., 'Write a blog about coffee').",
       "Select your target AI (ChatGPT, Midjourney, Stable Diffusion).",
@@ -1812,11 +1852,11 @@ const allTools = [
     icon: Wand2,
     path: "/tools/ai-website-generator",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Build a Website in 60 Seconds</h2>
-        <p>Need a landing page for your startup? A portfolio for your photography? Don't spend months coding. Our <strong>AI Website Generator</strong> builds a responsive, modern HTML/CSS website based on a simple description of your business.</p>
-      </article>
-    `,
+                                < article className = "prose prose-lg max-w-none" >
+                                  <h2>Build a Website in 60 Seconds </h2>
+                                    < p > Need a landing page for your startup ? A portfolio for your photography ? Don't spend months coding. Our <strong>AI Website Generator</strong> builds a responsive, modern HTML/CSS website based on a simple description of your business.</p>
+                                      </article>
+                                        `,
     howToUse: [
       "Describe your site purpose (e.g., 'A bakery in New York selling custom cupcakes').",
       "Choose a color theme.",
@@ -1877,11 +1917,11 @@ const allTools = [
     icon: Sparkles,
     path: "/tools/ai-tool-generator",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>If It Doesn't Exist, Build It</h2>
-        <p>Can't find the specific tool you need? Tell our <strong>AI Tool Generator</strong> what logic you need (e.g., "A calculator that estimates standard deviation based on a list of numbers" or "A text parser that extracts email addresses"). We will generate a working mini-app for you instantly.</p>
-      </article>
-    `,
+                                      < article className = "prose prose-lg max-w-none" >
+                                        <h2>If It Doesn't Exist, Build It</h2>
+                                          < p > Can't find the specific tool you need? Tell our <strong>AI Tool Generator</strong> what logic you need (e.g., "A calculator that estimates standard deviation based on a list of numbers" or "A text parser that extracts email addresses"). We will generate a working mini-app for you instantly.</p>
+                                            </article>
+                                              `,
     howToUse: [
       "Describe the tool functionality.",
       "Wait for the AI to code it.",
@@ -1980,18 +2020,18 @@ const allTools = [
     icon: Keyboard,
     path: "/tools/typing-speed-test",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>How Fast Can You Type?</h2>
-        <p>Typing speed is a critical skill in today's digital age. Whether you are a programmer coding all day, a writer working on a novel, or a student finishing a paper, typing faster saves you hundreds of hours per year. Our <strong>Typing Speed Test</strong> measures your WPM (Words Per Minute) and Accuracy.</p>
+                                            < article className = "prose prose-lg max-w-none" >
+                                              <h2>How Fast Can You Type ? </h2>
+                                                < p > Typing speed is a critical skill in today's digital age. Whether you are a programmer coding all day, a writer working on a novel, or a student finishing a paper, typing faster saves you hundreds of hours per year. Our <strong>Typing Speed Test</strong> measures your WPM (Words Per Minute) and Accuracy.</p>
 
-        <h3>What is a good WPM?</h3>
-        <ul>
-          <li><strong>40 WPM:</strong> Average typing speed.</li>
-          <li><strong>60-70 WPM:</strong> Professional typing speed (secretaries, writers).</li>
-          <li><strong>100+ WPM:</strong> Elite speed (competitive typists).</li>
-        </ul>
-      </article>
-    `,
+                                                  < h3 > What is a good WPM ? </h3>
+                                                    < ul >
+                                                    <li><strong>40 WPM: </strong> Average typing speed.</li >
+                                                      <li><strong>60 - 70 WPM: </strong> Professional typing speed (secretaries, writers).</li >
+                                                        <li><strong>100 + WPM: </strong> Elite speed (competitive typists).</li >
+                                                          </ul>
+                                                          </article>
+                                                            `,
     howToUse: [
       "Click on the text input area.",
       "Start typing the highlighted words as accurately as possible.",
@@ -2014,14 +2054,14 @@ const allTools = [
     icon: Gamepad2,
     path: "/tools/2048-game",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>The Addiction of Powers of Two</h2>
-        <p>2048 is the legendary sliding block puzzle game that took the internet by storm. The goal is deceptively simple: slide numbered tiles on a grid to combine them to create a tile with the number 2048.</p>
+                                                          < article className = "prose prose-lg max-w-none" >
+                                                            <h2>The Addiction of Powers of Two </h2>
+                                                              < p > 2048 is the legendary sliding block puzzle game that took the internet by storm.The goal is deceptively simple: slide numbered tiles on a grid to combine them to create a tile with the number 2048. </p>
 
-        <h3>Strategy Tips</h3>
-        <p>The key to winning is keeping your highest number in a secure corner. Never move it from there! Build a chain of descending numbers next to it so you can easily merge them upwards.</p>
-      </article>
-    `,
+                                                                < h3 > Strategy Tips </h3>
+                                                                  < p > The key to winning is keeping your highest number in a secure corner.Never move it from there! Build a chain of descending numbers next to it so you can easily merge them upwards.</p>
+                                                                    </article>
+                                                                      `,
     howToUse: [
       "Use Arrow Keys (or Swipe) to move tiles.",
       "Tiles with the same number merge into one when they touch.",
@@ -2043,11 +2083,11 @@ const allTools = [
     icon: Gamepad2,
     path: "/tools/number-flow",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Connect the Dots - Logic Edition</h2>
-        <p>Number Flow is a minimalist puzzle game where you must connect matching numbers with continuous lines (pipes) without the lines crossing each other. It sounds easy, but you must also fill <em>every single square</em> on the grid to solve the level.</p>
-      </article>
-    `,
+                                                                    < article className = "prose prose-lg max-w-none" >
+                                                                      <h2>Connect the Dots - Logic Edition </h2>
+                                                                        < p > Number Flow is a minimalist puzzle game where you must connect matching numbers with continuous lines(pipes) without the lines crossing each other.It sounds easy, but you must also fill < em > every single square < /em> on the grid to solve the level.</p >
+                                                                          </article>
+                                                                            `,
     howToUse: [
       "Click/Tap on a colored number.",
       "Drag a line to its matching pair.",
@@ -2070,36 +2110,36 @@ const allTools = [
     icon: Image,
     path: "/tools/image-resizer",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Optimal Image Sizing for Web & Social Media</h2>
-        <p>In the digital world, image size matters. Uploading a 4000px wide photo to a blog post that is only 800px wide is a waste of bandwidth and slows down your site. Our <strong>Free Image Resizer</strong> allows you to perfectly scale your images for any platform without losing quality.</p>
-        
-        <h3>Why Resize Images?</h3>
-        <ul>
-          <li><strong>Website Speed:</strong> Smaller dimensions mean smaller file sizes. This leads to faster page loads and better SEO scores (Core Web Vitals).</li>
-          <li><strong>Email Attachments:</strong> Most email providers limit attachments to 25MB. Resizing helps you fit more photos into a single email.</li>
-          <li><strong>Social Media Standards:</strong> Instagram, Facebook, and Twitter have specific aspect ratio requirements. Uploading the wrong size results in awkward cropping.</li>
-        </ul>
+                                                                          < article className = "prose prose-lg max-w-none" >
+                                                                            <h2>Optimal Image Sizing for Web & Social Media </h2>
+                                                                              < p > In the digital world, image size matters.Uploading a 4000px wide photo to a blog post that is only 800px wide is a waste of bandwidth and slows down your site.Our < strong > Free Image Resizer < /strong> allows you to perfectly scale your images for any platform without losing quality.</p >
 
-        <h3>Common Standard Sizes (Pixels)</h3>
-        <div className="overflow-x-auto my-6">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 border-b">Platform</th>
-                <th className="py-2 px-4 border-b">Recommended Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="py-2 px-4 border-b">Instagram Post</td><td className="py-2 px-4 border-b">1080 x 1080</td></tr>
-              <tr><td className="py-2 px-4 border-b">YouTube Thumbnail</td><td className="py-2 px-4 border-b">1280 x 720</td></tr>
-              <tr><td className="py-2 px-4 border-b">Facebook Cover</td><td className="py-2 px-4 border-b">820 x 312</td></tr>
-              <tr><td className="py-2 px-4 border-b">Full HD Wallpaper</td><td className="py-2 px-4 border-b">1920 x 1080</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-    `,
+                                                                                <h3>Why Resize Images ? </h3>
+                                                                                  < ul >
+                                                                                  <li><strong>Website Speed: </strong> Smaller dimensions mean smaller file sizes. This leads to faster page loads and better SEO scores (Core Web Vitals).</li >
+                                                                                    <li><strong>Email Attachments: </strong> Most email providers limit attachments to 25MB. Resizing helps you fit more photos into a single email.</li >
+                                                                                      <li><strong>Social Media Standards: </strong> Instagram, Facebook, and Twitter have specific aspect ratio requirements. Uploading the wrong size results in awkward cropping.</li >
+                                                                                        </ul>
+
+                                                                                        < h3 > Common Standard Sizes(Pixels) </h3>
+                                                                                          < div className = "overflow-x-auto my-6" >
+                                                                                            <table className="min-w-full bg-white border border-gray-300" >
+                                                                                              <thead>
+                                                                                              <tr className="bg-gray-100" >
+                                                                                                <th className="py-2 px-4 border-b" > Platform </th>
+                                                                                                  < th className = "py-2 px-4 border-b" > Recommended Size </th>
+                                                                                                    </tr>
+                                                                                                    </thead>
+                                                                                                    < tbody >
+                                                                                                    <tr><td className="py-2 px-4 border-b" > Instagram Post < /td><td className="py-2 px-4 border-b">1080 x 1080</td > </tr>
+                                                                                                      < tr > <td className="py-2 px-4 border-b" > YouTube Thumbnail < /td><td className="py-2 px-4 border-b">1280 x 720</td > </tr>
+                                                                                                        < tr > <td className="py-2 px-4 border-b" > Facebook Cover < /td><td className="py-2 px-4 border-b">820 x 312</td > </tr>
+                                                                                                          < tr > <td className="py-2 px-4 border-b" > Full HD Wallpaper < /td><td className="py-2 px-4 border-b">1920 x 1080</td > </tr>
+                                                                                                            </tbody>
+                                                                                                            </table>
+                                                                                                            </div>
+                                                                                                            </article>
+                                                                                                              `,
     howToUse: [
       "Upload your image (JPG, PNG, WebP supported).",
       "Choose 'By Dimensions' to set specific width/height pixels.",
@@ -2129,24 +2169,24 @@ const allTools = [
     icon: Edit,
     path: "/tools/text-to-handwriting",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Convert Digital Text to Realistic Handwriting</h2>
-        <p>Need to submit a handwritten assignment but running out of time? Our <strong>Text to Handwriting Converter</strong> transforms your typed notes into an image that looks like it was written with a pen on paper. Ideal for creating study notes, letters, or artistic projects.</p>
+                                                                                                            < article className = "prose prose-lg max-w-none" >
+                                                                                                              <h2>Convert Digital Text to Realistic Handwriting </h2>
+                                                                                                                < p > Need to submit a handwritten assignment but running out of time ? Our < strong > Text to Handwriting Converter < /strong> transforms your typed notes into an image that looks like it was written with a pen on paper. Ideal for creating study notes, letters, or artistic projects.</p >
 
-        <h3>Customization Options</h3>
-        <p>To make the output convincing, you can tweak multiple variables:</p>
-        <ul>
-          <li><strong>Handwriting Style:</strong> Choose from 8+ different human handwriting fonts (messy, cursive, neat, block).</li>
-          <li><strong>Paper Type:</strong> Select lined paper, graph paper, or plain white background.</li>
-          <li><strong>Ink Color:</strong> Classic Blue, Black, Red, or custom colors.</li>
-        </ul>
+                                                                                                                  <h3>Customization Options </h3>
+                                                                                                                    < p > To make the output convincing, you can tweak multiple variables: </p>
+                                                                                                                      < ul >
+                                                                                                                      <li><strong>Handwriting Style: </strong> Choose from 8+ different human handwriting fonts (messy, cursive, neat, block).</li >
+                                                                                                                        <li><strong>Paper Type: </strong> Select lined paper, graph paper, or plain white background.</li >
+                                                                                                                          <li><strong>Ink Color: </strong> Classic Blue, Black, Red, or custom colors.</li >
+                                                                                                                            </ul>
 
-        <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg my-6 border-l-4 border-red-500">
-          <h4>🚫 Educational Integrity Warning</h4>
-          <p>This tool is designed for creative purposes and study aids. Please do not use it to deceive teachers or professors for assignments where manual handwriting is explicitly required for learning purposes.</p>
-        </div>
-      </article>
-    `,
+                                                                                                                            < div className = "bg-red-50 dark:bg-red-900/20 p-6 rounded-lg my-6 border-l-4 border-red-500" >
+                                                                                                                              <h4>🚫 Educational Integrity Warning </h4>
+                                                                                                                                < p > This tool is designed for creative purposes and study aids.Please do not use it to deceive teachers or professors for assignments where manual handwriting is explicitly required for learning purposes.</p>
+                                                                                                                                  </div>
+                                                                                                                                  </article>
+                                                                                                                                    `,
     howToUse: [
       "Type or paste your text into the input box.",
       "Select a 'Handwriting Font' from the dropdown.",
@@ -2176,17 +2216,17 @@ const allTools = [
     icon: MousePointer2,
     path: "/tools/click-speed-test",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Test Your Clicking Speed (CPS Test)</h2>
-        <p>The <strong>Clicks Per Second (CPS)</strong> test is a popular challenge among gamers, especially those who play Minecraft (PvP), shooters, or MOBAs. It measures how fast you can click your mouse button in a given time frame.</p>
+                                                                                                                                  < article className = "prose prose-lg max-w-none" >
+                                                                                                                                  <h2>Test Your Clicking Speed(CPS Test) </h2>
+                                                                                                                                    < p > The < strong > Clicks Per Second(CPS) < /strong> test is a popular challenge among gamers, especially those who play Minecraft (PvP), shooters, or MOBAs. It measures how fast you can click your mouse button in a given time frame.</p >
 
-        <h3>Why Click Speed Matters in Gaming?</h3>
-        <p>In competitive gaming, higher CPS can mean the difference between winning and losing a duel. Techniques like "Jitter Clicking" or "Butterfly Clicking" are practiced by professionals to achieve speeds of 12-20 CPS.</p>
+                                                                                                                                      <h3>Why Click Speed Matters in Gaming ? </h3>
+                                                                                                                                        < p > In competitive gaming, higher CPS can mean the difference between winning and losing a duel.Techniques like "Jitter Clicking" or "Butterfly Clicking" are practiced by professionals to achieve speeds of 12 - 20 CPS.</p>
 
-        <h3>World Records</h3>
-        <p>While the average human clicks about 6-7 times per second, elite gamers can reach speeds of over 14 CPS consistently. The world record varies by technique but sits around the 22 CPS mark.</p>
-      </article>
-    `,
+                                                                                                                                          < h3 > World Records </h3>
+                                                                                                                                            < p > While the average human clicks about 6 - 7 times per second, elite gamers can reach speeds of over 14 CPS consistently.The world record varies by technique but sits around the 22 CPS mark.</p>
+                                                                                                                                              </article>
+                                                                                                                                                `,
     howToUse: [
       "Get ready with your mouse.",
       "Click the green 'Start' area as fast as you can.",
@@ -2216,18 +2256,18 @@ const allTools = [
     icon: Timer,
     path: "/tools/reaction-time-test",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Reflex Check: How Fast Are You?</h2>
-        <p>Reaction time is the duration between a stimulus and your response. The average human visual reaction time is around 250 milliseconds (0.25 seconds). Professional F1 drivers and Esports athletes clock in closer to 150-180ms.</p>
+                                                                                                                                              < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                <h2>Reflex Check: How Fast Are You ? </h2>
+                                                                                                                                                  < p > Reaction time is the duration between a stimulus and your response.The average human visual reaction time is around 250 milliseconds(0.25 seconds).Professional F1 drivers and Esports athletes clock in closer to 150 - 180ms.</p>
 
-        <h3>Factors Affecting Reaction Time</h3>
-        <ul>
-          <li><strong>Age:</strong> Reactions peak in your 20s.</li>
-          <li><strong>Fatigue:</strong> Being tired significantly slows you down.</li>
-          <li><strong>Hydration:</strong> Dehydration works like mild intoxication.</li>
-        </ul>
-      </article>
-    `,
+                                                                                                                                                    < h3 > Factors Affecting Reaction Time </h3>
+                                                                                                                                                      < ul >
+                                                                                                                                                      <li><strong>Age: </strong> Reactions peak in your 20s.</li >
+                                                                                                                                                        <li><strong>Fatigue: </strong> Being tired significantly slows you down.</li >
+                                                                                                                                                          <li><strong>Hydration: </strong> Dehydration works like mild intoxication.</li >
+                                                                                                                                                            </ul>
+                                                                                                                                                            </article>
+                                                                                                                                                              `,
     howToUse: [
       "Wait for the screen to turn GREEN.",
       "Click as fast as you can once it changes color.",
@@ -2250,11 +2290,11 @@ const allTools = [
     icon: Brain,
     path: "/tools/memory-match-game",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Sharpen Your Focus</h2>
-        <p>Memory Match (also known as Concentration) is a timeless game where you must find pairs of matching cards. It forces you to hold visual information in your working memory, strengthening your short-term recall abilities.</p>
-      </article>
-    `,
+                                                                                                                                                            < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                              <h2>Sharpen Your Focus </h2>
+                                                                                                                                                                < p > Memory Match(also known as Concentration) is a timeless game where you must find pairs of matching cards.It forces you to hold visual information in your working memory, strengthening your short - term recall abilities.</p>
+                                                                                                                                                                  </article>
+                                                                                                                                                                    `,
     howToUse: [
       "Click a card to flip it over.",
       "Click another card to find its match.",
@@ -2277,14 +2317,14 @@ const allTools = [
     icon: Calculator,
     path: "/tools/math-speed-challenge",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Mental Math Gymnastics</h2>
-        <p>Ditch the calculator. The <strong>Math Speed Challenge</strong> throws random arithmetic problems (Addition, Subtraction, Multiplication, Division) at you. Your goal? Solve as many as you can before time runs out.</p>
+                                                                                                                                                                  < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                    <h2>Mental Math Gymnastics </h2>
+                                                                                                                                                                      < p > Ditch the calculator.The < strong > Math Speed Challenge < /strong> throws random arithmetic problems (Addition, Subtraction, Multiplication, Division) at you. Your goal? Solve as many as you can before time runs out.</p >
 
-        <h3>Why Practice Mental Math?</h3>
-        <p>It strengthens your "number sense," helping you estimate costs, split bills, and catch errors in daily life without relying on a phone.</p>
-      </article>
-    `,
+                                                                                                                                                                        <h3>Why Practice Mental Math ? </h3>
+                                                                                                                                                                          < p > It strengthens your "number sense," helping you estimate costs, split bills, and catch errors in daily life without relying on a phone.</p>
+                                                                                                                                                                            </article>
+                                                                                                                                                                              `,
     howToUse: [
       "Select your difficulty (Easy/Medium/Hard).",
       "Read the problem (e.g., 15 + 7).",
@@ -2307,21 +2347,21 @@ const allTools = [
     icon: Image,
     path: "/tools/image-compressor",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Compress Images Without Losing Quality</h2>
-        <p>A website with heavy images is a slow website. And slow websites lose visitors. Our <strong>Image Compressor</strong> balances file size with image quality, often reducing file size by 70-90% with zero visible difference to the naked eye.</p>
+                                                                                                                                                                            < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                              <h2>Compress Images Without Losing Quality </h2>
+                                                                                                                                                                                < p > A website with heavy images is a slow website.And slow websites lose visitors.Our < strong > Image Compressor < /strong> balances file size with image quality, often reducing file size by 70-90% with zero visible difference to the naked eye.</p >
 
-        <h3>Lossy vs. Lossless Compression</h3>
-        <p>We use smart compression algorithms to minimize file size:</p>
-        <ul>
-          <li><strong>Lossy Compression (JPG/WebP):</strong> Removes invisible data. Best for photographs. Highest savings.</li>
-          <li><strong>Lossless Compression (PNG):</strong> Compresses data without removing detail. Best for logos, screenshots, and text.</li>
-        </ul>
+                                                                                                                                                                                  <h3>Lossy vs.Lossless Compression </h3>
+                                                                                                                                                                                    < p > We use smart compression algorithms to minimize file size: </p>
+                                                                                                                                                                                      < ul >
+                                                                                                                                                                                      <li><strong>Lossy Compression(JPG / WebP): </strong> Removes invisible data. Best for photographs. Highest savings.</li >
+                                                                                                                                                                                        <li><strong>Lossless Compression(PNG): </strong> Compresses data without removing detail. Best for logos, screenshots, and text.</li >
+                                                                                                                                                                                          </ul>
 
-        <h3>SEO Impact</h3>
-        <p>Google has officially interpreted page speed as a ranking factor. Large images are the #1 cause of slow Largest Contentful Paint (LCP) scores. By compressing your images before upload, you directly improve your site's SEO.</p>
-      </article>
-    `,
+                                                                                                                                                                                          < h3 > SEO Impact </h3>
+                                                                                                                                                                                            < p > Google has officially interpreted page speed as a ranking factor.Large images are the #1 cause of slow Largest Contentful Paint(LCP) scores.By compressing your images before upload, you directly improve your site's SEO.</p>
+                                                                                                                                                                                              </article>
+                                                                                                                                                                                                `,
     howToUse: [
       "Drag and drop your images into the compression zone.",
       "Adjust the Quality slider (0-100). Lower quality = smaller file size.",
@@ -2351,32 +2391,32 @@ const allTools = [
     icon: MessageSquare,
     path: "/tools/chat-with-pdf",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Talk to Your Documents with AI</h2>
-        <p>Gone are the days of scrolling endlessly through 100-page documents to find one specific answer. With <strong>Chat with PDF</strong>, you can upload any PDF document—be it a textbook, a legal contract, a research paper, or a user manual—and have a natural conversation with it.</p>
+                                                                                                                                                                                              < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                                                <h2>Talk to Your Documents with AI </h2>
+                                                                                                                                                                                                < p > Gone are the days of scrolling endlessly through 100 - page documents to find one specific answer.With < strong > Chat with PDF < /strong>, you can upload any PDF document—be it a textbook, a legal contract, a research paper, or a user manual—and have a natural conversation with it.</p >
 
-        <h3>How It Works (The Magic of RAG)</h3>
-        <p>This tool uses a technology called <strong>Retrieval Augmented Generation (RAG)</strong>. When you ask a question:</p>
-        <ol>
-          <li>The AI scans your document for relevant paragraphs.</li>
-          <li>It passes those paragraphs to a Large Language Model (like GPT-4).</li>
-          <li>The model answers your question using <em>only</em> the information in your document, ensuring accuracy.</li>
-        </ol>
+                                                                                                                                                                                                <h3>How It Works(The Magic of RAG) </h3>
+                                                                                                                                                                                                  < p > This tool uses a technology called < strong > Retrieval Augmented Generation(RAG) < /strong>. When you ask a question:</p >
+                                                                                                                                                                                                    <ol>
+                                                                                                                                                                                                    <li>The AI scans your document for relevant paragraphs.</li>
+                                                                                                                                                                                                      < li > It passes those paragraphs to a Large Language Model(like GPT - 4).</li>
+                                                                                                                                                                                                        < li > The model answers your question using < em > only < /em> the information in your document, ensuring accuracy.</li >
+                                                                                                                                                                                                          </ol>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-6 border-l-4 border-blue-500">
-          <h4>🔒 Data Privacy Guarantee</h4>
-          <p>We understand that your documents may contain sensitive info. <strong>Your files are processed in ephemeral memory.</strong> We do not store your PDFs on our servers after the session ends, and we do not use your data to train our models.</p>
-        </div>
+                                                                                                                                                                                                          < div className = "bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg my-6 border-l-4 border-blue-500" >
+                                                                                                                                                                                                            <h4>🔒 Data Privacy Guarantee </h4>
+                                                                                                                                                                                                              < p > We understand that your documents may contain sensitive info. < strong > Your files are processed in ephemeral memory.< /strong> We do not store your PDFs on our servers after the session ends, and we do not use your data to train our models.</p >
+                                                                                                                                                                                                                </div>
 
-        <h3>Who Is This For?</h3>
-        <ul>
-          <li><strong>Students:</strong> "Explain the key concepts in Chapter 3 in simple terms."</li>
-          <li><strong>Lawyers:</strong> "What are the termination clauses in this contract?"</li>
-          <li><strong>Researchers:</strong> "Summarize the methodology section and list the limitations."</li>
-          <li><strong>Professionals:</strong> "Extract the quarterly revenue figures from this financial report."</li>
-        </ul>
-      </article>
-    `,
+                                                                                                                                                                                                                < h3 > Who Is This For ? </h3>
+                                                                                                                                                                                                                  < ul >
+                                                                                                                                                                                                                  <li><strong>Students : </strong> "Explain the key concepts in Chapter 3 in simple terms."</li >
+                                                                                                                                                                                                                <li><strong>Lawyers: </strong> "What are the termination clauses in this contract?"</li >
+                                                                                                                                                                                                                  <li><strong>Researchers: </strong> "Summarize the methodology section and list the limitations."</li >
+                                                                                                                                                                                                                    <li><strong>Professionals: </strong> "Extract the quarterly revenue figures from this financial report."</li >
+                                                                                                                                                                                                                      </ul>
+                                                                                                                                                                                                                      </article>
+                                                                                                                                                                                                                        `,
     howToUse: [
       "Upload your PDF file (drag & drop supported).",
       "Wait a few seconds for our AI to process and index the content.",
@@ -2409,21 +2449,21 @@ const allTools = [
     icon: FileText,
     path: "/tools/pdf-summarizer",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Turn Long PDFs into Executive Summaries in Seconds</h2>
-        <p>Information overload is real. Whether you are a student facing a mountain of papers or an executive with a stack of reports, our <strong>AI PDF Summarizer</strong> cuts through the noise. It extracts the core ideas, main arguments, and crucial data points, presenting them in a clear, concise format.</p>
+                                                                                                                                                                                                                      < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                                                                        <h2>Turn Long PDFs into Executive Summaries in Seconds </h2>
+                                                                                                                                                                                                                          < p > Information overload is real.Whether you are a student facing a mountain of papers or an executive with a stack of reports, our < strong > AI PDF Summarizer < /strong> cuts through the noise. It extracts the core ideas, main arguments, and crucial data points, presenting them in a clear, concise format.</p >
 
-        <h3>Summary Modes</h3>
-        <ul>
-          <li><strong>Bullet Points:</strong> Great for quick scanning. Lists key takeaways.</li>
-          <li><strong>Detailed Abstract:</strong> A cohesive paragraph summarizing the narrative.</li>
-          <li><strong>Action Items:</strong> Extracts tasks and next steps (perfect for meeting minutes).</li>
-        </ul>
+                                                                                                                                                                                                                            <h3>Summary Modes </h3>
+                                                                                                                                                                                                                              < ul >
+                                                                                                                                                                                                                              <li><strong>Bullet Points: </strong> Great for quick scanning. Lists key takeaways.</li >
+                                                                                                                                                                                                                                <li><strong>Detailed Abstract: </strong> A cohesive paragraph summarizing the narrative.</li >
+                                                                                                                                                                                                                                  <li><strong>Action Items: </strong> Extracts tasks and next steps (perfect for meeting minutes).</li >
+                                                                                                                                                                                                                                    </ul>
 
-        <h3>Tips for Best Results</h3>
-        <p>To get the highest quality summary, ensure your PDF has selectable text (not just images). Documents with clear headings and structure allow the AI to understand the hierarchy of information much better.</p>
-      </article>
-    `,
+                                                                                                                                                                                                                                    < h3 > Tips for Best Results </h3>
+                                                                                                                                                                                                                                      < p > To get the highest quality summary, ensure your PDF has selectable text(not just images).Documents with clear headings and structure allow the AI to understand the hierarchy of information much better.</p>
+                                                                                                                                                                                                                                        </article>
+                                                                                                                                                                                                                                          `,
     howToUse: [
       "Upload your PDF document.",
       "Choose your summary length (Short, Medium, Long).",
@@ -2452,21 +2492,21 @@ const allTools = [
     icon: FileQuestion,
     path: "/tools/pdf-quiz-generator",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Auto-Generate Quizzes from Your Study Materials</h2>
-        <p>Active Recall is the #1 scientifically proven way to learn faster. Instead of checking reading, you should test yourself. Our <strong>PDF Quiz Generator</strong> uses AI to create multiple-choice questions (MCQs), true/false questions, and flashcards directly from your textbooks or lecture slides.</p>
+                                                                                                                                                                                                                                        < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                                                                                          <h2>Auto - Generate Quizzes from Your Study Materials </h2>
+                                                                                                                                                                                                                                            < p > Active Recall is the #1 scientifically proven way to learn faster.Instead of checking reading, you should test yourself.Our < strong > PDF Quiz Generator < /strong> uses AI to create multiple-choice questions (MCQs), true/false questions, and flashcards directly from your textbooks or lecture slides.</p>
 
-        <h3>The Science of Active Recall</h3>
-        <p>Testing yourself forces your brain to retrieve information, strengthening neural pathways. This tool automates the tedious process of creating flashcards, so you can spend 100% of your time actually learning.</p>
+                                                                                                                                                                                                                                              < h3 > The Science of Active Recall </h3>
+                                                                                                                                                                                                                                                < p > Testing yourself forces your brain to retrieve information, strengthening neural pathways.This tool automates the tedious process of creating flashcards, so you can spend 100 % of your time actually learning.</p>
 
-        <h3>Perfect For:</h3>
-        <ul>
-          <li><strong>Exam Prep:</strong> Turn your syllabus into a mock exam.</li>
-          <li><strong>Teachers:</strong> Create quick pop quizzes for your class in minutes.</li>
-          <li><strong>Corporate Training:</strong> verify employees read the new policy handbook.</li>
-        </ul>
-      </article>
-    `,
+                                                                                                                                                                                                                                                  < h3 > Perfect For: </h3>
+                                                                                                                                                                                                                                                    < ul >
+                                                                                                                                                                                                                                                    <li><strong>Exam Prep: </strong> Turn your syllabus into a mock exam.</li >
+                                                                                                                                                                                                                                                      <li><strong>Teachers: </strong> Create quick pop quizzes for your class in minutes.</li >
+                                                                                                                                                                                                                                                        <li><strong>Corporate Training: </strong> verify employees read the new policy handbook.</li >
+                                                                                                                                                                                                                                                          </ul>
+                                                                                                                                                                                                                                                          </article>
+                                                                                                                                                                                                                                                            `,
     howToUse: [
       "Upload your study material (PDF).",
       "Select the number of questions you want (e.g., 10, 20).",
@@ -2495,19 +2535,19 @@ const allTools = [
     icon: GraduationCap,
     path: "/tools/pdf-study-notes",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Instant Study Guides from Any Textbook</h2>
-        <p>Struggling to organize your notes? Our <strong>PDF Study Notes Generator</strong> transforms chaotic chapters into structured, easy-to-read study guides. It automatically identifies headings, key terms, definitions, and important dates, formatting them into a beautiful revision sheet.</p>
+                                                                                                                                                                                                                                                          < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                                                                                                            <h2>Instant Study Guides from Any Textbook </h2>
+                                                                                                                                                                                                                                                              < p > Struggling to organize your notes ? Our < strong > PDF Study Notes Generator < /strong> transforms chaotic chapters into structured, easy-to-read study guides. It automatically identifies headings, key terms, definitions, and important dates, formatting them into a beautiful revision sheet.</p >
 
-        <h3>What You Get</h3>
-        <ul>
-          <li><strong>Key Concepts:</strong> A breakdown of the main topics.</li>
-          <li><strong>Vocabulary List:</strong> Essential terms and their definitions.</li>
-          <li><strong>Important Dates/Figures:</strong> Extracted timelines and people.</li>
-          <li><strong>Summary Tables:</strong> Data organized for quick comparison.</li>
-        </ul>
-      </article>
-    `,
+                                                                                                                                                                                                                                                                <h3>What You Get </h3>
+                                                                                                                                                                                                                                                                  < ul >
+                                                                                                                                                                                                                                                                  <li><strong>Key Concepts: </strong> A breakdown of the main topics.</li >
+                                                                                                                                                                                                                                                                    <li><strong>Vocabulary List: </strong> Essential terms and their definitions.</li >
+                                                                                                                                                                                                                                                                      <li><strong>Important Dates / Figures: </strong> Extracted timelines and people.</li >
+                                                                                                                                                                                                                                                                        <li><strong>Summary Tables: </strong> Data organized for quick comparison.</li >
+                                                                                                                                                                                                                                                                          </ul>
+                                                                                                                                                                                                                                                                          </article>
+                                                                                                                                                                                                                                                                            `,
     howToUse: [
       "Upload your textbook chapter or lecture slides.",
       "Click 'Generate Notes'.",
@@ -2537,28 +2577,28 @@ const allTools = [
     icon: Languages,
     path: "/tools/pdf-translator",
     longDescription: `
-      <article className="prose prose-lg max-w-none">
-        <h2>Break Language Barriers with AI PDF Translation</h2>
-        <p>Need to read a research paper in Japanese? Or a user manual in German? Traditional copy-pasting into Google Translate destroys the document's layout. Our <strong>AI PDF Translator</strong> translates the text <em>in-place</em>, preserving your original formatting, images, and tables.</p>
+                                                                                                                                                                                                                                                                          < article className = "prose prose-lg max-w-none" >
+                                                                                                                                                                                                                                                                            <h2>Break Language Barriers with AI PDF Translation </h2>
+                                                                                                                                                                                                                                                                              < p > Need to read a research paper in Japanese ? Or a user manual in German ? Traditional copy - pasting into Google Translate destroys the document's layout. Our <strong>AI PDF Translator</strong> translates the text <em>in-place</em>, preserving your original formatting, images, and tables.</p>
 
-        <h3>Supported Languages</h3>
-        <p>We support over 50+ major languages including:</p>
-        <ul className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          <li>🇺🇸 English</li>
-          <li>🇪🇸 Spanish</li>
-          <li>🇫🇷 French</li>
-          <li>🇩🇪 German</li>
-          <li>🇨🇳 Chinese (Mandarin)</li>
-          <li>🇮🇳 Hindi</li>
-          <li>🇯🇵 Japanese</li>
-          <li>🇷🇺 Russian</li>
-          <li>...and many more.</li>
-        </ul>
+                                                                                                                                                                                                                                                                                < h3 > Supported Languages </h3>
+                                                                                                                                                                                                                                                                                  < p > We support over 50 + major languages including: </p>
+                                                                                                                                                                                                                                                                                    < ul className = "grid grid-cols-2 md:grid-cols-3 gap-2" >
+                                                                                                                                                                                                                                                                                      <li>🇺🇸 English </li>
+                                                                                                                                                                                                                                                                                        <li>🇪🇸 Spanish </li>
+                                                                                                                                                                                                                                                                                          <li>🇫🇷 French </li>
+                                                                                                                                                                                                                                                                                            <li>🇩🇪 German </li>
+                                                                                                                                                                                                                                                                                              <li>🇨🇳 Chinese(Mandarin) </li>
+                                                                                                                                                                                                                                                                                                <li>🇮🇳 Hindi </li>
+                                                                                                                                                                                                                                                                                                  <li>🇯🇵 Japanese </li>
+                                                                                                                                                                                                                                                                                                    <li>🇷🇺 Russian </li>
+                                                                                                                                                                                                                                                                                                      <li>...and many more.</li>
+                                                                                                                                                                                                                                                                                                        </ul>
 
-        <h3>Why Use AI Translation?</h3>
-        <p>Unlike simple word-for-word substitution, our Neural Machine Translation (NMT) models understand context, idioms, and technical jargon, ensuring that the translated document reads naturally.</p>
-      </article>
-    `,
+                                                                                                                                                                                                                                                                                                        < h3 > Why Use AI Translation ? </h3>
+                                                                                                                                                                                                                                                                                                          < p > Unlike simple word -for-word substitution, our Neural Machine Translation(NMT) models understand context, idioms, and technical jargon, ensuring that the translated document reads naturally.</p>
+                                                                                                                                                                                                                                                                                                            </article>
+                                                                                                                                                                                                                                                                                                              `,
     howToUse: [
       "Upload your PDF file.",
       "Select the 'Source Language' (or use Auto-Detect).",

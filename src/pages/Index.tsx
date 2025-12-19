@@ -220,18 +220,18 @@ const Index = () => {
                 </Card>
               </Link>
 
-              {/* Reaction Time */}
-              <Link to="/tools/reaction-time-test">
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-green-500/20 bg-green-500/5">
+              {/* Thumbnail Generator - PROMOTED */}
+              <Link to="/tools/thumbnail-generator">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-purple-500/20 bg-purple-500/5">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="p-2 bg-green-500/10 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-green-600"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                      <div className="p-2 bg-purple-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-purple-600"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                       </div>
-                      <span className="text-xs px-2 py-1 bg-green-500 text-white rounded-full font-bold">FUN</span>
+                      <span className="text-xs px-2 py-1 bg-purple-500 text-white rounded-full font-bold">NEW</span>
                     </div>
-                    <CardTitle className="text-lg">Reaction Time</CardTitle>
-                    <CardDescription className="text-xs">Test your reflexes</CardDescription>
+                    <CardTitle className="text-lg">AI Thumbnail Maker</CardTitle>
+                    <CardDescription className="text-xs">Create viral thumbnails instantly</CardDescription>
                   </CardHeader>
                 </Card>
               </Link>

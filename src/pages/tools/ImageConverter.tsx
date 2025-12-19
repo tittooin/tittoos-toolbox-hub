@@ -10,8 +10,7 @@ import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
 import heic2any from "heic2any";
 import UTIF from "utif";
-// @ts-ignore
-import * as EXR from "parse-exr";
+
 
 const ImageConverter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -62,40 +61,6 @@ const ImageConverter = () => {
     return new ImageData(new Uint8ClampedArray(rgba), page.width, page.height);
   };
 
-  const processEXR = async (file: File): Promise<ImageData> => {
-    const buffer = await file.arrayBuffer();
-    // @ts-ignore
-    const exrData = EXR.parse(buffer);
-
-    // Simple tone mapping (gamma correction) for display
-    const width = exrData.width;
-    const height = exrData.height;
-    const data = new Uint8ClampedArray(width * height * 4);
-
-    // EXR data is usually Float32, we need to map to 0-255
-    // This is a simplified conversion assuming RGBA or RGB channels exist
-    // parse-exr returns generic channel data, we need to find R, G, B
-    // This part is tricky without knowing exact structure of parse-exr output
-    // But typically it has .data property with interleaved or separate channels
-    // Let's assume standard RGBA for now or try to map
-
-    // Actually parse-exr returns a simpler object. Let's look at a safer implementation
-    // If parse-exr is too complex to guess, I might wrap it in try-catch or use a simpler approach.
-    // For now, let's try a basic mapping if possible, or just skip complex EXR logic and warn if fails.
-
-    // Re-evaluating EXR: It's complex. Let's try to just support it if the library makes it easy.
-    // If not, I'll stick to HEIC and TIFF which are more common requests.
-    // But I promised EXR.
-
-    // Let's assume we can't easily do EXR without a proper renderer like Three.js.
-    // I will add a placeholder for EXR that warns it might not work fully without WebGL.
-    // Or better, I'll try to use a simple loop if I can find the channels.
-
-    // For this iteration, I will implement HEIC and TIFF fully. 
-    // For EXR, I will try to use the library but fallback gracefully.
-
-    throw new Error("EXR conversion requires WebGL context (coming soon)");
-  };
 
   const handleConvert = async () => {
     if (!selectedFile) {
@@ -129,35 +94,12 @@ const ImageConverter = () => {
         canvas.height = imageData.height;
         ctx?.putImageData(imageData, 0, 0);
 
-        // Continue with resizing if needed (draw canvas onto itself with new size? No, the logic below handles drawImage)
-        // Wait, if I putImageData, I can't easily resize with drawImage immediately unless I create a temp canvas or use the image source.
-        // Better: Create a temporary canvas for the TIFF, then draw that canvas onto the main canvas.
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = imageData.width;
         tempCanvas.height = imageData.height;
         const tempCtx = tempCanvas.getContext('2d');
         tempCtx?.putImageData(imageData, 0, 0);
 
-        // Now use tempCanvas as source
-        const targetWidth = width || imageData.width;
-        const targetHeight = height || imageData.height;
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        ctx?.drawImage(tempCanvas, 0, 0, targetWidth, targetHeight);
-
-        finalizeConversion();
-        return; // Skip the img.onload part
-      } else if (selectedFile.name.toLowerCase().endsWith(".exr")) {
-        const imageData = await processEXR(selectedFile);
-
-        // Create a temporary canvas for the EXR
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = imageData.width;
-        tempCanvas.height = imageData.height;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx?.putImageData(imageData, 0, 0);
-
-        // Now use tempCanvas as source
         const targetWidth = width || imageData.width;
         const targetHeight = height || imageData.height;
         canvas.width = targetWidth;
@@ -183,7 +125,8 @@ const ImageConverter = () => {
 
 
     } catch (error) {
-      toast.error("Error converting image");
+      console.error(error);
+      toast.error("Error converting image: " + (error as Error).message);
     } finally {
       setIsConverting(false);
     }
