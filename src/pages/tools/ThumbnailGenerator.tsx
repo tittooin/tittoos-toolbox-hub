@@ -131,6 +131,30 @@ const ThumbnailGenerator = () => {
 
     // --- HELPERS ---
 
+    useEffect(() => {
+        setSEO({
+            title: "Free AI Thumbnail Generator | Magic Background Remover",
+            description: "Create viral YouTube thumbnails in seconds. AI background generator, auto-remove selfie background, and MrBeast-style text effects. 100% Free & Secure.",
+            keywords: ["ai thumbnail generator", "youtube thumbnail maker", "free thumbnail editor", "remove background from selfie", "mrbeast thumbnail style", "neon text generator"],
+            image: "https://axevora.com/og/thumbnail-generator.png",
+            type: "website"
+        });
+
+        injectJsonLd({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Axevora AI Thumbnail Generator",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "featureList": "AI Background Generation, Magic Selfie (BG Removal), Pro Text Effects, Free Transform",
+        });
+    }, []);
+
     const addTextElement = (text: string, isTitle = false) => {
         const theme = THEMES[selectedTheme];
         const newEl: CanvasElement = {
@@ -1235,7 +1259,91 @@ const ThumbnailGenerator = () => {
                     </Button>
                 </div>
 
+
             </div>
+
+            {/* --- BLOG CONTENT --- */}
+            <div className="max-w-4xl mx-auto space-y-12 pt-12 border-t mt-12">
+
+                <section className="space-y-6">
+                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+                        How to Create Viral Thumbnails for Free
+                    </h2>
+                    <p className="text-lg text-muted-foreground leading-relaxed">
+                        A great thumbnail is the difference between 10 views and 10,000 views. But professional tools like Photoshop are expensive and complicated.
+                        **Axevora's AI Thumbnail Generator** combines the power of AI with an easy-to-use editor to help you create "MrBeast-Style" thumbnails in seconds directly in your browser.
+                    </p>
+                </section>
+
+                <section className="space-y-6">
+                    <h3 className="text-2xl font-semibold">🔥 Key Features</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Sparkles className="text-yellow-500" /> AI Background Generator</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                Describes your video concept (e.g., "Shocked man in front of burning house") and our AI generates a unique, high-quality background instantly.
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><User className="text-purple-500" /> Magic Selfie Remover</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                Upload your selfie, and our "Magic Wand" AI automatically removes the background. No green screen required! Perfect for reaction thumbnails.
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Type className="text-blue-500" /> Pro Text Effects</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                Add punchy text with "Neon Glow," "Thick Outlines," and "Drop Shadows." Fully customizable fonts and colors to match your brand.
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Download className="text-green-500" /> 100% Free & Private</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                No watermarks, no sign-ups, and no hidden fees. All processing happens securely in your browser.
+                            </CardContent>
+                        </Card>
+                    </div>
+                </section>
+
+                <section className="space-y-6">
+                    <h3 className="text-2xl font-semibold">📝 Step-by-Step Guide</h3>
+                    <ol className="space-y-4 list-decimal list-inside text-muted-foreground">
+                        <li className="pl-2"><strong>Generate a Concept:</strong> Go to the "AI" tab, enter your video title, and click "Generate Concept." The AI will create a background for you.</li>
+                        <li className="pl-2"><strong>Add Your Face:</strong> Go to "Uploads" and select your selfie. The background will be removed automatically.</li>
+                        <li className="pl-2"><strong>Add Text:</strong> Use the "Add Text" button. Select the text to change font, color, and add a "Glow" effect from the sidebar.</li>
+                        <li className="pl-2"><strong>Customize:</strong> Drag, rotate, and resize elements using the on-screen handles. Add stickers or emojis for extra flair.</li>
+                        <li className="pl-2"><strong>Download:</strong> Click "Download PNG" to get your high-definition (1280x720) thumbnail ready for YouTube.</li>
+                    </ol>
+                </section>
+
+                <section className="space-y-6">
+                    <h3 className="text-2xl font-semibold">❓ Frequently Asked Questions</h3>
+                    <div className="space-y-4">
+                        <div className="border rounded-lg p-4">
+                            <h4 className="font-bold mb-2">Is this tool really free?</h4>
+                            <p className="text-sm text-muted-foreground">Yes! Axevora is a free toolkit supported by ads. You can create unlimited thumbnails without paying a cent.</p>
+                        </div>
+                        <div className="border rounded-lg p-4">
+                            <h4 className="font-bold mb-2">What is the best size for YouTube thumbnails?</h4>
+                            <p className="text-sm text-muted-foreground">The industry standard is 1280x720 pixels (16:9 ratio), which this tool generates automatically.</p>
+                        </div>
+                        <div className="border rounded-lg p-4">
+                            <h4 className="font-bold mb-2">Can I use this on mobile?</h4>
+                            <p className="text-sm text-muted-foreground">Absolutely. The editor supports touch controls, so you can design thumbnails on your phone or tablet.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
         </ToolTemplate>
     );
 };
