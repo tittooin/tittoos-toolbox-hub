@@ -62,13 +62,31 @@ const TextToImage = () => {
     }
   };
 
-  const downloadImage = () => {
+  const downloadImage = async () => {
     if (generatedImage) {
-      const link = document.createElement('a');
-      link.href = generatedImage;
-      link.download = 'ai-generated-image.jpg';
-      link.click();
-      toast.success("Image downloaded!");
+      try {
+        // Fetch the image as a blob to force download
+        const response = await fetch(generatedImage);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        link.download = `ai-generated-${timestamp}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        toast.success("Image downloaded successfully!");
+      } catch (error) {
+        console.error("Download failed:", error);
+        toast.error("Failed to download directly. Opening in new tab.");
+        // Fallback
+        window.open(generatedImage, '_blank');
+      }
     }
   };
 
