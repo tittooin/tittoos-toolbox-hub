@@ -1,4 +1,5 @@
 import { useState, useEffect, Fragment } from "react";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogSubmissionForm from "@/components/BlogSubmissionForm";
@@ -365,22 +366,30 @@ const Blog = () => {
     ? allBlogPosts.find(post => post.slug === slug)
     : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
 
-  // Apply SEO dynamically for list vs article views
-  useEffect(() => {
-    if (selectedPostData) {
-      const title = `${selectedPostData.title} | Axevora Blog`;
-      setSEO({
-        title,
-        description: selectedPostData.excerpt,
-        keywords: [
-          'blog', 'productivity', 'online tools', 'guides', 'tutorials', 'digital workflow', 'seo tips', 'formatters', 'converters'
-        ],
-        type: 'article',
-        image: `${window.location.origin}/placeholder.svg`,
-        url: `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
-      });
+  const selectedPostData = slug
+    ? allBlogPosts.find(post => post.slug === slug)
+    : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
 
-      // Inject BlogPosting JSON-LD for the article
+  // Smart SEO Generation (Moved to Render)
+  const seoTitle = selectedPostData
+    ? `${selectedPostData.title} | Axevora Blog`
+    : 'Axevora Blog - Tips, Tutorials, and Guides';
+
+  const seoDescription = selectedPostData
+    ? selectedPostData.excerpt
+    : 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.';
+
+  const seoUrl = selectedPostData
+    ? `https://axevora.com/blog/${selectedPostData.slug}`
+    : `https://axevora.com/blog`;
+
+  const seoImage = selectedPostData && selectedPostData.image
+    ? selectedPostData.image
+    : `${window.location.origin}/placeholder.svg`;
+
+  useEffect(() => {
+    // Inject JSON-LD only (Helmet handles the rest)
+    if (selectedPostData) {
       injectJsonLd({
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
@@ -389,7 +398,6 @@ const Blog = () => {
         'author': {
           '@type': 'Person',
           'name': selectedPostData.author || 'Axevora Team',
-          ...(selectedPostData.authorSlug ? { 'url': `${window.location.origin}/author/${selectedPostData.authorSlug}` } : {})
         },
         'datePublished': selectedPostData.date,
         'publisher': {
@@ -397,25 +405,14 @@ const Blog = () => {
           'name': 'Axevora',
           'logo': {
             '@type': 'ImageObject',
-            'url': `${window.location.origin}/favicon.png`
+            'url': `https://axevora.com/favicon.png`
           }
         },
-        'mainEntityOfPage': `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`,
-        'url': `${window.location.origin}/blog/${selectedPostData.slug ?? ''}`
-      });
-    } else {
-      setSEO({
-        title: 'Axevora Blog - Tips, Tutorials, and Guides',
-        description: 'Read practical tutorials and guides on using online tools effectively: SEO tips, formatters, converters, and productivity workflows.',
-        keywords: [
-          'blog', 'online tools', 'seo', 'tutorials', 'guides', 'productivity', 'formatters', 'converters'
-        ],
-        type: 'website',
-        image: `${window.location.origin}/placeholder.svg`,
-        url: `${window.location.origin}/blog`,
+        'mainEntityOfPage': seoUrl,
+        'url': seoUrl
       });
     }
-  }, [selectedPostData]);
+  }, [selectedPostData, seoUrl]);
 
   // Smart Failover Image Logic
   // Smart Failover Image Logic
@@ -486,6 +483,17 @@ const Blog = () => {
   if (selectedPostData) {
     return (
       <div className="min-h-screen bg-background">
+        <Helmet>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+          <link rel="canonical" href={seoUrl} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:url" content={seoUrl} />
+          <meta property="og:image" content={seoImage} />
+          <meta property="og:type" content="article" />
+          <meta name="twitter:card" content="summary_large_image" />
+        </Helmet>
         <Header />
 
         <div className="container mx-auto px-4 py-8">
@@ -581,6 +589,17 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={seoUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       <Header />
 
       <div className="container mx-auto px-4 py-16">
