@@ -123,26 +123,50 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Attributions & Licensing */}
+          {/* Developer Tools */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Attributions & Licensing</h3>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="text-sm">Icons by lucide-react (ISC License).</li>
-              <li className="text-sm">UI components via shadcn/ui (MIT License).</li>
-              <li className="text-sm">Built with React, Vite, Tailwind CSS.</li>
-              <li className="text-sm">Brand names/logos belong to their respective owners.</li>
-
+            <h3 className="text-lg font-semibold mb-4">Developer Tools</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/tools/windows-cmd-gen" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Windows CMD Gen
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/linux-cmd-gen" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Linux Terminal Gen
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/mac-cmd-gen" className="text-muted-foreground hover:text-foreground transition-colors">
+                  MacOS Terminal Gen
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/android-adb-gen" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Android ADB Gen
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/json-formatter" className="text-muted-foreground hover:text-foreground transition-colors">
+                  JSON Formatter
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center">
+        <div className="border-t border-border mt-8 pt-8 text-center space-y-2">
           <p className="text-muted-foreground">
             © {currentYear} Axevora. All rights reserved. Built with ❤️ for productivity.
           </p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Disclosure: Some pages may display ads to keep tools free.
-          </p>
+          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+            <span>Icons by lucide-react</span>
+            <span>•</span>
+            <span>UI via shadcn/ui</span>
+            <span>•</span>
+            <span>Disclosure: Pages may display ads.</span>
+          </div>
         </div>
       </div>
     </footer>

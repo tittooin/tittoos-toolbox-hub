@@ -66,9 +66,10 @@ const AndroidCommandGenerator = () => {
         <GenericCommandTool
             title="ADB & Fastboot Cheatsheet"
             description="The ultimate guide to Android Debug Bridge. Generate commands to control, flash, and debug any Android device."
-            osName="Android ADB"
+            osName="Android ADB & Fastboot"
             icon={Smartphone}
-            keywords="adb commands, fastboot cheatsheet, android terminal, apk install, adb shell, logcat"
+            keywords="adb commands, fastboot, android debugging, unlock bootloader, install apk, logcat"
+            path="/tools/android-adb-gen"
         >
             <div className="space-y-12">
 

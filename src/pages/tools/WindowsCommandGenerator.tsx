@@ -95,6 +95,7 @@ const WindowsCommandGenerator = () => {
             osName="Windows PowerShell 7+"
             icon={Terminal}
             keywords="windows cmd commands, powershell cheatsheet, cls, dir, ipconfig, systeminfo, net user, diskpart"
+            path="/tools/windows-cmd-gen"
         >
             <div className="space-y-12">
 

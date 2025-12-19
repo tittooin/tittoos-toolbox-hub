@@ -17,12 +17,13 @@ interface GenericCommandToolProps {
     icon?: React.ElementType;
     keywords: string;
     children?: React.ReactNode;
+    path: string; // e.g. "/tools/windows-cmd-gen"
 }
 
 const generator = new CommandGenerator();
 
 const GenericCommandTool: React.FC<GenericCommandToolProps> = ({
-    title, description, osName, icon: Icon = Terminal, keywords, children
+    title, description, osName, icon: Icon = Terminal, keywords, children, path
 }) => {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -54,12 +55,16 @@ const GenericCommandTool: React.FC<GenericCommandToolProps> = ({
         }
     };
 
+    const fullUrl = `https://axevora.com${path}`;
+
     return (
         <div className="min-h-screen bg-background flex flex-col">
             <Helmet>
                 <title>{title} | Axevora</title>
                 <meta name="description" content={description} />
                 <meta name="keywords" content={keywords} />
+                <link rel="canonical" href={fullUrl} />
+                <meta property="og:url" content={fullUrl} />
             </Helmet>
 
             <Header />

@@ -71,7 +71,8 @@ const MacCommandGenerator = () => {
             description="Unlock the full potential of your Mac. Zsh commands, Homebrew, and hidden settings."
             osName="MacOS Zsh"
             icon={Command}
-            keywords="mac terminal commands, zsh cheatsheet, macos cli, brew install, pbcopy, spotlight"
+            keywords="mac terminal commands, zsh cheatsheet, homebrew, brew install, sudo, open, pbcopy"
+            path="/tools/mac-cmd-gen"
         >
             <div className="space-y-12">
 

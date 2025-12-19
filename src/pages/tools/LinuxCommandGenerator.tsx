@@ -78,7 +78,8 @@ const LinuxCommandGenerator = () => {
             description="The definitive interactive guide for Linux Terminal. Ubuntu, Debian, CentOS commands categorized."
             osName="Linux Bash"
             icon={Terminal}
-            keywords="linux cli commands, bash cheatsheet, ubuntu terminal, chmod, grep, tar, ssh, top"
+            keywords="linux commands, bash cheatsheet, ls, grep, chmod, chown, tar, ssh, systemctl"
+            path="/tools/linux-cmd-gen"
         >
             <div className="space-y-12">
 
