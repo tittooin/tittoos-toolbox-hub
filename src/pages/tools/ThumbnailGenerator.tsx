@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 // import removeBackground from "@imgly/background-removal";
 
 // Simple UUID generator fallback
