@@ -172,6 +172,11 @@ uniqueRoutes.forEach(route => {
         // Inject new one before head close
         html = html.replace('</head>', `${staticCanonicalTag}\n</head>`);
 
+        // --- SEO INJECTION: OG:URL (Must match Canonical) ---
+        // Remove existing og:url to prevent duplicates
+        html = html.replace(/<meta property="og:url" content=".*?" \/>/g, "");
+        html = html.replace('</head>', `<meta property="og:url" content="${canonicalUrl}" />\n</head>`);
+
         // --- SEO INJECTION: DYNAMIC TITLE & H1 ---
         // Lookup tool name
         // route is like "/tools/pdf-converter"

@@ -2618,6 +2618,69 @@ const allTools = [
         answer: "AI translation is incredibly good (95%+ accuracy), but legal or safety-critical documents should always be reviewed by a human professional."
       }
     ]
+  },
+  {
+    id: "thumbnail-generator",
+    name: "AI Thumbnail Generator",
+    subheading: "Create viral YouTube thumbnails",
+    description: "Generate high-CTR thumbnails with AI. Remove backgrounds, add neon text, and use MrBeast-style effects.",
+    category: "ai",
+    icon: Sparkles,
+    path: "/tools/thumbnail-generator"
+  },
+  {
+    id: "video-editor",
+    name: "Online Video Editor",
+    subheading: "Edit videos in browser",
+    description: "Trim, cut, and edit videos directly in your browser without watermarks.",
+    category: "editor",
+    icon: Video,
+    path: "/tools/video-editor"
+  },
+  {
+    id: "text-to-video",
+    name: "AI Text to Video",
+    subheading: "Turn text into video",
+    description: "Generate engaging videos from simple text prompts using AI.",
+    category: "ai",
+    icon: Bot,
+    path: "/tools/text-to-video"
+  },
+  {
+    id: "ai-image-editor",
+    name: "AI Image Editor",
+    subheading: "Edit images with AI",
+    description: "Magic erase, background removal, and smart enhancement tools powered by AI.",
+    category: "ai",
+    icon: Image,
+    path: "/tools/ai-image-editor"
+  },
+  {
+    id: "ai-website-generator",
+    name: "AI Website Generator",
+    subheading: "Build websites in seconds",
+    description: "Generate full landing pages and websites from a single prompt.",
+    category: "ai",
+    icon: Globe,
+    path: "/tools/ai-website-generator"
+  },
+  {
+    id: "ai-tool-generator",
+    name: "AI Tool Generator",
+    subheading: "Create your own tools",
+    description: "Describe a tool and let AI build it for you instantly.",
+    category: "ai",
+    icon: Code,
+    path: "/tools/ai-tool-generator"
+  },
+  {
+    id: "chat-with-pdf",
+    name: "Chat with PDF",
+    subheading: "Talk to your documents",
+    description: "Upload a PDF and ask questions, summarize, or extract data using AI.",
+    category: "ai",
+    icon: MessageSquare,
+    path: "/tools/chat-with-pdf"
   }
 ];
 
