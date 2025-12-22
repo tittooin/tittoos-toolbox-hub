@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-sitemap": "node generate-sitemap.cjs",
-    "generate-static-pages": "node generate-static-pages.cjs"
+    "generate-static-pages": "node generate-static-pages.cjs",
+    "fetch-trends": "node fetch-trends.cjs",
+    "check-plagiarism": "node check-plagiarism.cjs"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
@@ -58,6 +60,8 @@
     "fabric": "^6.7.0",
     "file-saver": "^2.0.5",
     "firebase": "^12.6.0",
+    "google-it": "^1.6.4",
+    "google-trends-api": "^4.9.2",
     "heic2any": "^0.0.4",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.4",

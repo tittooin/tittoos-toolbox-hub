@@ -195,7 +195,13 @@ export class BlogGenerator {
       
       Section Title: "${sectionTitle}"
       
-      Start with a strong, engaging opening.
+      **Writing Style Guidelines (CRITICAL):**
+      - Write in a 100% human, conversational tone.
+      - **BANNED PHRASES (Do NOT use):** "In the ever-evolving landscape", "Delve into", "In conclusion", "It is important to note", "Game-changer", "Unleash", "Elevate".
+      - Use short, punchy sentences. varying sentence length.
+      - Use idioms and rhetorical questions naturally.
+      - Write as if you are explaining this to a friend over coffee.
+      - **PLAGIARISM CHECK:** Ensure every sentence is unique. Do not copy generic descriptions. Rephrase standard definitions in your own unique voice.
       
       **CRITICAL LINKING REQUIREMENTS:**
       1. **INTERNAL LINKS (Priority):** Naturally mention and link to at least 1 relevant tool from the list below if it fits contextually.
@@ -208,7 +214,6 @@ ${selectedTools}
 
       **Content Requirements:**
       - Write approximately 250-300 words for this section.
-      - Use a conversational, engaging, and professional tone (Human touch).
       - Use "You" and "We" to build connection.
       - Include bullet points or bold text for readability.
       - Target low-competition long-tail keywords naturally.

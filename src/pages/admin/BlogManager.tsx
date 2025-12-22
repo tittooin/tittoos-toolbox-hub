@@ -209,6 +209,44 @@ const BlogManager = () => {
                 <Button variant="destructive" onClick={clearSchedule} size="sm">Clear Schedule</Button>
             </div>
 
+            {/* Maintenance Instructions */}
+            <Card className="bg-muted/50 border-dashed">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                        Bot Maintenance Instructions
+                    </CardTitle>
+                    <CardDescription>Run these commands in your terminal to keep data fresh.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="bg-black/90 p-3 rounded-md font-mono text-sm text-green-400">
+                        <div className="flex justify-between items-center mb-2">
+                            <span>1. Fetch Hot Topics</span>
+                            <span className="text-gray-500 text-xs text-right">Run daily for fresh trends</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-800 p-2 rounded">
+                            <span className="flex-1">npm run fetch-trends</span>
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => { navigator.clipboard.writeText('npm run fetch-trends'); toast.success('Command copied!'); }}>
+                                <Download className="h-3 w-3" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="bg-black/90 p-3 rounded-md font-mono text-sm text-green-400">
+                        <div className="flex justify-between items-center mb-2">
+                            <span>2. Check Content Quality</span>
+                            <span className="text-gray-500 text-xs text-right">Run after generating blogs</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-800 p-2 rounded">
+                            <span className="flex-1">npm run check-plagiarism</span>
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => { navigator.clipboard.writeText('npm run check-plagiarism'); toast.success('Command copied!'); }}>
+                                <Download className="h-3 w-3" />
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
             {/* Configuration Section */}
             <Card>
                 <CardHeader>
@@ -248,13 +286,27 @@ const BlogManager = () => {
             {/* Input Section */}
             <Card>
                 <CardHeader>
-                    <CardTitle>2. Schedule Content</CardTitle>
-                    <CardDescription>Paste your titles here (One per line). They will be scheduled daily starting today.</CardDescription>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle>2. Schedule Content</CardTitle>
+                            <CardDescription>Paste titles or import trending topics.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={() => {
+                            import('@/data/trending_topics.json').then(mod => {
+                                const topics = mod.default.map((t: any) => `${t.query} (Traffic: ${t.traffic})`).join('\n');
+                                setTopicsInput(prev => prev ? prev + '\n' + topics : topics);
+                                toast.success(`Imported ${mod.default.length} trending topics!`);
+                            }).catch(() => toast.error("No trending topics found. Run 'npm run fetch-trends' first."));
+                        }}>
+                            <Rocket className="h-4 w-4 mr-2" />
+                            Import Trends
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Textarea
                         placeholder="How to make money online 2025&#10;The ultimate guide to Keto diet&#10;Best coding languages to learn"
-                        rows={5}
+                        rows={10}
                         value={topicsInput}
                         onChange={(e) => setTopicsInput(e.target.value)}
                     />

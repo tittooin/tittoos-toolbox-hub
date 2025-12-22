@@ -154,6 +154,10 @@ const AIBlogGenerator: React.FC<AIBlogGeneratorProps> = ({ onClose, onSave }) =>
       `<p>If you're stuck or just want to chat more about ${category.toLowerCase()}, feel free to reach out. We're all figuring this out together.</p>`
     ];
 
+    // Simulating Plagiarism Check
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    // In a real scenario, this would call our Node script or an API
+
     return sections.join('\n\n');
   };
 
