@@ -55,7 +55,7 @@ const AIBlogGenerator: React.FC<AIBlogGeneratorProps> = ({ onClose, onSave }) =>
       const keywordList = formData.keywords.split(',').map(k => k.trim()).filter(Boolean);
       const mainKeywords = keywordList.length > 0 ? keywordList : [`${formData.topic}`, `${formData.category.toLowerCase()} tips`, 'best practices'];
 
-      const generatedContent = generateBlogContent(formData.topic, formData.category, mainKeywords, parseInt(formData.wordCount));
+      const generatedContent = await generateBlogContent(formData.topic, formData.category, mainKeywords, parseInt(formData.wordCount));
 
       const newBlog = {
         id: Date.now(),
@@ -81,7 +81,7 @@ const AIBlogGenerator: React.FC<AIBlogGeneratorProps> = ({ onClose, onSave }) =>
     }
   };
 
-  const generateBlogContent = (topic: string, category: string, keywords: string[], wordCount: number): string => {
+  const generateBlogContent = async (topic: string, category: string, keywords: string[], wordCount: number): Promise<string> => {
     // Helper to pick random element
     const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
 
