@@ -11,25 +11,28 @@ export interface BlogPost {
   isAIGenerated?: boolean;
   tags?: string[];
   metaDescription?: string;
+  customLink?: string;
+  image?: string;
 }
 
 // Helper: precomputed slugs for default posts for stability
 export const DEFAULT_BLOG_POSTS: BlogPost[] = [
   {
     id: 1,
-    title: "10 Essential Online Tools for Digital Productivity in 2024",
+    title: "10 Essential Online Tools That Actually Save You Time in 2024",
+    image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=1200",
     excerpt:
-      "Discover the most useful online tools that can boost your productivity and streamline your digital workflow in the modern era.",
+      "Stop juggling a million tabs. We've curated the tools that real professionals actually use to get work done faster.",
     date: "2024-01-15",
     readTime: "8 min read",
     author: "Axevora Team",
     authorSlug: "axevora-team",
     slug: "10-essential-online-tools-for-digital-productivity-2024",
     content: `
-        <p>In today's fast-paced digital world, having the right tools at your fingertips can make the difference between struggling with daily tasks and completing them efficiently. Whether you're a professional, student, or entrepreneur, these essential online tools will revolutionize how you work and manage your digital life.</p>
+        <p>Let's be honest: we all have that one browser window with 50 tabs open that we're "saving for later." In today's digital chaos, finding tools that actually work—and don't just add to the noise—is a superpower. Whether you're coding a new project, managing a startup, or just trying to organize your digital life, the right toolkit changes everything.</p>
 
-        <h2>1. Password Managers: Your Digital Security Foundation</h2>
-        <p>Password security remains one of the most critical aspects of digital safety. With cyber threats evolving constantly, using weak or repeated passwords is no longer an option. Modern password managers not only generate complex, unique passwords for each account but also store them securely and auto-fill login forms across devices.</p>
+        <h2>1. Password Managers: Stop Using "Password123"</h2>
+        <p>If you're still using the same password for your email and your bank account, we need to talk. Security isn't just for big tech companies; it's for anyone who doesn't want to lose their digital identity. A solid password manager is your first line of defense.</p>
         
         <p>The benefits extend beyond security. A good password manager saves countless hours by eliminating the need to remember or reset passwords. Many also include features like secure note storage, two-factor authentication backup, and breach monitoring.</p>
         <p>Need help generating strong credentials? Use our <a href="/tools/password-generator">Password Generator</a> to create unique, high-entropy passwords instantly.</p>
@@ -78,28 +81,31 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
         <p>Run audits with the <a href="/tools/website-speed-checker">Website Speed Checker</a>.</p>
 
         <h2>Conclusion</h2>
-        <p>The key to digital productivity lies not in using more tools, but in using the right tools effectively. Each tool mentioned here addresses specific pain points common in digital workflows. By integrating these tools into your routine, you'll save time, reduce errors, and focus on what truly matters: creating value and achieving your goals.</p>
+        <p>Productivity isn't about using <em>more</em> tools; it's about using the <em>right</em> ones. The tools listed above are the ones we find ourselves returning to day after day. They solve specific problems without overcomplicating your workflow. Start small—pick one area where you feel bogged down, like password management or image editing, and try a dedicated tool to fix it.</p>
+        
+        <p>For more deep dives into tech tools, check out reputable sources like <a href="https://techcrunch.com/" target="_blank" rel="noopener noreferrer">TechCrunch</a> or the <a href="https://www.theverge.com/tech" target="_blank" rel="noopener noreferrer">The Verge Tech Section</a>.</p>
 
         <p>Remember, the best tool is the one you actually use. Start with one or two tools that address your most pressing needs, master them, and gradually expand your toolkit as required.</p>
       `,
   },
   {
     id: 2,
-    title: "Password Security Best Practices: A Complete Guide for 2024",
+    title: "Password Security 101: Keeping Your Digital Life Safe",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=1200",
     excerpt:
-      "Learn how to create and manage strong passwords to keep your accounts secure in an increasingly dangerous digital landscape.",
+      "A no-nonsense guide to creating passwords that hackers actually hate. Learn the strategies that keep your accounts locked down.",
     date: "2024-01-10",
     readTime: "12 min read",
     author: "Security Expert",
     authorSlug: "security-expert",
     slug: "password-security-best-practices-guide-2024",
     content: `
-        <p>Password security isn't just about IT departments anymore—it's everyone's responsibility. With data breaches affecting millions of users annually and cybercriminals becoming increasingly sophisticated, understanding password security has never been more critical.</p>
+        <p>We've all done it: clicked "remind me later" on a security update or reused a password because we just couldn't be bothered to think of a new one. But here's the cold hard truth: hackers are counting on that laziness. Security isn't just an IT problem anymore; it's a "you" problem.</p>
 
-        <h2>The Current State of Password Security</h2>
-        <p>Despite decades of security awareness campaigns, password-related breaches continue to dominate cybersecurity headlines. The problem isn't just weak passwords—it's the human tendency to reuse passwords across multiple accounts, creating a domino effect when one service is compromised.</p>
+        <h2>The Reality Check</h2>
+        <p>Did you know that "123456" is still one of the most common passwords in the world? It's like leaving your front door wide open with a "Welcome" mat. Most breaches don't happen because of Matrix-style hacking code; they happen because someone used a pet's name as a password.</p>
 
-        <p>Recent studies show that the average person has over 100 online accounts but uses fewer than 20 unique passwords. This mathematical impossibility leads to dangerous shortcuts that cybercriminals exploit.</p>
+        <p>According to <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener noreferrer">Have I Been Pwned</a>, billions of accounts have been compromised in data breaches. If you're reusing passwords, one leak means your entire digital life is vulnerable.</p>
 
         <h2>Understanding Password Strength</h2>
         <p>Password strength isn't just about complexity—it's about unpredictability. A truly strong password combines several elements:</p>
@@ -183,26 +189,27 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
         <p>Passwordless authentication is gaining traction, using biometrics, hardware keys, or magic links instead of traditional passwords. While promising, passwords will remain relevant for years to come, making current security practices essential.</p>
 
         <h2>Conclusion</h2>
-        <p>Password security doesn't have to be complicated or burdensome. By adopting a password manager, enabling two-factor authentication, and following basic security hygiene, you can dramatically improve your digital security posture. The goal isn't perfection—it's making yourself a harder target than the majority of users who still use "password123" for everything.</p>
+        <p>You don't need to be a cybersecurity expert to be safe. You just need to be harder to hack than the next person. By using a password manager, enabling 2FA, and not using "password123", you're already ahead of 90% of internet users. Stay safe out there!</p>
 
         <p>Remember: cybersecurity is a journey, not a destination. Stay informed about emerging threats, update your practices regularly, and never hesitate to prioritize security over convenience. Your future self will thank you.</p>
       `,
   },
   {
     id: 3,
-    title: "File Conversion Mastery: The Complete Guide to Digital Format Management",
+    title: "File Conversion 101: Why Format Matters",
+    image: "https://images.unsplash.com/photo-1629757674254-219ee538965f?auto=format&fit=crop&w=1200",
     excerpt:
-      "Everything you need to know about converting files between different formats for various use cases, from basic conversions to advanced optimization techniques.",
+      "From JPG vs PNG to why you really need that PDF. A plain-English guide to managing your digital files.",
     date: "2024-01-05",
     readTime: "10 min read",
     author: "Digital Workflow Specialist",
     authorSlug: "digital-workflow-specialist",
     slug: "file-conversion-mastery-complete-guide-digital-format-management",
     content: `
-        <p>In our interconnected digital world, file compatibility issues can be workflow killers. Whether you're a content creator, business professional, or casual user, understanding file conversion is essential for seamless collaboration and efficient work processes.</p>
+        <p>Ever tried to upload a photo and got the dreaded "File type not supported" error? Or sent a Word doc to a client only for everything to look jumbled on their screen? File formats are the invisible language of the internet, and sometimes, things get lost in translation.</p>
 
-        <h2>Understanding File Formats: The Foundation</h2>
-        <p>Every digital file is essentially data organized according to specific rules—that's what we call a format. These formats determine how software interprets and displays information. Understanding the purpose and characteristics of different formats is crucial for making informed conversion decisions.</p>
+        <h2>Why Formats Exist</h2>
+        <p>Think of file formats like languages. A JPG is fluent in photography, while a PNG is better at graphics with transparent backgrounds. A PDF is the universal diplomat—it looks the same no matter where you open it. Knowing which format to use (and when to convert) saves you headaches down the road. For a deep dive, check out <a href="https://fileinfo.com/" target="_blank" rel="noopener noreferrer">FileInfo.com</a>.</p>
 
         <h3>Container vs. Codec</h3>
         <p>This distinction is particularly important for multimedia files. A container (like MP4 or AVI) is like a box that holds various streams of data, while codecs (like H.264 or AAC) determine how that data is compressed and decompressed. Understanding this relationship helps explain why some files play on certain devices but not others.</p>
@@ -315,18 +322,19 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
   },
   {
     id: 4,
-    title: "How to Check Website SEO for Free: A Complete Guide for Beginners",
-    excerpt: "Learn how to perform a comprehensive SEO audit of your website using free tools. Identify technical issues, optimize keywords, and boost your rankings without spending a dime.",
+    title: "DIY SEO: How to Audit Your Website for Free",
+    image: "https://images.unsplash.com/photo-1571786256017-aee7a0c009b6?auto=format&fit=crop&w=1200",
+    excerpt: "You don't need an expensive agency to fix your SEO. Here's a practical guide to spotting and fixing common issues yourself.",
     date: "2024-03-20",
     readTime: "15 min read",
     author: "SEO Strategist",
     authorSlug: "seo-strategist",
     slug: "how-to-check-website-seo-free-guide",
     content: `
-      <p>Search Engine Optimization (SEO) is often portrayed as a dark art requiring expensive software and decades of experience. While expertise helps, the truth is that anyone can perform a high-quality SEO audit using entirely free tools. This guide will walk you through a step-by-step process to check your website's health and identify opportunities for growth.</p>
+      <p>SEO (Search Engine Optimization) often sounds like voodoo magic sold by expensive consultants. "Buy this package to rank #1!" they say. But honestly? 80% of SEO is just making sure your website isn't broken and actually answers the questions people are asking. You can do a massive amount of cleanup yourself using free tools.</p>
 
-      <h2>Step 1: The Technical Health Check</h2>
-      <p>Before worrying about keywords, you must ensure search engines can actually read your site. Technical issues are like a locked door for Googlebot.</p>
+      <h2>Step 1: Is Google Even Listing You?</h2>
+      <p>Before you worry about ranking for "best pizza in town," you need to make sure Google knows you exist. Go to Google and type <code>site:yourdomain.com</code>. If you see your pages, great! If not, you might have blocked search engines in your <code>robots.txt</code> file. Fix that first. Learn more at <a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide" target="_blank" rel="noopener noreferrer">Google's SEO Starter Guide</a>.</p>
 
       <h3>Crawlability and Indexability</h3>
       <p>First, verify that your site is being indexed. reliable way is using the "site:" operator in Google search (e.g., <code>site:yourdomain.com</code>). If no results appear, your site might be blocking search engines via <code>robots.txt</code> or meta noindex tags.</p>
@@ -377,18 +385,19 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
   },
   {
     id: 5,
-    title: "How to Improve Website Speed for Free: 7 Proven Strategy",
-    excerpt: "Is your website loading slowly? Discover 7 actionable, free strategies to supercharge your page speed, improve Core Web Vitals, and retain more visitors.",
+    title: "Speed Freaks: 7 Ways to Make Your Website Fly",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200",
+    excerpt: "Slow websites kill conversions. Here are 7 free, actionable ways to speed up your site and keep visitors happy.",
     date: "2024-03-25",
     readTime: "12 min read",
     author: "Performance Engineer",
     authorSlug: "performance-engineer",
     slug: "how-to-improve-website-speed-free",
     content: `
-      <p>In the age of instant gratification, speed is everything. 53% of mobile users abandon sites that take longer than 3 seconds to load. If your site is slow, you are losing money, visitors, and search rankings. The good news? You can fix most speed issues for free.</p>
+      <p>We've all been there: you click a link, stare at a white screen for 3 seconds, and then hit the "Back" button. Speed isn't just a technical metric; it's user experience. If your site is slow, your visitors are leaving. Google confirms that <a href="https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/mobile-page-speed-new-industry-benchmarks/" target="_blank" rel="noopener noreferrer">probability of bounce increases 32%</a> as page load time goes from 1s to 3s.</p>
 
-      <h2>1. Optimize and Compress Images</h2>
-      <p>Images often account for 50-70% of a web page's total weight. Uploading raw, uncompressed photos is the most common mistake beginners make.</p>
+      <h2>1. Your Images Are Too Big</h2>
+      <p>This is the #1 culprit. You took a beautiful photo on your iPhone and uploaded the 5MB file directly to your blog. Stop! That single image is bigger than most entire websites <em>should</em> be.</p>
       
       <h3>The Solution:</h3>
       <p>Before uploading any image, run it through an <a href="/tools/image-compressor">Online Image Compressor</a>. Modern tools can reduce file size by up to 80% with zero visible loss in quality. Also, consider using modern formats like WebP instead of heavy PNGs.</p>
@@ -425,5 +434,77 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <h2>Summary</h2>
       <p>Improving website speed is one of the highest-ROI activities you can do. It costs nothing but time, yet it directly impacts your SEO rankings and user conversion rates. Start with image compression today—it's the easiest win with the biggest impact.</p>
     `
+  },
+  // Surfaced Category Guides
+  {
+    id: 101,
+    title: "Ultimate PDF Tools Guide: Convert, Merge, Split & Secure",
+    excerpt: "The definitive guide to PDF management. Learn how to merge, split, compress, and secure documents securely in your browser.",
+    date: "2024-03-30",
+    readTime: "20 min read",
+    author: "Axevora Team",
+    authorSlug: "axevora-team",
+    slug: "pdf-category-guide",
+    content: "", // Content is handled by the page itself
+    customLink: "/blog-posts/pdf-category",
+    tags: ["pdf", "guide", "productivity"],
+    metaDescription: "Master PDF management with free online tools.",
+    image: "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=1200"
+  },
+  {
+    id: 102,
+    title: "The Complete Guide to Image Conversion & Optimization",
+    excerpt: "Learn how to convert images between formats, remove backgrounds, and optimize file sizes for the web.",
+    date: "2024-03-29",
+    readTime: "15 min read",
+    author: "Design Team",
+    authorSlug: "design-team",
+    slug: "converters-category-guide",
+    content: "",
+    customLink: "/blog-posts/converters-category",
+    tags: ["images", "conversion", "design"],
+    image: "https://images.unsplash.com/photo-1524146120736-9e0683a3e7fa?auto=format&fit=crop&w=1200"
+  },
+  {
+    id: 103,
+    title: "AI Tools Revolution: Generators, Assistants & More",
+    excerpt: "Explore the power of AI with our suite of free tools. Generate websites, images, and content instantly.",
+    date: "2024-03-28",
+    readTime: "15 min read",
+    author: "AI Research",
+    authorSlug: "ai-research",
+    slug: "ai-tools-category-guide",
+    content: "",
+    customLink: "/blog-posts/ai-tools-category",
+    tags: ["ai", "generation", "automation"],
+    image: "https://images.unsplash.com/photo-1675271591211-126ad94e495d?auto=format&fit=crop&w=1200"
+  },
+  {
+    id: 104,
+    title: "Developer Tools Handbook: Formatters, Validators & Generators",
+    excerpt: "Essential tools for developers. Format JSON, validate XML, generate secure passwords, and more.",
+    date: "2024-03-27",
+    readTime: "18 min read",
+    author: "DevRel Team",
+    authorSlug: "devrel-team",
+    slug: "dev-tools-category-guide",
+    content: "",
+    customLink: "/blog-posts/dev-tools-category",
+    tags: ["development", "coding", "productivity"],
+    image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=1200"
+  },
+  {
+    id: 105,
+    title: "Web Analysis Masterclass: SEO, Speed & Performance",
+    excerpt: "Deep dive into website analysis. Check SEO health, test internet speed, and optimize your online presence.",
+    date: "2024-03-26",
+    readTime: "12 min read",
+    author: "SEO Specialist",
+    authorSlug: "seo-specialist",
+    slug: "analyzers-category-guide",
+    content: "",
+    customLink: "/blog-posts/analyzers-category",
+    tags: ["seo", "analytics", "webmaster"],
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200"
   }
 ];
