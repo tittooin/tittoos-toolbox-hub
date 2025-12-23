@@ -118,6 +118,7 @@ const WindowsCommandGenerator = lazy(() => import("./pages/tools/WindowsCommandG
 const LinuxCommandGenerator = lazy(() => import("./pages/tools/LinuxCommandGenerator"));
 const MacCommandGenerator = lazy(() => import("./pages/tools/MacCommandGenerator"));
 const AndroidCommandGenerator = lazy(() => import("./pages/tools/AndroidCommandGenerator"));
+const NeonBlockPuzzlePrivacy = lazy(() => import("./pages/apps/NeonBlockPuzzlePrivacy"));
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -300,6 +301,9 @@ const App = () => (
               <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
               <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
               <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
+
+              {/* Apps Support Pages */}
+              <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />
 
               {/* Admin Routes */}
               <Route path="/admin/blog" element={<BlogManager />} />
