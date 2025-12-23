@@ -9,7 +9,7 @@ function updateConsent(state: Exclude<ConsentState, null>) {
   // @ts-ignore
   window.dataLayer = window.dataLayer || [];
   // @ts-ignore
-  window.gtag = window.gtag || function gtag(){ window.dataLayer.push(arguments); };
+  window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
   // @ts-ignore
   window.gtag('consent', 'update', {
     ad_storage: state,
@@ -58,7 +58,7 @@ export default function ConsentBanner() {
       <div className="container mx-auto px-4 py-4">
         <div className="bg-card border border-border rounded-lg shadow-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div className="text-sm text-muted-foreground">
-            We use cookies for ads and analytics. Manage your consent to improve your experience. See our <a className="text-primary hover:underline" href="/privacy">Privacy Policy</a>.
+            We use cookies to analyze traffic and show personalized ads to you. We share information about your use of our site with our social media, advertising and analytics partners. <a className="text-primary hover:underline" href="/privacy">Privacy Policy</a>
           </div>
           <div className="flex gap-2">
             <button onClick={rejectAll} className="px-4 py-2 rounded border border-border text-sm">

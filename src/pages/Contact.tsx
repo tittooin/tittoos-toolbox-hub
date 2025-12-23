@@ -31,7 +31,7 @@ const Contact = () => {
               <CardContent>
                 <a
                   href="mailto:admin@axevora.com"
-                  className="text-primary hover:text-primary/80 font-medium"
+                  className="text-primary hover:text-primary/80 text-xl font-bold"
                 >
                   admin@axevora.com
                 </a>

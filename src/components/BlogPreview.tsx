@@ -74,8 +74,8 @@ const BlogPreview = () => {
       return collection[index];
     };
 
-    // Show top 6
-    setDisplayedPosts(allPosts.slice(0, 6).map(p => ({
+    // Show top 9
+    setDisplayedPosts(allPosts.slice(0, 9).map(p => ({
       ...p,
       image: p.image || getFallbackImage(p.title)
     })));
