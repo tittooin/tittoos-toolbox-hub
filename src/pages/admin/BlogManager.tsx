@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github } from "lucide-react";
 import { BlogGenerator, BlogPostGenerated } from "@/utils/aiGenerator";
 import { GitHubClient } from "@/utils/githubClient";
 import { toast } from "sonner";
+import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github, Trash2, RefreshCw } from "lucide-react";
+import generatedBlogsFile from '@/data/generated_blogs.json';
 
 // Type for the schedule
 interface ScheduledPost {
@@ -28,6 +29,10 @@ const BlogManager = () => {
     const [isDeploying, setIsDeploying] = useState(false);
     const [currentProgress, setCurrentProgress] = useState('');
 
+    // Blog Management State
+    const [localBlogs, setLocalBlogs] = useState<any[]>([]); // Using any for flexibility with json import
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
     // Load data on mount
     useEffect(() => {
         const savedKey = localStorage.getItem('gemini_api_key');
@@ -38,7 +43,48 @@ const BlogManager = () => {
 
         const savedSchedule = localStorage.getItem('blog_schedule');
         if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
+
+        // Load generated blogs (Local Storage > File)
+        const storedBlogs = localStorage.getItem('generated_blogs');
+        if (storedBlogs) {
+            setLocalBlogs(JSON.parse(storedBlogs));
+        } else {
+            // Initial seed from file if local storage is empty
+            setLocalBlogs(generatedBlogsFile);
+            localStorage.setItem('generated_blogs', JSON.stringify(generatedBlogsFile));
+        }
     }, []);
+
+    // Blog Management Handlers
+    const toggleSelectBlog = (id: number) => {
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const handleSelectAll = () => {
+        if (selectedIds.length === localBlogs.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(localBlogs.map(b => b.id));
+        }
+    };
+
+    const handleDeleteSelected = () => {
+        const remaining = localBlogs.filter(b => !selectedIds.includes(b.id));
+        setLocalBlogs(remaining);
+        localStorage.setItem('generated_blogs', JSON.stringify(remaining));
+        setSelectedIds([]);
+        toast.success(`Deleted ${selectedIds.length} blogs locally. Don't forget to Auto-Deploy!`);
+    };
+
+    const handleResetToDefault = () => {
+        if (confirm("This will discard local changes and reload from the generated_blogs.json file. Continue?")) {
+            setLocalBlogs(generatedBlogsFile);
+            localStorage.setItem('generated_blogs', JSON.stringify(generatedBlogsFile));
+            toast.success("Reset to file version.");
+        }
+    };
 
     // Save API Keys
     const handleSaveKey = () => {
@@ -358,10 +404,76 @@ const BlogManager = () => {
                 </CardContent>
             </Card>
 
+            {/* Manage Existing Blogs Section */}
+            <Card>
+                <CardHeader>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle>4. Manage Generated Blogs ({localBlogs.length})</CardTitle>
+                            <CardDescription>Select and delete blogs before deploying.</CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={handleResetToDefault}>
+                                <RefreshCw className="h-4 w-4 mr-2" /> Reset
+                            </Button>
+                            {selectedIds.length > 0 && (
+                                <Button variant="destructive" size="sm" onClick={handleDeleteSelected}>
+                                    <Trash2 className="h-4 w-4 mr-2" /> Delete ({selectedIds.length})
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="border rounded-md max-h-96 overflow-y-auto">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-muted sticky top-0">
+                                <tr>
+                                    <th className="p-3 w-10">
+                                        <input
+                                            type="checkbox"
+                                            className="rounded border-gray-300"
+                                            checked={localBlogs.length > 0 && selectedIds.length === localBlogs.length}
+                                            onChange={handleSelectAll}
+                                        />
+                                    </th>
+                                    <th className="p-3">Title</th>
+                                    <th className="p-3 w-32">Date</th>
+                                    <th className="p-3 w-20">ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {localBlogs.length === 0 ? (
+                                    <tr><td colSpan={4} className="p-4 text-center text-muted-foreground">No generated blogs found.</td></tr>
+                                ) : (
+                                    localBlogs.slice().reverse().map((blog) => (
+                                        <tr key={blog.id} className="border-t hover:bg-muted/50">
+                                            <td className="p-3">
+                                                <input
+                                                    type="checkbox"
+                                                    className="rounded border-gray-300"
+                                                    checked={selectedIds.includes(blog.id)}
+                                                    onChange={() => toggleSelectBlog(blog.id)}
+                                                />
+                                            </td>
+                                            <td className="p-3 font-medium truncate max-w-md" title={blog.title}>
+                                                {blog.title}
+                                            </td>
+                                            <td className="p-3 text-muted-foreground">{blog.date}</td>
+                                            <td className="p-3 font-mono text-xs text-muted-foreground">{blog.id}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
+
             {/* Deployment Section */}
             <Card className="border-purple-500 bg-purple-50/10">
                 <CardHeader>
-                    <CardTitle className="flex items-center"><Rocket className="w-5 h-5 mr-2" /> 4. Auto-Deploy</CardTitle>
+                    <CardTitle className="flex items-center"><Rocket className="w-5 h-5 mr-2" /> 5. Auto-Deploy</CardTitle>
                     <CardDescription>
                         Push your new blogs directly to GitHub. The live site will rebuild automatically.
                     </CardDescription>
@@ -392,7 +504,7 @@ const BlogManager = () => {
                     </Button>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 };
 
