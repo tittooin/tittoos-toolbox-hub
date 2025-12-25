@@ -571,14 +571,14 @@ const BlogManager = () => {
                             {/* Amazon Product Fetcher */}
                             <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg space-y-3">
                                 <h3 className="font-semibold text-orange-800 flex items-center">
-                                    <Rocket className="w-4 h-4 mr-2" /> 
+                                    <Rocket className="w-4 h-4 mr-2" />
                                     Insert Amazon Product (No API)
                                 </h3>
-                                
+
                                 <div className="grid gap-3">
                                     <div className="flex gap-2">
-                                        <Input 
-                                            placeholder="1. Paste Amazon Product URL" 
+                                        <Input
+                                            placeholder="1. Paste Amazon Product URL"
                                             id="amazon-link-input"
                                         />
                                         <Button variant="outline" onClick={async () => {
@@ -600,20 +600,20 @@ const BlogManager = () => {
                                                 const doc = parser.parseFromString(html, 'text/html');
 
                                                 // Extract Meta Tags
-                                                const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') || 
-                                                              doc.querySelector('#productTitle')?.textContent?.trim() || 
-                                                              "";
-                                                
+                                                const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                                                    doc.querySelector('#productTitle')?.textContent?.trim() ||
+                                                    "";
+
                                                 const cleanTitle = title.replace(/Amazon\.in\s*:/i, '').replace(/Amazon\.com\s*:/i, '').trim();
 
-                                                const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || 
-                                                              doc.querySelector('#landingImage')?.getAttribute('src') ||
-                                                              "";
+                                                const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+                                                    doc.querySelector('#landingImage')?.getAttribute('src') ||
+                                                    "";
 
                                                 // Populate Inputs
                                                 const titleInput = document.getElementById('amazon-title-input') as HTMLInputElement;
                                                 const imageInput = document.getElementById('amazon-image-input') as HTMLInputElement;
-                                                
+
                                                 if (titleInput) titleInput.value = cleanTitle;
                                                 if (imageInput) imageInput.value = image;
 
@@ -633,13 +633,13 @@ const BlogManager = () => {
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-2">
-                                        <Input 
-                                            placeholder="2. Product Title (Edit if needed)" 
-                                            id="amazon-title-input" 
+                                        <Input
+                                            placeholder="2. Product Title (Edit if needed)"
+                                            id="amazon-title-input"
                                         />
-                                        <Input 
-                                            placeholder="3. Image URL (Right click image -> Copy Address)" 
-                                            id="amazon-image-input" 
+                                        <Input
+                                            placeholder="3. Image URL (Right click image -> Copy Address)"
+                                            id="amazon-image-input"
                                         />
                                     </div>
 
@@ -676,7 +676,7 @@ const BlogManager = () => {
                                         }));
 
                                         toast.success("Card Inserted Successfully!");
-                                        
+
                                         // Clear inputs
                                         if (linkInput) linkInput.value = "";
                                         if (titleInput) titleInput.value = "";
@@ -686,48 +686,7 @@ const BlogManager = () => {
                                         Insert Generated Card
                                     </Button>
                                 </div>
-                            </div>
 
-
-                                            // Clean title (remove "Amazon.in: ...")
-                                            const cleanTitle = title.replace(/Amazon\.in\s*:/i, '').replace(/Amazon\.com\s*:/i, '').trim();
-
-                                            const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
-                                                doc.querySelector('#landingImage')?.getAttribute('src') ||
-                                                "https://placehold.co/300x300?text=Product+Image";
-
-                                            // 4. Create Product Card HTML
-                                            const cardHtml = `
-                                            <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin: 25px 0; background: #fff; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                                                <img src="${image}" alt="${cleanTitle}" style="max-height: 200px; max-width: 100%; object-fit: contain; margin-bottom: 15px;" />
-                                                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; color: #1f2937; line-height: 1.4;">${cleanTitle}</h3>
-                                                <div style="margin-top: 15px;">
-                                                    <a href="${url}" target="_blank" rel="noopener noreferrer" style="background-color: #FF9900; color: #111; padding: 10px 25px; border-radius: 20px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #e1e1e1;">
-                                                        Check Price on Amazon
-                                                    </a>
-                                                </div>
-                                                <small style="color: #6b7280; margin-top: 10px; display: block; font-size: 0.75rem;">As an Amazon Associate, we earn from qualifying purchases.</small>
-                                            </div>
-                                            <p><br/></p>
-                                            `;
-
-                                            // 5. Append to Editor
-                                            setEditingBlog(prev => ({
-                                                ...prev,
-                                                content: prev.content + cardHtml
-                                            }));
-
-                                            toast.success("Product Inserted!", { id: toastId });
-                                            urlInput.value = ""; // Clear input
-
-                                        } catch (error) {
-                                            console.error(error);
-                                            toast.error("Failed to fetch. Try a different link or paste manually.", { id: toastId });
-                                        }
-                                    }}>
-                                        Fetch & Insert
-                                    </Button>
-                                </div>
                                 <p className="text-xs text-orange-800/70 mt-1">
                                     Tip: This extracts image/title from the link and creates a styled card.
                                 </p>
@@ -792,50 +751,50 @@ const BlogManager = () => {
                                 </div>
                             </div>
                         </CardContent >
-    <div className="p-4 border-t bg-muted/20 flex justify-end gap-2">
-        <Button variant="outline" onClick={() => setEditingBlog(null)}>Cancel</Button>
-        <Button onClick={handleSaveEdit} className="w-32">
-            <Save className="w-4 h-4 mr-2" /> Save
-        </Button>
-    </div>
+                        <div className="p-4 border-t bg-muted/20 flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setEditingBlog(null)}>Cancel</Button>
+                            <Button onClick={handleSaveEdit} className="w-32">
+                                <Save className="w-4 h-4 mr-2" /> Save
+                            </Button>
+                        </div>
                     </Card >
                 </div >
             )}
 
-{/* Deployment Section */ }
-<Card className="border-purple-500 bg-purple-50/10">
-    <CardHeader>
-        <CardTitle className="flex items-center"><Rocket className="w-5 h-5 mr-2" /> 5. Auto-Deploy</CardTitle>
-        <CardDescription>
-            Push your new blogs directly to GitHub. The live site will rebuild automatically.
-        </CardDescription>
-    </CardHeader>
-    <CardContent className="space-y-4">
-        <Button
-            size="lg"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-            onClick={handleAutoDeploy}
-            disabled={isDeploying || !githubToken}
-        >
-            {isDeploying ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Github className="w-5 h-5 mr-2" />}
-            {isDeploying ? 'Deploying to GitHub...' : 'Auto-Deploy to Live Site'}
-        </Button>
+            {/* Deployment Section */}
+            <Card className="border-purple-500 bg-purple-50/10">
+                <CardHeader>
+                    <CardTitle className="flex items-center"><Rocket className="w-5 h-5 mr-2" /> 5. Auto-Deploy</CardTitle>
+                    <CardDescription>
+                        Push your new blogs directly to GitHub. The live site will rebuild automatically.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Button
+                        size="lg"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                        onClick={handleAutoDeploy}
+                        disabled={isDeploying || !githubToken}
+                    >
+                        {isDeploying ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Github className="w-5 h-5 mr-2" />}
+                        {isDeploying ? 'Deploying to GitHub...' : 'Auto-Deploy to Live Site'}
+                    </Button>
 
-        <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or Manual fallback</span>
-            </div>
-        </div>
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">Or Manual fallback</span>
+                        </div>
+                    </div>
 
-        <Button variant="outline" className="w-full" onClick={handleDownloadForDeployment}>
-            <Download className="w-4 h-4 mr-2" />
-            Download JSON (Manual Upload)
-        </Button>
-    </CardContent>
-</Card>
+                    <Button variant="outline" className="w-full" onClick={handleDownloadForDeployment}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download JSON (Manual Upload)
+                    </Button>
+                </CardContent>
+            </Card>
         </div >
     );
 };
