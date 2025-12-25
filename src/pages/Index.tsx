@@ -12,7 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
-const BlogPreview = lazy(() => import("@/components/BlogPreview"));
+import BlogPreview from "@/components/BlogPreview";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
