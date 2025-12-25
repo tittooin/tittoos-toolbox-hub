@@ -2681,6 +2681,51 @@ const allTools = [
     category: "ai",
     icon: MessageSquare,
     path: "/tools/chat-with-pdf"
+  },
+  {
+    id: "ai-caption-generator",
+    name: "AI Caption Generator",
+    subheading: "Viral social media captions",
+    description: "Generate engaging captions for Instagram, TikTok, and YouTube with AI.",
+    category: "ai",
+    icon: MessageSquare,
+    path: "/tools/ai-caption-generator"
+  },
+  {
+    id: "ai-hashtag-generator",
+    name: "AI Hashtag Generator",
+    subheading: "Find trending hashtags",
+    description: "Boost your reach with intelligent, trending hashtag suggestions.",
+    category: "ai",
+    icon: Hash,
+    path: "/tools/ai-hashtag-generator"
+  },
+  {
+    id: "ai-reel-script-generator",
+    name: "AI Reel Script Generator",
+    subheading: "Video scripts in seconds",
+    description: "Generate viral scripts for Reels, Shorts, and TikTok videos.",
+    category: "ai",
+    icon: Video,
+    path: "/tools/ai-reel-script-generator"
+  },
+  {
+    id: "ai-thumbnail-text-generator",
+    name: "AI Thumbnail Text Gen",
+    subheading: "Catchy thumbnail text",
+    description: "Brainstorm high-CTR text overlays for your YouTube thumbnails.",
+    category: "ai",
+    icon: Type,
+    path: "/tools/ai-thumbnail-text-generator"
+  },
+  {
+    id: "ai-bio-generator",
+    name: "AI Bio Generator",
+    subheading: "Perfect your profile",
+    description: "Create professional or creative bios for Instagram, LinkedIn, and Twitter.",
+    category: "ai",
+    icon: UserCircle,
+    path: "/tools/ai-bio-generator"
   }
 ];
 

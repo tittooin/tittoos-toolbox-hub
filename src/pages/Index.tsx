@@ -365,7 +365,7 @@ const Index = () => {
         <section className="container mx-auto px-4 pb-16">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12 text-foreground">Explore by Focus Area</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-xl">AI-Powered Creativity</CardTitle>
@@ -383,6 +383,27 @@ const Index = () => {
                   </div>
                   <div className="mt-4 text-sm text-muted-foreground">
                     Read the guide: <Link to="/blog-posts/ai-tools-category" className="text-primary hover:text-primary/80">AI Tools – Getting Started</Link>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-xl">AI Social Media Toolkit</CardTitle>
+                  <CardDescription>
+                    Boost your social media presence. Generate viral captions, trending hashtags, video scripts, and professional bios instantly with AI.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    <Link to="/tools/ai-caption-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Caption Gen</Link>
+                    <Link to="/tools/ai-hashtag-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Hashtags</Link>
+                    <Link to="/tools/ai-reel-script-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Reel Scripts</Link>
+                    <Link to="/tools/ai-thumbnail-text-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Thumbnail Text</Link>
+                    <Link to="/tools/ai-bio-generator" className="text-sm px-3 py-1 rounded bg-muted text-muted-foreground hover:text-primary">Bio Gen</Link>
+                  </div>
+                  <div className="mt-4 text-sm text-muted-foreground">
+                    Read the guide: <Link to="/blog-posts/ai-tools-category" className="text-primary hover:text-primary/80">Viral Social Media Strategies</Link>
                   </div>
                 </CardContent>
               </Card>

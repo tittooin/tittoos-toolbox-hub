@@ -120,6 +120,12 @@ const MacCommandGenerator = lazy(() => import("./pages/tools/MacCommandGenerator
 const AndroidCommandGenerator = lazy(() => import("./pages/tools/AndroidCommandGenerator"));
 const NeonBlockPuzzlePrivacy = lazy(() => import("./pages/apps/NeonBlockPuzzlePrivacy"));
 
+const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
+const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
+const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
+const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
+const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
+
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
 const CalculatorsCategoryPage = lazy(() => import("./pages/blog-posts/calculators-category"));
@@ -287,6 +293,13 @@ const App = () => (
               <Route path="/tools/image-resizer" element={<ImageResizer />} />
               <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
               <Route path="/tools/number-flow" element={<NumberFlow />} />
+
+              {/* AI Social Media Tools */}
+              <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
+              <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
+              <Route path="/tools/ai-reel-script-generator" element={<AIReelScriptGenerator />} />
+              <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
+              <Route path="/tools/ai-bio-generator" element={<AIBioGenerator />} />
 
               {/* Dev Tools */}
               <Route path="/tools/windows-cmd-gen" element={<WindowsCommandGenerator />} />
