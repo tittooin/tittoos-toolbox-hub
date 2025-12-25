@@ -245,6 +245,27 @@ const BlogManager = () => {
         }
     };
 
+    // Editor State
+    const [editingBlog, setEditingBlog] = useState<any | null>(null);
+
+    const handleEditClick = (blog: any) => {
+        setEditingBlog({ ...blog });
+    };
+
+    const handleSaveEdit = () => {
+        if (!editingBlog) return;
+
+        // Update localBlogs
+        const updatedBlogs = localBlogs.map(b => b.id === editingBlog.id ? editingBlog : b);
+        setLocalBlogs(updatedBlogs);
+
+        // Update LocalStorage
+        localStorage.setItem('generated_blogs', JSON.stringify(updatedBlogs));
+
+        setEditingBlog(null);
+        toast.success("Blog updated locally! Don't forget to Deploy.");
+    };
+
     return (
         <div className="container mx-auto py-10 max-w-4xl space-y-8">
             <div className="flex justify-between items-center">
@@ -440,11 +461,12 @@ const BlogManager = () => {
                                     <th className="p-3">Title</th>
                                     <th className="p-3 w-32">Date</th>
                                     <th className="p-3 w-20">ID</th>
+                                    <th className="p-3 w-20">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {localBlogs.length === 0 ? (
-                                    <tr><td colSpan={4} className="p-4 text-center text-muted-foreground">No generated blogs found.</td></tr>
+                                    <tr><td colSpan={5} className="p-4 text-center text-muted-foreground">No generated blogs found.</td></tr>
                                 ) : (
                                     localBlogs.slice().reverse().map((blog) => (
                                         <tr key={blog.id} className="border-t hover:bg-muted/50">
@@ -461,6 +483,9 @@ const BlogManager = () => {
                                             </td>
                                             <td className="p-3 text-muted-foreground">{blog.date}</td>
                                             <td className="p-3 font-mono text-xs text-muted-foreground">{blog.id}</td>
+                                            <td className="p-3">
+                                                <Button size="sm" variant="outline" onClick={() => handleEditClick(blog)}>Edit</Button>
+                                            </td>
                                         </tr>
                                     ))
                                 )}
@@ -469,6 +494,80 @@ const BlogManager = () => {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Editor Dialog */}
+            {editingBlog && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <Card className="w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                        <CardHeader className="flex-none border-b">
+                            <div className="flex justify-between items-center">
+                                <CardTitle>Edit Blog Post</CardTitle>
+                                <Button variant="ghost" size="icon" onClick={() => setEditingBlog(null)}>
+                                    <Trash2 className="h-4 w-4 rotate-45" /> {/* Close Icon substitute */}
+                                </Button>
+                            </div>
+                            <CardDescription>
+                                Add affiliate links, banners, or refine the content. Changes are saved locally.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
+                            <div className="grid gap-4">
+                                <div>
+                                    <label className="text-sm font-medium">Title</label>
+                                    <Input
+                                        value={editingBlog.title}
+                                        onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
+                                        className="mt-1"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-sm font-medium">Date</label>
+                                        <Input
+                                            value={editingBlog.date}
+                                            onChange={(e) => setEditingBlog({ ...editingBlog, date: e.target.value })}
+                                            className="mt-1"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium">Author</label>
+                                        <Input
+                                            value={editingBlog.author}
+                                            onChange={(e) => setEditingBlog({ ...editingBlog, author: e.target.value })}
+                                            className="mt-1"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-medium">Excerpt</label>
+                                    <Textarea
+                                        value={editingBlog.excerpt}
+                                        onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
+                                        className="mt-1 h-20"
+                                    />
+                                </div>
+                                <div className="flex-1 flex flex-col min-h-[400px]">
+                                    <label className="text-sm font-medium mb-1">Content (HTML)</label>
+                                    <div className="text-xs text-muted-foreground mb-2 p-2 bg-muted rounded border border-l-4 border-l-blue-500">
+                                        <strong>Pro Tip:</strong> Paste affiliate banners like <code>&lt;a href="..."&gt;&lt;img src="..." /&gt;&lt;/a&gt;</code> directly here.
+                                    </div>
+                                    <Textarea
+                                        value={editingBlog.content}
+                                        onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
+                                        className="flex-1 font-mono text-sm leading-relaxed p-4"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                        <div className="p-4 border-t bg-muted/20 flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setEditingBlog(null)}>Cancel</Button>
+                            <Button onClick={handleSaveEdit} className="w-32">
+                                <Save className="w-4 h-4 mr-2" /> Save
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
+            )}
 
             {/* Deployment Section */}
             <Card className="border-purple-500 bg-purple-50/10">

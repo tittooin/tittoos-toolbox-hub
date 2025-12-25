@@ -650,7 +650,10 @@ const Blog = () => {
                             onClick={(e) => {
                               e.preventDefault();
                               // Copy content logic or link
-                              navigator.clipboard.writeText(`${window.location.origin}/blog/${post.slug}`);
+                              const link = post.customLink
+                                ? `${window.location.origin}${post.customLink}`
+                                : `${window.location.origin}/blog/${post.slug}`;
+                              navigator.clipboard.writeText(link);
                               toast.success("Link copied to clipboard!");
                             }}
                           >
@@ -662,7 +665,7 @@ const Blog = () => {
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+                              <Link to={post.customLink || `/blog/${post.slug}`} className="hover:text-primary transition-colors">
                                 <CardTitle className="text-xl line-clamp-2">
                                   {post.title}
                                 </CardTitle>
@@ -696,7 +699,7 @@ const Blog = () => {
                         </div>
 
                         <div className="flex gap-2">
-                          <Link to={`/blog/${post.slug}`} className="flex-1">
+                          <Link to={post.customLink || `/blog/${post.slug}`} className="flex-1">
                             <Button variant="default" size="sm" className="w-full">Read Article</Button>
                           </Link>
                           <Button
