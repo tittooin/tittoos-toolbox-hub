@@ -173,6 +173,92 @@ const Index = () => {
           </div>
         </section>
 
+        {/* NEW: Smart Suites / Category Spotlights */}
+        <section className="container mx-auto px-4 pb-16">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold flex items-center mb-8">
+              <Sparkles className="w-8 h-8 text-indigo-500 mr-3" />
+              Specialized Toolkits
+            </h2>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* AI Studio */}
+              <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-300">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">AI Studio</h3>
+                </div>
+                <p className="text-muted-foreground mb-6 h-12">Generate art, scripts, and content with our advanced AI models.</p>
+                <div className="space-y-2">
+                  <Link to="/tools/text-to-image" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-purple-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Text to Image</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-500" />
+                  </Link>
+                  <Link to="/tools/ai-reel-script-generator" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-purple-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Video Scripts</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-500" />
+                  </Link>
+                  <Link to="/tools/ai-bio-generator" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-purple-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Bio Generator</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-500" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* PDF Suite */}
+              <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-300">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">PDF Suite</h3>
+                </div>
+                <p className="text-muted-foreground mb-6 h-12">Merge, convert, and edit PDF documents securely in your browser.</p>
+                <div className="space-y-2">
+                  <Link to="/tools/pdf-converter" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-red-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Convert PDF</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-red-500" />
+                  </Link>
+                  <Link to="/tools/chat-with-pdf" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-red-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Chat with PDF</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-red-500" />
+                  </Link>
+                  <Link to="/tools/word-to-pdf" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-red-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Word to PDF</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-red-500" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Web & Image Tools */}
+              <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-300">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Webmaster Tools</h3>
+                </div>
+                <p className="text-muted-foreground mb-6 h-12">Optimize images and analyze website performance instantly.</p>
+                <div className="space-y-2">
+                  <Link to="/tools/seo-analyzer" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-blue-500/30 flex items-center justify-between group">
+                    <span className="font-medium">SEO Analyzer</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                  </Link>
+                  <Link to="/tools/image-compressor" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-blue-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Image Compressor</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                  </Link>
+                  <Link to="/tools/website-speed-checker" className="block p-3 bg-background/50 hover:bg-white dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-blue-500/30 flex items-center justify-between group">
+                    <span className="font-medium">Speed Test</span>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         {/* Search & Tool Grid */}
         <section id="tools-section" className="container mx-auto px-4 py-12 bg-muted/20">
           <div className="max-w-7xl mx-auto">
@@ -263,11 +349,10 @@ const Index = () => {
         </section>
 
         {/* Blog & Resources */}
-        <section className="container mx-auto px-4 py-16">
-          <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading insights...</div>}>
-            <BlogPreview />
-          </Suspense>
-        </section>
+        {/* Blog & Resources */}
+        <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading insights...</div>}>
+          <BlogPreview />
+        </Suspense>
       </main>
       <Footer />
     </div>

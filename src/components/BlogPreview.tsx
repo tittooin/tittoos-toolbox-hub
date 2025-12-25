@@ -82,66 +82,59 @@ const BlogPreview = () => {
   }, []);
 
   return (
-    <section className="container mx-auto px-4 py-16 bg-muted/30">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-20 bg-muted/30 border-t border-border/50">
+      <div className="container mx-auto px-4 text-center md:text-left">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-          <div>
-            <h2 className="text-3xl font-bold text-foreground">Latest Insights</h2>
-            <p className="text-muted-foreground mt-2">Expert guides, tutorials, and tech trends.</p>
+          <div className="max-w-2xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Latest Insights & Tutorials</h2>
+            <p className="text-lg text-muted-foreground">Expert guides on using AI tools, optimizing PDFs, and boosting your productivity.</p>
           </div>
           <Link to="/blog">
-            <Button variant="outline" className="hidden md:flex">
-              View All Articles
+            <Button size="lg" className="hidden md:flex rounded-full px-8">
+              Read the Blog <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           {displayedPosts.map((post) => (
-            <Card key={post.slug} className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-card overflow-hidden border-border/50">
-              <div className="h-48 overflow-hidden relative">
+            <Card key={post.slug} className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group bg-background border-border/50 flex flex-col">
+              <div className="h-56 overflow-hidden relative">
                 <img
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-border/50 shadow-sm">
-                  {post.readTime || '5 min'}
+                <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                  {post.readTime || '5 min read'}
                 </div>
               </div>
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
-                  <span className="font-medium text-primary">{post.author || 'Axevora Team'}</span>
-                  <span>•</span>
-                  <span>{post.date}</span>
+              <CardHeader className="pb-3 flex-grow">
+                <div className="flex items-center gap-2 mb-3 text-xs font-medium text-primary uppercase tracking-wider">
+                  {post.category || 'Guide'}
                 </div>
-                <CardTitle className="text-xl leading-tight group-hover:text-primary transition-colors">
+                <CardTitle className="text-xl leading-snug group-hover:text-primary transition-colors line-clamp-2">
                   <Link to={`/blog/${post.slug}`}>
                     {post.title}
                   </Link>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-sm leading-relaxed line-clamp-3">
+                <CardDescription className="text-sm leading-relaxed line-clamp-2 mb-4">
                   {post.excerpt}
                 </CardDescription>
-                <div className="mt-4 pt-4 border-t border-border/50 flex justify-between items-center">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Read Article
-                  </span>
-                  <Link to={`/blog/${post.slug}`} className="p-2 rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
+                <div className="flex items-center text-sm font-semibold text-primary group-hover:underline decoration-2 underline-offset-4">
+                  Read Article
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-        <div className="mt-10 text-center md:hidden">
+        <div className="mt-12 md:hidden">
           <Link to="/blog">
-            <Button variant="outline" size="lg" className="w-full">
-              View All Articles
+            <Button size="lg" className="w-full rounded-full">
+              Read the Blog
             </Button>
           </Link>
         </div>
