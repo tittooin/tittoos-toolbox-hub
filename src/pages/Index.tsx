@@ -305,43 +305,53 @@ const Index = () => {
                       <div className="h-px bg-border flex-1"></div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {categoryData.tools.map((tool) => (
-                        <Link key={tool.id} to={tool.path}>
-                          <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group border-transparent hover:border-primary/10 bg-card hover:bg-accent/5">
-                            <CardHeader className="pb-3">
-                              <div className="flex items-center justify-between mb-4">
-                                <div className="p-2.5 bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                                  <tool.icon className="h-6 w-6" />
+                      {categoryData.tools.map((tool) => {
+                        if (!tool.icon) return null;
+                        return (
+                          <Link key={tool.id} to={tool.path}>
+                            <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group border-transparent hover:border-primary/10 bg-card hover:bg-accent/5">
+                              <CardHeader className="pb-3">
+                                <div className="flex items-center justify-between mb-4">
+                                  <div className="p-2.5 bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                                    <tool.icon className="h-6 w-6" />
+                                  </div>
                                 </div>
-                              </div>
-                              <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                                {tool.name}
-                              </CardTitle>
-                              <CardDescription className="line-clamp-2 mt-2">
-                                {tool.description}
-                              </CardDescription>
-                            </CardHeader>
-                          </Card>
-                        </Link>
-                      ))}
+                                <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                                  {tool.name}
+                                </CardTitle>
+                                <CardDescription className="line-clamp-2 mt-2">
+                                  {tool.description}
+                                </CardDescription>
+                              </CardHeader>
+                            </Card>
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredTools.map((tool) => (
-                    <Link key={tool.id} to={tool.path}>
-                      <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group hover:border-primary/20">
-                        <CardHeader className="pb-3">
-                          <div className="p-2.5 w-fit bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 mb-4">
-                            <tool.icon className="h-6 w-6" />
-                          </div>
-                          <CardTitle className="text-lg">{tool.name}</CardTitle>
-                          <CardDescription>{tool.description}</CardDescription>
-                        </CardHeader>
-                      </Card>
-                    </Link>
-                  ))}
+                  {filteredTools.map((tool) => {
+                    // Safety check for missing icons
+                    if (!tool.icon) {
+                      console.warn('Tool missing icon:', tool.name);
+                      return null;
+                    }
+                    return (
+                      <Link key={tool.id} to={tool.path}>
+                        <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group hover:border-primary/20">
+                          <CardHeader className="pb-3">
+                            <div className="p-2.5 w-fit bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 mb-4">
+                              <tool.icon className="h-6 w-6" />
+                            </div>
+                            <CardTitle className="text-lg">{tool.name}</CardTitle>
+                            <CardDescription>{tool.description}</CardDescription>
+                          </CardHeader>
+                        </Card>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
