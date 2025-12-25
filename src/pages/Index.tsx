@@ -102,8 +102,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* NEW: "The Money Makers" / Featured Section */}
-        <section className="container mx-auto px-4 pb-16">
+        {/* NEW: "The Money Makers" / Featured Section - Temporarily Disabled */}
+        {/* <section className="container mx-auto px-4 pb-16">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold flex items-center">
@@ -113,7 +113,6 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* 1. Tech Versus (High Affiliate) */}
               <Link to="/tools/tech-versus" className="group">
                 <Card className="h-full border-2 border-blue-500/10 hover:border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <CardHeader>
@@ -132,7 +131,6 @@ const Index = () => {
                 </Card>
               </Link>
 
-              {/* 2. Caption Generator (High Traffic) */}
               <Link to="/tools/ai-caption-generator" className="group">
                 <Card className="h-full border-2 border-purple-500/10 hover:border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <CardHeader>
@@ -151,7 +149,6 @@ const Index = () => {
                 </Card>
               </Link>
 
-              {/* 3. Thumbnail Text (High CTR) */}
               <Link to="/tools/ai-thumbnail-text-generator" className="group">
                 <Card className="h-full border-2 border-orange-500/10 hover:border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <CardHeader>
@@ -171,10 +168,10 @@ const Index = () => {
               </Link>
             </div>
           </div>
-        </section>
+        </section> */}
 
-        {/* NEW: Smart Suites / Category Spotlights */}
-        <section className="container mx-auto px-4 pb-16">
+        {/* NEW: Smart Suites / Category Spotlights - Temporarily Disabled */}
+        {/* <section className="container mx-auto px-4 pb-16">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold flex items-center mb-8">
               <Sparkles className="w-8 h-8 text-indigo-500 mr-3" />
@@ -182,7 +179,6 @@ const Index = () => {
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* AI Studio */}
               <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border border-purple-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-300">
@@ -207,7 +203,6 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* PDF Suite */}
               <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-300">
@@ -232,7 +227,6 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Web & Image Tools */}
               <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-2xl p-6 hover:shadow-xl transition-all hover:scale-[1.01]">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-300">
@@ -258,7 +252,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* Search & Tool Grid */}
         <section id="tools-section" className="container mx-auto px-4 py-12 bg-muted/20">
           <div className="max-w-7xl mx-auto">
