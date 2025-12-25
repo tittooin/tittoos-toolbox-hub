@@ -61,26 +61,33 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
         setResult(null);
 
         try {
-            // Strict JSON prompt for Client-Side AI
+            // Shorter, efficient prompt
             const prompt = `
-                Compare "${itemA}" vs "${itemB}" in the category of "${category}".
-                Return ONLY a valid JSON object with this exact structure, no markdown keys:
+                Compare "${itemA}" vs "${itemB}" (Category: "${category}").
+                Return valid JSON only (no markdown):
                 {
-                    "winner": "Name of the better option",
-                    "winner_reason": "Short explanation why it wins",
+                    "winner": "Better option name",
+                    "winner_reason": "Why it wins",
                     "comparison": [
-                        { "feature": "Feature Name (e.g. Battery, Price)", "itemA_value": "Value for ${itemA}", "itemB_value": "Value for ${itemB}", "winner": "A or B or Tie" },
-                        ... generate 5-7 key features ...
+                        { "feature": "Feature (e.g. Price, Battery)", "itemA_value": "Value A", "itemB_value": "Value B", "winner": "A|B|Tie" }
                     ],
                     "itemA": { "pros": ["pro1", "pro2"], "cons": ["con1"] },
                     "itemB": { "pros": ["pro1", "pro2"], "cons": ["con1"] }
                 }
+                Make sure to generate 5 comparison points.
             `;
 
+            const seed = Math.floor(Math.random() * 1000000);
             const encodedPrompt = encodeURIComponent(prompt.replace(/\s+/g, ' ').trim());
-            const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
 
-            if (!response.ok) throw new Error("AI Request failed");
+            // Use a random seed to prevent caching and ensure freshness
+            // Using 'openai' model hint if supported, or just prompt
+            const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}?seed=${seed}&model=openai`);
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`AI Request failed: ${response.status} ${errText}`);
+            }
 
             const text = await response.text();
 

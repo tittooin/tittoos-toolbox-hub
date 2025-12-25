@@ -170,8 +170,8 @@ const Index = () => {
           </div>
         </section> */}
 
-        {/* NEW: Smart Suites / Category Spotlights - Temporarily Disabled */}
-        {/* <section className="container mx-auto px-4 pb-16">
+        {/* NEW: Smart Suites / Category Spotlights */}
+        <section className="container mx-auto px-4 pb-16">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold flex items-center mb-8">
               <Sparkles className="w-8 h-8 text-indigo-500 mr-3" />
@@ -252,7 +252,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </section> */}
+        </section>
         {/* Search & Tool Grid */}
         <section id="tools-section" className="container mx-auto px-4 py-12 bg-muted/20">
           <div className="max-w-7xl mx-auto">
