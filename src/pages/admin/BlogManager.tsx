@@ -10,6 +10,8 @@ import { GitHubClient } from "@/utils/githubClient";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github, Trash2, RefreshCw } from "lucide-react";
 import generatedBlogsFile from '@/data/generated_blogs.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 // Type for the schedule
 interface ScheduledPost {
@@ -547,14 +549,25 @@ const BlogManager = () => {
                                     />
                                 </div>
                                 <div className="flex-1 flex flex-col min-h-[400px]">
-                                    <label className="text-sm font-medium mb-1">Content (HTML)</label>
+                                    <label className="text-sm font-medium mb-1">Content (Rich Text Editor)</label>
                                     <div className="text-xs text-muted-foreground mb-2 p-2 bg-muted rounded border border-l-4 border-l-blue-500">
-                                        <strong>Pro Tip:</strong> Paste affiliate banners like <code>&lt;a href="..."&gt;&lt;img src="..." /&gt;&lt;/a&gt;</code> directly here.
+                                        <strong>Pro Tip:</strong> Use the toolbar to design your blog. For affiliate banners, you can still paste HTML using the "Code View" if valid, or just insert images and links directly.
                                     </div>
-                                    <Textarea
+                                    <ReactQuill
+                                        theme="snow"
                                         value={editingBlog.content}
-                                        onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
-                                        className="flex-1 font-mono text-sm leading-relaxed p-4"
+                                        onChange={(content) => setEditingBlog({ ...editingBlog, content })}
+                                        className="h-[400px] mb-12"
+                                        modules={{
+                                            toolbar: [
+                                                [{ 'header': [1, 2, 3, false] }],
+                                                ['bold', 'italic', 'underline', 'strike'],
+                                                [{ 'color': [] }, { 'background': [] }],
+                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                                ['link', 'image', 'video'],
+                                                ['clean']
+                                            ]
+                                        }}
                                     />
                                 </div>
                             </div>

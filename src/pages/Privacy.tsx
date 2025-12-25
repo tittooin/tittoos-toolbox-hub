@@ -54,6 +54,14 @@ const Privacy = () => {
                 <li>Alternatively, opt out of third-party vendors’ use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</li>
               </ul>
 
+              <h2 className="text-2xl font-semibold text-foreground mb-4">Affiliate Disclosure</h2>
+              <p className="mb-6">
+                Axevora is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
+              </p>
+              <p className="mb-6">
+                We may earn a commission when you click on links to products or services mentioned on our site. This comes at no extra cost to you and helps support the maintenance of our free tools.
+              </p>
+
               <h2 className="text-2xl font-semibold text-foreground mb-4">Consent for EEA/UK Users</h2>
               <p className="mb-6">
                 For users in the European Economic Area (EEA) and the United Kingdom, we display a consent banner
