@@ -513,6 +513,84 @@ const BlogManager = () => {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
+
+                            {/* Amazon Product Fetcher */}
+                            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                                <h3 className="font-semibold text-orange-800 mb-2 flex items-center">
+                                    <Rocket className="w-4 h-4 mr-2" />
+                                    Insert Amazon Product (No API)
+                                </h3>
+                                <div className="flex gap-2">
+                                    <Input
+                                        placeholder="Paste Amazon Product URL (e.g., https://amazon.in/dp/B08...)"
+                                        id="amazon-link-input"
+                                    />
+                                    <Button onClick={async () => {
+                                        const urlInput = document.getElementById('amazon-link-input') as HTMLInputElement;
+                                        const url = urlInput.value;
+                                        if (!url) return toast.error("Please enter a URL");
+
+                                        const toastId = toast.loading("Fetching product details...");
+
+                                        try {
+                                            // 1. Fetch via CORS Proxy
+                                            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                                            const response = await fetch(proxyUrl);
+                                            const html = await response.text();
+
+                                            // 2. Parse HTML
+                                            const parser = new DOMParser();
+                                            const doc = parser.parseFromString(html, 'text/html');
+
+                                            // 3. Extract Meta Tags
+                                            const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                                                doc.querySelector('#productTitle')?.textContent?.trim() ||
+                                                "Amazing Product";
+
+                                            // Clean title (remove "Amazon.in: ...")
+                                            const cleanTitle = title.replace(/Amazon\.in\s*:/i, '').replace(/Amazon\.com\s*:/i, '').trim();
+
+                                            const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+                                                doc.querySelector('#landingImage')?.getAttribute('src') ||
+                                                "https://placehold.co/300x300?text=Product+Image";
+
+                                            // 4. Create Product Card HTML
+                                            const cardHtml = `
+                                            <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin: 25px 0; background: #fff; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                                                <img src="${image}" alt="${cleanTitle}" style="max-height: 200px; max-width: 100%; object-fit: contain; margin-bottom: 15px;" />
+                                                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; color: #1f2937; line-height: 1.4;">${cleanTitle}</h3>
+                                                <div style="margin-top: 15px;">
+                                                    <a href="${url}" target="_blank" rel="noopener noreferrer" style="background-color: #FF9900; color: #111; padding: 10px 25px; border-radius: 20px; text-decoration: none; font-weight: bold; display: inline-block; border: 1px solid #e1e1e1;">
+                                                        Check Price on Amazon
+                                                    </a>
+                                                </div>
+                                                <small style="color: #6b7280; margin-top: 10px; display: block; font-size: 0.75rem;">As an Amazon Associate, we earn from qualifying purchases.</small>
+                                            </div>
+                                            <p><br/></p>
+                                            `;
+
+                                            // 5. Append to Editor
+                                            setEditingBlog(prev => ({
+                                                ...prev,
+                                                content: prev.content + cardHtml
+                                            }));
+
+                                            toast.success("Product Inserted!", { id: toastId });
+                                            urlInput.value = ""; // Clear input
+
+                                        } catch (error) {
+                                            console.error(error);
+                                            toast.error("Failed to fetch. Try a different link or paste manually.", { id: toastId });
+                                        }
+                                    }}>
+                                        Fetch & Insert
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-orange-800/70 mt-1">
+                                    Tip: This extracts image/title from the link and creates a styled card.
+                                </p>
+                            </div>
+
                             <div className="grid gap-4">
                                 <div>
                                     <label className="text-sm font-medium">Title</label>
