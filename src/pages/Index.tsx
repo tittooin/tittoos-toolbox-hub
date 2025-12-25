@@ -352,10 +352,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Blog & Resources - Temporarily disabled for debugging */}
-        {/* <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading insights...</div>}>
-           <BlogPreview />
-        </Suspense> */}
+        {/* Blog & Resources */}
+        <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading insights...</div>}>
+          <BlogPreview />
+        </Suspense>
       </main>
       <Footer />
     </div>

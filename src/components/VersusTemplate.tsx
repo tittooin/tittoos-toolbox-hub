@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowRightLeft, Trophy, AlertCircle, ShoppingCart, Loader2 } from 'lucide-react';
+import { ArrowRightLeft, Trophy, AlertCircle, ShoppingCart, Loader2, ArrowLeft } from 'lucide-react';
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -118,6 +119,14 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
         <div className="min-h-screen flex flex-col bg-background">
             <Header />
             <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
+                {/* Navigation Fallback */}
+                <div className="mb-6">
+                    <Link to="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Home
+                    </Link>
+                </div>
+
                 {/* Header */}
                 <div className="text-center mb-12 space-y-4">
                     <div className="bg-primary/10 w-16 h-16 mx-auto rounded-2xl flex items-center justify-center p-4">
