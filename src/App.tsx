@@ -137,6 +137,10 @@ const GeneratorsCategoryPage = lazy(() => import("./pages/blog-posts/generators-
 const EditorsCategoryPage = lazy(() => import("./pages/blog-posts/editors-category"));
 const GamesCategoryPage = lazy(() => import("./pages/blog-posts/games-category"));
 const PDFCategoryPage = lazy(() => import("./pages/blog-posts/pdf-category"));
+const TechVersus = lazy(() => import("./pages/versus/TechVersus"));
+const SoftwareVersus = lazy(() => import("./pages/versus/SoftwareVersus"));
+const NutritionVersus = lazy(() => import("./pages/versus/NutritionVersus"));
+
 const DevToolsCategoryPage = lazy(() => import("./pages/blog-posts/dev-tools-category"));
 
 // Google Analytics pageview tracker
@@ -298,6 +302,9 @@ const App = () => (
               <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
               <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
               <Route path="/tools/ai-reel-script-generator" element={<AIReelScriptGenerator />} />
+              <Route path="/tools/tech-versus" element={<TechVersus />} />
+              <Route path="/tools/software-versus" element={<SoftwareVersus />} />
+              <Route path="/tools/nutrition-versus" element={<NutritionVersus />} />
               <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
               <Route path="/tools/ai-bio-generator" element={<AIBioGenerator />} />
 

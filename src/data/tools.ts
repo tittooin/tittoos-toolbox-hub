@@ -8,7 +8,8 @@ import {
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
-  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book
+  Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
+  AppWindow, Apple
 } from "lucide-react";
 
 const allCategories = [
@@ -2679,8 +2680,61 @@ const allTools = [
     subheading: "Talk to your documents",
     description: "Upload a PDF and ask questions, summarize, or extract data using AI.",
     category: "ai",
-    icon: MessageSquare,
     path: "/tools/chat-with-pdf"
+  },
+  {
+    id: "tech-versus",
+    name: "Tech Battle Arena",
+    subheading: "Compare Gadgets & Electronics",
+    description: "Compare smartphones, laptops, and gadgets side-by-side using AI. Get detailed spec differences and a clear winner.",
+    category: "ai",
+    icon: Smartphone,
+    path: "/tools/tech-versus"
+  },
+  {
+    id: "software-versus",
+    name: "Software Showdown",
+    subheading: "Compare Apps & SaaS",
+    description: "Compare software tools, apps, and SaaS platforms. Find the best solution for your business.",
+    category: "ai",
+    icon: AppWindow,
+    path: "/tools/software-versus"
+  },
+  {
+    id: "nutrition-versus",
+    name: "Food Fight",
+    subheading: "Compare Nutrition Facts",
+    description: "Compare calories, macros, and vitamins of any two items. Make smarter diet choices.",
+    category: "ai",
+    icon: Apple,
+    path: "/tools/nutrition-versus"
+  },
+  {
+    id: "tech-versus",
+    name: "Tech Battle Arena",
+    subheading: "Compare Gadgets & Electronics",
+    description: "Compare smartphones, laptops, and gadgets side-by-side using AI. Get detailed spec differences and a clear winner.",
+    category: "ai",
+    icon: Smartphone,
+    path: "/tools/tech-versus"
+  },
+  {
+    id: "software-versus",
+    name: "Software Showdown",
+    subheading: "Compare Apps & SaaS",
+    description: "Compare software tools, apps, and SaaS platforms. Find the best solution for your business.",
+    category: "ai",
+    icon: AppWindow,
+    path: "/tools/software-versus"
+  },
+  {
+    id: "nutrition-versus",
+    name: "Food Fight",
+    subheading: "Compare Nutrition Facts",
+    description: "Compare calories, macros, and vitamins of any two items. Make smarter diet choices.",
+    category: "ai",
+    icon: Apple,
+    path: "/tools/nutrition-versus"
   },
   {
     id: "ai-caption-generator",
