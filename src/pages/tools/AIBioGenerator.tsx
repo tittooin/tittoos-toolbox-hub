@@ -166,18 +166,134 @@ const AIBioGenerator = () => {
                 )}
 
                 <article className="prose prose-lg max-w-none dark:prose-invert mt-12 bg-card p-8 rounded-xl shadow-sm border">
-                    <h2 className="text-3xl font-bold mb-6">Why Your Bio Matters</h2>
-                    <p>
-                        Your bio is your digital elevator pitch. You have seconds to convince someone to follow you.
+                    <h2 className="text-4xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">
+                        The 150-Character CV: Mastering the Art of the Social Bio
+                    </h2>
+
+                    <p className="lead text-xl text-muted-foreground mb-8">
+                        Your bio is the most valuable real estate on your profile. It is the first (and often last) thing people read before deciding to touch that "Follow" button. You have roughly 3 seconds to answer: <strong>Who are you? Why should I care? What do I do next?</strong>
                     </p>
 
-                    <h3>Platform Specifics</h3>
-                    <ul>
-                        <li><strong>Instagram:</strong> Use line breaks and emojis. Include a clear Call to Action (link in bio).</li>
-                        <li><strong>LinkedIn:</strong> Focus on professional achievements and value propositions. Keywords matter for search.</li>
-                        <li><strong>Twitter:</strong> Short, punchy, and often a mix of personal and professional.</li>
-                        <li><strong>TikTok:</strong> Very short. Focus on personality and what content they can expect.</li>
+                    <div className="bg-teal-50 dark:bg-teal-900/20 p-6 rounded-lg my-8 border-l-4 border-teal-500">
+                        <h3 className="text-xl font-bold mt-0 text-teal-700 dark:text-teal-300">Why Use AI?</h3>
+                        <p className="mb-0">
+                            Summarizing your entire life or brand into 150 characters is hard. It's often easier for an AI to see the "key points" and format them perfectly than it is for you to edit yourself down.
+                        </p>
+                    </div>
+
+                    <hr className="my-12 border-gray-200 dark:border-gray-800" />
+
+                    <h2 className="text-3xl font-bold mb-6">Chapter 1: The Golden Formula for Bios</h2>
+                    <p>
+                        Regardless of the platform, the best bios usually follow a 3-part structure.
+                    </p>
+
+                    <div className="space-y-6 my-8">
+                        <div className="flex gap-4 p-4 border rounded-lg bg-background">
+                            <div className="h-10 w-10 shrink-0 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary">1</div>
+                            <div>
+                                <h4 className="font-bold text-lg">The "Authority" Line</h4>
+                                <p className="text-muted-foreground">This establishes credibility. What do you do? Who have you helped?</p>
+                                <p className="text-sm font-mono mt-2 bg-muted p-2 rounded inline-block">Founder of X | Helping Creators Scale</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4 p-4 border rounded-lg bg-background">
+                            <div className="h-10 w-10 shrink-0 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary">2</div>
+                            <div>
+                                <h4 className="font-bold text-lg">The "Personal" Line</h4>
+                                <p className="text-muted-foreground">This creates connection. It shows you are a human, not a bot.</p>
+                                <p className="text-sm font-mono mt-2 bg-muted p-2 rounded inline-block">☕ Coffee Addict | 🏔️ Hiker | Dad of 2</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4 p-4 border rounded-lg bg-background">
+                            <div className="h-10 w-10 shrink-0 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary">3</div>
+                            <div>
+                                <h4 className="font-bold text-lg">The "Action" Line (CTA)</h4>
+                                <p className="text-muted-foreground">This drives traffic. Never leave a bio without telling them what to do.</p>
+                                <p className="text-sm font-mono mt-2 bg-muted p-2 rounded inline-block">👇 Grab my free guide below</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr className="my-12 border-gray-200 dark:border-gray-800" />
+
+                    <h2 className="text-3xl font-bold mb-6">Chapter 2: Platform Nuances</h2>
+                    <p>
+                        A LinkedIn bio on TikTok looks stiff. A TikTok bio on LinkedIn looks unprofessional.
+                    </p>
+
+                    <h3 className="text-2xl font-semibold mt-8 text-foreground">Instagram 📸</h3>
+                    <ul className="list-disc pl-6 space-y-2 mb-6">
+                        <li><strong>Format:</strong> Vertical lists work best. Use line breaks to make it readable.</li>
+                        <li><strong>Emojis:</strong> Essential. They act as bullet points.</li>
+                        <li><strong>Link:</strong> Use a "Link in Bio" tool (like Linktree) if you have multiple destinations, or a direct link for a specific campaign.</li>
                     </ul>
+
+                    <h3 className="text-2xl font-semibold mt-8 text-foreground">LinkedIn 💼</h3>
+                    <ul className="list-disc pl-6 space-y-2 mb-6">
+                        <li><strong>Format:</strong> Horizontal sentence structure using separators like `|` or `//`.</li>
+                        <li><strong>Keywords:</strong> LinkedIn is a search engine. If you want to be found for "SEO," put "SEO" in your headline.</li>
+                        <li><strong>Tone:</strong> Professional but approachable. "Helping X do Y" is better than just a job title.</li>
+                    </ul>
+
+                    <h3 className="text-2xl font-semibold mt-8 text-foreground">Twitter / X 🐦</h3>
+                    <ul className="list-disc pl-6 space-y-2 mb-6">
+                        <li><strong>Social Proof:</strong> "Featured in Forbes" or "Author of X".</li>
+                        <li><strong>Tags:</strong> You can tag the company you work for (@Company).</li>
+                        <li><strong>Hashtags:</strong> Limit to 1 or 2 niche tags (e.g., #Bitcoin).</li>
+                    </ul>
+
+                    <hr className="my-12 border-gray-200 dark:border-gray-800" />
+
+                    <h2 className="text-3xl font-bold mb-6">Chapter 3: Keywords for Search (SEO)</h2>
+                    <p>
+                        Did you know you can search for people on Instagram by interest? If your bio says "Fitness Coach," you show up when someone searches that term.
+                    </p>
+                    <p>
+                        <strong>The Name Field Hack:</strong> On Instagram, your "Name" field is searchable, separate from your "Username".
+                        <br />
+                        <em>Username:</em> @sarahsmith
+                        <br />
+                        <em>Name:</em> Sarah | Vegan Recipes 🥑
+                        <br />
+                        Now, when people search "Vegan Recipes", Sarah shows up.
+                    </p>
+
+                    <hr className="my-12 border-gray-200 dark:border-gray-800" />
+
+                    <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
+
+                    <div className="space-y-6">
+                        <div className="card border p-4 rounded-lg bg-background">
+                            <h3 className="font-bold text-lg mb-2">How often should I update my bio?</h3>
+                            <p>Whenever you have something new to promote! Your CTA (last line) should change based on whether you are launching a product, sharing a new video, or running a sale.</p>
+                        </div>
+
+                        <div className="card border p-4 rounded-lg bg-background">
+                            <h3 className="font-bold text-lg mb-2">Should I use a custom font?</h3>
+                            <p><strong>Avoid them.</strong> Those "aesthetic" fonts usually aren't readable by screen readers (bad for accessibility) and often show up as boxes on older phones.</p>
+                        </div>
+
+                        <div className="card border p-4 rounded-lg bg-background">
+                            <h3 className="font-bold text-lg mb-2">What if I have multiple interests?</h3>
+                            <p>Focus on the top 2 that relate to your content. A confused mind says no. If you post about coding, don't put "Knitting Enthusiast" in the first line unless your channel is about both.</p>
+                        </div>
+                    </div>
+
+                    <hr className="my-12 border-gray-200 dark:border-gray-800" />
+
+                    <div className="bg-gradient-to-r from-teal-100 to-emerald-100 dark:from-teal-900/20 dark:to-emerald-900/20 p-8 rounded-2xl text-center">
+                        <h2 className="text-2xl font-bold mb-4">Define Your Online Persona</h2>
+                        <p className="mb-6 max-w-2xl mx-auto">
+                            Don't stress over every word. Let our AI draft the perfect introduction for you.
+                        </p>
+                        <Button
+                            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                            className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105"
+                        >
+                            Generate Bio Now
+                        </Button>
+                    </div>
                 </article>
             </div>
         </ToolTemplate>
