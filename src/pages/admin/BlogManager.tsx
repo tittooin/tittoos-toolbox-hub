@@ -247,6 +247,57 @@ const BlogManager = () => {
         }
     };
 
+    const handleSingleDeploy = async (blogToDeploy: any) => {
+        if (!githubToken) {
+            toast.error("Please enter your GitHub Token first.");
+            return;
+        }
+
+        const toastId = toast.loading(`Deploying "${blogToDeploy.title}"...`);
+
+        try {
+            const client = new GitHubClient(githubToken);
+            const path = 'src/data/generated_blogs.json';
+
+            // 1. Get Live Data from GitHub
+            // Note: getFile returns base64 encoded content
+            const currentFile = await client.getFile(path);
+            const sha = currentFile ? currentFile.sha : undefined;
+
+            let content: any[] = [];
+            if (currentFile && currentFile.content) {
+                try {
+                    content = JSON.parse(atob(currentFile.content));
+                } catch (e) {
+                    console.error("Failed to parse live JSON", e);
+                    content = [];
+                }
+            }
+
+            // 2. Smart Merge
+            let updatedContent = Array.isArray(content) ? [...content] : [];
+            const index = updatedContent.findIndex((b: any) => b.id === blogToDeploy.id);
+
+            if (index !== -1) {
+                // Update existing
+                updatedContent[index] = blogToDeploy;
+            } else {
+                // Append new
+                updatedContent.push(blogToDeploy);
+            }
+
+            // 3. Push and Update
+            const jsonString = JSON.stringify(updatedContent, null, 2);
+            await client.updateFile(path, jsonString, `feat: update blog post "${blogToDeploy.title}"`, sha);
+
+            toast.success("Single blog deployed successfully! 🚀", { id: toastId });
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to deploy single blog. Check console.", { id: toastId });
+        }
+    };
+
     // Editor State
     const [editingBlog, setEditingBlog] = useState<any | null>(null);
 
@@ -485,8 +536,11 @@ const BlogManager = () => {
                                             </td>
                                             <td className="p-3 text-muted-foreground">{blog.date}</td>
                                             <td className="p-3 font-mono text-xs text-muted-foreground">{blog.id}</td>
-                                            <td className="p-3">
+                                            <td className="p-3 flex gap-2">
                                                 <Button size="sm" variant="outline" onClick={() => handleEditClick(blog)}>Edit</Button>
+                                                <Button size="sm" variant="secondary" onClick={() => handleSingleDeploy(blog)} title="Deploy Only This Post">
+                                                    <Rocket className="w-3 h-3 text-purple-600" />
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))
