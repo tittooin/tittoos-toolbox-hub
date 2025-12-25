@@ -102,8 +102,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* NEW: "The Money Makers" / Featured Section - Temporarily Disabled */}
-        {/* <section className="container mx-auto px-4 pb-16">
+        {/* NEW: "The Money Makers" / Featured Section */}
+        <section className="container mx-auto px-4 pb-16">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold flex items-center">
@@ -168,7 +168,7 @@ const Index = () => {
               </Link>
             </div>
           </div>
-        </section> */}
+        </section>
 
         {/* NEW: Smart Suites / Category Spotlights */}
         <section className="container mx-auto px-4 pb-16">
