@@ -2718,24 +2718,7 @@ const allTools = [
     icon: Smartphone,
     path: "/tools/tech-versus"
   },
-  {
-    id: "software-versus",
-    name: "Software Showdown",
-    subheading: "Compare Apps & SaaS",
-    description: "Compare software tools, apps, and SaaS platforms. Find the best solution for your business.",
-    category: "ai",
-    icon: AppWindow,
-    path: "/tools/software-versus"
-  },
-  {
-    id: "nutrition-versus",
-    name: "Food Fight",
-    subheading: "Compare Nutrition Facts",
-    description: "Compare calories, macros, and vitamins of any two items. Make smarter diet choices.",
-    category: "ai",
-    icon: Apple,
-    path: "/tools/nutrition-versus"
-  },
+
   {
     id: "ai-caption-generator",
     name: "AI Caption Generator",
