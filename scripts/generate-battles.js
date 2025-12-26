@@ -12,11 +12,15 @@ const AFFILIATE_TAG = 'axevora-21'; // User's Amazon Tag
 
 // Topics to rotate through
 const CATEGORIES = [
-    'Smartphones (e.g. latest iPhone vs Galaxy vs Pixel)',
-    'Laptops (e.g. MacBook vs Dell XPS vs Surface)',
-    'Headphones (e.g. Sony vs Bose vs AirPods)',
-    'Graphics Cards (e.g. NVIDIA RTX vs AMD RX)',
-    'Smartwatches (e.g. Apple Watch vs Galaxy Watch)'
+    'Latest Smartphones 2024-2025',
+    'Best Laptops for Students/Creators',
+    'Top Noise Cancelling Headphones',
+    'Flagship PC Graphic Cards',
+    'Smartwatches & Fitness Trackers',
+    'Popular Health Supplements (e.g. Whey Protein Brands)',
+    'Trending Skincare Products (e.g. Moisturizers)',
+    'Healthy Cooking Oils (e.g. Olive vs Avocado)',
+    'Best Coffee Makers'
 ];
 
 // Helper to deduce Amazon URL structure
@@ -39,7 +43,7 @@ async function generateBattles() {
         You are a Tech Trend Expert. Today is ${today}.
         Generate 3 trending "Versus" battles for these categories: ${selectedCategories.join(', ')}.
         
-        Strictly return a JSON Array with this structure (no markdown, just raw JSON code):
+        Strictly return a JSON Array (no markdown):
         [
             {
                 "id": "unique-id-1",
@@ -50,6 +54,10 @@ async function generateBattles() {
                 "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
                 "borderColorClass": "border-l-purple-500", 
                 "verdict": "A short, punchy reason why the winner won (max 20 words).",
+                "pros": ["Pro 1 (Winner)", "Pro 2 (Winner)"],
+                "cons": ["Con 1 (Winner)", "Con 2 (Winner)"],
+                "qualityMetric": "High Fidelity / Organic / etc",
+                "popularity": "4.5/5 Avg Rating",
                 "specs": [
                      { "label": "Feature 1", "valueA": "Value A", "valueB": "Value B", "winner": "A|B|Tie" },
                      { "label": "Feature 2", "valueA": "Value A", "valueB": "Value B", "winner": "A|B|Tie" },
@@ -61,8 +69,9 @@ async function generateBattles() {
         
         Rules:
         1. "borderColorClass" must be one of: "border-l-purple-500", "border-l-blue-500", "border-l-orange-500", "border-l-green-500", "border-l-red-500".
-        2. "winnerColorClass" should match the border color conceptually (e.g. purple text for purple border) OR use the standard winner green class provided in example.
+        2. "winnerColorClass" should match the border color conceptually.
         3. Real specs only.
+        4. "popularity" should be realistic estimates.
     `;
 
     try {
@@ -109,6 +118,10 @@ async function generateBattles() {
     valueB: string;
     winner: 'A' | 'B' | 'Tie';
   }[];
+  pros: string[];
+  cons: string[];
+  qualityMetric?: string;
+  popularity?: string;
 }
 
 export const trendingBattles: TrendingBattle[] = ${JSON.stringify(processedBattles, null, 2)};

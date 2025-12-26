@@ -34,6 +34,19 @@ const TrendingBattles = ({ className = "", showHeading = true }: TrendingBattles
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="text-sm space-y-4">
+                            <div className="flex gap-2 mb-2">
+                                {battle.qualityMetric && (
+                                    <div className="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 px-2 py-1 rounded border border-indigo-200">
+                                        ✨ {battle.qualityMetric}
+                                    </div>
+                                )}
+                                {battle.popularity && (
+                                    <div className="text-xs bg-orange-100 text-orange-700 dark:bg-orange-900/30 px-2 py-1 rounded border border-orange-200">
+                                        🔥 {battle.popularity}
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Mini Spec Table */}
                             <div className="bg-muted/30 rounded-lg p-2 border border-border/50">
                                 <div className="grid grid-cols-3 gap-2 mb-2 text-xs font-semibold text-muted-foreground border-b pb-1">
@@ -52,6 +65,22 @@ const TrendingBattles = ({ className = "", showHeading = true }: TrendingBattles
                                         </span>
                                     </div>
                                 ))}
+                            </div>
+
+                            {/* Pros & Cons Table */}
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="bg-green-50/50 dark:bg-green-900/10 p-2 rounded border border-green-200/50">
+                                    <span className="font-bold text-green-700 block mb-1">👍 Pros</span>
+                                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                                        {(battle.pros || []).map((pro, i) => <li key={i}>{pro}</li>)}
+                                    </ul>
+                                </div>
+                                <div className="bg-red-50/50 dark:bg-red-900/10 p-2 rounded border border-red-200/50">
+                                    <span className="font-bold text-red-700 block mb-1">👎 Cons</span>
+                                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                                        {(battle.cons || []).map((con, i) => <li key={i}>{con}</li>)}
+                                    </ul>
+                                </div>
                             </div>
 
                             <p className="text-muted-foreground">{battle.verdict}</p>

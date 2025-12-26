@@ -37,7 +37,11 @@ const BattleManager = () => {
             'Best Laptops for Students/Creators',
             'Top Noise Cancelling Headphones',
             'Flagship PC Graphic Cards',
-            'Smartwatches & Fitness Trackers'
+            'Smartwatches & Fitness Trackers',
+            'Popular Health Supplements (e.g. Whey Protein Brands)',
+            'Trending Skincare Products (e.g. Moisturizers)',
+            'Healthy Cooking Oils (e.g. Olive vs Avocado)',
+            'Best Coffee Makers'
         ];
 
         // Randomly pick top 3
@@ -46,7 +50,8 @@ const BattleManager = () => {
 
         const prompt = `
             Today is ${today}. Generate 3 trending "Versus" battles for: ${selectedCats.join(', ')}.
-            Return a JSON Array (no markdown):
+            
+            Strictly return a JSON Array (no markdown):
             [
                 {
                     "id": "unique-slug-id",
@@ -57,6 +62,10 @@ const BattleManager = () => {
                     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
                     "borderColorClass": "border-l-purple-500", 
                     "verdict": "Short reason (max 20 words).",
+                    "pros": ["Pro 1 (Winner)", "Pro 2 (Winner)"],
+                    "cons": ["Con 1 (Winner)", "Con 2 (Winner)"],
+                    "qualityMetric": "High Fidelity Audio / Organic / etc (Short badge text)",
+                    "popularity": "4.5/5 Avg User Rating",
                     "specs": [
                         { "label": "Feature 1", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" },
                         { "label": "Feature 2", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" },
@@ -65,7 +74,9 @@ const BattleManager = () => {
                     ]
                 }
             ]
-            Rules: borderColorClass must be one of: border-l-purple-500, border-l-blue-500, border-l-orange-500.
+            Rules: 
+            1. For "specs", use relevant comparison points (e.g. "Ingredients" for food, "Battery" for tech).
+            2. "popularity" should be realistic estimates (e.g. "Best Seller", "1M+ Sold", "4.8 Stars").
         `;
 
         try {
@@ -128,6 +139,10 @@ const BattleManager = () => {
     valueB: string;
     winner: 'A' | 'B' | 'Tie';
   }[];
+  pros: string[];
+  cons: string[];
+  qualityMetric?: string;
+  popularity?: string;
 }
 
 export const trendingBattles: TrendingBattle[] = ${JSON.stringify(previewBattles, null, 2)};

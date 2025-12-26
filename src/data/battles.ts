@@ -15,6 +15,10 @@ export interface TrendingBattle {
     valueB: string;
     winner: 'A' | 'B' | 'Tie';
   }[];
+  pros: string[];
+  cons: string[];
+  qualityMetric?: string; // e.g. "Organic Certified"
+  popularity?: string; // e.g. "1.5M Users"
 }
 
 export const trendingBattles: TrendingBattle[] = [
@@ -54,7 +58,9 @@ export const trendingBattles: TrendingBattle[] = [
       }
     ],
     "affiliateLink": "https://www.amazon.in/s?k=AMD%20Radeon%20RX%207900%20XTX&tag=axevora-21",
-    "affiliateText": "Check AMD Price"
+    "affiliateText": "Check AMD Price",
+    "pros": ["Fastest", "Ray Tracing"],
+    "cons": ["Power Hungry", "Large Size"]
   },
   {
     "id": "headphones-sony-vs-bose",
@@ -92,7 +98,9 @@ export const trendingBattles: TrendingBattle[] = [
       }
     ],
     "affiliateLink": "https://www.amazon.in/s?k=Bose%20QuietComfort%20Ultra&tag=axevora-21",
-    "affiliateText": "Check Bose Price"
+    "affiliateText": "Check Bose Price",
+    "pros": ["Best ANC", "Comfortable"],
+    "cons": ["Expensive", "Bulky"]
   },
   {
     "id": "laptop-macbook-vs-dell-xps15",
@@ -130,6 +138,8 @@ export const trendingBattles: TrendingBattle[] = [
       }
     ],
     "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(9520)&tag=axevora-21",
-    "affiliateText": "Check Dell Price"
+    "affiliateText": "Check Dell Price",
+    "pros": ["Amazing Display", "Premium Build"],
+    "cons": ["Battery Average", "Pricey"]
   }
 ];
