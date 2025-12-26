@@ -13,6 +13,7 @@
     "generate-sitemap": "node generate-sitemap.cjs",
     "generate-static-pages": "node generate-static-pages.cjs",
     "fetch-trends": "node fetch-trends.cjs",
+    "refresh-battles": "node scripts/generate-battles.js",
     "check-plagiarism": "node check-plagiarism.cjs"
   },
   "dependencies": {
