@@ -38,6 +38,7 @@ interface VersusTemplateProps {
     placeholderA?: string;
     placeholderB?: string;
     affiliateTag?: string; // e.g. "tag=tittoos-20"
+    children?: React.ReactNode;
 }
 
 const VersusTemplate: React.FC<VersusTemplateProps> = ({
@@ -47,7 +48,8 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
     icon: Icon,
     placeholderA = "Item 1 (e.g., iPhone 15)",
     placeholderB = "Item 2 (e.g., Samsung S24)",
-    affiliateTag
+    affiliateTag,
+    children
 }) => {
     const [itemA, setItemA] = useState("");
     const [itemB, setItemB] = useState("");
@@ -296,6 +298,10 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
 
                     </div>
                 )}
+
+                {/* INJECTED CONTENT (e.g. Trending Battles) */}
+                {children}
+
             </main>
             <Footer />
         </div>

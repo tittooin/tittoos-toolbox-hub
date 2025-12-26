@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 import BlogPreview from "@/components/BlogPreview";
+import TrendingBattles from "@/components/TrendingBattles";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -149,78 +150,7 @@ const Index = () => {
             </div>
 
             {/* NEW: Trending Battles Section - Pre-filled results */}
-            <div className="mb-16">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-500" />
-                This Week's Trending Battles
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                {/* Battle 1: Phones */}
-                <Card className="hover:shadow-lg transition-all border-l-4 border-l-purple-500">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="outline" className="text-xs text-muted-foreground">Smartphones</Badge>
-                      <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full dark:bg-green-900/20">Winner: Samsung</span>
-                    </div>
-                    <CardTitle className="text-lg">iPhone 15 Pro Max <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> S24 Ultra</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm space-y-3">
-                    <p className="text-muted-foreground">The 200MP camera and S-Pen give Samsung the productivity edge this year, despite Apple's video supremacy.</p>
-                    <div className="pt-2">
-                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
-                        <a href="https://www.amazon.in/s?k=Samsung+S24+Ultra&tag=axevora-21" target="_blank" rel="noopener noreferrer">
-                          Check S24 Ultra Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Battle 2: Headphones */}
-                <Card className="hover:shadow-lg transition-all border-l-4 border-l-blue-500">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="outline" className="text-xs text-muted-foreground">Audio</Badge>
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full dark:bg-blue-900/20">Winner: Sony</span>
-                    </div>
-                    <CardTitle className="text-lg">Sony WH-1000XM5 <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> Bose QC45</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm space-y-3">
-                    <p className="text-muted-foreground">Sony wins on noise cancellation and battery life (30h vs 24h), making it the traveler's choice.</p>
-                    <div className="pt-2">
-                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
-                        <a href="https://www.amazon.in/s?k=Sony+WH-1000XM5&tag=axevora-21" target="_blank" rel="noopener noreferrer">
-                          Check Sony Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Battle 3: Laptops */}
-                <Card className="hover:shadow-lg transition-all border-l-4 border-l-orange-500">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge variant="outline" className="text-xs text-muted-foreground">Laptops</Badge>
-                      <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full dark:bg-orange-900/20">Winner: MacBook</span>
-                    </div>
-                    <CardTitle className="text-lg">MacBook Air M3 <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> Dell XPS 13</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm space-y-3">
-                    <p className="text-muted-foreground">Apple's M3 chip efficiency delivers 18hrs battery vs Dell's 12hrs. Unbeatable for students.</p>
-                    <div className="pt-2">
-                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
-                        <a href="https://www.amazon.in/s?k=MacBook+Air+M3&tag=axevora-21" target="_blank" rel="noopener noreferrer">
-                          Check MacBook Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-              </div>
-            </div>
+            <TrendingBattles />
 
             {/* Other Money Makers */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
