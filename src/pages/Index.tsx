@@ -14,6 +14,7 @@ import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 
 import BlogPreview from "@/components/BlogPreview";
 import TrendingBattles from "@/components/TrendingBattles";
+import Testimonials from "@/components/Testimonials";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -374,6 +375,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        {/* Testimonials / Social Proof */}
+        <Testimonials />
 
         {/* Blog & Resources */}
         <BlogPreview />
