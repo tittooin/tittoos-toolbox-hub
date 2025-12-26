@@ -113,39 +113,39 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-               {/* HERO CARD: Tech Battle Arena - Full styling upgrade */}
-               <Link to="/tools/tech-versus" className="group md:col-span-3">
-                 <Card className="h-full border-2 border-indigo-500/20 hover:border-indigo-500/50 bg-gradient-to-r from-indigo-900/5 via-blue-900/5 to-purple-900/5 dark:from-indigo-900/40 dark:via-blue-900/20 dark:to-purple-900/10 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden relative">
-                   <div className="absolute top-0 right-0 p-8 opacity-10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
-                      <Trophy size={200} />
-                   </div>
-                   <CardContent className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 relative z-10">
-                     <div className="bg-indigo-600/10 p-6 rounded-2xl ring-1 ring-indigo-500/20">
-                        <Smartphone className="w-16 h-16 text-indigo-600 dark:text-indigo-400" />
-                     </div>
-                     <div className="flex-1 text-center md:text-left">
-                       <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
-                         <Badge variant="secondary" className="px-3 py-1 text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
-                           <Sparkles className="w-3 h-3 mr-1 fill-current" /> Most Popular
-                         </Badge>
-                         <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
-                           Save Money
-                         </Badge>
-                       </div>
-                       <h3 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-4">
-                         Tech Battle Arena <span className="text-indigo-600 dark:text-indigo-400">AI</span>
-                       </h3>
-                       <p className="text-lg text-muted-foreground max-w-2xl mb-6">
-                         Don't buy until you compare. Our AI analyzes specs, features, and hidden flaws to declare a clear winner. 
-                         <span className="block mt-2 font-medium text-foreground">iPhone vs Samsung? Laptop vs Tablet? We decide.</span>
-                       </p>
-                       <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold shadow-lg shadow-indigo-500/25 rounded-full px-8 h-12">
-                         Start a New Battle <ArrowRight className="ml-2 w-5 h-5" />
-                       </Button>
-                     </div>
-                   </CardContent>
-                 </Card>
-               </Link>
+              {/* HERO CARD: Tech Battle Arena - Full styling upgrade */}
+              <Link to="/tools/tech-versus" className="group md:col-span-3">
+                <Card className="h-full border-2 border-indigo-500/20 hover:border-indigo-500/50 bg-gradient-to-r from-indigo-900/5 via-blue-900/5 to-purple-900/5 dark:from-indigo-900/40 dark:via-blue-900/20 dark:to-purple-900/10 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden relative">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
+                    <Trophy size={200} />
+                  </div>
+                  <CardContent className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="bg-indigo-600/10 p-6 rounded-2xl ring-1 ring-indigo-500/20">
+                      <Smartphone className="w-16 h-16 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                      <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
+                        <Badge variant="secondary" className="px-3 py-1 text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
+                          <Sparkles className="w-3 h-3 mr-1 fill-current" /> Most Popular
+                        </Badge>
+                        <Badge variant="outline" className="border-orange-200 text-orange-700 dark:border-orange-800 dark:text-orange-400">
+                          Save Money
+                        </Badge>
+                      </div>
+                      <h3 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-4">
+                        Tech Battle Arena <span className="text-indigo-600 dark:text-indigo-400">AI</span>
+                      </h3>
+                      <p className="text-lg text-muted-foreground max-w-2xl mb-6">
+                        Don't buy until you compare. Our AI analyzes specs, features, and hidden flaws to declare a clear winner.
+                        <span className="block mt-2 font-medium text-foreground">iPhone vs Samsung? Laptop vs Tablet? We decide.</span>
+                      </p>
+                      <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold shadow-lg shadow-indigo-500/25 rounded-full px-8 h-12">
+                        Start a New Battle <ArrowRight className="ml-2 w-5 h-5" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
 
             {/* NEW: Trending Battles Section - Pre-filled results */}
@@ -155,13 +155,13 @@ const Index = () => {
                 This Week's Trending Battles
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
+
                 {/* Battle 1: Phones */}
                 <Card className="hover:shadow-lg transition-all border-l-4 border-l-purple-500">
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start mb-2">
-                       <Badge variant="outline" className="text-xs text-muted-foreground">Smartphones</Badge>
-                       <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full dark:bg-green-900/20">Winner: Samsung</span>
+                      <Badge variant="outline" className="text-xs text-muted-foreground">Smartphones</Badge>
+                      <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full dark:bg-green-900/20">Winner: Samsung</span>
                     </div>
                     <CardTitle className="text-lg">iPhone 15 Pro Max <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> S24 Ultra</CardTitle>
                   </CardHeader>
@@ -179,8 +179,8 @@ const Index = () => {
                 <Card className="hover:shadow-lg transition-all border-l-4 border-l-blue-500">
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start mb-2">
-                       <Badge variant="outline" className="text-xs text-muted-foreground">Audio</Badge>
-                       <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full dark:bg-blue-900/20">Winner: Sony</span>
+                      <Badge variant="outline" className="text-xs text-muted-foreground">Audio</Badge>
+                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full dark:bg-blue-900/20">Winner: Sony</span>
                     </div>
                     <CardTitle className="text-lg">Sony WH-1000XM5 <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> Bose QC45</CardTitle>
                   </CardHeader>
@@ -198,8 +198,8 @@ const Index = () => {
                 <Card className="hover:shadow-lg transition-all border-l-4 border-l-orange-500">
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start mb-2">
-                       <Badge variant="outline" className="text-xs text-muted-foreground">Laptops</Badge>
-                       <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full dark:bg-orange-900/20">Winner: MacBook</span>
+                      <Badge variant="outline" className="text-xs text-muted-foreground">Laptops</Badge>
+                      <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full dark:bg-orange-900/20">Winner: MacBook</span>
                     </div>
                     <CardTitle className="text-lg">MacBook Air M3 <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> Dell XPS 13</CardTitle>
                   </CardHeader>
@@ -216,6 +216,8 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Other Money Makers */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Link to="/tools/ai-caption-generator" className="group">
                 <Card className="h-full border-2 border-purple-500/10 hover:border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <CardHeader>
