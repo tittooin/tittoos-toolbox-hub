@@ -19,6 +19,7 @@ function extractRoutesFromApp() {
     while ((match = routeRegex.exec(content)) !== null) {
       const p = match[1];
       if (!p || p === "*" || p.includes(":")) continue;
+      if (p.startsWith("/admin") || p.startsWith("/apps")) continue; // Exclude admin and app-specific pages from general sitemap
       routes.push(p);
     }
     return routes;

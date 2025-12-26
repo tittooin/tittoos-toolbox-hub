@@ -82,6 +82,14 @@ const Privacy = () => {
                 with links, a description of the content, and proof of ownership. We aim to respond promptly.
               </p>
 
+              <h3 className="text-2xl font-semibold text-foreground mb-4">Games & Apps Privacy</h3>
+              <p className="mb-6">
+                To view privacy policies for our specific mobile games and applications, please visit:
+              </p>
+              <ul className="list-disc pl-6 mb-6 space-y-2">
+                <li><Link to="/apps/neon-block-puzzle/privacy" className="text-primary hover:underline">Neon Block Puzzle Privacy Policy</Link></li>
+              </ul>
+
               <h2 className="text-2xl font-semibold text-foreground mb-4">Children’s Privacy</h2>
               <p className="mb-6">
                 Our services are not directed to children under 13. We do not knowingly collect personal information from children.
