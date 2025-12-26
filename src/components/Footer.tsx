@@ -167,6 +167,13 @@ const Footer = () => {
             <span>•</span>
             <span>Disclosure: Pages may display ads.</span>
           </div>
+
+          {/* Social Proof Badges */}
+          <div className="flex justify-center mt-6">
+            <a href='https://www.saashub.com/axevora?utm_source=badge&utm_campaign=badge&utm_content=axevora&badge_variant=color&badge_kind=approved' target='_blank' rel="noopener noreferrer">
+              <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Axevora badge" style={{ maxWidth: '150px' }} />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
