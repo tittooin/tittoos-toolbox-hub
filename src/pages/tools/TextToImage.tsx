@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Image, Download, Sparkles } from "lucide-react";
+import { Image, Download, Sparkles, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,22 +44,15 @@ const TextToImage = () => {
       const imageUrl = `https://image.pollinations.ai/prompt/${enhancedPrompt}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
 
       console.log("Generating image with URL:", imageUrl);
-
-      // Directly set the image URL without pre-loading to avoid runtime errors
-
       setGeneratedImage(imageUrl);
-      toast.success("Image generated successfully!");
+      // isGenerating will be set to false by the img.onLoad handler
     } catch (error) {
       console.error("Generation error:", error);
-      toast.error("Failed to generate image. Check console for details.");
-      // Set image anyway so user can try to open it directly if it's just a CORS/loading issue
-      if (error instanceof Error && error.message === "Failed to load image") {
-        // We can't easily get the URL here without refactoring, but for now let's just show a specific message
-        toast.info("Try checking your internet connection or ad blocker.");
-      }
-    } finally {
+      toast.error("Failed to start generation.");
       setIsGenerating(false);
     }
+    // We intentionally do NOT set isGenerating(false) here, 
+    // because we want to wait for the image to actually load in the <img> tag
   };
 
   const downloadImage = async () => {
@@ -166,17 +159,36 @@ const TextToImage = () => {
 
             {generatedImage && (
               <div className="mt-6 space-y-4">
-                <div className="relative">
+                <div className="relative min-h-[300px] flex items-center justify-center bg-muted/20 rounded-lg">
+                  {isGenerating && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
+                      <div className="flex flex-col items-center gap-2">
+                        <Sparkles className="w-8 h-8 text-primary animate-spin" />
+                        <p className="text-sm font-medium">Rendering...</p>
+                      </div>
+                    </div>
+                  )}
                   <img
                     src={generatedImage}
                     alt="Generated AI image"
-                    className="w-full rounded-lg shadow-lg"
+                    className={`w-full rounded-lg shadow-lg transition-opacity duration-300 ${isGenerating ? 'opacity-50' : 'opacity-100'}`}
+                    onLoad={() => setIsGenerating(false)}
+                    onError={() => {
+                      setIsGenerating(false);
+                      toast.error("Failed to load image. Only plain text prompts are supported in free tier.");
+                    }}
                   />
                 </div>
-                <Button onClick={downloadImage} variant="outline" className="w-full">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Image
-                </Button>
+                <div className="grid grid-cols-2 gap-4">
+                  <Button onClick={() => window.open(generatedImage, '_blank')} variant="outline" className="w-full">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Open Full Size
+                  </Button>
+                  <Button onClick={downloadImage} className="w-full">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Image
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
