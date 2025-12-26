@@ -33,7 +33,27 @@ const TrendingBattles = ({ className = "", showHeading = true }: TrendingBattles
                                 {battle.itemA} <span className="text-muted-foreground font-normal text-sm mx-1">vs</span> {battle.itemB}
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="text-sm space-y-3">
+                        <CardContent className="text-sm space-y-4">
+                            {/* Mini Spec Table */}
+                            <div className="bg-muted/30 rounded-lg p-2 border border-border/50">
+                                <div className="grid grid-cols-3 gap-2 mb-2 text-xs font-semibold text-muted-foreground border-b pb-1">
+                                    <span>Feature</span>
+                                    <span className="text-center truncate">{battle.itemA.split(' ')[0]}</span>
+                                    <span className="text-center truncate">{battle.itemB.split(' ')[0]}</span>
+                                </div>
+                                {battle.specs.map((spec, idx) => (
+                                    <div key={idx} className="grid grid-cols-3 gap-2 text-xs py-1 border-b border-border/30 last:border-0 items-center">
+                                        <span className="font-medium text-muted-foreground truncate">{spec.label}</span>
+                                        <span className={`text-center truncate ${spec.winner === 'A' ? 'font-bold text-green-600 dark:text-green-400' : ''}`}>
+                                            {spec.valueA}
+                                        </span>
+                                        <span className={`text-center truncate ${spec.winner === 'B' ? 'font-bold text-green-600 dark:text-green-400' : ''}`}>
+                                            {spec.valueB}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
                             <p className="text-muted-foreground">{battle.verdict}</p>
                             <div className="pt-2">
                                 <Button asChild variant="outline" size="sm" className="w-full justify-between group">
