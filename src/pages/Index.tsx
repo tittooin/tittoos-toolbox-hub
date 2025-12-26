@@ -168,8 +168,10 @@ const Index = () => {
                   <CardContent className="text-sm space-y-3">
                     <p className="text-muted-foreground">The 200MP camera and S-Pen give Samsung the productivity edge this year, despite Apple's video supremacy.</p>
                     <div className="pt-2">
-                      <Button variant="outline" size="sm" className="w-full justify-between group" onClick={() => window.open('https://www.amazon.in/s?k=Samsung+S24+Ultra&tag=axevora-21', '_blank')}>
-                        Check S24 Ultra Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
+                        <a href="https://www.amazon.in/s?k=Samsung+S24+Ultra&tag=axevora-21" target="_blank" rel="noopener noreferrer">
+                          Check S24 Ultra Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                        </a>
                       </Button>
                     </div>
                   </CardContent>
@@ -187,8 +189,10 @@ const Index = () => {
                   <CardContent className="text-sm space-y-3">
                     <p className="text-muted-foreground">Sony wins on noise cancellation and battery life (30h vs 24h), making it the traveler's choice.</p>
                     <div className="pt-2">
-                      <Button variant="outline" size="sm" className="w-full justify-between group" onClick={() => window.open('https://www.amazon.in/s?k=Sony+WH-1000XM5&tag=axevora-21', '_blank')}>
-                        Check Sony Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
+                        <a href="https://www.amazon.in/s?k=Sony+WH-1000XM5&tag=axevora-21" target="_blank" rel="noopener noreferrer">
+                          Check Sony Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                        </a>
                       </Button>
                     </div>
                   </CardContent>
@@ -206,8 +210,10 @@ const Index = () => {
                   <CardContent className="text-sm space-y-3">
                     <p className="text-muted-foreground">Apple's M3 chip efficiency delivers 18hrs battery vs Dell's 12hrs. Unbeatable for students.</p>
                     <div className="pt-2">
-                      <Button variant="outline" size="sm" className="w-full justify-between group" onClick={() => window.open('https://www.amazon.in/s?k=MacBook+Air+M3&tag=axevora-21', '_blank')}>
-                        Check MacBook Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                      <Button asChild variant="outline" size="sm" className="w-full justify-between group">
+                        <a href="https://www.amazon.in/s?k=MacBook+Air+M3&tag=axevora-21" target="_blank" rel="noopener noreferrer">
+                          Check MacBook Price <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+                        </a>
                       </Button>
                     </div>
                   </CardContent>
