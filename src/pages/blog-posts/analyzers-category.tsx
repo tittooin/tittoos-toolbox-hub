@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Search, Gauge, Globe, Microscope, Activity, TrendingUp, Cpu, Network } from 'lucide-react';
@@ -9,6 +9,9 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const AnalyzersCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
+
   // Filter by 'analyzer' category or generic check
   const categoryTools = tools.filter(tool =>
     tool.category === 'analyzer' ||
@@ -24,6 +27,7 @@ const AnalyzersCategoryPage = () => {
         <meta name="keywords" content="seo analyzer, website speed test, meta tag checker, performance optimization, web vitals, core web vitals, seo audit" />
         <meta property="og:title" content="Free SEO & Web Analysis Tools - Speed, Meta & Performance | Axevora" />
         <meta property="og:description" content="Optimize your website with our free analysis tools. Check SEO health, test site speed, and analyze meta tags." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

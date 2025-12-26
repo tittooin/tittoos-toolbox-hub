@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Terminal, Code, Command, Cpu, Laptop, Shield, Keyboard, Zap, Hash } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const DevToolsCategoryPage = () => {
+    const location = useLocation();
+    const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
     const categoryTools = tools.filter(tool => tool.category === 'dev');
 
     return (
@@ -19,6 +21,7 @@ const DevToolsCategoryPage = () => {
                 <meta name="keywords" content="dev tools, terminal commands, cli generator, powershell commands, bash script generator, linux commands, mac terminal, adb commands" />
                 <meta property="og:title" content="Developer Tools & CLI Generators - Windows, Linux, Mac | Axevora" />
                 <meta property="og:description" content="Master the command line with our free developer tools. Generate terminal commands instantly." />
+                <link rel="canonical" href={canonicalUrl} />
             </Helmet>
 
             <Header />

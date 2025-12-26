@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Utensils
+  AppWindow, Utensils, Apple
 } from "lucide-react";
 
 const allCategories = [
@@ -23,6 +23,7 @@ const allCategories = [
   { id: "ai", name: "AI Tools", guidePath: "/blog-posts/ai-tools-category" },
   { id: "dev", name: "Developer Tools", guidePath: "/blog-posts/dev-tools-category" },
   { id: "games", name: "Games & Brain", guidePath: "/blog-posts/games-category" },
+  { id: "validators", name: "Validators", guidePath: "/blog-posts/validators-category" },
   { id: "utility", name: "Utilities", guidePath: "/blog-posts/analyzers-category" }, // Fallback to analyzers or create utility if needed
 ];
 
@@ -2763,6 +2764,34 @@ const allTools = [
     category: "ai",
     icon: UserCircle,
     path: "/tools/ai-bio-generator"
+  },
+  // Versus Tools
+  {
+    id: "tech-versus",
+    name: "Tech Battle Arena",
+    subheading: "Compare Gadgets Instantly",
+    description: "Compare smartphones, laptops, and gadgets side-by-side using AI.",
+    category: "analyzer",
+    icon: Smartphone,
+    path: "/tools/tech-versus"
+  },
+  {
+    id: "software-versus",
+    name: "Software Showdown",
+    subheading: "Compare Apps & SaaS",
+    description: "Compare software pricing, features, and reviews.",
+    category: "analyzer",
+    icon: AppWindow,
+    path: "/tools/software-versus"
+  },
+  {
+    id: "nutrition-versus",
+    name: "Food Fight",
+    subheading: "Nutrition Comparator",
+    description: "Compare calories, macros, and health benefits of foods.",
+    category: "analyzer",
+    icon: Apple,
+    path: "/tools/nutrition-versus"
   }
 ];
 

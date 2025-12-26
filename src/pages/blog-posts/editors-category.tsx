@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit3, Type, Code, FileCode, Coffee, Eye, Rocket, HelpCircle, Palette } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const EditorsCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   // Filter by 'editor' category
   const categoryTools = tools.filter(tool => tool.category === 'editor');
 
@@ -20,6 +22,7 @@ const EditorsCategoryPage = () => {
         <meta name="keywords" content="online editor, markdown editor, code editor, html editor, json editor, text editor, distraction free writing" />
         <meta property="og:title" content="Online Code & Text Editors - Markdown, HTML, JSON | Axevora" />
         <meta property="og:description" content="Write, edit, and preview code and text instantly. Free online editors for Markdown, HTML, JSON, and more." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

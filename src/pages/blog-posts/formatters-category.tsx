@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlignLeft, FileCode, Braces, Indent, Code2, CheckCircle, Smartphone, Terminal, Feather } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const FormattersCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   const categoryTools = tools.filter(tool => tool.category === 'formatter');
 
   return (
@@ -19,6 +21,7 @@ const FormattersCategoryPage = () => {
         <meta name="keywords" content="code formatter, json beautifier, sql formatter, xml prettifier, html cleaner, indent code, developer tools, prettier online" />
         <meta property="og:title" content="Online Code Formatters & Beautifiers - JSON, SQL, XML | Axevora" />
         <meta property="og:description" content="Clean and beautify your code instantly. Free online formatters for JSON, SQL, XML, HTML, CSS and more." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

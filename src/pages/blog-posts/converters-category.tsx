@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, FileInput, Image as ImageIcon, Music, FileType2, Database, Layers, ArrowLeftRight, Check, AlertOctagon } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const ConvertersCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   // Filter tools that are primarily converters
   const converterTools = tools.filter(tool =>
     tool.category === 'converter' ||
@@ -24,6 +26,7 @@ const ConvertersCategoryPage = () => {
         <meta name="keywords" content="file converter, image converter, json to csv, base64 encoder, data conversion, webp converter, free online tools" />
         <meta property="og:title" content="Free Online File Converters - Image, Audio, Data & Base64 | Axevora" />
         <meta property="og:description" content="Convert any file format instantly. Free online tools for images, data, and encoding." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

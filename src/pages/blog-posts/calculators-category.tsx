@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calculator, Percent, DollarSign, Ruler, Scale, HeartPulse, BrainCircuit, Landmark, CalendarClock, TrendingUp } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const CalculatorsCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   // Filter by 'calculator' category
   const categoryTools = tools.filter(tool => tool.category === 'calculator');
 
@@ -20,6 +22,7 @@ const CalculatorsCategoryPage = () => {
         <meta name="keywords" content="online calculator, finance calculator, bmi calculator, age calculator, percentage calculator, math tools, free tools" />
         <meta property="og:title" content="Free Online Calculators - Finance, Health & Math | Axevora" />
         <meta property="og:description" content="Complex math made simple. Free online calculators for finance, health, and math." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bot, Sparkles, Brain, Wand2, MessageSquare, Image as ImageIcon, Video, Fingerprint, StopCircle } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const AIToolsCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   const categoryTools = tools.filter(tool => tool.category === 'ai');
 
   return (
@@ -19,6 +21,7 @@ const AIToolsCategoryPage = () => {
         <meta name="keywords" content="ai tools, artificial intelligence, image generator, text generator, chatbot, prompt engineering, chatgpt alternatives, free ai" />
         <meta property="og:title" content="Free AI Tools - Generators, Chatbots & Assistants | Axevora" />
         <meta property="og:description" content="Explore the future of creativity with our free AI tools. Generate images, text, code, and more." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

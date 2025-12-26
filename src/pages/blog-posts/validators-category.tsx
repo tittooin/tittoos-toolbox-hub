@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, ShieldCheck, FileCheck, Search, FileJson, AlertTriangle, BadgeCheck, Bug, Code2, Lock } from 'lucide-react';
@@ -9,6 +9,9 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const ValidatorsCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
+
   // Filter tools that are useful for validation
   const validatorTools = tools.filter(tool =>
     tool.category === 'formatter' ||
@@ -24,6 +27,7 @@ const ValidatorsCategoryPage = () => {
         <meta name="keywords" content="json validator, xml validator, html validator, css validator, code checker, syntax validation, W3C compliance" />
         <meta property="og:title" content="Online Validator Tools - HTML, JSON, XML & CSS Checker | Axevora" />
         <meta property="og:description" content="Validate your code and data instantly. Free online validators for JSON, XML, HTML, CSS and more." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

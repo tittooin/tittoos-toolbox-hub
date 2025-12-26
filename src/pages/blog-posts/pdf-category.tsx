@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Lock, FileOutput, Merge, Scissors, RotateCw, MonitorPlay, BookOpen, Shield, Zap, HelpCircle, AlertTriangle } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const PDFCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   // Filter by 'pdf' category
   const categoryTools = tools.filter(tool => tool.category === 'pdf');
 
@@ -20,6 +22,7 @@ const PDFCategoryPage = () => {
         <meta name="keywords" content="pdf tools, merge pdf, split pdf, compress pdf, pdf security, ocr, pdf workflows, document management" />
         <meta property="og:title" content="Ultimate PDF Tools Guide: Convert, Merge, Split & Secure | Axevora" />
         <meta property="og:description" content="Master your digital documents. Comprehensive guide to editing, securing, and optimizing PDFs." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />

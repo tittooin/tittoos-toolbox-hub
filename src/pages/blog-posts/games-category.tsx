@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gamepad2, Brain, Zap, Trophy, Target, Timer, MousePointer2, Keyboard, Activity } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const GamesCategoryPage = () => {
+    const location = useLocation();
+    const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
     const gamesTools = tools.filter(tool => tool.category === 'games');
 
     return (
@@ -19,6 +21,7 @@ const GamesCategoryPage = () => {
                 <meta name="keywords" content="brain games, educational tools, memory game, reaction time test, math games, typing test, 2048 game, mind training, cognitive exercises" />
                 <meta property="og:title" content="Brain Games & Educational Tools - Train Your Mind | Axevora" />
                 <meta property="og:description" content="Free online brain games and educational tools. Improve your memory, reaction time, and typing speed." />
+                <link rel="canonical" href={canonicalUrl} />
             </Helmet>
 
             <Header />

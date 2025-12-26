@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Binary, Key, RefreshCw, FilePlus, Fingerprint, Lock, QrCode, ShieldAlert, Dice5, Database } from 'lucide-react';
@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { tools } from "@/data/tools";
 
 const GeneratorsCategoryPage = () => {
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname.replace(/\/$/, "")}`;
   const categoryTools = tools.filter(tool => tool.category === 'generator');
 
   return (
@@ -19,6 +21,7 @@ const GeneratorsCategoryPage = () => {
         <meta name="keywords" content="password generator, hash generator, qr code generator, random number generator, uuid generator, csprng, secure password, developer tools" />
         <meta property="og:title" content="Free Online Generator Tools - Passwords, Hashes & QR Codes | Axevora" />
         <meta property="og:description" content="Generate secure passwords, hashes, QR codes, and random data instantly." />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <Header />
