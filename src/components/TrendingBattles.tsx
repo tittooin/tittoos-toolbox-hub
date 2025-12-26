@@ -86,7 +86,7 @@ const TrendingBattles = ({ className = "", showHeading = true }: TrendingBattles
                             <p className="text-muted-foreground">{battle.verdict}</p>
                             <div className="pt-2">
                                 <Button asChild variant="outline" size="sm" className="w-full justify-between group">
-                                    <a href={battle.affiliateLink} target="_blank" rel="noopener noreferrer">
+                                    <a href={battle.affiliateLink} target="_blank" rel="noopener noreferrer nofollow sponsored">
                                         {battle.affiliateText} <ShoppingCart className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
                                     </a>
                                 </Button>
