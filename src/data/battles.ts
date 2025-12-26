@@ -19,117 +19,117 @@ export interface TrendingBattle {
 
 export const trendingBattles: TrendingBattle[] = [
   {
-    "id": "versus-smartphones-2025",
-    "category": "Smartphones",
-    "itemA": "iPhone 15 Pro Max",
-    "itemB": "Samsung Galaxy S23 Ultra",
-    "winner": "Samsung Galaxy S23 Ultra",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-blue-500",
-    "verdict": "Sharper display and quicker charging seal Galaxy's edge.",
-    "specs": [
-      {
-        "label": "Display",
-        "valueA": "6.7-inch LTPO OLED, 1290x2796, 120Hz",
-        "valueB": "6.8-inch LTPO OLED, 3088x1440, 120Hz",
-        "winner": "B"
-      },
-      {
-        "label": "Main camera",
-        "valueA": "48 MP main, 12 MP ultrawide, 12 MP tele",
-        "valueB": "200 MP main, 12 MP ultrawide, 10 MP tele, 10x zoom",
-        "winner": "B"
-      },
-      {
-        "label": "Chip/Performance",
-        "valueA": "A17 Pro",
-        "valueB": "Snapdragon 8 Gen 2",
-        "winner": "A"
-      },
-      {
-        "label": "Battery life / charging",
-        "valueA": "29 h video playback",
-        "valueB": "24 h video playback",
-        "winner": "A"
-      }
-    ],
-    "affiliateLink": "https://www.amazon.in/s?k=Samsung%20Galaxy%20S23%20Ultra&tag=axevora-21",
-    "affiliateText": "Check Samsung Price"
-  },
-  {
-    "id": "versus-laptops-2025",
-    "category": "Laptops",
-    "itemA": "MacBook Pro 14-inch (M2 Pro)",
-    "itemB": "Dell XPS 15 (2024)",
-    "winner": "MacBook Pro 14-inch (M2 Pro)",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "id": "gpu-rtx4090-vs-rx7900xtx",
+    "category": "Graphics Cards",
+    "itemA": "NVIDIA GeForce RTX 4090",
+    "itemB": "AMD Radeon RX 7900 XTX",
+    "winner": "NVIDIA GeForce RTX 4090",
+    "winnerColorClass": "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "M2 Pro steadies power, efficiency and ecosystem advantage.",
+    "verdict": "Top raw perf and RT headroom, but pricey.",
     "specs": [
       {
-        "label": "Display",
-        "valueA": "14.2-inch Liquid Retina XDR, 3024x1964, 120Hz",
-        "valueB": "15.6-inch OLED, up to 3456x2160, 120Hz",
+        "label": "CUDA/RT Performance",
+        "valueA": "RTX 4090",
+        "valueB": "RX 7900 XTX",
+        "winner": "A"
+      },
+      {
+        "label": "Power Draw",
+        "valueA": "450W",
+        "valueB": "355W",
         "winner": "B"
       },
       {
-        "label": "Performance",
-        "valueA": "Apple M2 Pro (10-core CPU)",
-        "valueB": "Intel Core i7 (13th gen) with RTX option",
+        "label": "Memory Bandwidth",
+        "valueA": "1,008 GB/s",
+        "valueB": "960 GB/s",
         "winner": "A"
       },
       {
-        "label": "Battery life",
-        "valueA": "Up to ~18-20 hours",
-        "valueB": "Up to ~12-15 hours",
-        "winner": "A"
-      },
-      {
-        "label": "Ports / expandability",
-        "valueA": "Thunderbolt 4, HDMI, SD, MagSafe",
-        "valueB": "Thunderbolt 4, USB-C, HDMI, SD",
+        "label": "DLSS vs FSR",
+        "valueA": "DLSS 3.0",
+        "valueB": "FSR 3.0",
         "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(2024)&tag=axevora-21",
-    "affiliateText": "Check Dell Price"
+    "affiliateLink": "https://www.amazon.in/s?k=AMD%20Radeon%20RX%207900%20XTX&tag=axevora-21",
+    "affiliateText": "Check AMD Price"
   },
   {
-    "id": "versus-headphones-2025",
+    "id": "headphones-sony-vs-bose",
     "category": "Headphones",
     "itemA": "Sony WH-1000XM5",
-    "itemB": "Bose QuietComfort Ultra Headphones",
+    "itemB": "Bose QuietComfort Ultra",
     "winner": "Sony WH-1000XM5",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-green-500",
-    "verdict": "Sony nails ANC and LDAC, Bose leads on comfort longevity.",
+    "winnerColorClass": "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
+    "borderColorClass": "border-l-blue-500",
+    "verdict": "Superior ANC and feature-rich app ecosystem.",
     "specs": [
       {
         "label": "Active Noise Cancellation",
-        "valueA": "Excellent adaptive ANC",
-        "valueB": "Excellent ANC, strong, less adaptive",
+        "valueA": "Excellent",
+        "valueB": "Class-leading",
+        "winner": "A"
+      },
+      {
+        "label": "Battery Life",
+        "valueA": "38 hours",
+        "valueB": "24 hours",
         "winner": "A"
       },
       {
         "label": "Comfort",
-        "valueA": "Lightweight with plush cushions",
-        "valueB": "Very comfortable but slightly heavier",
+        "valueA": "All-day comfort",
+        "valueB": "Ergonomically good but heavier",
         "winner": "A"
       },
       {
-        "label": "Codecs",
-        "valueA": "LDAC, AAC, SBC",
-        "valueB": "AAC, SBC, aptX HD",
+        "label": "Call Quality",
+        "valueA": "Clear, reliable",
+        "valueB": "Solid, but room for improvement",
         "winner": "A"
-      },
-      {
-        "label": "Battery life",
-        "valueA": "Up to 30 hours with ANC on",
-        "valueB": "Up to 50 hours with ANC on",
-        "winner": "B"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Bose%20QuietComfort%20Ultra%20Headphones&tag=axevora-21",
+    "affiliateLink": "https://www.amazon.in/s?k=Bose%20QuietComfort%20Ultra&tag=axevora-21",
     "affiliateText": "Check Bose Price"
+  },
+  {
+    "id": "laptop-macbook-vs-dell-xps15",
+    "category": "Laptops",
+    "itemA": "Apple MacBook Pro 14-inch (M2 Pro)",
+    "itemB": "Dell XPS 15 (9520)",
+    "winner": "Apple MacBook Pro 14-inch",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "borderColorClass": "border-l-green-500",
+    "verdict": "Best efficiency and battery life, with compact design and strong app ecosystem.",
+    "specs": [
+      {
+        "label": "CPU Performance",
+        "valueA": "Apple M2 Pro/Max (12-core CPU)",
+        "valueB": "Intel Core i7-13700H",
+        "winner": "A"
+      },
+      {
+        "label": "Display",
+        "valueA": "14.2 in, 3024x1964, 120 Hz, Liquid Retina XDR",
+        "valueB": "15.6 in, 3456x2160, 120 Hz, 3.5K OLED",
+        "winner": "B"
+      },
+      {
+        "label": "Battery Life",
+        "valueA": "Up to 18-21 hours",
+        "valueB": "Up to 12-15 hours",
+        "winner": "A"
+      },
+      {
+        "label": "RAM/Storage Options",
+        "valueA": "Up to 64GB unified memory, up to 8TB SSD",
+        "valueB": "Up to 64GB DDR5, up to 4TB SSD",
+        "winner": "A"
+      }
+    ],
+    "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(9520)&tag=axevora-21",
+    "affiliateText": "Check Dell Price"
   }
 ];

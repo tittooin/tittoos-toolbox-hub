@@ -326,7 +326,12 @@ const BlogManager = () => {
                     <h1 className="text-3xl font-bold">Auto-Blog Manager</h1>
                     <p className="text-muted-foreground">Set it and forget it. AI writes 1500-2000 words/post.</p>
                 </div>
-                <Button variant="destructive" onClick={clearSchedule} size="sm">Clear Schedule</Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => window.location.href = '/admin/battles'}>
+                        <Zap className="w-4 h-4 mr-2" /> Manage Battles
+                    </Button>
+                    <Button variant="destructive" onClick={clearSchedule} size="sm">Clear Schedule</Button>
+                </div>
             </div>
 
             {/* Maintenance Instructions */}

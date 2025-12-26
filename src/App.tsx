@@ -327,6 +327,7 @@ const App = () => (
 
               {/* Admin Routes */}
               <Route path="/admin/blog" element={<BlogManager />} />
+              <Route path="/admin/battles" element={<BattleManager />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
