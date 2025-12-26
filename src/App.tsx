@@ -106,6 +106,7 @@ const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
 const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
 const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
 const BlogManager = lazy(() => import("./pages/admin/BlogManager"));
+const BattleManager = lazy(() => import("./pages/admin/BattleManager"));
 const ChatWithPDF = lazy(() => import("./pages/tools/ChatWithPDF"));
 const PDFSummarizer = lazy(() => import("./pages/tools/PDFSummarizer"));
 const PDFQuizGenerator = lazy(() => import("./pages/tools/PDFQuizGenerator"));

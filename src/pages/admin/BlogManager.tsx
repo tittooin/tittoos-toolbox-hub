@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BlogGenerator, BlogPostGenerated } from "@/utils/aiGenerator";
 import { GitHubClient } from "@/utils/githubClient";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github, Trash2, RefreshCw } from "lucide-react";
+import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Github, Trash2, RefreshCw, Zap } from "lucide-react";
 import generatedBlogsFile from '@/data/generated_blogs.json';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
