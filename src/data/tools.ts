@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain, Youtube,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Apple
+  AppWindow, Utensils
 } from "lucide-react";
 
 const allCategories = [
@@ -2706,7 +2706,7 @@ const allTools = [
     subheading: "Compare Nutrition Facts",
     description: "Compare calories, macros, and vitamins of any two items. Make smarter diet choices.",
     category: "ai",
-    icon: Apple,
+    icon: Utensils,
     path: "/tools/nutrition-versus"
   },
   {
