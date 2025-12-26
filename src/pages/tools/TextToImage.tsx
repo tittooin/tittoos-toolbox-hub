@@ -16,6 +16,7 @@ const TextToImage = () => {
   const [size, setSize] = useState("1024x1024");
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const generateImage = async () => {
     if (!prompt.trim()) {
@@ -24,6 +25,7 @@ const TextToImage = () => {
     }
 
     setIsGenerating(true);
+    setHasError(false);
 
     try {
       // Use Pollinations.ai for real image generation (free, no key required)
@@ -159,36 +161,56 @@ const TextToImage = () => {
 
             {generatedImage && (
               <div className="mt-6 space-y-4">
-                <div className="relative min-h-[300px] flex items-center justify-center bg-muted/20 rounded-lg">
+                <div className="relative min-h-[300px] flex items-center justify-center bg-muted/20 rounded-lg overflow-hidden">
                   {isGenerating && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10 transition-all duration-300">
                       <div className="flex flex-col items-center gap-2">
                         <Sparkles className="w-8 h-8 text-primary animate-spin" />
-                        <p className="text-sm font-medium">Rendering...</p>
+                        <p className="text-sm font-medium">Creating your masterpiece...</p>
                       </div>
                     </div>
                   )}
-                  <img
-                    src={generatedImage}
-                    alt="Generated AI image"
-                    className={`w-full rounded-lg shadow-lg transition-opacity duration-300 ${isGenerating ? 'opacity-50' : 'opacity-100'}`}
-                    onLoad={() => setIsGenerating(false)}
-                    onError={() => {
-                      setIsGenerating(false);
-                      toast.error("Failed to load image. Only plain text prompts are supported in free tier.");
-                    }}
-                  />
+
+                  {hasError ? (
+                    <div className="flex flex-col items-center justify-center p-8 text-center space-y-4">
+                      <div className="bg-destructive/10 p-4 rounded-full">
+                        <Sparkles className="w-8 h-8 text-destructive" />
+                      </div>
+                      <p className="font-medium text-destructive">Image generation failed.</p>
+                      <p className="text-sm text-muted-foreground">The AI server might be busy or the prompt was blocked.</p>
+                      <Button onClick={generateImage} variant="outline">
+                        Try Again
+                      </Button>
+                    </div>
+                  ) : (
+                    <img
+                      src={generatedImage}
+                      alt="Generated AI image"
+                      className={`w-full rounded-lg shadow-lg transition-all duration-500 ${isGenerating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
+                      onLoad={() => {
+                        setIsGenerating(false);
+                        setHasError(false);
+                      }}
+                      onError={() => {
+                        setIsGenerating(false);
+                        setHasError(true);
+                        toast.error("Failed to load image. Please try a different prompt or settings.");
+                      }}
+                    />
+                  )}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button onClick={() => window.open(generatedImage, '_blank')} variant="outline" className="w-full">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Open Full Size
-                  </Button>
-                  <Button onClick={downloadImage} className="w-full">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Image
-                  </Button>
-                </div>
+                {!hasError && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={() => window.open(generatedImage, '_blank')} variant="outline" className="w-full">
+                      <Eye className="h-4 w-4 mr-2" />
+                      Open Full Size
+                    </Button>
+                    <Button onClick={downloadImage} className="w-full">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Image
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
