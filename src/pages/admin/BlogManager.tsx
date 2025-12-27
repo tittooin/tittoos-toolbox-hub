@@ -12,6 +12,7 @@ import { Loader2, CheckCircle, AlertTriangle, Save, Play, Download, Rocket, Gith
 import generatedBlogsFile from '@/data/generated_blogs.json';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { Helmet } from 'react-helmet-async';
 
 // Type for the schedule
 interface ScheduledPost {
@@ -321,6 +322,10 @@ const BlogManager = () => {
 
     return (
         <div className="container mx-auto py-10 max-w-4xl space-y-8">
+            <Helmet>
+                <title>Admin - Blog Manager</title>
+                <meta name="robots" content="noindex" />
+            </Helmet>
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold">Auto-Blog Manager</h1>

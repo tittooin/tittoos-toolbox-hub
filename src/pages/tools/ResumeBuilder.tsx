@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import { FileText, Download, Eye, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,14 +34,11 @@ const ResumeBuilder = () => {
   }]);
   const [skills, setSkills] = useState("");
 
-  useEffect(() => {
-    document.title = "Free Resume Builder Online – Axevora";
+  const location = useLocation();
+  const canonicalUrl = `https://axevora.com${location.pathname}`;
 
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Create professional resumes with multiple templates. Free resume builder with ATS-friendly designs and PDF export.');
-    }
-  }, []);
+
+
 
   const templates = [
     { id: "modern", name: "Modern Professional" },
@@ -112,6 +111,11 @@ const ResumeBuilder = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Free Resume Builder Online – Axevora</title>
+        <meta name="description" content="Create professional resumes with multiple templates. Free resume builder with ATS-friendly designs and PDF export." />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       <style>{`
         @media print {
             body * {

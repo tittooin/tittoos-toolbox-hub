@@ -9,6 +9,7 @@ import { TrendingBattle } from "@/data/battles";
 
 // Define the Affiliate Tag here or load from env/storage if needed
 const AFFILIATE_TAG = "axevora-21";
+import { Helmet } from 'react-helmet-async';
 
 const BattleManager = () => {
     const [githubToken, setGithubToken] = useState("");
@@ -162,6 +163,10 @@ export const trendingBattles: TrendingBattle[] = ${JSON.stringify(previewBattles
 
     return (
         <div className="container mx-auto py-10 max-w-4xl space-y-8">
+            <Helmet>
+                <title>Admin - Battle Manager</title>
+                <meta name="robots" content="noindex" />
+            </Helmet>
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold flex items-center gap-2">
