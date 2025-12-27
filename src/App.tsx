@@ -288,6 +288,8 @@ const App = () => (
               <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
               <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
               <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+              <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
+              <Route path="/tools/ocr-converter" element={<OCRConverter />} />
 
               {/* AI PDF Tools */}
               <Route path="/tools/chat-with-pdf" element={<ChatWithPDF />} />
