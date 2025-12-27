@@ -17,129 +17,153 @@ export interface TrendingBattle {
   }[];
   pros: string[];
   cons: string[];
-  qualityMetric?: string; // e.g. "Organic Certified"
-  popularity?: string; // e.g. "1.5M Users"
+  qualityMetric?: string;
+  popularity?: string;
 }
 
 export const trendingBattles: TrendingBattle[] = [
   {
-    "id": "gpu-rtx4090-vs-rx7900xtx",
-    "category": "Graphics Cards",
-    "itemA": "NVIDIA GeForce RTX 4090",
-    "itemB": "AMD Radeon RX 7900 XTX",
-    "winner": "NVIDIA GeForce RTX 4090",
-    "winnerColorClass": "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
+    "id": "coffee-makers-espresso-vs-drip-2025",
+    "category": "Best Coffee Makers",
+    "itemA": "Breville Barista Express (BES870XL)",
+    "itemB": "OXO Brew 9-Cup Programmable Coffee Maker",
+    "winner": "Breville Barista Express (BES870XL)",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Top raw perf and RT headroom, but pricey.",
+    "verdict": "Barista-grade espresso control with grinder for authentic shots.",
+    "pros": [
+      "Espresso capability with professional feel (Winner)",
+      "Built-in grinder for fresh grounds (Winner)"
+    ],
+    "cons": [
+      "Requires regular descaling and cleaning",
+      "Larger footprint on countertop"
+    ],
+    "qualityMetric": "Barista-grade",
+    "popularity": "4.6/5 Avg User Rating",
     "specs": [
       {
-        "label": "CUDA/RT Performance",
-        "valueA": "RTX 4090",
-        "valueB": "RX 7900 XTX",
+        "label": "Brew Type",
+        "valueA": "Espresso",
+        "valueB": "Drip",
         "winner": "A"
       },
       {
-        "label": "Power Draw",
-        "valueA": "450W",
-        "valueB": "355W",
+        "label": "Water Capacity",
+        "valueA": "1.8 L",
+        "valueB": "1.0-1.5 L",
+        "winner": "A"
+      },
+      {
+        "label": "Automation",
+        "valueA": "Semi-automatic",
+        "valueB": "Fully Programmable",
         "winner": "B"
       },
       {
-        "label": "Memory Bandwidth",
-        "valueA": "1,008 GB/s",
-        "valueB": "960 GB/s",
-        "winner": "A"
-      },
-      {
-        "label": "DLSS vs FSR",
-        "valueA": "DLSS 3.0",
-        "valueB": "FSR 3.0",
-        "winner": "A"
+        "label": "Maintenance",
+        "valueA": "Descaling required",
+        "valueB": "Low maintenance with auto-clean",
+        "winner": "B"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=AMD%20Radeon%20RX%207900%20XTX&tag=axevora-21",
-    "affiliateText": "Check AMD Price",
-    "pros": ["Fastest", "Ray Tracing"],
-    "cons": ["Power Hungry", "Large Size"]
+    "affiliateLink": "https://www.amazon.in/s?k=OXO%20Brew%209-Cup%20Programmable%20Coffee%20Maker&tag=axevora-21",
+    "affiliateText": "Check OXO Price"
   },
   {
-    "id": "headphones-sony-vs-bose",
-    "category": "Headphones",
-    "itemA": "Sony WH-1000XM5",
-    "itemB": "Bose QuietComfort Ultra",
-    "winner": "Sony WH-1000XM5",
-    "winnerColorClass": "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
-    "borderColorClass": "border-l-blue-500",
-    "verdict": "Superior ANC and feature-rich app ecosystem.",
-    "specs": [
-      {
-        "label": "Active Noise Cancellation",
-        "valueA": "Excellent",
-        "valueB": "Class-leading",
-        "winner": "A"
-      },
-      {
-        "label": "Battery Life",
-        "valueA": "38 hours",
-        "valueB": "24 hours",
-        "winner": "A"
-      },
-      {
-        "label": "Comfort",
-        "valueA": "All-day comfort",
-        "valueB": "Ergonomically good but heavier",
-        "winner": "A"
-      },
-      {
-        "label": "Call Quality",
-        "valueA": "Clear, reliable",
-        "valueB": "Solid, but room for improvement",
-        "winner": "A"
-      }
-    ],
-    "affiliateLink": "https://www.amazon.in/s?k=Bose%20QuietComfort%20Ultra&tag=axevora-21",
-    "affiliateText": "Check Bose Price",
-    "pros": ["Best ANC", "Comfortable"],
-    "cons": ["Expensive", "Bulky"]
-  },
-  {
-    "id": "laptop-macbook-vs-dell-xps15",
-    "category": "Laptops",
-    "itemA": "Apple MacBook Pro 14-inch (M2 Pro)",
-    "itemB": "Dell XPS 15 (9520)",
-    "winner": "Apple MacBook Pro 14-inch",
+    "id": "smartphones-2025-s25-ultra-vs-iphone-16-pro-max",
+    "category": "Latest Smartphones 2024-2025",
+    "itemA": "Samsung Galaxy S25 Ultra",
+    "itemB": "Apple iPhone 16 Pro Max",
+    "winner": "Samsung Galaxy S25 Ultra",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-green-500",
-    "verdict": "Best efficiency and battery life, with compact design and strong app ecosystem.",
+    "borderColorClass": "border-l-purple-500",
+    "verdict": "Android flagship with leading display, battery life, and versatile imaging.",
+    "pros": [
+      "Long battery life (Winner)",
+      "Vivid 6.8-inch display (Winner)"
+    ],
+    "cons": [
+      "Fractured software updates across devices",
+      "Ecosystem differences vs iOS"
+    ],
+    "qualityMetric": "Pro-grade camera",
+    "popularity": "4.7/5 Avg User Rating",
     "specs": [
       {
-        "label": "CPU Performance",
-        "valueA": "Apple M2 Pro/Max (12-core CPU)",
-        "valueB": "Intel Core i7-13700H",
+        "label": "Display",
+        "valueA": "6.8-inch LTPO OLED 144Hz",
+        "valueB": "6.7-inch ProMotion OLED 120Hz",
         "winner": "A"
+      },
+      {
+        "label": "Battery",
+        "valueA": "4900 mAh",
+        "valueB": "4400 mAh",
+        "winner": "A"
+      },
+      {
+        "label": "Camera",
+        "valueA": "200 MP main + 64 MP telephoto",
+        "valueB": "108 MP main + 12 MP ultrawide",
+        "winner": "A"
+      },
+      {
+        "label": "Ecosystem",
+        "valueA": "Android 15 + Galaxy ecosystem",
+        "valueB": "iOS + Apple ecosystem",
+        "winner": "A"
+      }
+    ],
+    "affiliateLink": "https://www.amazon.in/s?k=Apple%20iPhone%2016%20Pro%20Max&tag=axevora-21",
+    "affiliateText": "Check Apple Price"
+  },
+  {
+    "id": "laptops-students-creators-macbook-vs-dell-xps-2025",
+    "category": "Best Laptops for Students/Creators",
+    "itemA": "MacBook Pro 14-inch (M3 Pro, 2025)",
+    "itemB": "Dell XPS 15 (2024, RTX 4060)",
+    "winner": "MacBook Pro 14-inch (M3 Pro, 2025)",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "borderColorClass": "border-l-purple-500",
+    "verdict": "Top performance with battery life and portability for students and creators.",
+    "pros": [
+      "Excellent performance (Winner)",
+      "Long battery life (Winner)"
+    ],
+    "cons": [
+      "Higher price vs rivals",
+      "Non-upgradable RAM"
+    ],
+    "qualityMetric": "Creator-grade performance",
+    "popularity": "4.8/5 Avg User Rating",
+    "specs": [
+      {
+        "label": "CPU",
+        "valueA": "Apple M3 Pro",
+        "valueB": "Intel Core i9-13950H",
+        "winner": "A"
+      },
+      {
+        "label": "GPU",
+        "valueA": "14-core GPU",
+        "valueB": "RTX 4060",
+        "winner": "A"
+      },
+      {
+        "label": "RAM/Storage",
+        "valueA": "16GB / 512GB",
+        "valueB": "32GB / 1TB",
+        "winner": "B"
       },
       {
         "label": "Display",
-        "valueA": "14.2 in, 3024x1964, 120 Hz, Liquid Retina XDR",
-        "valueB": "15.6 in, 3456x2160, 120 Hz, 3.5K OLED",
+        "valueA": "14.2-inch Retina 3024x1964",
+        "valueB": "15.6-inch 4K OLED",
         "winner": "B"
-      },
-      {
-        "label": "Battery Life",
-        "valueA": "Up to 18-21 hours",
-        "valueB": "Up to 12-15 hours",
-        "winner": "A"
-      },
-      {
-        "label": "RAM/Storage Options",
-        "valueA": "Up to 64GB unified memory, up to 8TB SSD",
-        "valueB": "Up to 64GB DDR5, up to 4TB SSD",
-        "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(9520)&tag=axevora-21",
-    "affiliateText": "Check Dell Price",
-    "pros": ["Amazing Display", "Premium Build"],
-    "cons": ["Battery Average", "Pricey"]
+    "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(2024%2C%20RTX%204060)&tag=axevora-21",
+    "affiliateText": "Check Dell Price"
   }
 ];
