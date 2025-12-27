@@ -10,7 +10,7 @@ import { ArrowLeft, Calendar, Clock, User, Plus, Wand2, Share2, ExternalLink } f
 import { toast } from 'sonner';
 
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
 import GENERATED_BLOGS from "@/data/generated_blogs.json";
 
@@ -479,6 +479,11 @@ const Blog = () => {
   };
 
   if (selectedPostData) {
+    // If the post has a custom link (like category pages), redirect to it
+    if (selectedPostData.customLink) {
+      return <Navigate to={selectedPostData.customLink} replace />;
+    }
+
     return (
       <div className="min-h-screen bg-background">
         <Helmet>
