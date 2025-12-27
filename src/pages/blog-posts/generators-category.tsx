@@ -185,6 +185,48 @@ const GeneratorsCategoryPage = () => {
               </div>
             </div>
 
+            {/* FAQ Section */}
+            <section className="space-y-8">
+              <h2 className="text-3xl font-bold border-b pb-4">Frequently Asked Questions</h2>
+              <div className="grid gap-4">
+                <details className="group bg-card border rounded-xl p-6 open:shadow-md transition-all">
+                  <summary className="flex justify-between items-center font-bold text-lg cursor-pointer list-none">
+                    Are the generated passwords saved on your server?
+                    <span className="transition-transform group-open:rotate-180">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
+                  </summary>
+                  <div className="mt-4 text-muted-foreground leading-relaxed">
+                    <strong>Absolutely not.</strong> All generation happens 100% in your browser using JavaScript. The data never leaves your device. You can verify this by turning off your internet connection—the tools will still work perfectly.
+                  </div>
+                </details>
+
+                <details className="group bg-card border rounded-xl p-6 open:shadow-md transition-all">
+                  <summary className="flex justify-between items-center font-bold text-lg cursor-pointer list-none">
+                    Why do QR codes have those squares in the corners?
+                    <span className="transition-transform group-open:rotate-180">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
+                  </summary>
+                  <div className="mt-4 text-muted-foreground leading-relaxed">
+                    Those are "Finder Patterns". They tell the scanner the orientation of the code. This allows you to scan a QR code upside down or sideways, and the scanner will still be able to decode it correctly.
+                  </div>
+                </details>
+
+                <details className="group bg-card border rounded-xl p-6 open:shadow-md transition-all">
+                  <summary className="flex justify-between items-center font-bold text-lg cursor-pointer list-none">
+                    What is the difference between SHA-256 and MD5?
+                    <span className="transition-transform group-open:rotate-180">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
+                  </summary>
+                  <div className="mt-4 text-muted-foreground leading-relaxed">
+                    MD5 is an older hashing algorithm that is considered broken (vulnerable to collisions). SHA-256 is the modern standard used by Bitcoin and SSL certificates. Never use MD5 for security purposes today; use it only for non-critical file integrity checks.
+                  </div>
+                </details>
+              </div>
+            </section>
+
           </div>
           {/* EXTENDED CONTENT END */}
 
