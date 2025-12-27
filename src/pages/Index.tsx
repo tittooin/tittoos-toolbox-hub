@@ -95,7 +95,7 @@ const Index = () => {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
               <Button size="xl" className="h-14 px-8 text-lg font-bold shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 rounded-full" onClick={() => window.location.href = '/tools/tech-versus'}>
-                <Smartphone className="w-5 h-5 mr-3" /> Compare Tech
+                <Trophy className="w-5 h-5 mr-3" /> Compare Anything
               </Button>
               <Button size="xl" variant="outline" className="h-14 px-8 text-lg font-bold border-2 hover:bg-muted/50 transition-all rounded-full" onClick={scrollToTools}>
                 Explore All Tools <ArrowRight className="ml-2 h-5 w-5" />
@@ -135,11 +135,11 @@ const Index = () => {
                         </Badge>
                       </div>
                       <h3 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-4">
-                        Tech Battle Arena <span className="text-indigo-600 dark:text-indigo-400">AI</span>
+                        Ultimate Battle Arena <span className="text-indigo-600 dark:text-indigo-400">AI</span>
                       </h3>
                       <p className="text-lg text-muted-foreground max-w-2xl mb-6">
-                        Don't buy until you compare. Our AI analyzes specs, features, and hidden flaws to declare a clear winner.
-                        <span className="block mt-2 font-medium text-foreground">iPhone vs Samsung? Laptop vs Tablet? We decide.</span>
+                        Don't buy until you compare. From <strong>Gadgets to Groceries, Skincare to Supplements</strong>. Our AI analyzes specs and hidden facts to declare a winner.
+                        <span className="block mt-2 font-medium text-foreground">Olive Oil vs Avocado? iPhone vs Samsung? We decide.</span>
                       </p>
                       <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold shadow-lg shadow-indigo-500/25 rounded-full px-8 h-12">
                         Start a New Battle <ArrowRight className="ml-2 w-5 h-5" />

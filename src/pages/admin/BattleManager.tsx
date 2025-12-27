@@ -31,53 +31,78 @@ const BattleManager = () => {
 
     const generateBattles = async () => {
         setIsGenerating(true);
-        toast.info("AI Agent is researching latest tech trends...");
+        toast.info("AI Agent is researching latest trends across all categories...");
 
         const CATEGORIES = [
+            // Tech & Gadgets
             'Latest Smartphones 2024-2025',
             'Best Laptops for Students/Creators',
             'Top Noise Cancelling Headphones',
             'Flagship PC Graphic Cards',
             'Smartwatches & Fitness Trackers',
-            'Popular Health Supplements (e.g. Whey Protein Brands)',
-            'Trending Skincare Products (e.g. Moisturizers)',
-            'Healthy Cooking Oils (e.g. Olive vs Avocado)',
-            'Best Coffee Makers'
+            // Home & Kitchen
+            'Best Air Fryers 2025',
+            'Top Robot Vacuums',
+            'Best Coffee Makers (Drip vs Espresso)',
+            // Health & Nutrition (User Requested)
+            'Edible Oils (Olive Oil vs Avocado Oil)',
+            'Healthy Sugar Alternatives (Stevia vs Monk Fruit)',
+            'Protein Powders (Whey vs Plant-Based)',
+            'Multivitamins (Men vs Women)',
+            // Beauty & Personal Care (User Requested)
+            'Moisturizers (CeraVe vs Cetaphil)',
+            'Suncreens (Mineral vs Chemical)',
+            'Shampoos for Hair Fall',
+            'Vitamin C Serums',
+            // Grocery & Daily Essentials
+            'Premium Tea Brands',
+            'Dark Chocolate Brands (70% vs 85%)',
+            'Laundry Detergents (Liquid vs Pods)',
+            // Fashion & Lifestyle
+            'Running Shoes (Nike vs Adidas)',
+            'Winter Jackets (Down vs Synthetic)',
+            'Smart Rings (Oura vs Others)'
         ];
 
-        // Randomly pick top 3
+        // Randomly pick top 3 diverse categories
         const selectedCats = CATEGORIES.sort(() => 0.5 - Math.random()).slice(0, 3);
         const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
         const prompt = `
-            Today is ${today}. Generate 3 trending "Versus" battles for: ${selectedCats.join(', ')}.
+            Today is ${today}. Generate 3 highly detailed "Versus" battles for: ${selectedCats.join(', ')}.
             
-            Strictly return a JSON Array (no markdown):
+            Strictly return a JSON Array (no markdown, no explanations, just valid JSON):
             [
                 {
-                    "id": "unique-slug-id",
-                    "category": "Category Name",
-                    "itemA": "Product A",
-                    "itemB": "Product B",
+                    "id": "unique-kebab-case-id-product-a-vs-product-b",
+                    "category": "Broad Category (e.g., Skincare, Grocery, Tech)",
+                    "itemA": "Full Product Name A",
+                    "itemB": "Full Product Name B",
                     "winner": "Winner Name",
                     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
                     "borderColorClass": "border-l-purple-500", 
-                    "verdict": "Short reason (max 20 words).",
-                    "pros": ["Pro 1 (Winner)", "Pro 2 (Winner)"],
-                    "cons": ["Con 1 (Winner)", "Con 2 (Winner)"],
-                    "qualityMetric": "High Fidelity Audio / Organic / etc (Short badge text)",
-                    "popularity": "4.5/5 Avg User Rating",
+                    "verdict": "Clear, decisive reason for the win (max 25 words).",
+                    "pros": ["Major Pro 1 (Winner)", "Major Pro 2 (Winner)", "Major Pro 3"],
+                    "cons": ["Minor Con 1 (Winner)", "Minor Con 2"],
+                    "qualityMetric": "Key Badge (e.g. 'FDA Approved', 'Organic', 'Dolby Atmos')",
+                    "popularity": "User Rating (e.g. '4.8/5 Stars', 'Best Seller')",
                     "specs": [
-                        { "label": "Feature 1", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" },
-                        { "label": "Feature 2", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" },
-                        { "label": "Feature 3", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" },
-                        { "label": "Feature 4", "valueA": "Val A", "valueB": "Val B", "winner": "A|B|Tie" }
+                        { "label": "Comparison Point 1", "valueA": "Data A", "valueB": "Data B", "winner": "A|B|Tie" },
+                        { "label": "Comparison Point 2", "valueA": "Data A", "valueB": "Data B", "winner": "A|B|Tie" },
+                        { "label": "Comparison Point 3", "valueA": "Data A", "valueB": "Data B", "winner": "A|B|Tie" },
+                        { "label": "Comparison Point 4", "valueA": "Data A", "valueB": "Data B", "winner": "A|B|Tie" },
+                        { "label": "Comparison Point 5", "valueA": "Data A", "valueB": "Data B", "winner": "A|B|Tie" }
                     ]
                 }
             ]
             Rules: 
-            1. For "specs", use relevant comparison points (e.g. "Ingredients" for food, "Battery" for tech).
-            2. "popularity" should be realistic estimates (e.g. "Best Seller", "1M+ Sold", "4.8 Stars").
+            1. **Crucial**: You MUST provide at least 5 rows in the "specs" array. This is a detailed comparison table.
+            2. For "specs", adapt to the category. 
+               - Food/Grocery: Ingredients, Calories/100g, Shelf Life, Origin, Price/kg.
+               - Beauty: Active Ingredients, Skin Type, Fragrance, Paraben-Free?, Volume.
+               - Tech: Battery, Screen, Processor, Weight, Warranty.
+            3. "pros" and "cons" must have at least 2-3 items each.
+            4. Make "winner" decisive.
         `;
 
         try {
@@ -88,6 +113,7 @@ const BattleManager = () => {
             if (!response.ok) throw new Error("AI Fetch Failed");
 
             const text = await response.text();
+            // Intelligent clean up of backticks if AI adds them
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
             const data = JSON.parse(cleanJson);
 
@@ -171,9 +197,9 @@ export const trendingBattles: TrendingBattle[] = ${JSON.stringify(previewBattles
                 <div>
                     <h1 className="text-3xl font-bold flex items-center gap-2">
                         <ShieldCheck className="w-8 h-8 text-purple-600" />
-                        Tech Battle Manager
+                        Ultimate Battle Manager
                     </h1>
-                    <p className="text-muted-foreground">Automate "Tech Versus" & "Home" trending sections.</p>
+                    <p className="text-muted-foreground">Automate "Versus" comparisons for Tech, Home, Health & more.</p>
                 </div>
             </div>
 
