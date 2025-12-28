@@ -219,6 +219,12 @@ ${selectedTools}
       - Target low-competition long-tail keywords naturally.
       - Output valid HTML (p, ul, li, h3, h4, strong, a). Do NOT output the H2 title.
       - Do NOT use markdown code blocks. Just raw HTML content.
+
+      **AFFILIATE LINKING (CRITICAL):**
+      - If you mention a specific physical product (e.g., "iPhone 16", "Dell XPS", "Blue Yeti Mic"), you MUST add a "Check Price on Amazon" link.
+      - Use this specific URL format: https://www.amazon.in/s?k=[Product+Name]&tag=axevora-21
+      - Example: <a href="https://www.amazon.in/s?k=iPhone+15&tag=axevora-21" target="_blank" rel="noopener noreferrer" class="text-orange-600 font-bold hover:underline">Check Price on Amazon</a>
+      - Only do this for real, tangible products.
     `;
 
     const text = await this.generateWithFallback(prompt);
