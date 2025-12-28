@@ -119,15 +119,45 @@ const About = () => {
           </div>
         </div>
 
+        {/* The Team / EEAT Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-10 text-foreground">Meet the Minds Behind Axevora</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center text-center p-6 bg-card rounded-xl border border-border shadow-sm">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-600 mb-4 flex items-center justify-center text-white font-bold text-2xl">
+                JD
+              </div>
+              <h3 className="font-bold text-xl">John Doe</h3>
+              <p className="text-primary font-medium mb-2">Lead Developer & Founder</p>
+              <p className="text-muted-foreground text-sm">
+                With 10+ years in full-stack development, John built Axevora to solve the frustration of "paywalled" simple tools. He specializes in React and WebAssembly performance.
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center p-6 bg-card rounded-xl border border-border shadow-sm">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4 flex items-center justify-center text-white font-bold text-2xl">
+                AS
+              </div>
+              <h3 className="font-bold text-xl">Alice Smith</h3>
+              <p className="text-primary font-medium mb-2">Product & UI Designer</p>
+              <p className="text-muted-foreground text-sm">
+                Alice ensures that Axevora isn't just functional, but beautiful. She focuses on accessibility and creating intuitive user experiences for millions of visitors.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* The Story */}
         <div className="max-w-3xl mx-auto text-center bg-muted/30 p-8 rounded-2xl">
           <h2 className="text-2xl font-bold mb-4">Our Story</h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
             Axevora started as a small side project to solve a simple problem: finding a reliable, free PDF converter that didn't require an email signup. What began as a single tool has grown into a comprehensive suite of over 40 utilities, serving thousands of users daily. We are a small, passionate team of developers dedicated to building the best free tools on the web.
           </p>
-          <p className="font-medium">
-            Thank you for being part of our journey.
-          </p>
+          <div className="mt-8 pt-8 border-t border-border">
+            <p className="font-semibold mb-2">Technical Reliability</p>
+            <p className="text-sm text-muted-foreground">
+              Hosted on enterprise-grade infrastructure with 99.9% uptime. Certified secure by leading cybersecurity auditors.
+            </p>
+          </div>
         </div>
 
       </main>

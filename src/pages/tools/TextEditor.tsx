@@ -162,6 +162,43 @@ const TextEditor = () => {
           </div>
         </div>
 
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Date & Time Shortcuts</h2>
+        <p className="mb-6">
+          Often need to timestamp your notes? This editor supports standard browser shortcuts.
+        </p>
+        <ul className="list-disc pl-6 space-y-2 mb-8 text-gray-700 dark:text-gray-300">
+          <li><strong>Ctrl + A / Cmd + A:</strong> Select All</li>
+          <li><strong>Ctrl + Z / Cmd + Z:</strong> Undo</li>
+          <li><strong>Ctrl + C / Cmd + C:</strong> Copy</li>
+          <li><strong>Ctrl + V / Cmd + V:</strong> Paste (strips formatting from Word/Google Docs)</li>
+        </ul>
+
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Frequently Asked Questions</h2>
+        <div className="space-y-6 mb-12">
+          <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+              <span className="text-lg font-semibold">Does this auto-save?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>Be careful! This tool is designed for <em>temporary</em> drafting. If you refresh the page or close the tab, your text may be lost unless you click <strong>Download</strong> first. We prioritize privacy over cloud storage.</p>
+            </div>
+          </details>
+          <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+              <span className="text-lg font-semibold">Can I open existing text files?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>You can drag and drop a <code>.txt</code> file directly into the editor area to load its content (browser dependent), or simply copy-paste text from another document.</p>
+            </div>
+          </details>
+        </div>
+
         <div className="mt-12 bg-slate-50 dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200 dark:border-slate-800">
           <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">Privacy First</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-4">

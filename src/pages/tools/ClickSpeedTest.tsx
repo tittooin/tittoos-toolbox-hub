@@ -176,19 +176,111 @@ const ClickSpeedTest = () => {
                 )}
 
                 {/* Info */}
-                <div className="prose dark:prose-invert max-w-none">
-                    <h3>What is CPS?</h3>
-                    <p>
-                        CPS stands for <strong>Clicks Per Second</strong>. It is a measure of how fast you can click your mouse button.
-                        Gamers often use this test to improve their speed for games like Minecraft (PvP) or shooter games.
+                <div className="prose prose-lg dark:prose-invert max-w-none mt-16 mb-12">
+                    <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Click Speed Test – How Fast Are Your Fingers?</h1>
+
+                    <p className="lead text-xl text-muted-foreground mb-10 leading-relaxed font-light">
+                        The <strong>CPS Test</strong> (Clicks Per Second) is the ultimate benchmark for gamers, competitors, and anyone looking to test their reflexes. Whether you want to improve your Minecraft PvP skills or just challenge your friends, accurate measurement is the first step to becoming faster.
                     </p>
-                    <h3>CPS Ranks</h3>
-                    <ul>
-                        <li><strong>Turtle (&lt; 5 CPS):</strong> Slow and steady.</li>
-                        <li><strong>Rabbit (5-8 CPS):</strong> Average speed.</li>
-                        <li><strong>Cheetah (8-10 CPS):</strong> Fast!</li>
-                        <li><strong>Flash (&gt; 10 CPS):</strong> Superhuman speed!</li>
-                    </ul>
+
+                    <div className="grid md:grid-cols-2 gap-8 my-12">
+                        <div className="bg-card p-8 rounded-2xl border shadow-sm">
+                            <h3 className="text-2xl font-bold mb-4 flex items-center">
+                                <span className="text-3xl mr-3">🎮</span> Why Gamer's Care?
+                            </h3>
+                            <p className="text-muted-foreground leading-relaxed">
+                                In competitive gaming (like Minecraft, Call of Duty, or Fortnite), a higher CPS often means dealing more damage in less time, building structures faster, or reacting quicker than your opponent. It can be the difference between victory and defeat.
+                            </p>
+                        </div>
+                        <div className="bg-card p-8 rounded-2xl border shadow-sm">
+                            <h3 className="text-2xl font-bold mb-4 flex items-center">
+                                <span className="text-3xl mr-3">🧪</span> The Science
+                            </h3>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Clicking speed is a combination of muscle memory, hand-eye coordination, and the physical mechanism of your mouse. Regular practice can physically alter how your fast-twitch muscle fibers respond.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h2 className="text-3xl font-bold mt-16 mb-6">Advanced Clicking Techniques</h2>
+                    <p className="mb-6">
+                        Want to go beyond the average 6-7 CPS? Professional gamers use specialized techniques to achieve superhuman speeds.
+                    </p>
+
+                    <div className="space-y-8">
+                        <div className="bg-muted/30 p-6 rounded-xl border">
+                            <h3 className="text-xl font-bold mb-2 text-primary">1. Jitter Clicking</h3>
+                            <p className="mb-2"><strong>Speed Potential:</strong> 10 - 14 CPS</p>
+                            <p className="text-sm text-muted-foreground">This involves vibrating the muscles in your forearm and wrist to click the mouse button rapidly. It requires a stiff arm and can be tiring, but it's effective for short bursts.</p>
+                        </div>
+
+                        <div className="bg-muted/30 p-6 rounded-xl border">
+                            <h3 className="text-xl font-bold mb-2 text-blue-500">2. Butterfly Clicking</h3>
+                            <p className="mb-2"><strong>Speed Potential:</strong> 15 - 25 CPS</p>
+                            <p className="text-sm text-muted-foreground">Using two fingers (index and middle) to alternate clicks on the <em>same</em> mouse button. This effectively doubles your clicking speed but requires a mouse with double-click support to truly shine.</p>
+                        </div>
+
+                        <div className="bg-muted/30 p-6 rounded-xl border">
+                            <h3 className="text-xl font-bold mb-2 text-purple-500">3. Drag Clicking</h3>
+                            <p className="mb-2"><strong>Speed Potential:</strong> 25+ CPS</p>
+                            <p className="text-sm text-muted-foreground">The most extreme technique. By dragging your finger across a textured mouse button, friction causes the switch to bounce multiple times per drag. Used primarily for "god bridging" in Minecraft.</p>
+                        </div>
+                    </div>
+
+                    <h2 className="text-3xl font-bold mt-16 mb-6">Global Rank System</h2>
+                    <p className="mb-6">
+                        Where do you stand compared to the rest of the world? Here is our official tier list based on your 5-second test score:
+                    </p>
+                    <div className="grid md:grid-cols-4 gap-4 text-center">
+                        <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                            <div className="text-4xl mb-2">🐢</div>
+                            <h4 className="font-bold text-green-700 dark:text-green-300">Turtle</h4>
+                            <p className="text-xs font-mono mt-1">&lt; 5 CPS</p>
+                        </div>
+                        <div className="p-4 rounded-lg bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                            <div className="text-4xl mb-2">🐇</div>
+                            <h4 className="font-bold text-yellow-700 dark:text-yellow-300">Rabbit</h4>
+                            <p className="text-xs font-mono mt-1">5 - 8 CPS</p>
+                        </div>
+                        <div className="p-4 rounded-lg bg-orange-100 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
+                            <div className="text-4xl mb-2">🐆</div>
+                            <h4 className="font-bold text-orange-700 dark:text-orange-300">Cheetah</h4>
+                            <p className="text-xs font-mono mt-1">8 - 10 CPS</p>
+                        </div>
+                        <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                            <div className="text-4xl mb-2">⚡</div>
+                            <h4 className="font-bold text-red-700 dark:text-red-300">Flash</h4>
+                            <p className="text-xs font-mono mt-1">10+ CPS</p>
+                        </div>
+                    </div>
+
+                    <h2 className="text-3xl font-bold mt-16 mb-6">Frequently Asked Questions</h2>
+                    <dl className="space-y-6">
+                        <div className="group border-b pb-6">
+                            <dt className="font-bold text-lg mb-2 cursor-pointer flex items-center justify-between">
+                                What is the world record for CPS?
+                            </dt>
+                            <dd className="text-muted-foreground leading-relaxed">
+                                The generally accepted world record for the standard 1-second CPS test is around **16-18 CPS** using regular clicking methods. With drag clicking, some players have registered over **100 CPS** (though this is often considered a hardware exploit).
+                            </dd>
+                        </div>
+                        <div className="group border-b pb-6">
+                            <dt className="font-bold text-lg mb-2 cursor-pointer flex items-center justify-between">
+                                Does mouse choice matter?
+                            </dt>
+                            <dd className="text-muted-foreground leading-relaxed">
+                                Yes. Gaming mice with high-quality Omron or mechanical switches are more responsive. For jitter/butterfly clicking, a mouse with a lighter actuation force is preferred.
+                            </dd>
+                        </div>
+                        <div className="group pb-6">
+                            <dt className="font-bold text-lg mb-2 cursor-pointer flex items-center justify-between">
+                                Is this test accuracy?
+                            </dt>
+                            <dd className="text-muted-foreground leading-relaxed">
+                                Our tool measures time down to the millisecond to ensure 100% precision. However, your own internet latency or browser lag can sometimes affect the perceived start time, so we recommend taking the average of 3 attempts.
+                            </dd>
+                        </div>
+                    </dl>
                 </div>
             </div>
         </ToolTemplate>

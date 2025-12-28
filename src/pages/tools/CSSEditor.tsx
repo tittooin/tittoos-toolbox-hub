@@ -198,6 +198,80 @@ p {
           <li><strong>Mobile First:</strong> Write your base styles for mobile devices first, then use media queries (<code>@media</code>) to adjust for larger screens.</li>
         </ul>
 
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">CSS Properties Cheat Sheet</h2>
+        <p className="mb-6">
+          Don't memorize everything. Here are the most common properties you'll use 90% of the time.
+        </p>
+        <div className="overflow-x-auto mb-10">
+          <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Example</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">color</td>
+                <td className="py-3 px-6">Changes text color.</td>
+                <td className="py-3 px-6 font-mono text-sm">color: red;</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">background</td>
+                <td className="py-3 px-6">Sets background color or image.</td>
+                <td className="py-3 px-6 font-mono text-sm">background: #000;</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">font-size</td>
+                <td className="py-3 px-6">Sets the size of text.</td>
+                <td className="py-3 px-6 font-mono text-sm">font-size: 16px;</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">margin</td>
+                <td className="py-3 px-6">Space <em>outside</em> an element.</td>
+                <td className="py-3 px-6 font-mono text-sm">margin: 20px;</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">padding</td>
+                <td className="py-3 px-6">Space <em>inside</em> an element.</td>
+                <td className="py-3 px-6 font-mono text-sm">padding: 10px;</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-6 font-mono text-pink-600">display</td>
+                <td className="py-3 px-6">Controls layout behavior.</td>
+                <td className="py-3 px-6 font-mono text-sm">display: flex;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">Frequently Asked Questions</h2>
+        <div className="space-y-6 mb-12">
+          <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+              <span className="text-lg font-semibold">What is the difference between class (.) and ID (#)?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>A <strong>Class (.)</strong> can be used on multiple elements (e.g., <code>.btn</code> for all buttons). An <strong>ID (#)</strong> must be unique and used on only one element per page (e.g., <code>#header</code>). CSS best practices recommend using classes for styling.</p>
+            </div>
+          </details>
+          <details className="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+              <span className="text-lg font-semibold">Why isn't my CSS working?</span>
+              <span className="transition group-open:rotate-180">
+                <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </summary>
+            <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
+              <p>Check for: 1. Missing semicolons (;) at the end of lines. 2. Missing curly braces ({ }). 3. Spelling mistakes in property names. 4. Specificity issues (another rule might be overriding yours).</p>
+            </div>
+          </details>
+        </div>
+
         <div className="mt-12 bg-blue-50 dark:bg-blue-900/20 p-8 rounded-2xl border border-blue-100 dark:border-blue-800/30">
           <h3 className="text-2xl font-bold mb-4 text-blue-900 dark:text-blue-100">Need to pick the perfect color?</h3>
           <p className="text-blue-800 dark:text-blue-200 mb-4">

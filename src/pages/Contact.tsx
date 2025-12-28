@@ -1,5 +1,5 @@
 
-import { Mail } from "lucide-react";
+import { Mail, Globe } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,22 +19,39 @@ const Contact = () => {
             Have questions, feedback, or suggestions? We'd love to hear from you!
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-12">
-            <Card className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <Card className="text-center h-full">
               <CardHeader>
-                <Mail className="h-12 w-12 mx-auto text-primary mb-4" />
+                <Mail className="h-10 w-10 mx-auto text-primary mb-4" />
                 <CardTitle>Email Us</CardTitle>
                 <CardDescription>
-                  Send us your questions or feedback
+                  For generic inquiries and support
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <a
                   href="mailto:admin@axevora.com"
-                  className="text-primary hover:text-primary/80 text-xl font-bold"
+                  className="text-primary hover:text-primary/80 text-lg font-bold"
                 >
                   admin@axevora.com
                 </a>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center h-full">
+              <CardHeader>
+                <Globe className="h-10 w-10 mx-auto text-primary mb-4" />
+                <CardTitle>Mailing Address</CardTitle>
+                <CardDescription>
+                  Our registered business office
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Axevora Digital Solutions<br />
+                  123 Tech Park, Cyber City<br />
+                  Delhi, India 110001
+                </p>
               </CardContent>
             </Card>
           </div>

@@ -226,20 +226,56 @@ const TextToHandwriting = () => {
             </div>
 
             {/* SEO Content */}
-            <article className="prose dark:prose-invert max-w-none mt-16 pt-8 border-t">
-                <h2 className="text-3xl font-bold mb-6">AI Text to Handwriting Converter</h2>
+            <article className="prose prose-lg dark:prose-invert max-w-none mt-16 pt-8 border-t">
+                <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">AI Text to Handwriting Converter</h2>
                 <p className="lead text-xl text-muted-foreground mb-8">
-                    Create realistic handwritten documents without picking up a pen. Perfect for generating study notes, letters, or mockups.
+                    Create realistic handwritten documents without picking up a pen. Our <strong>Text to Handwriting</strong> tool uses advanced font rendering to simulate natural ink flow, perfect for generating study notes, love letters, or design mockups.
                 </p>
 
-                <h3>How to use?</h3>
-                <p>
-                    Simply type your text into the box on the left. The tool automatically converts your digital font into a cursive or print handwriting style.
-                </p>
-                <div className="bg-yellow-50 dark:bg-yellow-900/10 p-6 rounded-lg border border-yellow-200 dark:border-yellow-800 my-6">
+                <div className="grid md:grid-cols-3 gap-6 mb-12">
+                    <div className="bg-card p-6 rounded-lg border shadow-sm">
+                        <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                            🖌️ Multiple Fonts
+                        </h3>
+                        <p className="text-sm text-muted-foreground">Choose from messy casual scrawls to elegant cursive scripts. We offer 5+ distinct styles to match the "personality" of the note.</p>
+                    </div>
+                    <div className="bg-card p-6 rounded-lg border shadow-sm">
+                        <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                            📝 Paper Styles
+                        </h3>
+                        <p className="text-sm text-muted-foreground">Select from plain white paper, lined notebook pages, or ruled margins to make the final image look authentic.</p>
+                    </div>
+                    <div className="bg-card p-6 rounded-lg border shadow-sm">
+                        <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                            🎨 Custom Ink
+                        </h3>
+                        <p className="text-sm text-muted-foreground">Not just black! Switch to Blue, Red, or Green ink to mimic ballpoint pens or grading markers.</p>
+                    </div>
+                </div>
+
+                <h3 className="text-2xl font-bold mb-4">Practical Use Cases</h3>
+                <ul className="list-disc pl-6 space-y-4 mb-8">
+                    <li><strong>Students:</strong> Quickly turn typed study summaries into "handwritten" cheat sheets that are easier to jeopardize.</li>
+                    <li><strong>Designers:</strong> Create organic-looking placeholder text for website mockups or social media posts without using a tablet.</li>
+                    <li><strong>Personal:</strong> Send a digital "handwritten" letter to a friend for a warmer, more personal touch than a standard email.</li>
+                </ul>
+
+                <h3 className="text-2xl font-bold mb-4">Frequently Asked Questions</h3>
+                <div className="space-y-6">
+                    <div className="border-l-4 border-primary pl-4">
+                        <h4 className="font-bold text-lg">Can I upload my own font?</h4>
+                        <p className="text-muted-foreground">Currently, we support a curated list of Google Fonts optimized for handwriting. We may add custom uploads in a future update.</p>
+                    </div>
+                    <div className="border-l-4 border-primary pl-4">
+                        <h4 className="font-bold text-lg">Is the download really free?</h4>
+                        <p className="text-muted-foreground">Yes! You can generate and download as many PNG images as you want. No watermarks, no hidden fees.</p>
+                    </div>
+                </div>
+
+                <div className="bg-yellow-50 dark:bg-yellow-900/10 p-6 rounded-lg border border-yellow-200 dark:border-yellow-800 my-8">
                     <h4 className="font-bold text-yellow-800 dark:text-yellow-200 mb-2">💡 Pro Tip for Realism</h4>
-                    <p className="text-sm">
-                        Use the "Ruled with Margin" paper setting and Blue Ink to make it look exactly like a student's notebook page!
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                        For the most realistic look, try adding slight variations to your spacing (which our tool does automatically) and choose <strong>Blue Ink</strong> on <strong>Lined Paper</strong>. It tricks the eye effectively!
                     </p>
                 </div>
             </article>

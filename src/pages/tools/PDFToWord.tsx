@@ -4,14 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import { saveAs } from "file-saver";
 import { Helmet } from "react-helmet-async";
-
-// Configure pdf.js worker
-// @ts-expect-error - worker file is ESM and resolved by bundler
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString();
 
 const PDFToWord = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -48,6 +43,11 @@ const PDFToWord = () => {
         try {
             setIsConverting(true);
             setProgress(10);
+
+            // Dynamically load pdf.js only when needed
+            const pdfjsLib = await import("pdfjs-dist/build/pdf");
+            // @ts-expect-error - worker file is ESM and resolved by bundler
+            pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString();
 
             const arrayBuffer = await selectedFile.arrayBuffer();
             const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
