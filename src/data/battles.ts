@@ -23,147 +23,147 @@ export interface TrendingBattle {
 
 export const trendingBattles: TrendingBattle[] = [
   {
-    "id": "coffee-makers-espresso-vs-drip-2025",
-    "category": "Best Coffee Makers",
-    "itemA": "Breville Barista Express (BES870XL)",
-    "itemB": "OXO Brew 9-Cup Programmable Coffee Maker",
-    "winner": "Breville Barista Express (BES870XL)",
+    "id": "versus-skincare-ceraVe-moisturizing-cream-vs-drunk-elephant-protini",
+    "category": "Trending Skincare Products",
+    "itemA": "CeraVe Moisturizing Cream",
+    "itemB": "Drunk Elephant Protini Polypeptide Moisturizer",
+    "winner": "CeraVe Moisturizing Cream",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Barista-grade espresso control with grinder for authentic shots.",
+    "verdict": "Budget-friendly, reliable hydration for most skin types.",
     "pros": [
-      "Espresso capability with professional feel (Winner)",
-      "Built-in grinder for fresh grounds (Winner)"
+      "Excellent hydration that lasts (Winner)",
+      "Budget-friendly and widely available (Winner)"
     ],
     "cons": [
-      "Requires regular descaling and cleaning",
-      "Larger footprint on countertop"
+      "Can feel heavy on very oily or acne-prone skin",
+      "Fragrance-free formula may feel dull to some users"
     ],
-    "qualityMetric": "Barista-grade",
-    "popularity": "4.6/5 Avg User Rating",
-    "specs": [
-      {
-        "label": "Brew Type",
-        "valueA": "Espresso",
-        "valueB": "Drip",
-        "winner": "A"
-      },
-      {
-        "label": "Water Capacity",
-        "valueA": "1.8 L",
-        "valueB": "1.0-1.5 L",
-        "winner": "A"
-      },
-      {
-        "label": "Automation",
-        "valueA": "Semi-automatic",
-        "valueB": "Fully Programmable",
-        "winner": "B"
-      },
-      {
-        "label": "Maintenance",
-        "valueA": "Descaling required",
-        "valueB": "Low maintenance with auto-clean",
-        "winner": "B"
-      }
-    ],
-    "affiliateLink": "https://www.amazon.in/s?k=OXO%20Brew%209-Cup%20Programmable%20Coffee%20Maker&tag=axevora-21",
-    "affiliateText": "Check OXO Price"
-  },
-  {
-    "id": "smartphones-2025-s25-ultra-vs-iphone-16-pro-max",
-    "category": "Latest Smartphones 2024-2025",
-    "itemA": "Samsung Galaxy S25 Ultra",
-    "itemB": "Apple iPhone 16 Pro Max",
-    "winner": "Samsung Galaxy S25 Ultra",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-purple-500",
-    "verdict": "Android flagship with leading display, battery life, and versatile imaging.",
-    "pros": [
-      "Long battery life (Winner)",
-      "Vivid 6.8-inch display (Winner)"
-    ],
-    "cons": [
-      "Fractured software updates across devices",
-      "Ecosystem differences vs iOS"
-    ],
-    "qualityMetric": "Pro-grade camera",
+    "qualityMetric": "Dermatologist-Recommended",
     "popularity": "4.7/5 Avg User Rating",
     "specs": [
       {
-        "label": "Display",
-        "valueA": "6.8-inch LTPO OLED 144Hz",
-        "valueB": "6.7-inch ProMotion OLED 120Hz",
+        "label": "Hydration Level",
+        "valueA": "Deeply hydrating, long-lasting",
+        "valueB": "Moderate hydration",
         "winner": "A"
       },
       {
-        "label": "Battery",
-        "valueA": "4900 mAh",
-        "valueB": "4400 mAh",
+        "label": "Texture",
+        "valueA": "Creamy, rich",
+        "valueB": "Lightweight gel-cream",
+        "winner": "B"
+      },
+      {
+        "label": "Ingredients Safety",
+        "valueA": "Fragrance-free, minimal irritants",
+        "valueB": "Contains fragrance (not ideal)",
         "winner": "A"
       },
       {
-        "label": "Camera",
-        "valueA": "200 MP main + 64 MP telephoto",
-        "valueB": "108 MP main + 12 MP ultrawide",
-        "winner": "A"
-      },
-      {
-        "label": "Ecosystem",
-        "valueA": "Android 15 + Galaxy ecosystem",
-        "valueB": "iOS + Apple ecosystem",
+        "label": "Versatility across skin types",
+        "valueA": "Suitable for dry/normal",
+        "valueB": "Less suitable for very oily",
         "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Apple%20iPhone%2016%20Pro%20Max&tag=axevora-21",
-    "affiliateText": "Check Apple Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Drunk%20Elephant%20Protini%20Polypeptide%20Moisturizer&tag=axevora-21",
+    "affiliateText": "Check Drunk Price"
   },
   {
-    "id": "laptops-students-creators-macbook-vs-dell-xps-2025",
-    "category": "Best Laptops for Students/Creators",
-    "itemA": "MacBook Pro 14-inch (M3 Pro, 2025)",
-    "itemB": "Dell XPS 15 (2024, RTX 4060)",
-    "winner": "MacBook Pro 14-inch (M3 Pro, 2025)",
+    "id": "versus-smartphones-iphone16pro-max-vs-galaxy-s25-ultra",
+    "category": "Latest Smartphones 2024-2025",
+    "itemA": "iPhone 16 Pro Max",
+    "itemB": "Galaxy S25 Ultra",
+    "winner": "iPhone 16 Pro Max",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Top performance with battery life and portability for students and creators.",
+    "verdict": "Powerful flagship with best ecosystem and camera.",
     "pros": [
-      "Excellent performance (Winner)",
-      "Long battery life (Winner)"
+      "Excellent ecosystem and software support (Winner)",
+      "Strong privacy features and premium build (Winner)"
     ],
     "cons": [
-      "Higher price vs rivals",
-      "Non-upgradable RAM"
+      "Higher price point",
+      "Limited customization compared to Android"
     ],
-    "qualityMetric": "Creator-grade performance",
+    "qualityMetric": "Flagship-grade",
+    "popularity": "4.6/5 Avg User Rating",
+    "specs": [
+      {
+        "label": "Battery life",
+        "valueA": "Up to 22h video playback",
+        "valueB": "Up to 19h",
+        "winner": "A"
+      },
+      {
+        "label": "Camera system",
+        "valueA": "48MP main + 12MP ultrawide",
+        "valueB": "50MP main + 12MP ultrawide + 5x zoom",
+        "winner": "B"
+      },
+      {
+        "label": "Display",
+        "valueA": "6.7” 120Hz LTPO OLED",
+        "valueB": "6.8” 144Hz LTPO OLED",
+        "winner": "B"
+      },
+      {
+        "label": "Charging",
+        "valueA": "45W wired / 15W wireless",
+        "valueB": "65W wired / 25W wireless",
+        "winner": "B"
+      }
+    ],
+    "affiliateLink": "https://www.amazon.in/s?k=Galaxy%20S25%20Ultra&tag=axevora-21",
+    "affiliateText": "Check Galaxy Price"
+  },
+  {
+    "id": "versus-oils-olive-oil-vs-avocado-oil",
+    "category": "Healthy Cooking Oils",
+    "itemA": "Extra Virgin Olive Oil",
+    "itemB": "Cold-Pressed Avocado Oil",
+    "winner": "Extra Virgin Olive Oil",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "borderColorClass": "border-l-purple-500",
+    "verdict": "Best balance of flavor, nutrition, and versatility.",
+    "pros": [
+      "Rich in polyphenols and oleic acid (Winner)",
+      "Bright, versatile flavor for finishing dishes (Winner)"
+    ],
+    "cons": [
+      "Lower smoke point than avocado oil",
+      "Flavor can overpower delicate dishes for some"
+    ],
+    "qualityMetric": "High Oleic / Polyphenol-rich",
     "popularity": "4.8/5 Avg User Rating",
     "specs": [
       {
-        "label": "CPU",
-        "valueA": "Apple M3 Pro",
-        "valueB": "Intel Core i9-13950H",
-        "winner": "A"
-      },
-      {
-        "label": "GPU",
-        "valueA": "14-core GPU",
-        "valueB": "RTX 4060",
-        "winner": "A"
-      },
-      {
-        "label": "RAM/Storage",
-        "valueA": "16GB / 512GB",
-        "valueB": "32GB / 1TB",
+        "label": "Smoke Point",
+        "valueA": "190–210°C",
+        "valueB": "270°C",
         "winner": "B"
       },
       {
-        "label": "Display",
-        "valueA": "14.2-inch Retina 3024x1964",
-        "valueB": "15.6-inch 4K OLED",
+        "label": "Flavor Profile",
+        "valueA": "Distinct olive flavor, peppery",
+        "valueB": "Neutral, mild",
+        "winner": "A"
+      },
+      {
+        "label": "Culinary Uses",
+        "valueA": "Finishing oil, dressings",
+        "valueB": "High-heat cooking",
         "winner": "B"
+      },
+      {
+        "label": "Nutritional Profile",
+        "valueA": "Polyphenols, oleic acid",
+        "valueB": "Vitamin E",
+        "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Dell%20XPS%2015%20(2024%2C%20RTX%204060)&tag=axevora-21",
-    "affiliateText": "Check Dell Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Cold-Pressed%20Avocado%20Oil&tag=axevora-21",
+    "affiliateText": "Check Cold-Pressed Price"
   }
 ];
