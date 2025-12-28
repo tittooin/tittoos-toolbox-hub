@@ -2760,6 +2760,44 @@ const allTools = [
     path: "/tools/nutrition-versus"
   },
 
+  // Validators
+  {
+    id: "json-validator",
+    name: "JSON Validator",
+    subheading: "Validate JSON Syntax",
+    description: "Check if your JSON data is error-free and compliant with standards.",
+    category: "validators",
+    icon: Code,
+    path: "/tools/json-validator"
+  },
+  {
+    id: "xml-validator",
+    name: "XML Validator",
+    subheading: "Validate XML Syntax",
+    description: "Verify XML documents against syntax rules and best practices.",
+    category: "validators",
+    icon: Code,
+    path: "/tools/xml-validator"
+  },
+  {
+    id: "password-validator",
+    name: "Password Validator",
+    subheading: "Check Password Strength",
+    description: "Analyze the strength and entropy of your passwords securely.",
+    category: "validators",
+    icon: Lock,
+    path: "/tools/password-validator"
+  },
+  {
+    id: "email-validator",
+    name: "Email Validator",
+    subheading: "Verify Email Format",
+    description: "Validate email address syntax and common domain typos.",
+    category: "validators",
+    icon: Mail,
+    path: "/tools/email-validator"
+  },
+
 ];
 
 export const categories = allCategories;

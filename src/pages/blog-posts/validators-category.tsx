@@ -14,6 +14,7 @@ const ValidatorsCategoryPage = () => {
 
   // Filter tools that are useful for validation
   const validatorTools = tools.filter(tool =>
+    tool.category === 'validators' ||
     tool.category === 'formatter' ||
     tool.name.includes('Validator') ||
     tool.description.toLowerCase().includes('validate')

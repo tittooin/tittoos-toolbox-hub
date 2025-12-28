@@ -125,7 +125,16 @@ const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator")
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
 const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
 const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
+const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
+const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
+const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
+const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
 const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
+
+// Validators
+const PasswordValidator = lazy(() => import("./pages/tools/PasswordValidator"));
+const EmailValidator = lazy(() => import("./pages/tools/EmailValidator"));
+
 
 // Blog Category Pages
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -275,6 +284,13 @@ const App = () => (
               <Route path="/tools/sql-formatter" element={<SQLFormatter />} />
               <Route path="/tools/html-formatter" element={<HTMLFormatter />} />
               <Route path="/tools/css-formatter" element={<CSSFormatter />} />
+
+              {/* Validators */}
+              <Route path="/tools/json-validator" element={<JSONEditor />} />
+              <Route path="/tools/xml-validator" element={<XMLFormatter />} />
+              <Route path="/tools/password-validator" element={<PasswordValidator />} />
+              <Route path="/tools/email-validator" element={<EmailValidator />} />
+
 
               {/* Encoders */}
               <Route path="/tools/url-encoder" element={<URLEncoder />} />
