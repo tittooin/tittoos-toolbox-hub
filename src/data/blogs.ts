@@ -28,6 +28,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     author: "Axevora Team",
     authorSlug: "axevora-team",
     slug: "10-essential-online-tools-for-digital-productivity-2024",
+    tags: ["productivity", "tools", "guide", "essential"],
     content: `
         <p>Let's be honest: we all have that one browser window with 50 tabs open that we're "saving for later." In today's digital chaos, finding tools that actually work—and don't just add to the noise—is a superpower. Whether you're coding a new project, managing a startup, or just trying to organize your digital life, the right toolkit changes everything.</p>
 
@@ -110,6 +111,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     author: "Security Expert",
     authorSlug: "security-expert",
     slug: "password-security-best-practices-guide-2024",
+    tags: ["security", "password", "privacy", "cybersecurity"],
     content: `
         <p>We've all done it: clicked "remind me later" on a security update or reused a password because we just couldn't be bothered to think of a new one. But here's the cold hard truth: hackers are counting on that laziness. Security isn't just an IT problem anymore; it's a "you" problem.</p>
 
@@ -216,6 +218,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     author: "Digital Workflow Specialist",
     authorSlug: "digital-workflow-specialist",
     slug: "file-conversion-mastery-complete-guide-digital-format-management",
+    tags: ["conversion", "files", "pdf", "images"],
     content: `
         <p>Ever tried to upload a photo and got the dreaded "File type not supported" error? Or sent a Word doc to a client only for everything to look jumbled on their screen? File formats are the invisible language of the internet, and sometimes, things get lost in translation.</p>
 
@@ -341,6 +344,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     author: "SEO Strategist",
     authorSlug: "seo-strategist",
     slug: "how-to-check-website-seo-free-guide",
+    tags: ["seo", "optimization", "ranking", "google"],
     content: `
       <p>SEO (Search Engine Optimization) often sounds like voodoo magic sold by expensive consultants. "Buy this package to rank #1!" they say. But honestly? 80% of SEO is just making sure your website isn't broken and actually answers the questions people are asking. You can do a massive amount of cleanup yourself using free tools.</p>
 
@@ -404,6 +408,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     author: "Performance Engineer",
     authorSlug: "performance-engineer",
     slug: "how-to-improve-website-speed-free",
+    tags: ["performance", "speed", "optimization", "web-dev"],
     content: `
       <p>We've all been there: you click a link, stare at a white screen for 3 seconds, and then hit the "Back" button. Speed isn't just a technical metric; it's user experience. If your site is slow, your visitors are leaving. Google confirms that <a href="https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/mobile-page-speed-new-industry-benchmarks/" target="_blank" rel="noopener noreferrer">probability of bounce increases 32%</a> as page load time goes from 1s to 3s.</p>
 

@@ -549,13 +549,73 @@ const Blog = () => {
 
             </article>
 
+            {/* Social Sharing & Discussion */}
+            <div className="mt-8 border-t border-b border-border/50 py-8">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Share this article</h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(selectedPostData.title)}&url=${encodeURIComponent(seoUrl)}`, '_blank')}
+                    >
+                      Twitter
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(seoUrl)}`, '_blank')}
+                    >
+                      Facebook
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(seoUrl)}`, '_blank')}
+                    >
+                      LinkedIn
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(seoUrl);
+                        toast.success("Link copied!");
+                      }}
+                    >
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Copy Link
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="text-center md:text-right">
+                  <h3 className="text-lg font-semibold mb-2">Have thoughts?</h3>
+                  <Button
+                    variant="secondary"
+                    onClick={() => window.open(`https://twitter.com/search?q=${encodeURIComponent(seoUrl)}`, '_blank')}
+                  >
+                    Discuss on X / Twitter
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Related Articles Section for Internal Linking */}
             <div className="mt-12">
               <h3 className="text-2xl font-bold mb-6 text-foreground">Related Articles</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {allBlogPosts
                   .filter(p => p.slug !== selectedPostData.slug) // Exclude current
-                  .sort(() => 0.5 - Math.random()) // Shuffle
+                  .map(post => {
+                    // Calculate relevance score based on tag intersection
+                    const currentTags = selectedPostData.tags || [];
+                    const postTags = post.tags || [];
+                    const intersection = currentTags.filter(t => postTags.includes(t));
+                    return { ...post, relevance: intersection.length + (Math.random() * 0.5) }; // Add slight randomness for variety among equal scores
+                  })
+                  .sort((a, b) => b.relevance - a.relevance) // Sort by relevance descending
                   .slice(0, 3) // Take 3
                   .map(post => (
                     <Link key={post.slug} to={`/blog/${post.slug}`} className="group">

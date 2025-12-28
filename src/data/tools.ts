@@ -2759,24 +2759,7 @@ const allTools = [
     icon: Apple,
     path: "/tools/nutrition-versus"
   },
-  {
-    id: "resume-builder",
-    name: "Resume Builder",
-    subheading: "Create professional resumes",
-    description: "Build ATS-friendly resumes with easy-to-use templates.",
-    category: "utility",
-    icon: FileText,
-    path: "/tools/resume-builder"
-  },
-  {
-    id: "ocr-converter",
-    name: "OCR Converter",
-    subheading: "Extract text from images",
-    description: "Convert scanned documents and images into editable text.",
-    category: "utility",
-    icon: FileText,
-    path: "/tools/ocr-converter"
-  }
+
 ];
 
 export const categories = allCategories;
