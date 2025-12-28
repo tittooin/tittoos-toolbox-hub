@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { generateGenericText } from "@/utils/aiGenerator";
 import { Type, Image as ImageIcon, Copy, RefreshCw, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,12 +32,8 @@ const AIThumbnailTextGenerator = () => {
 
         try {
             const prompt = `Generate 5 catchy, short (2-5 words max), and high-impact text overlay ideas for a YouTube thumbnail for a video titled: "${videoTitle}". These should be punchy and curiosity-inducing. Return them as a numbered list.`;
-            const encodedPrompt = encodeURIComponent(prompt);
 
-            const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
-            if (!response.ok) throw new Error("Failed to fetch text ideas");
-
-            const text = await response.text();
+            const text = await generateGenericText(prompt, "You are a YouTube expert. Output only the numbered list.");
             setThumbnailText(text);
             toast.success("Thumbnail text ideas generated!");
         } catch (error) {

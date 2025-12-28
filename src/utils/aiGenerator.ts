@@ -317,3 +317,42 @@ ${selectedTools}
     };
   }
 }
+// 5. Standalone Generic Generator for Client-Side Tools (e.g., Thumbnail Text)
+export async function generateGenericText(prompt: string, systemContext = "You are a helpful AI assistant."): Promise<string> {
+  const retries = 3;
+
+  async function fetchWithRetry(attempt: number): Promise<string> {
+    try {
+      const finalPrompt = `${systemContext}\n\nUser: ${prompt}`;
+      const encodedPrompt = encodeURIComponent(finalPrompt);
+      const seed = Math.floor(Math.random() * 1000000);
+      const url = `https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: AbortSignal.timeout(30000)
+      });
+
+      if (!response.ok) {
+        if ((response.status >= 500 || response.status === 429) && attempt > 0) {
+          console.warn(`[AI Generator] Pollinations Error ${response.status}. Retrying in 2s...`);
+          await new Promise(r => setTimeout(r, 2000));
+          return fetchWithRetry(attempt - 1);
+        }
+        throw new Error(`Pollinations API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      if (attempt > 0) {
+        console.warn(`[AI Generator] Network Error. Retrying...`);
+        await new Promise(r => setTimeout(r, 2000));
+        return fetchWithRetry(attempt - 1);
+      }
+      throw error;
+    }
+  }
+
+  return fetchWithRetry(retries);
+}

@@ -2681,44 +2681,10 @@ const allTools = [
     subheading: "Talk to your documents",
     description: "Upload a PDF and ask questions, summarize, or extract data using AI.",
     category: "ai",
+    icon: MessageSquare,
     path: "/tools/chat-with-pdf"
   },
-  {
-    id: "tech-versus",
-    name: "Tech Battle Arena",
-    subheading: "Compare Gadgets & Electronics",
-    description: "Compare smartphones, laptops, and gadgets side-by-side using AI. Get detailed spec differences and a clear winner.",
-    category: "ai",
-    icon: Smartphone,
-    path: "/tools/tech-versus"
-  },
-  {
-    id: "software-versus",
-    name: "Software Showdown",
-    subheading: "Compare Apps & SaaS",
-    description: "Compare software tools, apps, and SaaS platforms. Find the best solution for your business.",
-    category: "ai",
-    icon: AppWindow,
-    path: "/tools/software-versus"
-  },
-  {
-    id: "nutrition-versus",
-    name: "Food Fight",
-    subheading: "Compare Nutrition Facts",
-    description: "Compare calories, macros, and vitamins of any two items. Make smarter diet choices.",
-    category: "ai",
-    icon: Utensils,
-    path: "/tools/nutrition-versus"
-  },
-  {
-    id: "tech-versus",
-    name: "Tech Battle Arena",
-    subheading: "Compare Gadgets & Electronics",
-    description: "Compare smartphones, laptops, and gadgets side-by-side using AI. Get detailed spec differences and a clear winner.",
-    category: "ai",
-    icon: Smartphone,
-    path: "/tools/tech-versus"
-  },
+
 
   {
     id: "ai-caption-generator",
@@ -2792,6 +2758,24 @@ const allTools = [
     category: "analyzer",
     icon: Apple,
     path: "/tools/nutrition-versus"
+  },
+  {
+    id: "resume-builder",
+    name: "Resume Builder",
+    subheading: "Create professional resumes",
+    description: "Build ATS-friendly resumes with easy-to-use templates.",
+    category: "utility",
+    icon: FileText,
+    path: "/tools/resume-builder"
+  },
+  {
+    id: "ocr-converter",
+    name: "OCR Converter",
+    subheading: "Extract text from images",
+    description: "Convert scanned documents and images into editable text.",
+    category: "utility",
+    icon: FileText,
+    path: "/tools/ocr-converter"
   }
 ];
 
