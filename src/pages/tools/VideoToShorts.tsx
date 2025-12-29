@@ -10,10 +10,10 @@ import { setSEO } from '@/utils/seoUtils';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// v0.11 configuration: Explicitly load non-MT core to avoid SharedArrayBuffer issues
+// v0.10.0 is strictly Single Threaded and works without SharedArrayBuffer (No COOP/COEP needed)
 const ffmpeg = createFFmpeg({
     log: true,
-    corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
 });
 
 export default function VideoToShorts() {
