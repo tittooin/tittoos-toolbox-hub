@@ -195,12 +195,11 @@ export class BlogGenerator {
       
       Section Title: "${sectionTitle}"
       
-      **Writing Style Guidelines (CRITICAL):**
-      - Write in a 100% human, conversational tone.
-      - **BANNED PHRASES (Do NOT use):** "In the ever-evolving landscape", "Delve into", "In conclusion", "It is important to note", "Game-changer", "Unleash", "Elevate".
-      - Use short, punchy sentences. varying sentence length.
-      - Use idioms and rhetorical questions naturally.
-      - Write as if you are explaining this to a friend over coffee.
+      **Writing Style Guidelines (CRITICAL - DO NOT IGNORE):**
+      - **TONE:** Write in a 100% human, conversational, and empathetic tone. Pretend you are an expert redditor sharing personal advice.
+      - **BANNED AI PHRASES:** "In the ever-evolving landscape", "Delve into", "In conclusion", "It is important to note", "Game-changer", "Unleash", "Elevate", "Unlock", "Realm".
+      - **SENTENCE STRUCTURE:** Mix short, punchy sentences with longer, detailed ones. Use fragments occasionally for impact.
+      - **HUMAN TOUCH:** Use idioms, rhetorical questions, and (simulated) personal anecdotes like "I remember when I first tried..." or "Trust me, I learned this the hard way...".
       - **PLAGIARISM CHECK:** Ensure every sentence is unique. Do not copy generic descriptions. Rephrase standard definitions in your own unique voice.
       
       **CRITICAL LINKING REQUIREMENTS:**
@@ -212,11 +211,12 @@ ${selectedTools}
       2. **EXTERNAL LINKS:** Include 1 high-authority external link (Wikipedia, MDN, reputable news) if necessary to back up a claim.
          - Open in new tab: <a href="https://..." target="_blank" rel="noopener noreferrer">Source</a>.
 
-      **Content Requirements:**
+      **Content & SEO Requirements:**
+      - **NO KEYWORD STUFFING:** Do NOT overuse the main keyword. Use LSI (Latent Semantic Indexing) keywords and synonyms naturally. if the keyword is "PDF", use "document", "file", "digital paper", etc.
+      - **Ratio:** Keyword density should not exceed 1.5%.
       - Write approximately 250-300 words for this section.
       - Use "You" and "We" to build connection.
-      - Include bullet points or bold text for readability.
-      - Target low-competition long-tail keywords naturally.
+      - Include bullet points or bold text to break up walls of text.
       - Output valid HTML (p, ul, li, h3, h4, strong, a). Do NOT output the H2 title.
       - Do NOT use markdown code blocks. Just raw HTML content.
 
@@ -224,7 +224,7 @@ ${selectedTools}
       - If you mention a specific physical product (e.g., "iPhone 16", "Dell XPS", "Blue Yeti Mic"), you MUST add a "Check Price on Amazon" link.
       - Use this specific URL format: https://www.amazon.in/s?k=[Product+Name]&tag=axevora-21
       - Example: <a href="https://www.amazon.in/s?k=iPhone+15&tag=axevora-21" target="_blank" rel="noopener noreferrer" class="text-orange-600 font-bold hover:underline">Check Price on Amazon</a>
-      - Only do this for real, tangible products.
+      - Only do this for real, tangible products. Do not add for software.
     `;
 
     const text = await this.generateWithFallback(prompt);
