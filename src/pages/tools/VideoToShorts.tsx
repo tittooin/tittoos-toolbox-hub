@@ -1,16 +1,20 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+// @ts-ignore
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, FileVideo, Download, Scissors, Play, AlertCircle, CheckCircle2, Video } from "lucide-react";
+import { CheckCircle2, Download, Scissors, Upload, Video, Play, Sparkles } from "lucide-react";
 import { setSEO } from '@/utils/seoUtils';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+// v0.11 configuration: Explicitly load non-MT core to avoid SharedArrayBuffer issues
+const ffmpeg = createFFmpeg({
+    log: true,
+    corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+});
 
 export default function VideoToShorts() {
     const [loaded, setLoaded] = useState(false);
@@ -21,7 +25,6 @@ export default function VideoToShorts() {
     const [downloadLinks, setDownloadLinks] = useState<{ url: string, name: string }[]>([]);
     const [splitDuration, setSplitDuration] = useState("60");
     const [cropMode, setCropMode] = useState("cover"); // cover (center crop) or fit (black bars)
-    const ffmpegRef = useRef(new FFmpeg());
     const messageRef = useRef<HTMLParagraphElement | null>(null);
 
     useEffect(() => {
@@ -36,29 +39,27 @@ export default function VideoToShorts() {
     }, []);
 
     const load = async () => {
+        if (ffmpeg.isLoaded()) {
+            setLoaded(true);
+            return;
+        }
+
         setIsLoading(true);
-        // Switch to JSDelivr for better reliability regarding CORS and Uptime
-        const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
-        const ffmpeg = ffmpegRef.current;
-        ffmpeg.on('log', ({ message }) => {
+        ffmpeg.setLogger(({ message }: { message: string }) => {
             if (messageRef.current) messageRef.current.innerHTML = message;
             console.log(message);
         });
-        ffmpeg.on('progress', ({ progress }) => {
-            setProgress(Math.round(progress * 100));
+        ffmpeg.setProgress(({ ratio }: { ratio: number }) => {
+            setProgress(Math.round(ratio * 100));
         });
 
         try {
-            // Load ffmpeg.wasm
-            await ffmpeg.load({
-                coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-            });
+            await ffmpeg.load();
             setLoaded(true);
             setMessage("Engine Ready. Upload a video to start.");
         } catch (e: any) {
             console.error("FFmpeg Load Error:", e);
-            setMessage(`Failed to load video engine: ${e.message || e}. Try disabling ad-blockers or using Chrome.`);
+            setMessage(`Failed to load engine: ${e.message || e}. Try using Chrome.`);
         } finally {
             setIsLoading(false);
         }
@@ -78,71 +79,47 @@ export default function VideoToShorts() {
         if (!videoFile || !loaded) return;
         setIsLoading(true);
         setDownloadLinks([]);
-        const ffmpeg = ffmpegRef.current;
 
         try {
             const inputName = 'input.mp4';
-            await ffmpeg.writeFile(inputName, await fetchFile(videoFile));
+            // @ts-ignore
+            ffmpeg.FS('writeFile', inputName, await fetchFile(videoFile));
 
-            setMessage("Processing... This may take a few minutes depending on your computer speed.");
+            setMessage("Processing... This may take a few minutes.");
 
-            // 1. Crop Logic
-            // landscape (16:9) -> portrait (9:16)
-            // Strategy: "Cover" means we zoom in and crop the center. "Fit" means we add black bars.
-            // Complex FFmpeg filter for "Cover" (Center Crop):
-            // crop=ih*(9/16):ih:((iw-(ih*(9/16)))/2):0
-            // Basically: Width = Height * (9/16), Height = Height, X = (InputWidth - NewWidth)/2, Y = 0
-
-            let filterComplex = "";
-            let outputName = "output_%03d.mp4";
-
+            // Command Construction
+            let filterArgs: string[] = [];
             if (cropMode === "cover") {
-                // Center Crop to 9:16
-                filterComplex = `crop=ih*(9/16):ih:(iw-ow)/2:0,split=1[v1];[v1]segment=time=${splitDuration}:reset_timestamps=1:format=mp4[out]`;
+                // Center Crop
+                filterArgs = ['-vf', `crop=ih*(9/16):ih:(iw-ow)/2:0`];
             } else {
-                // Fit (Add padding/black bars) to 9:16
-                // scale to fit width: scale=iw:ih,pad=iw:iw*(16/9):(ow-iw)/2:(oh-ih)/2
-                filterComplex = `scale=-1:1920,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,split=1[v1];[v1]segment=time=${splitDuration}:reset_timestamps=1:format=mp4[out]`;
-                // Simplified "fit" might just be setting aspect ratio, but padding is safer for preserving full view.
-                // Let's stick to a simpler padding strategy: scale to fit 1080 width, then pad height.
-                // Actually, for portrait, we usually want to fit the WIDTH of the portrait? No, we fit the input into the portrait box.
-                // PAD strategy: scale='min(1080,iw)':min'(1920,ih)':force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2
-                filterComplex = `scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1:color=black,segment=time=${splitDuration}:reset_timestamps=1`;
+                // Fit with Padding
+                filterArgs = ['-vf', `scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1:color=black`];
             }
 
-            // Simple segment command (We might need to render to one file first then split, OR split directly)
-            // Splitting directly from input with filters is efficient.
-            // Command: ffmpeg -i input.mp4 -vf "..." -f segment -segment_time 60 output_%03d.mp4
-            if (cropMode === "cover") {
-                await ffmpeg.exec([
-                    '-i', inputName,
-                    '-vf', 'crop=ih*(9/16):ih:(iw-ow)/2:0', // Precise Center Crop
-                    '-f', 'segment',
-                    '-segment_time', splitDuration,
-                    '-reset_timestamps', '1',
-                    'output_%03d.mp4'
-                ]);
-            } else {
-                await ffmpeg.exec([
-                    '-i', inputName,
-                    '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:-1:-1:color=black',
-                    '-f', 'segment',
-                    '-segment_time', splitDuration,
-                    '-reset_timestamps', '1',
-                    'output_%03d.mp4'
-                ]);
-            }
+            const command = [
+                '-i', inputName,
+                ...filterArgs,
+                '-f', 'segment',
+                '-segment_time', splitDuration,
+                '-reset_timestamps', '1',
+                'output_%03d.mp4'
+            ];
 
+            await ffmpeg.run(...command);
 
-            // 2. Initial List Dir to find outputs
-            const files = await ffmpeg.listDir('/');
-            const outputFiles = files.filter((f) => f.name.startsWith('output') && f.name.endsWith('.mp4'));
+            // Fetch Results
+            // @ts-ignore
+            const files = ffmpeg.FS('readdir', '/');
+            const outputFiles = files.filter((f: string) => f.startsWith('output') && f.endsWith('.mp4'));
 
             const links = [];
-            for (const file of outputFiles) {
-                const data = await ffmpeg.readFile(file.name) as any;
+            for (const fileName of outputFiles) {
+                // @ts-ignore
+                const data = ffmpeg.FS('readFile', fileName);
                 const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-                links.push({ url, name: `Short_Part_${file.name.replace('output_', '').replace('.mp4', '')}.mp4` });
+                const shortName = `Short_Part_${fileName.replace('output_', '').replace('.mp4', '')}.mp4`;
+                links.push({ url, name: shortName });
             }
 
             setDownloadLinks(links);
@@ -150,7 +127,7 @@ export default function VideoToShorts() {
 
         } catch (error) {
             console.error("FFmpeg Error:", error);
-            setMessage("An error occurred during processing. Please try a simpler video.");
+            setMessage("An error occurred during processing.");
         } finally {
             setIsLoading(false);
             setProgress(0);
@@ -263,7 +240,7 @@ export default function VideoToShorts() {
                                 )}
                             </Button>
 
-                            {/* Console Log (Optional, hidden by default but useful for status) */}
+                            {/* Console Log */}
                             <p ref={messageRef} className="text-xs font-mono text-muted-foreground mt-4 text-center truncate px-4">
                                 {message}
                             </p>
@@ -351,14 +328,6 @@ export default function VideoToShorts() {
                     <div className="border rounded-lg p-4">
                         <h4 className="font-bold mb-2">Is my video uploaded to a server?</h4>
                         <p className="text-sm text-muted-foreground">No. We use WebAssembly technology to process the video directly in your browser. This ensures maximum privacy and speed for smaller files.</p>
-                    </div>
-                    <div className="border rounded-lg p-4">
-                        <h4 className="font-bold mb-2">What is the best length for Shorts?</h4>
-                        <p className="text-sm text-muted-foreground">YouTube Shorts must be under 60 seconds. We recommend using the "60s" split option to maximize content depth while staying within limits.</p>
-                    </div>
-                    <div className="border rounded-lg p-4">
-                        <h4 className="font-bold mb-2">Can I convert 4K videos?</h4>
-                        <p className="text-sm text-muted-foreground">Yes, but performance depends on your computer's RAM. For 4K files, it might take longer. 1080p is recommended for the fastest results.</p>
                     </div>
                 </div>
             </div>
