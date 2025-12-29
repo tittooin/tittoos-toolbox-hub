@@ -10,10 +10,10 @@ import { setSEO } from '@/utils/seoUtils';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// v0.10.0 is strictly Single Threaded and works without SharedArrayBuffer (No COOP/COEP needed)
+// v0.9.8: The "Classic" version. Natively single-threaded. No Headers needed.
+// We remove corePath to let it use its default (which works perfectly on unpkg)
 const ffmpeg = createFFmpeg({
     log: true,
-    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
 });
 
 export default function VideoToShorts() {
@@ -24,7 +24,7 @@ export default function VideoToShorts() {
     const [progress, setProgress] = useState(0);
     const [downloadLinks, setDownloadLinks] = useState<{ url: string, name: string }[]>([]);
     const [splitDuration, setSplitDuration] = useState("60");
-    const [cropMode, setCropMode] = useState("cover"); // cover (center crop) or fit (black bars)
+    const [cropMode, setCropMode] = useState("cover");
     const messageRef = useRef<HTMLParagraphElement | null>(null);
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export default function VideoToShorts() {
             setMessage("Engine Ready. Upload a video to start.");
         } catch (e: any) {
             console.error("FFmpeg Load Error:", e);
-            setMessage(`Failed to load engine: ${e.message || e}. Try using Chrome.`);
+            setMessage(`Failed to load engine: ${e.message || e}. Using Chrome?`);
         } finally {
             setIsLoading(false);
         }
