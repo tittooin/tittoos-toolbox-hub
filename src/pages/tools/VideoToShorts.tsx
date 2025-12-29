@@ -37,7 +37,8 @@ export default function VideoToShorts() {
 
     const load = async () => {
         setIsLoading(true);
-        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+        // Switch to JSDelivr for better reliability regarding CORS and Uptime
+        const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
         const ffmpeg = ffmpegRef.current;
         ffmpeg.on('log', ({ message }) => {
             if (messageRef.current) messageRef.current.innerHTML = message;
@@ -55,9 +56,9 @@ export default function VideoToShorts() {
             });
             setLoaded(true);
             setMessage("Engine Ready. Upload a video to start.");
-        } catch (e) {
-            console.error(e);
-            setMessage("Failed to load video engine. Please use a modern browser (Chrome/Edge recommended).");
+        } catch (e: any) {
+            console.error("FFmpeg Load Error:", e);
+            setMessage(`Failed to load video engine: ${e.message || e}. Try disabling ad-blockers or using Chrome.`);
         } finally {
             setIsLoading(false);
         }
