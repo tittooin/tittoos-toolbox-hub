@@ -212,19 +212,20 @@ ${selectedTools}
          - Open in new tab: <a href="https://..." target="_blank" rel="noopener noreferrer">Source</a>.
 
       **Content & SEO Requirements:**
-      - **NO KEYWORD STUFFING:** Do NOT overuse the main keyword. Use LSI (Latent Semantic Indexing) keywords and synonyms naturally. if the keyword is "PDF", use "document", "file", "digital paper", etc.
-      - **Ratio:** Keyword density should not exceed 1.5%.
-      - Write approximately 250-300 words for this section.
-      - Use "You" and "We" to build connection.
-      - Include bullet points or bold text to break up walls of text.
-      - Output valid HTML (p, ul, li, h3, h4, strong, a). Do NOT output the H2 title.
-      - Do NOT use markdown code blocks. Just raw HTML content.
+      - **NO KEYWORD STUFFING:** Density under 1.5%. Use LSI keywords.
+      - **VALUE FIRST:** Educate the reader. Do not sound like a salesman. Your goal is to solve their problem, not just push a product.
+      - **RICH FORMATTING (MANDATORY):** 
+        - If you are comparing items, listing pros/cons, or showing specs, you **MUST** include a responsive HTML Table ('<table class="w-full border-collapse border border-gray-300 my-4">...</table>').
+        - Use '<ul>' and '<ol>' for lists.
+        - Use '<h3>' and '<h4>' for sub-sections.
+      - **IMAGES:** I will inject images separately, but you must write the text to support visual breaks.
 
-      **AFFILIATE LINKING (CRITICAL):**
-      - If you mention a specific physical product (e.g., "iPhone 16", "Dell XPS", "Blue Yeti Mic"), you MUST add a "Check Price on Amazon" link.
-      - Use this specific URL format: https://www.amazon.in/s?k=[Product+Name]&tag=axevora-21
-      - Example: <a href="https://www.amazon.in/s?k=iPhone+15&tag=axevora-21" target="_blank" rel="noopener noreferrer" class="text-orange-600 font-bold hover:underline">Check Price on Amazon</a>
-      - Only do this for real, tangible products. Do not add for software.
+      **AFFILIATE LINKING Guidelines:**
+      - **Scope:** include Tech gadgets, Beauty (skincare, makeup), Fashion (clothes, shoes), Home & Kitchen, Grocery, and Books.
+      - **Placement:** Only link when a specific product is naturally discussed as a solution.
+      - **Format:** 'https://www.amazon.in/s?k=[Product+Name]&tag=axevora-21'
+      - **Style:** <a href="..." target="_blank" rel="noopener noreferrer" class="text-orange-600 font-bold hover:underline">Check Price on Amazon</a>
+      - **Anti-Spam:** Max 2 affiliate links per section. Don't force it. If it doesn't fit, don't add it.
     `;
 
     const text = await this.generateWithFallback(prompt);
@@ -281,8 +282,8 @@ ${selectedTools}
       if (i > 0 && i % 3 === 0) {
         const imgUrl = await this.generateImage(`${topic} ${sectionHeader} minimal illustration`);
         imageHtml = `<figure class="my-8">
-            <img src="${imgUrl}" alt="${sectionHeader} - ${topic}" class="w-full rounded-lg shadow-md" />
-            <figcaption class="text-center text-sm text-muted-foreground mt-2">${sectionHeader} Visualization</figcaption>
+            <img src="${imgUrl}" alt="Illustration showing ${sectionHeader} regarding ${topic}" class="w-full rounded-lg shadow-md" loading="lazy" />
+            <figcaption class="text-center text-sm text-muted-foreground mt-2">Visual Explanation: ${sectionHeader}</figcaption>
          </figure>`;
       }
 
