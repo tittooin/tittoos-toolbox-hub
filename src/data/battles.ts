@@ -23,147 +23,171 @@ export interface TrendingBattle {
 
 export const trendingBattles: TrendingBattle[] = [
   {
-    "id": "versus-skincare-ceraVe-moisturizing-cream-vs-drunk-elephant-protini",
-    "category": "Trending Skincare Products",
-    "itemA": "CeraVe Moisturizing Cream",
-    "itemB": "Drunk Elephant Protini Polypeptide Moisturizer",
-    "winner": "CeraVe Moisturizing Cream",
+    "id": "laptops-students-creators-vs-dell-xps-13-plus-vs-macbook-pro-14-m2-pro-2025",
+    "category": "Tech",
+    "itemA": "Dell XPS 13 Plus (2023/24 model)",
+    "itemB": "Apple MacBook Pro 14 with M2 Pro",
+    "winner": "Apple MacBook Pro 14 (M2 Pro)",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Budget-friendly, reliable hydration for most skin types.",
+    "verdict": "MacBook Pro 14 dominates for student-creators due to CPU/GPU, display, and ecosystem.",
     "pros": [
-      "Excellent hydration that lasts (Winner)",
-      "Budget-friendly and widely available (Winner)"
+      "Outstanding performance and efficiency (Winner)",
+      "Top-tier display quality and color accuracy (Winner)",
+      "Excellent battery life (Winner)"
     ],
     "cons": [
-      "Can feel heavy on very oily or acne-prone skin",
-      "Fragrance-free formula may feel dull to some users"
+      "Premium price",
+      "Limited upgradability",
+      "Fewer affordable options"
     ],
-    "qualityMetric": "Dermatologist-Recommended",
-    "popularity": "4.7/5 Avg User Rating",
+    "qualityMetric": "Apple Silicon M2 Pro",
+    "popularity": "4.8/5 Stars",
     "specs": [
       {
-        "label": "Hydration Level",
-        "valueA": "Deeply hydrating, long-lasting",
-        "valueB": "Moderate hydration",
-        "winner": "A"
-      },
-      {
-        "label": "Texture",
-        "valueA": "Creamy, rich",
-        "valueB": "Lightweight gel-cream",
+        "label": "Battery",
+        "valueA": "12-14 hours",
+        "valueB": "18-20 hours",
         "winner": "B"
       },
       {
-        "label": "Ingredients Safety",
-        "valueA": "Fragrance-free, minimal irritants",
-        "valueB": "Contains fragrance (not ideal)",
+        "label": "Screen",
+        "valueA": "13.4-inch, 500+ nits",
+        "valueB": "14.2-inch Liquid Retina XDR, 1000+ nits",
+        "winner": "B"
+      },
+      {
+        "label": "Processor",
+        "valueA": "Intel Core i7 (12th/13th gen)",
+        "valueB": "Apple M2 Pro",
+        "winner": "B"
+      },
+      {
+        "label": "Weight",
+        "valueA": "1.2 kg (2.7 lb)",
+        "valueB": "1.6 kg (3.5 lb)",
         "winner": "A"
       },
       {
-        "label": "Versatility across skin types",
-        "valueA": "Suitable for dry/normal",
-        "valueB": "Less suitable for very oily",
-        "winner": "A"
+        "label": "Warranty",
+        "valueA": "1-year limited",
+        "valueB": "1-year limited + AppleCare+ options",
+        "winner": "B"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Drunk%20Elephant%20Protini%20Polypeptide%20Moisturizer&tag=axevora-21",
-    "affiliateText": "Check Drunk Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Apple%20MacBook%20Pro%2014%20with%20M2%20Pro&tag=axevora-21",
+    "affiliateText": "Check Apple Price"
   },
   {
-    "id": "versus-smartphones-iphone16pro-max-vs-galaxy-s25-ultra",
-    "category": "Latest Smartphones 2024-2025",
-    "itemA": "iPhone 16 Pro Max",
-    "itemB": "Galaxy S25 Ultra",
-    "winner": "iPhone 16 Pro Max",
+    "id": "winter-jackets-down-vs-synthetic-patagonia-down-sweater-vs-arc-teryx-atom-lt-2025",
+    "category": "Apparel",
+    "itemA": "Patagonia Down Sweater Jacket",
+    "itemB": "Arc'teryx Atom LT Jacket (Synthetic Insulation)",
+    "winner": "Patagonia Down Sweater Jacket",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Powerful flagship with best ecosystem and camera.",
+    "verdict": "Down excels in warmth-to-weight on dry-cold days, making it the go-to for most winter conditions.",
     "pros": [
-      "Excellent ecosystem and software support (Winner)",
-      "Strong privacy features and premium build (Winner)"
+      "Excellent warmth-to-weight ratio (Winner)",
+      "Very packable and compact (Winner)",
+      "Patagonia lifetime guarantee and repair support (Winner)"
     ],
     "cons": [
-      "Higher price point",
-      "Limited customization compared to Android"
+      "Performance drops when wet",
+      "Higher price",
+      "Less effective in extremely damp conditions"
     ],
-    "qualityMetric": "Flagship-grade",
-    "popularity": "4.6/5 Avg User Rating",
+    "qualityMetric": "Lifetime guarantee",
+    "popularity": "4.6/5 Stars",
     "specs": [
       {
-        "label": "Battery life",
-        "valueA": "Up to 22h video playback",
-        "valueB": "Up to 19h",
+        "label": "Insulation Type",
+        "valueA": "Down (800 Fill Power)",
+        "valueB": "Synthetic CoreLoft",
         "winner": "A"
       },
       {
-        "label": "Camera system",
-        "valueA": "48MP main + 12MP ultrawide",
-        "valueB": "50MP main + 12MP ultrawide + 5x zoom",
-        "winner": "B"
+        "label": "Weight (Size M)",
+        "valueA": "320 g",
+        "valueB": "450 g",
+        "winner": "A"
       },
       {
-        "label": "Display",
-        "valueA": "6.7” 120Hz LTPO OLED",
-        "valueB": "6.8” 144Hz LTPO OLED",
-        "winner": "B"
+        "label": "Packability",
+        "valueA": "Stuffs into compact pouch (~6x8 in)",
+        "valueB": "Stuffs into larger pouch (~9x8 in)",
+        "winner": "A"
       },
       {
-        "label": "Charging",
-        "valueA": "45W wired / 15W wireless",
-        "valueB": "65W wired / 25W wireless",
-        "winner": "B"
+        "label": "Water Resistance",
+        "valueA": "DWR-coated, good repellency",
+        "valueB": "DWR-coated, basic repellency",
+        "winner": "A"
+      },
+      {
+        "label": "Warranty/Repair",
+        "valueA": "Lifetime guarantee & repairs",
+        "valueB": "Limited warranty",
+        "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Galaxy%20S25%20Ultra&tag=axevora-21",
-    "affiliateText": "Check Galaxy Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Arc'teryx%20Atom%20LT%20Jacket%20(Synthetic%20Insulation)&tag=axevora-21",
+    "affiliateText": "Check Arc'teryx Price"
   },
   {
-    "id": "versus-oils-olive-oil-vs-avocado-oil",
-    "category": "Healthy Cooking Oils",
-    "itemA": "Extra Virgin Olive Oil",
-    "itemB": "Cold-Pressed Avocado Oil",
-    "winner": "Extra Virgin Olive Oil",
+    "id": "shampoos-hair-fall-nioxin-vs-vichy-dercos-densi-solutions-2025",
+    "category": "Beauty",
+    "itemA": "Nioxin System 2 Cleanser for Thinning Hair",
+    "itemB": "Vichy Dercos Densi-Solutions Shampoo",
+    "winner": "Nioxin System 2 Cleanser",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "Best balance of flavor, nutrition, and versatility.",
+    "verdict": "Nioxin’s thinning-hair focused formula edges out the densifying option for targeting scalp health.",
     "pros": [
-      "Rich in polyphenols and oleic acid (Winner)",
-      "Bright, versatile flavor for finishing dishes (Winner)"
+      "Designed for thinning hair and scalp care (Winner)",
+      "Salon-backed reputation and ecosystem (Winner)",
+      "Supports regimen with boosters and toners (Winner)"
     ],
     "cons": [
-      "Lower smoke point than avocado oil",
-      "Flavor can overpower delicate dishes for some"
+      "Can be pricey over time",
+      "Results require consistent use",
+      "May be drying if used alone"
     ],
-    "qualityMetric": "High Oleic / Polyphenol-rich",
-    "popularity": "4.8/5 Avg User Rating",
+    "qualityMetric": "Dermatologist Tested",
+    "popularity": "4.5/5 Stars",
     "specs": [
       {
-        "label": "Smoke Point",
-        "valueA": "190–210°C",
-        "valueB": "270°C",
-        "winner": "B"
-      },
-      {
-        "label": "Flavor Profile",
-        "valueA": "Distinct olive flavor, peppery",
-        "valueB": "Neutral, mild",
+        "label": "Active Ingredients",
+        "valueA": "Niacinamide, Panthenol, Caffeine",
+        "valueB": "Aminexil, Ceramides",
         "winner": "A"
       },
       {
-        "label": "Culinary Uses",
-        "valueA": "Finishing oil, dressings",
-        "valueB": "High-heat cooking",
+        "label": "Hair Type",
+        "valueA": "Thinning, Fine Hair",
+        "valueB": "Thinning, Fine Hair",
+        "winner": "Tie"
+      },
+      {
+        "label": "Fragrance",
+        "valueA": "Mild fragrance",
+        "valueB": "Fragrance-free",
         "winner": "B"
       },
       {
-        "label": "Nutritional Profile",
-        "valueA": "Polyphenols, oleic acid",
-        "valueB": "Vitamin E",
-        "winner": "A"
+        "label": "Paraben-Free?",
+        "valueA": "Yes",
+        "valueB": "Yes",
+        "winner": "Tie"
+      },
+      {
+        "label": "Volume",
+        "valueA": "8.5 oz (250 ml)",
+        "valueB": "10 oz (300 ml)",
+        "winner": "B"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Cold-Pressed%20Avocado%20Oil&tag=axevora-21",
-    "affiliateText": "Check Cold-Pressed Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Vichy%20Dercos%20Densi-Solutions%20Shampoo&tag=axevora-21",
+    "affiliateText": "Check Vichy Price"
   }
 ];
