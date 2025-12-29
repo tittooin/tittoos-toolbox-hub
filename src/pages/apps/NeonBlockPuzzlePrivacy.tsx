@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { setSEO } from "@/utils/seoUtils";
 
 const NeonBlockPuzzlePrivacy = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        setSEO({
+            title: "Privacy Policy - Neon Block Puzzle",
+            description: "Privacy Policy for Neon Block Puzzle app by Tittoos Corporation.",
+            url: window.location.href,
+            image: "https://axevora.com/og-image.jpg"
+        });
+    }, [location]);
+
     return (
         <div className="container mx-auto py-12 px-4 max-w-4xl">
-            <Helmet>
-                <title>Privacy Policy - Neon Block Puzzle</title>
-                <meta name="robots" content="noindex" /> {/* Essential for AdSense safety */}
-                <meta name="description" content="Privacy Policy for Neon Block Puzzle app by Tittoos Corporation." />
-            </Helmet>
 
             <div className="mb-6">
                 <Link to="/">

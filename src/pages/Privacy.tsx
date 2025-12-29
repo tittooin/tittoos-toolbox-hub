@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -14,45 +15,44 @@ const Privacy = () => {
         <link rel="canonical" href="https://axevora.com/privacy" />
       </Helmet>
       <Header />
-      <h2 className="text-2xl font-semibold text-foreground mb-4">DMCA / Removal Requests</h2>
-      <p className="mb-6">
-        To submit a removal request, email <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">admin@axevora.com</a>
-        with links, a description of the content, and proof of ownership. We aim to respond promptly.
-      </p>
 
-      <h3 className="text-2xl font-semibold text-foreground mb-4">Games & Apps Privacy</h3>
-      <p className="mb-6">
-        To view privacy policies for our specific mobile games and applications, please visit:
-      </p>
-      <ul className="list-disc pl-6 mb-6 space-y-2">
-        <li><Link to="/apps/neon-block-puzzle/privacy" className="text-primary hover:underline">Neon Block Puzzle Privacy Policy</Link></li>
-      </ul>
+      <main className="container mx-auto px-4 py-12 max-w-4xl">
+        <h2 className="text-2xl font-semibold text-foreground mb-4">DMCA / Removal Requests</h2>
+        <p className="mb-6">
+          To submit a removal request, email <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">admin@axevora.com</a>
+          with links, a description of the content, and proof of ownership. We aim to respond promptly.
+        </p>
 
-      <h2 className="text-2xl font-semibold text-foreground mb-4">Children’s Privacy</h2>
-      <p className="mb-6">
-        Our services are not directed to children under 13. We do not knowingly collect personal information from children.
-        If you believe a child has provided us with personal information, please contact us and we will promptly delete it.
-      </p>
+        <h3 className="text-2xl font-semibold text-foreground mb-4">Games & Apps Privacy</h3>
+        <p className="mb-6">
+          To view privacy policies for our specific mobile games and applications, please visit:
+        </p>
+        <ul className="list-disc pl-6 mb-6 space-y-2">
+          <li><Link to="/apps/neon-block-puzzle/privacy" className="text-primary hover:underline">Neon Block Puzzle Privacy Policy</Link></li>
+        </ul>
 
-      <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Us</h2>
-      <p className="mb-6">
-        If you have any questions about this Privacy Policy, please contact us at{" "}
-        <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">
-          admin@axevora.com
-        </a>
-      </p>
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Children’s Privacy</h2>
+        <p className="mb-6">
+          Our services are not directed to children under 13. We do not knowingly collect personal information from children.
+          If you believe a child has provided us with personal information, please contact us and we will promptly delete it.
+        </p>
 
-      <p className="text-sm text-muted-foreground">
-        For more information, please review the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">Google Ad Policies</a> and
-        <a href="https://support.google.com/adsense/answer/1348695" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">How Google uses data</a>.
-      </p>
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Us</h2>
+        <p className="mb-6">
+          If you have any questions about this Privacy Policy, please contact us at{" "}
+          <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">
+            admin@axevora.com
+          </a>
+        </p>
+
+        <p className="text-sm text-muted-foreground">
+          For more information, please review the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">Google Ad Policies</a> and
+          <a href="https://support.google.com/adsense/answer/1348695" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">How Google uses data</a>.
+        </p>
+      </main>
+
+      <Footer />
     </div>
-          </div >
-        </div >
-      </div >
-
-  <Footer />
-    </div >
   );
 };
 

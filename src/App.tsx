@@ -125,10 +125,7 @@ const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator")
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
 const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
 const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
-const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
-const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
-const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
-const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
+
 const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
 
 // Validators

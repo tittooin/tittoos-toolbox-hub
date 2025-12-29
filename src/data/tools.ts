@@ -2768,7 +2768,36 @@ const allTools = [
     description: "Check if your JSON data is error-free and compliant with standards.",
     category: "validators",
     icon: Code,
-    path: "/tools/json-validator"
+    path: "/tools/json-validator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Validate JSON Syntax Instantly</h2>
+        <p>JSON (JavaScript Object Notation) is the language of the web APIs. But one missing comma or extra bracket can break your entire application. Our <strong>JSON Validator</strong> validates your code in real-time, pinpointing the exact line number of any syntax error.</p>
+        <p>Unlike simple formatters, this tool strictly adheres to <strong>RFC 8259</strong> standards, ensuring your JSON is parsable by any modern system.</p>
+      </article>
+    `,
+    howToUse: [
+      "Paste your JSON code into the editor.",
+      "The tool automatically checks for errors.",
+      "Look for red 'x' markers in the gutter for specific syntax issues.",
+      "Click 'Format' to beautify the code and make it readable."
+    ],
+    benefits: [
+      "Real-time syntax checking.",
+      "Clear error messages with line numbers.",
+      "Strict RFC compliance.",
+      "Works offline in your browser."
+    ],
+    faqs: [
+      {
+        question: "Why is my JSON invalid?",
+        answer: "Common errors include trailing commas, single quotes (JSON requires double quotes), or missing brackets. Our tool highlights these specific issues."
+      },
+      {
+        question: "Is my data sent to a server?",
+        answer: "No. All validation happens locally in your browser's JavaScript engine. Your data never leaves your computer."
+      }
+    ]
   },
   {
     id: "xml-validator",
@@ -2777,7 +2806,32 @@ const allTools = [
     description: "Verify XML documents against syntax rules and best practices.",
     category: "validators",
     icon: Code,
-    path: "/tools/xml-validator"
+    path: "/tools/xml-validator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Free XML Validator</h2>
+        <p>XML files often break due to unclosed tags or improper nesting. Our <strong>XML Validator</strong> checks your document structure against standard XML rules.</p>
+        <p>Perfect for debugging sitemaps, RSS feeds, or configuration files before deploying them to production.</p>
+      </article>
+    `,
+    howToUse: [
+      "Paste your XML content.",
+      "The editor immediately highlights syntax errors.",
+      "Hover over red markers to see the error description.",
+      "Use 'Format' to indent and organize the tags."
+    ],
+    benefits: [
+      "Detects unclosed tags.",
+      "Validates nesting structure.",
+      "Supports large files.",
+      "Instant feedback."
+    ],
+    faqs: [
+      {
+        question: "Does it validate against XSD?",
+        answer: "Currently, it performs syntax validation (well-formedness) to ensure the XML can be parsed. Schema validation is coming soon."
+      }
+    ]
   },
   {
     id: "password-validator",
