@@ -2714,6 +2714,15 @@ const allTools = [
     path: "/tools/ai-reel-script-generator"
   },
   {
+    id: "video-to-shorts",
+    name: "Video to Shorts Converter",
+    description: "Convert long YouTube videos into viral Shorts & Reels. Auto-crop and split tool.",
+    path: "/tools/video-to-shorts",
+    icon: Scissors,
+    category: "converter",
+    content: "AI-powered tool to turn landscape videos into vertical shorts in seconds. No watermark."
+  },
+  {
     id: "ai-thumbnail-text-generator",
     name: "AI Thumbnail Text Gen",
     subheading: "Catchy thumbnail text",

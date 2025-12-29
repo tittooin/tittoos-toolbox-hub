@@ -48,6 +48,7 @@ const ColorPicker = lazy(() => import("./pages/tools/ColorPicker"));
 const ImageConverter = lazy(() => import("./pages/tools/ImageConverter"));
 const PDFToEPUB = lazy(() => import("./pages/tools/PDFToEPUB"));
 const PDFToImage = lazy(() => import("./pages/tools/PDFToImage"));
+const VideoToShorts = lazy(() => import("./pages/tools/VideoToShorts"));
 const TextAnalyzer = lazy(() => import("./pages/tools/TextAnalyzer"));
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
 const AudioConverter = lazy(() => import("./pages/tools/AudioConverter"));

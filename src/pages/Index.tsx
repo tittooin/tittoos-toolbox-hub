@@ -1,6 +1,6 @@
 
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Search, Filter, ArrowRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart } from "lucide-react";
+import { Search, Filter, ArrowRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -115,6 +115,37 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {/* SUPER HERO: Video to Shorts - The new viral tool */}
+              <Link to="/tools/video-to-shorts" className="group md:col-span-3">
+                <Card className="h-full border-2 border-red-500/20 hover:border-red-500/50 bg-gradient-to-r from-red-600/10 via-pink-600/10 to-orange-600/10 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden relative">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 transform -rotate-12 group-hover:scale-110 transition-transform duration-700">
+                    <Video size={200} />
+                  </div>
+                  <CardContent className="p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="bg-red-600/10 p-6 rounded-2xl ring-1 ring-red-500/20">
+                      <Scissors className="w-16 h-16 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                      <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
+                        <Badge variant="default" className="bg-red-600 hover:bg-red-700 text-white animate-pulse">
+                          <Sparkles className="w-3 h-3 mr-1" /> New Viral Tool
+                        </Badge>
+                      </div>
+                      <h3 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-4">
+                        YouTube to <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600">Shorts Converter</span>
+                      </h3>
+                      <p className="text-lg text-muted-foreground max-w-2xl mb-6">
+                        Turn 1 long video into <strong>10 Viral Shorts</strong> automatically. Auto-Crop to 9:16, Auto-Split to 60s.
+                        <span className="block mt-2 font-medium text-foreground">100% Free & Runs in Browser (No Upload needed)</span>
+                      </p>
+                      <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-500/25 rounded-full px-8 h-12">
+                        Create Shorts Now <Play className="ml-2 w-5 h-5 fill-current" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
               {/* HERO CARD: Tech Battle Arena - Full styling upgrade */}
               <Link to="/tools/tech-versus" className="group md:col-span-3">
                 <Card className="h-full border-2 border-indigo-500/20 hover:border-indigo-500/50 bg-gradient-to-r from-indigo-900/5 via-blue-900/5 to-purple-900/5 dark:from-indigo-900/40 dark:via-blue-900/20 dark:to-purple-900/10 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden relative">
