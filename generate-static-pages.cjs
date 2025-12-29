@@ -196,31 +196,8 @@ uniqueRoutes.forEach(route => {
 
 
 
-        // INJECT FULL STATIC SITE MAP (Hidden/SEO-only)
-        // This ensures NO ORPHAN PAGES even if JS fails or Crawler ignores JS.
-        // We replace the content of <div id="root"> with actual links content.
-        // React will hydration-mismatch and replace this, which is exactly what we want for users vs bots.
-        const sitemapLinks = Array.from(uniqueRoutes).map(r => {
-            const clean = r.replace(/^\//, ''); // tools/pdf -> tools/pdf
-            const title = clean === "" ? "Home" : clean.replace(/-/g, " ").replace(/\//g, " - ").toUpperCase();
-            // Cloudflare/Clean URL: NO TRAILING SLASH
-            const href = `/${clean}`;
-            return `<li><a href="${href}">${title}</a></li>`;
-        }).join("\n");
-
-        const seoContent = `
-        <div id="static-sitemap-content" style="display:none; visibility:hidden;">
-            <h2>Axevora Static Sitemap</h2>
-            <ul>
-                ${sitemapLinks}
-            </ul>
-        </div>
-        `;
-
-        // Append to body (safer than replacing root content to avoid flashing issues if CSS loads fast)
-        // Actually, Putting it inside a <noscript> is also good, but some strictly parse HTML.
-        // Let's append it to the body.
-        html = html.replace('</body>', `${seoContent}\n</body>`);
+        // INJECT FULL STATIC SITE MAP (REMOVED: display:none links are a spam signal)
+        // We rely on sitemap.xml and internal linking structure (Footer/Header) for discovery.
 
         fs.writeFileSync(targetFile, html);
         successCount++;
