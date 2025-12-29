@@ -194,6 +194,10 @@ const Index = () => {
           </div>
         </section>
 
+
+        {/* Blog & Resources - Moved Up for Content Strategy */}
+        <BlogPreview />
+
         {/* NEW: Smart Suites / Category Spotlights */}
         <section className="container mx-auto px-4 pb-16">
           <div className="max-w-7xl mx-auto">
@@ -380,7 +384,7 @@ const Index = () => {
         <Testimonials />
 
         {/* Blog & Resources */}
-        <BlogPreview />
+
       </main>
       <Footer />
     </div >
