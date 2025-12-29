@@ -163,14 +163,15 @@ uniqueRoutes.forEach(route => {
 
         // --- SPECIAL: PRE-RENDER LINKS FOR SITEMAP PAGE ---
         // This ensures non-JS crawlers see all links on /sitemap
-        if (normalizedRoute === "/sitemap") {
-            const sortedRoutes = Array.from(uniqueRoutes).sort();
-            const linksHtml = sortedRoutes.map(r => {
-                const name = toolMap[r.replace(/\/$/, "")] || r; // Use Name or Path
-                return `<li><a href="${r}">${name}</a></li>`;
-            }).join('\n');
+        // Prepare links for Sitemap and NoScript fallbacks
+        const sortedRoutesForLinks = Array.from(uniqueRoutes).sort();
+        const linksHtml = sortedRoutesForLinks.map(r => {
+            const name = toolMap[r.replace(/\/$/, "")] || r;
+            return `<li><a href="${r}">${name}</a></li>`;
+        }).join('\n');
 
-            // Inject into #root so it's visible to crawlers but replaced by React
+        // --- SPECIAL: PRE-RENDER LINKS FOR SITEMAP PAGE ---
+        if (normalizedRoute === "/sitemap") {
             const sitemapContent = `
                 <div style="padding: 20px;">
                     <h1>Sitemap</h1>
@@ -180,6 +181,17 @@ uniqueRoutes.forEach(route => {
             `;
             html = html.replace('<div id="root"></div>', `<div id="root">${sitemapContent}</div>`);
         }
+
+        // --- UNIVERSAL NOSCRIPT FALLBACK ---
+        // Inject all links in noscript on ALL pages to ensure crawlability for non-JS bots
+        const noscriptBlock = `
+        <noscript>
+            <hr/>
+            <h3>Site Links</h3>
+            <ul>${linksHtml}</ul>
+        </noscript>
+        `;
+        html = html.replace('</body>', `${noscriptBlock}\n</body>`);
 
         fs.writeFileSync(targetFile, html);
         successCount++;
