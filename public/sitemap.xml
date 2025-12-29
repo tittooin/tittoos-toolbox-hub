@@ -77,6 +77,7 @@
 <url><loc>https://axevora.com/tools/csv-editor</loc></url>
 <url><loc>https://axevora.com/tools/currency-converter</loc></url>
 <url><loc>https://axevora.com/tools/delete-pdf-pages</loc></url>
+<url><loc>https://axevora.com/tools/email-validator</loc></url>
 <url><loc>https://axevora.com/tools/excel-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/extract-pdf-pages</loc></url>
 <url><loc>https://axevora.com/tools/hash-generator</loc></url>
@@ -92,6 +93,7 @@
 <url><loc>https://axevora.com/tools/jpg-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/json-editor</loc></url>
 <url><loc>https://axevora.com/tools/json-formatter</loc></url>
+<url><loc>https://axevora.com/tools/json-validator</loc></url>
 <url><loc>https://axevora.com/tools/linux-cmd-gen</loc></url>
 <url><loc>https://axevora.com/tools/loan-calculator</loc></url>
 <url><loc>https://axevora.com/tools/lock-pdf</loc></url>
@@ -104,6 +106,7 @@
 <url><loc>https://axevora.com/tools/nutrition-versus</loc></url>
 <url><loc>https://axevora.com/tools/ocr-converter</loc></url>
 <url><loc>https://axevora.com/tools/password-generator</loc></url>
+<url><loc>https://axevora.com/tools/password-validator</loc></url>
 <url><loc>https://axevora.com/tools/pdf-converter</loc></url>
 <url><loc>https://axevora.com/tools/pdf-editor</loc></url>
 <url><loc>https://axevora.com/tools/pdf-quiz-generator</loc></url>
@@ -151,4 +154,5 @@
 <url><loc>https://axevora.com/tools/windows-cmd-gen</loc></url>
 <url><loc>https://axevora.com/tools/word-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/xml-formatter</loc></url>
+<url><loc>https://axevora.com/tools/xml-validator</loc></url>
 </urlset>
