@@ -145,7 +145,12 @@ uniqueRoutes.forEach(route => {
 
         // --- SEO INJECTION: CANONICAL & META ---
         const staticCanonicalTag = `<link rel="canonical" href="${canonicalUrl}" data-generated="static-flat" />`;
-        html = html.replace(/<link rel="canonical" href=".*?" \/>/g, "");
+
+        // Remove existing tags to prevent duplicates (Robust Regex)
+        html = html.replace(/<link rel="canonical" href="[^"]*?"\s*\/?>/g, "");
+        html = html.replace(/<meta property="og:url" content="[^"]*?"\s*\/?>/g, "");
+
+        // Inject new Canonical and OG:URL
         html = html.replace('</head>', `${staticCanonicalTag}\n<meta property="og:url" content="${canonicalUrl}" />\n</head>`);
 
         // --- SEO INJECTION: TITLE & H1 ---
