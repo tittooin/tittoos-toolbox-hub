@@ -18,6 +18,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const AllTools = lazy(() => import("./pages/AllTools"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const Sitemap = lazy(() => import("./pages/Sitemap"));
 const Attributions = lazy(() => import("./pages/Attributions"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Author = lazy(() => import("./pages/Author"));
@@ -340,6 +341,8 @@ const App = () => (
 
               {/* Apps Support Pages */}
               <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />
+
+              <Route path="/sitemap" element={<Sitemap />} />
 
               {/* Admin Routes */}
               <Route path="/admin/blog" element={<BlogManager />} />

@@ -162,6 +162,11 @@ const Footer = () => {
                   Neon Puzzle Privacy
                 </Link>
               </li>
+              <li>
+                <Link to="/sitemap" className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+                  Sitemap
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
