@@ -7,20 +7,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
 
-const XMLFormatter = () => {
+const XMLFormatter = ({ mode = 'editor' }: { mode?: 'editor' | 'validator' }) => {
   const [xmlInput, setXmlInput] = useState("");
   const [indentation, setIndentation] = useState("2");
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const isValidator = mode === 'validator';
+
+  const toolTitle = isValidator ? "XML Validator" : "XML Formatter & Converter";
+  const toolDescription = isValidator
+    ? "Free online XML Validator. check syntax for errors, unclosed tags, and schema compliance instantly."
+    : "Validate, beautify, and convert XML documents to JSON";
+
   useEffect(() => {
-    document.title = "Free XML Formatter & Validator – Beautify, Minify & Convert to JSON";
+    document.title = isValidator
+      ? "Free XML Validator – Syntax Check & Error Detection"
+      : "Free XML Formatter & Validator – Beautify, Minify & Convert to JSON";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Validate, format, and convert XML files online. Free tool to beautify XML, minify code, and convert XML to JSON instantly.');
+      metaDescription.setAttribute('content', toolDescription);
     }
-  }, []);
+  }, [mode, toolDescription]);
 
   const validateXML = (text: string) => {
     if (!text.trim()) {
@@ -246,7 +255,13 @@ const XMLFormatter = () => {
     setError(null);
   };
 
-  const features = [
+  const features = isValidator ? [
+    "Syntax Validation",
+    "Line Error Reporting",
+    "Sitemap Validation",
+    "Schema Checking",
+    "Secure Local Processing"
+  ] : [
     "Validate XML Syntax",
     "Beautify & Format XML",
     "Convert XML to JSON",
@@ -256,8 +271,8 @@ const XMLFormatter = () => {
 
   return (
     <ToolTemplate
-      title="XML Formatter & Converter"
-      description="Validate, beautify, and convert XML documents to JSON"
+      title={toolTitle}
+      description={toolDescription}
       icon={FileCode}
       features={features}
     >
@@ -353,7 +368,9 @@ const XMLFormatter = () => {
         </Card>
 
         <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">XML Formatter & Converter</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-red-600">
+            {isValidator ? "Free Online XML Validator" : "XML Formatter & Converter"}
+          </h1>
 
           <div className="my-10 flex justify-center">
             {/* Custom SVG Illustration for XML Formatter */}
@@ -397,12 +414,16 @@ const XMLFormatter = () => {
                 <path d="M0 0 L15 0 M10 -5 L15 0 L10 5" stroke="#64748b" strokeWidth="2" />
               </g>
 
-              <text x="300" y="380" textAnchor="middle" fill="#64748b" fontSize="16" fontWeight="500">Data Interchange Formats</text>
+              <text x="300" y="380" textAnchor="middle" fill="#64748b" fontSize="16" fontWeight="500">
+                {isValidator ? "Schema Validation & Syntax Checking" : "Data Interchange Formats"}
+              </text>
             </svg>
           </div>
 
           <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
-            XML (Extensible Markup Language) is a powerful format for storing and transporting data, but it can be verbose and hard to read. Our <strong>Free XML Formatter</strong> cleans up your code with proper indentation, while the <strong>Converter</strong> lets you transform it into lightweight JSON for modern web applications.
+            {isValidator
+              ? "Ensure your XML files are error-free with our <strong>Online XML Validator</strong>. Whether checking configuration files, sitemaps, or SOAP messages, we provide detailed line-by-line error reporting."
+              : "XML (Extensible Markup Language) is a powerful format for storing and transporting data, but it can be verbose and hard to read. Our <strong>Free XML Formatter</strong> cleans up your code with proper indentation, while the <strong>Converter</strong> lets you transform it into lightweight JSON for modern web applications."}
           </p>
 
           <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
@@ -444,7 +465,7 @@ const XMLFormatter = () => {
               <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
                 <span>How does the conversion work?</span>
                 <span className="transition group-open:rotate-180">
-                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
@@ -456,7 +477,7 @@ const XMLFormatter = () => {
               <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
                 <span>Can I validate sitemaps?</span>
                 <span className="transition group-open:rotate-180">
-                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">

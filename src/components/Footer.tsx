@@ -152,6 +152,16 @@ const Footer = () => {
                   JSON Formatter
                 </Link>
               </li>
+              <li>
+                <Link to="/blog-posts/validators-category" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Validators
+                </Link>
+              </li>
+              <li>
+                <Link to="/apps/neon-block-puzzle/privacy" className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+                  Neon Puzzle Privacy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

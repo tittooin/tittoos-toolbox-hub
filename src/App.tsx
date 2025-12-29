@@ -286,8 +286,8 @@ const App = () => (
               <Route path="/tools/css-formatter" element={<CSSFormatter />} />
 
               {/* Validators */}
-              <Route path="/tools/json-validator" element={<JSONEditor />} />
-              <Route path="/tools/xml-validator" element={<XMLFormatter />} />
+              <Route path="/tools/json-validator" element={<JSONEditor mode="validator" />} />
+              <Route path="/tools/xml-validator" element={<XMLFormatter mode="validator" />} />
               <Route path="/tools/password-validator" element={<PasswordValidator />} />
               <Route path="/tools/email-validator" element={<EmailValidator />} />
 

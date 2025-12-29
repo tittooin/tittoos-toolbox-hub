@@ -74,20 +74,29 @@ const JsonNode = ({ name, value, isLast = true, depth = 0 }: { name?: string, va
   );
 };
 
-const JSONEditor = () => {
+const JSONEditor = ({ mode = 'editor' }: { mode?: 'editor' | 'validator' }) => {
   const [jsonText, setJsonText] = useState("");
   const [parsedJson, setParsedJson] = useState<any>(null);
   const [isValid, setIsValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const isValidator = mode === 'validator';
+
+  const toolTitle = isValidator ? "JSON Validator" : "JSON Editor & Validator";
+  const toolDescription = isValidator
+    ? "Free online JSON Validator. Check syntax, find errors instantly, and ensure your JSON is RFC compliant."
+    : "A powerful workbench to edit, validate, format, and visualize JSON data";
+
   useEffect(() => {
-    document.title = "Free JSON Editor – Validate, Format & Visualize JSON";
+    document.title = isValidator
+      ? "Free JSON Validator – Check Syntax & Fix Errors Online"
+      : "Free JSON Editor – Validate, Format & Visualize JSON";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Edit, validate, and format JSON online. Features a visual tree view, file upload/download, and minification tools for developers.');
+      metaDescription.setAttribute('content', toolDescription);
     }
-  }, []);
+  }, [mode, toolDescription]);
 
   const validateAndParse = (text: string) => {
     if (!text.trim()) {
@@ -198,7 +207,13 @@ const JSONEditor = () => {
     toast.success("Download started");
   };
 
-  const features = [
+  const features = isValidator ? [
+    "Instant Syntax Validation",
+    "Precise Error Line Detection",
+    "RFC 8259 Compliance Check",
+    "Secure Client-Side Analysis",
+    "JSON Tree Viewer"
+  ] : [
     "JSON Validation & Error Detection",
     "Format (Beautify) & Minify",
     "Visual Tree View Explorer",
@@ -208,8 +223,8 @@ const JSONEditor = () => {
 
   return (
     <ToolTemplate
-      title="JSON Editor & Validator"
-      description="A powerful workbench to edit, validate, format, and visualize JSON data"
+      title={toolTitle}
+      description={toolDescription}
       icon={Code}
       features={features}
     >
@@ -303,7 +318,9 @@ const JSONEditor = () => {
         </div>
 
         <article className="prose prose-lg max-w-none text-gray-800 dark:text-gray-200 mt-12 mb-16 px-4 md:px-0">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">Free Online JSON Editor & Viewer</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+            {isValidator ? "Free Online JSON Validator" : "Free Online JSON Editor & Viewer"}
+          </h1>
 
           <div className="my-10 flex justify-center">
             {/* Custom SVG Illustration for JSON Editor */}
@@ -349,12 +366,16 @@ const JSONEditor = () => {
               {/* Arrow Connection */}
               <path d="M290 200 L310 200" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow)" />
 
-              <text x="300" y="380" textAnchor="middle" fill="#64748b" fontSize="16" fontWeight="500">Code to Visual Tree Transformation</text>
+              <text x="300" y="380" textAnchor="middle" fill="#64748b" fontSize="16" fontWeight="500">
+                {isValidator ? "Real-time JSON Validation" : "Code to Visual Tree Transformation"}
+              </text>
             </svg>
           </div>
 
           <p className="lead text-xl text-gray-600 dark:text-gray-300 mb-8 font-light leading-relaxed">
-            JSON (JavaScript Object Notation) is the language of the web, but reading raw JSON files can be a headache. Our <strong>Free JSON Editor</strong> transforms messy code into a clean, readable format. Whether you need to validate syntax, minify for production, or explore complex nested structures, this tool is your all-in-one workbench.
+            {isValidator
+              ? "Validate your JSON data against RFC standards with our rigorous <strong>JSON Validator</strong>. Detect missing commas, unclosed brackets, and type errors instantly to ensure your API payloads are production-ready."
+              : "JSON (JavaScript Object Notation) is the language of the web, but reading raw JSON files can be a headache. Our <strong>Free JSON Editor</strong> transforms messy code into a clean, readable format. Whether you need to validate syntax, minify for production, or explore complex nested structures, this tool is your all-in-one workbench."}
           </p>
 
           <h2 className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white flex items-center">
@@ -393,7 +414,7 @@ const JSONEditor = () => {
               <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
                 <span>Is my data private?</span>
                 <span className="transition group-open:rotate-180">
-                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
@@ -405,7 +426,7 @@ const JSONEditor = () => {
               <summary className="font-medium cursor-pointer list-none flex justify-between items-center text-lg">
                 <span>Can I convert JSON to other formats?</span>
                 <span className="transition group-open:rotate-180">
-                  <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                  <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
