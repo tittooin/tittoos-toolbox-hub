@@ -82,7 +82,7 @@ if (!fs.existsSync(indexHtmlPath)) {
 
 const template = fs.readFileSync(indexHtmlPath, 'utf8');
 
-const staticPaths = ["/categories", "/about", "/contact", "/tools", "/privacy", "/terms", "/blog"];
+const staticPaths = ["/categories", "/about", "/contact", "/tools", "/privacy", "/terms", "/blog", "/sitemap"];
 const allRoutes = [
     ...staticPaths,
     ...extractRoutesFromApp(),
@@ -111,49 +111,27 @@ let successCount = 0;
 let toolMap = {};
 try {
     const toolsFileContent = fs.readFileSync(path.join(__dirname, 'src/data/tools.ts'), 'utf8');
-    // Regex to capture name and path from the object structure
-    // Matches: name: "Tool Name", ... path: "/tools/tool-path"
-    // We use a global match with exec in a loop
     const toolRegex = /name:\s*"([^"]+)",[\s\S]*?path:\s*"([^"]+)"/g;
     let match;
     while ((match = toolRegex.exec(toolsFileContent)) !== null) {
-        // match[1] = Name, match[2] = Path
-        const toolName = match[1];
-        const toolPath = match[2];
-        // Normalize path for map key (remove trailing slash if any, though tools.ts usually doesn't have them)
-        const checkPath = toolPath.replace(/\/$/, "");
-        toolMap[checkPath] = toolName;
+        toolMap[match[2].replace(/\/$/, "")] = match[1];
     }
     console.log(`Loaded ${Object.keys(toolMap).length} tools for SEO Injection.`);
 } catch (e) {
     console.warn("Could not load tools.ts for SEO injection, using defaults.", e);
 }
 
-const defaultTitleStart = "Axevora - 40+ Essential";
-const defaultH1 = "Axevora - Free Online Tools & Utilities";
-
 uniqueRoutes.forEach(route => {
-    // Determine canonical URL for this route
-    // Logic: NO trailing slash (Matches Vercel Clean URLs for .html files)
     let normalizedRoute = route.replace(/\/$/, "");
     if (normalizedRoute === "") normalizedRoute = "/";
 
-    // Canonical NO trailing slash (Matches Cloudflare Clean URLs)
     const canonicalUrl = `${baseUrl.replace(/\/$/, "")}${normalizedRoute === "/" ? "/" : normalizedRoute}`;
 
-    // Prepare target file path
-    // OLD: /tools/pdf -> dist/tools/pdf/index.html
-    // NEW: /tools/pdf -> dist/tools/pdf.html
-
     let targetFile = "";
-
     if (route === "/" || route === "") {
-        // Root must still be index.html in valid dist location? 
-        // Actually root is handled by Main index.html. 
-        // But we want to inject our Canonical.
         targetFile = path.join(distDir, "index.html");
     } else {
-        const relativePath = route.replace(/^\//, ''); // tools/pdf-converter
+        const relativePath = route.replace(/^\//, '');
         targetFile = path.join(distDir, `${relativePath}.html`);
     }
 
@@ -165,39 +143,38 @@ uniqueRoutes.forEach(route => {
 
         let html = template;
 
-        // --- SEO INJECTION: CANONICAL ---
+        // --- SEO INJECTION: CANONICAL & META ---
         const staticCanonicalTag = `<link rel="canonical" href="${canonicalUrl}" data-generated="static-flat" />`;
-        // Remove existing canonical hooks or tags
-        html = html.replace(/<link rel="canonical" href=".*?" \/>/g, ""); // regex kill old ones
-        // Inject new one before head close
-        html = html.replace('</head>', `${staticCanonicalTag}\n</head>`);
+        html = html.replace(/<link rel="canonical" href=".*?" \/>/g, "");
+        html = html.replace('</head>', `${staticCanonicalTag}\n<meta property="og:url" content="${canonicalUrl}" />\n</head>`);
 
-        // --- SEO INJECTION: OG:URL (Must match Canonical) ---
-        // Remove existing og:url to prevent duplicates
-        html = html.replace(/<meta property="og:url" content=".*?" \/>/g, "");
-        html = html.replace('</head>', `<meta property="og:url" content="${canonicalUrl}" />\n</head>`);
-
-        // --- SEO INJECTION: DYNAMIC TITLE & H1 ---
-        // Lookup tool name
-        // route is like "/tools/pdf-converter"
+        // --- SEO INJECTION: TITLE & H1 ---
         const toolName = toolMap[normalizedRoute];
-
         if (toolName) {
-            // Replace Title
-            // <title>Axevora - 40+ Essential Online Utilities | Free Web Tools</title>
             const newTitle = `${toolName} - Axevora Free Tools`;
             html = html.replace(/<title>.*?<\/title>/, `<title>${newTitle}</title>`);
-
-            // Replace H1
-            // <h1>Axevora - Free Online Tools & Utilities</h1>
             html = html.replace(/<h1>.*?<\/h1>/, `<h1>${toolName}</h1>`);
         }
-        // If not found (e.g. blog pages or categories not in tools.ts), leave default or we could improve logic later.
 
+        // --- SPECIAL: PRE-RENDER LINKS FOR SITEMAP PAGE ---
+        // This ensures non-JS crawlers see all links on /sitemap
+        if (normalizedRoute === "/sitemap") {
+            const sortedRoutes = Array.from(uniqueRoutes).sort();
+            const linksHtml = sortedRoutes.map(r => {
+                const name = toolMap[r.replace(/\/$/, "")] || r; // Use Name or Path
+                return `<li><a href="${r}">${name}</a></li>`;
+            }).join('\n');
 
-
-        // INJECT FULL STATIC SITE MAP (REMOVED: display:none links are a spam signal)
-        // We rely on sitemap.xml and internal linking structure (Footer/Header) for discovery.
+            // Inject into #root so it's visible to crawlers but replaced by React
+            const sitemapContent = `
+                <div style="padding: 20px;">
+                    <h1>Sitemap</h1>
+                    <p>Static index for crawlers.</p>
+                    <ul>${linksHtml}</ul>
+                </div>
+            `;
+            html = html.replace('<div id="root"></div>', `<div id="root">${sitemapContent}</div>`);
+        }
 
         fs.writeFileSync(targetFile, html);
         successCount++;
