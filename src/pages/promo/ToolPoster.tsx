@@ -193,7 +193,7 @@ export default function ToolPoster() {
                             />
                         </div>
                         <div className="absolute -bottom-10 -left-10 animate-bounce">
-                            <MousePointer2 className="w-16 h-16 text-yellow-500 fill-yellow-500 stroke-black stroke-[3px] rotate-[-15deg] drop-shadow-xl" />
+                            <MousePointer2 className="w-16 h-16 text-yellow-500 fill-yellow-500 stroke-black stroke-[3px] rotate-[-15deg] scale-x-[-1] drop-shadow-xl" />
                         </div>
                     </div>
 
