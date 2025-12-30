@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { convertMedia } from "@/utils/ffmpegUtils";
+
 
 const VideoConverter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -69,6 +71,7 @@ const VideoConverter = () => {
     }
   };
 
+
   const handleConvert = async () => {
     if (!selectedFile) {
       toast.error("Please select a video file first");
@@ -77,22 +80,21 @@ const VideoConverter = () => {
 
     setIsConverting(true);
     setProgress(0);
+    setConvertedFile(null);
 
     try {
-      // Simulate conversion process
-      for (let i = 0; i <= 100; i += 2) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        setProgress(i);
-      }
+      const url = await convertMedia({
+        file: selectedFile,
+        outputFormat,
+        onProgress: (p) => setProgress(p),
+        // Note for future: Add resolution scaling support in utils if needed
+      });
 
-      // Create a dummy converted file
-      const blob = new Blob(['Converted video content'], { type: `video/${outputFormat}` });
-      const url = URL.createObjectURL(blob);
       setConvertedFile(url);
-
       toast.success("Video converted successfully!");
     } catch (error) {
-      toast.error("Failed to convert video");
+      console.error(error);
+      toast.error("Failed to convert video. Please try again.");
     } finally {
       setIsConverting(false);
     }

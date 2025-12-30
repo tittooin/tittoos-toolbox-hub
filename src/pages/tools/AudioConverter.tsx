@@ -1,28 +1,64 @@
-
 import { useState } from "react";
-import { Upload, Download, Music } from "lucide-react";
+import { Upload, Download, Music, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { convertMedia } from "@/utils/ffmpegUtils";
 
 const AudioConverter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isConverting, setIsConverting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [outputFormat, setOutputFormat] = useState("mp3");
+  const [bitrate, setBitrate] = useState("192k");
+  const [convertedFile, setConvertedFile] = useState<string | null>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setConvertedFile(null);
+      setProgress(0);
       toast.success("Audio file selected successfully!");
     }
   };
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (!selectedFile) {
       toast.error("Please select an audio file first");
       return;
     }
-    toast.info("Audio conversion feature coming soon!");
+
+    setIsConverting(true);
+    setProgress(0);
+
+    try {
+      const url = await convertMedia({
+        file: selectedFile,
+        outputFormat,
+        bitrate,
+        onProgress: (p) => setProgress(p)
+      });
+
+      setConvertedFile(url);
+      toast.success(`Converted to ${outputFormat.toUpperCase()} successfully!`);
+    } catch (error) {
+      console.error("Conversion failed:", error);
+      toast.error("Conversion failed. Try a different browser or file.");
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const handleDownload = () => {
+    if (convertedFile) {
+      const link = document.createElement('a');
+      link.href = convertedFile;
+      link.download = `Audio_${Date.now()}.${outputFormat}`;
+      link.click();
+    }
   };
 
   const features = [
@@ -63,15 +99,79 @@ const AudioConverter = () => {
           </CardContent>
         </Card>
 
+
         {selectedFile && (
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-2">Selected File</h3>
-              <p className="text-gray-600 mb-4">{selectedFile.name}</p>
-              <Button onClick={handleConvert} className="w-full">
-                <Download className="h-4 w-4 mr-2" />
-                Convert Audio
-              </Button>
+              <h3 className="text-lg font-medium mb-4">Conversion Settings</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Output Format</label>
+                  <select
+                    className="w-full p-2 border rounded-md"
+                    value={outputFormat}
+                    onChange={(e) => setOutputFormat(e.target.value)}
+                  >
+                    <option value="mp3">MP3 (Universal)</option>
+                    <option value="wav">WAV (High Quality)</option>
+                    <option value="m4a">M4A (Apple/Mobile)</option>
+                    <option value="aac">AAC (Streaming)</option>
+                    <option value="flac">FLAC (Lossless)</option>
+                    <option value="ogg">OGG (Web)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Quality (Bitrate)</label>
+                  <select
+                    className="w-full p-2 border rounded-md"
+                    value={bitrate}
+                    onChange={(e) => setBitrate(e.target.value)}
+                  >
+                    <option value="320k">320kbps (Best)</option>
+                    <option value="192k">192kbps (Good)</option>
+                    <option value="128k">128kbps (Standard)</option>
+                    <option value="64k">64kbps (Small Size)</option>
+                  </select>
+                </div>
+              </div>
+
+              {!isConverting && !convertedFile && (
+                <Button onClick={handleConvert} className="w-full" disabled={isConverting}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Convert to {outputFormat.toUpperCase()}
+                </Button>
+              )}
+
+              {isConverting && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Converting...</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <Progress value={progress} className="w-full" />
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    First time load may take a few seconds...
+                  </p>
+                </div>
+              )}
+
+              {convertedFile && (
+                <div className="text-center space-y-4 pt-4 border-t">
+                  <div className="bg-green-50 text-green-700 p-3 rounded-md border border-green-200">
+                    Conversion Complete!
+                  </div>
+                  <Button onClick={handleDownload} className="w-full gap-2" variant="default">
+                    <Download className="h-4 w-4" />
+                    Download {outputFormat.toUpperCase()} File
+                  </Button>
+                  <Button onClick={() => { setConvertedFile(null); setProgress(0); }} variant="outline" className="w-full">
+                    Convert Another File
+                  </Button>
+                </div>
+              )}
+
             </CardContent>
           </Card>
         )}

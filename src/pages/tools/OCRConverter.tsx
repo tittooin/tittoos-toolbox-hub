@@ -33,25 +33,46 @@ const OCRConverter = () => {
     }
 
     setIsProcessing(true);
+    setExtractedText(""); // Clear previous text
+
     try {
-      // Simulate OCR processing
+      // Dynamically load Tesseract to avoid large bundle size on initial load
+      const Tesseract = (await import("tesseract.js")).default;
+
       let combinedText = "";
+      let processedCount = 0;
 
       for (const file of selectedFiles) {
-        // Mock OCR text extraction
+        processedCount++;
+        toast.info(`Processing file ${processedCount}/${selectedFiles.length}: ${file.name}`);
+
+        // Handle PDF separately if needed, but Tesseract.js handles images best.
+        // For PDF, we might need pdf.js to convert to image first, but Tesseract handles some.
+        // For now, we assume images. If PDF, we might warn or try.
+
+        const result = await Tesseract.recognize(
+          file,
+          'eng', // Default language
+          {
+            logger: m => {
+              // Only log progress for the current file
+              if (m.status === 'recognizing text') {
+                // Optional: update UI with detailed progress
+                console.log(m);
+              }
+            }
+          }
+        );
+
         combinedText += `--- Content from ${file.name} ---\n`;
-        combinedText += "This is simulated OCR text extraction.\n";
-        combinedText += "In a real implementation, you would use:\n";
-        combinedText += "- Tesseract.js for client-side OCR\n";
-        combinedText += "- Google Vision API\n";
-        combinedText += "- AWS Textract\n";
-        combinedText += "- Azure Computer Vision\n\n";
+        combinedText += result.data.text + "\n\n";
       }
 
       setExtractedText(combinedText);
-      toast.success("OCR processing completed!");
+      toast.success("OCR processing completed successfully!");
     } catch (error) {
-      toast.error("Error processing files");
+      console.error("OCR Error:", error);
+      toast.error("Error processing text. Ensure image is clear.");
     } finally {
       setIsProcessing(false);
     }
