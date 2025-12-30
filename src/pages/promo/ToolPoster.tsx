@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { tools } from '@/data/tools';
-import { Zap, Download, Sparkles, PlayCircle, Layers, BoxSelect } from "lucide-react";
+import { Zap, Download, Sparkles, MousePointer2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import html2canvas from 'html2canvas';
 
@@ -13,10 +13,8 @@ export default function ToolPoster() {
 
     const tool = tools.find(t => t.id === toolId) || tools[0];
     const toolURL = `https://axevora.com${tool.path}`;
+    // High contrast black QR on white
     const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(toolURL)}&color=000000&bgcolor=ffffff&margin=0`;
-
-    // Dynamic Icon Strategy
-    const ToolIcon = tool.icon || Layers;
 
     const customTitle = toolId === 'video-to-shorts' ? {
         line1: "Convert Video",
@@ -31,18 +29,15 @@ export default function ToolPoster() {
         const element = document.getElementById('promo-poster');
         if (element) {
             try {
-                // Improved capture settings
                 const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: null,
                     allowTaint: true,
-                    logging: false,
-                    // Fix for text offset issues
+                    // Fix layout shifts during capture
                     onclone: (clonedDoc) => {
                         const clonedElement = clonedDoc.getElementById('promo-poster');
                         if (clonedElement) {
-                            // Force layout recalc if needed
                             clonedElement.style.transform = 'none';
                         }
                     }
@@ -50,12 +45,12 @@ export default function ToolPoster() {
 
                 const dataUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
-                link.download = `Axevora_${toolId}_Poster.png`;
+                link.download = `Axevora_Ad_${toolId}.png`;
                 link.href = dataUrl;
                 link.click();
             } catch (error) {
                 console.error("Download failed:", error);
-                alert("Only works on Desktop Browser properly due to security policies.");
+                alert("Download failed. Please try on Desktop Chrome.");
             } finally {
                 setIsDownloading(false);
             }
@@ -63,139 +58,103 @@ export default function ToolPoster() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 gap-8 font-sans selection:bg-pink-500 selection:text-white">
+        <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center p-4 gap-8 font-sans">
 
             {/* Controls */}
-            <div className="text-white/40 text-sm text-center space-y-4 animate-in fade-in duration-700">
-                <div>
-                    Previewing: <span className="text-white font-bold">{tool.name}</span>
-                </div>
-
+            <div className="text-white/60 text-sm text-center space-y-4">
+                <div>Ad Preview: <span className="text-white font-bold">{tool.name}</span></div>
                 <Button
                     onClick={handleDownload}
                     disabled={isDownloading}
-                    className="bg-white text-black hover:bg-gray-200 font-bold px-8 py-6 text-lg rounded-full transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]"
+                    className="bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-8 py-6 text-xl rounded-full transition-all shadow-lg hover:shadow-yellow-400/20"
                 >
-                    {isDownloading ? (
-                        <span className="flex items-center gap-2">
-                            <Sparkles className="animate-spin w-5 h-5" /> Processing...
-                        </span>
-                    ) : (
-                        <>
-                            <Download className="w-5 h-5 mr-2" />
-                            Download Cinematic Poster
-                        </>
-                    )}
+                    {isDownloading ? "Generating..." : "Download Ad Poster"}
                 </Button>
             </div>
 
             {/* 
-               CINEMATIC POSTER CONTAINER 
-               Size: 1200 x 630 (Facebook/Twitter Card Standard)
-               Style: Dark Glassmorphism, Neon Accents, "Netflix" vibe
+               HIGH CONVERSION AD CONTAINER
+               Size: 1200 x 630 
+               Style: High Contrast, "Clickbait" colors (Yellow/Black), Big Bold Text
             */}
-            <div id="promo-poster" className="relative w-[1200px] h-[630px] bg-[#0a0a0a] text-white overflow-hidden shadow-2xl flex shrink-0 border border-white/5">
+            <div id="promo-poster" className="relative w-[1200px] h-[630px] bg-white text-black overflow-hidden shadow-2xl flex shrink-0">
 
-                {/* --- CINEMATIC LIGHTING LAYERS --- */}
+                {/* BACKGROUND SPLIT: Yellow vs Black */}
+                <div className="absolute inset-0 flex">
+                    {/* Left: Attention Grabbing Yellow */}
+                    <div className="w-[65%] h-full bg-[#FFD600] relative">
+                        {/* Subtle pattern */}
+                        <div className="absolute inset-0 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.05]"></div>
+                    </div>
+                    {/* Right: Modern Black */}
+                    <div className="w-[35%] h-full bg-[#111111] relative"></div>
+                </div>
 
-                {/* 1. Base Gradient (Deep Space Blue/Purple) */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#09090b] to-[#000000] opacity-100"></div>
-
-                {/* 2. Ambient Spotlights (Cinematic Glows) */}
-                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[150px] mix-blend-screen animate-pulse duration-[10000ms]"></div>
-                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] mix-blend-screen"></div>
-
-                {/* 3. Noise Texture for Realism (Subtle) */}
-                <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
+                {/* DECORATIVE ELEMENTS */}
+                <div className="absolute top-[-50px] right-[30%] w-[100px] h-[800px] bg-white rotate-[15deg] transform origin-top shadow-[-10px_0_30px_rgba(0,0,0,0.1)]"></div>
 
 
-                {/* --- CONTENT LAYOUT --- */}
+                {/* CONTENT LAYER */}
 
-                {/* LEFT SIDE: Typography & Hook */}
-                <div className="relative z-10 w-7/12 h-full p-20 flex flex-col justify-center">
+                {/* LEFT: THE HOOK */}
+                <div className="relative z-10 w-[60%] h-full flex flex-col justify-center pl-20 pr-10">
 
-                    {/* Badge */}
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md flex items-center gap-2 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-                            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-                            <span className="text-xs font-bold tracking-[0.2em] uppercase text-blue-100">AI Powered Tool</span>
-                        </div>
+                    {/* "FREE TOOL" Label */}
+                    <div className="inline-block bg-black text-white px-6 py-2 rounded-lg font-black text-lg uppercase tracking-wider mb-6 w-fit shadow-xl transform -rotate-2">
+                        🔥 100% Free AI Tool
                     </div>
 
-                    {/* Headline - No Gradient Text to fix html2canvas glitch. Instead: White with heavy shadow + Accent Color line */}
-                    <h1 className="text-8xl font-black leading-[0.9] tracking-tight mb-8 drop-shadow-2xl">
-                        <span className="text-white block">{customTitle.line1}</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 filter drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-                            {/* Wait, bg-clip-text causes the patch glitch in html2canvas! 
-                                FIX: Use standard color with text-shadow instead for reliable capture. 
-                            */}
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 hidden"></span> {/* Dummy to keep tailwind detecting classes if needed */}
-                        </span>
-                        {/* ACTUAL SAFE RENDER FOR CAPTURE */}
-                        <span className="text-[#818cf8] block mt-1 drop-shadow-[0_0_25px_rgba(129,140,248,0.4)]">
-                            {customTitle.line2}
+                    {/* MASSIVE HEADLINE */}
+                    <h1 className="text-[110px] leading-[0.9] font-black text-black mb-6 tracking-tighter drop-shadow-sm">
+                        {customTitle.line1.toUpperCase()}
+                        <br />
+                        <span className="text-white text-shadow-black stroke-black bg-black px-4 italic transform -skew-x-6 inline-block mt-2">
+                            {customTitle.line2.toUpperCase()}
                         </span>
                     </h1>
 
-                    <p className="text-2xl text-slate-400 font-light leading-relaxed max-w-xl mb-12 border-l-4 border-blue-500/50 pl-6">
-                        {tool.description.slice(0, 75)}...
-                        <span className="block mt-4 text-white text-lg font-medium opacity-80">
-                            Create faster. Work smarter. 100% Free.
-                        </span>
-                    </p>
-
-                    {/* Minimalist Visual Flow Indicator */}
-                    <div className="flex items-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                        <div className="flex flex-col gap-1">
-                            <div className="w-12 h-12 rounded-lg border border-white/20 flex items-center justify-center">
-                                <BoxSelect className="w-6 h-6" />
-                            </div>
-                            <span className="text-[10px] uppercase tracking-wider text-center">Select</span>
+                    {/* Subtext with Checkmarks */}
+                    <div className="flex flex-col gap-3 text-xl font-bold opacity-90 text-neutral-900 mb-10">
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-8 h-8 text-black fill-white" />
+                            <span>Run Entirely in Browser (Privacy)</span>
                         </div>
-                        <div className="w-16 h-[1px] bg-white/20"></div>
-                        <div className="flex flex-col gap-1">
-                            <div className="w-12 h-12 rounded-lg border border-white/20 flex items-center justify-center bg-white/5">
-                                <ToolIcon className="w-6 h-6" />
-                            </div>
-                            <span className="text-[10px] uppercase tracking-wider text-center">AI Magic</span>
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-8 h-8 text-black fill-white" />
+                            <span>No Login Required</span>
                         </div>
-                        <div className="w-16 h-[1px] bg-white/20"></div>
-                        <div className="flex flex-col gap-1">
-                            <div className="w-12 h-12 rounded-lg border border-white/20 flex items-center justify-center">
-                                <Download className="w-6 h-6" />
-                            </div>
-                            <span className="text-[10px] uppercase tracking-wider text-center">Save</span>
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-8 h-8 text-black fill-white" />
+                            <span>Auto-Crop & Subtitles</span>
                         </div>
                     </div>
 
                 </div>
 
-                {/* RIGHT SIDE: The "Portal" (QR Code) */}
-                <div className="relative z-10 w-5/12 h-full bg-[#000000]/60 backdrop-blur-xl border-l border-white/10 flex flex-col items-center justify-center p-12">
+                {/* RIGHT: THE ACTION */}
+                <div className="relative z-10 w-[40%] h-full flex flex-col items-center justify-center p-12 text-center text-white">
 
-                    {/* Glow behind QR */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/20 rounded-full blur-[80px]"></div>
-
-                    <div className="relative bg-white p-4 rounded-3xl shadow-[0_0_50px_rgba(255,255,255,0.15)] ring-1 ring-white/50 mb-8 w-fit mx-auto group">
-                        <div className="absolute inset-0 border-4 border-white/20 rounded-3xl blur-sm"></div>
-                        <img
-                            src={qrCodeURL}
-                            alt="Scan Tool"
-                            className="w-[280px] h-[280px] object-contain mix-blend-normal rounded-lg"
-                            crossOrigin="anonymous"
-                        />
-                        {/* Scan Me Label */}
-                        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-xs font-bold px-4 py-1 rounded-full border border-white/20 shadow-xl whitespace-nowrap">
-                            SCAN TO START
+                    <div className="relative group cursor-pointer">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <div className="relative bg-white p-4 rounded-xl ring-1 ring-gray-900/5 leading-none">
+                            <img
+                                src={qrCodeURL}
+                                alt="Scan"
+                                className="w-[280px] h-[280px] object-contain"
+                                crossOrigin="anonymous"
+                            />
+                        </div>
+                        {/* Finger Pointing to QR */}
+                        <div className="absolute -bottom-10 -left-10 animate-bounce">
+                            <MousePointer2 className="w-16 h-16 text-yellow-500 fill-yellow-500 stroke-black stroke-[3px] rotate-[-15deg] drop-shadow-xl" />
                         </div>
                     </div>
 
-                    <div className="text-center space-y-2 mt-4">
-                        <h2 className="text-3xl font-bold text-white tracking-tight">Try it Now</h2>
-                        <p className="text-slate-400 font-mono text-xs tracking-wider uppercase opacity-70">
-                            {/* Clean URL display */}
-                            axevora.com {tool.path}
-                        </p>
+                    <div className="mt-12 space-y-2">
+                        <div className="bg-yellow-500 text-black text-2xl font-black py-3 px-8 rounded-full uppercase shadow-[0_5px_0_rgb(180,83,9)] active:shadow-none active:translate-y-[5px] transition-all transform hover:scale-105 border-2 border-yellow-300">
+                            Scan to Start
+                        </div>
+                        <p className="text-sm text-neutral-500 font-mono mt-4 pt-4">axevora.com {tool.path}</p>
                     </div>
 
                 </div>
