@@ -7,6 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import ConsentBanner from "./components/ConsentBanner";
 import CookieConsent from "@/components/CookieConsent";
+import SimpleErrorBoundary from "./components/SimpleErrorBoundary";
 const ADS_ENABLED = false; // Toggle this when AdSense is live
 
 // Lazily load pages to reduce initial bundle size
@@ -324,7 +325,11 @@ const App = () => (
               <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
               <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
               <Route path="/tools/ai-reel-script-generator" element={<AIReelScriptGenerator />} />
-              <Route path="/tools/tech-versus" element={<TechVersus />} />
+              <Route path="/tools/tech-versus" element={
+                <SimpleErrorBoundary>
+                  <TechVersus />
+                </SimpleErrorBoundary>
+              } />
               <Route path="/tools/software-versus" element={<SoftwareVersus />} />
               <Route path="/tools/nutrition-versus" element={<NutritionVersus />} />
               <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
