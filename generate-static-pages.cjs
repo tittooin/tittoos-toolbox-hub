@@ -98,7 +98,7 @@ if (!fs.existsSync(indexHtmlPath)) {
 
 const template = fs.readFileSync(indexHtmlPath, 'utf8');
 
-const staticPaths = ["/categories", "/about", "/contact", "/tools", "/privacy", "/terms", "/blog", "/sitemap", "/promo/video-shorts-poster"];
+const staticPaths = ["/categories", "/about", "/contact", "/tools", "/privacy", "/terms", "/blog", "/sitemap", "/promo/poster"];
 const allRoutes = [
     ...staticPaths,
     ...extractRoutesFromApp(),

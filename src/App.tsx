@@ -49,7 +49,7 @@ const ImageConverter = lazy(() => import("./pages/tools/ImageConverter"));
 const PDFToEPUB = lazy(() => import("./pages/tools/PDFToEPUB"));
 const PDFToImage = lazy(() => import("./pages/tools/PDFToImage"));
 const VideoToShorts = lazy(() => import("./pages/tools/VideoToShorts"));
-const VideoShortsPoster = lazy(() => import('./pages/promo/VideoShortsPoster'));
+const ToolPoster = lazy(() => import('./pages/promo/ToolPoster'));
 const TextAnalyzer = lazy(() => import("./pages/tools/TextAnalyzer"));
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
 const AudioConverter = lazy(() => import("./pages/tools/AudioConverter"));
@@ -233,7 +233,7 @@ const App = () => (
               <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
               <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
               <Route path="/tools/video-to-shorts" element={<Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}><VideoToShorts /></Suspense>} />
-              <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster...</div>}><VideoShortsPoster /></Suspense>} />
+              <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
               <Route path="/tools/video-converter" element={<VideoConverter />} />
               <Route path="/tools/audio-converter" element={<AudioConverter />} />
               <Route path="/tools/unit-converter" element={<UnitConverter />} />
