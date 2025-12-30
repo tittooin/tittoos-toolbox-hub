@@ -92,9 +92,10 @@ export default function ToolPoster() {
                 {/* Right Content: Call to Action & QR */}
                 <div className="w-1/3 bg-slate-950/40 backdrop-blur-md border-l border-white/5 flex flex-col items-center justify-center p-12 text-center relative z-10">
 
-                    {/* White Background for QR - SOLVES DARKNESS ISSUE */}
-                    <div className="bg-white p-4 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.15)] mb-8 transform hover:scale-105 transition-transform duration-300">
-                        <img src={qrCodeURL} alt={`Scan to open ${tool.name}`} className="w-48 h-48" />
+                    {/* White Background for QR - MAX BRIGHTNESS */}
+                    <div className="bg-white p-6 rounded-3xl shadow-[0_0_80px_rgba(255,255,255,0.6)] mb-8 transform hover:scale-105 transition-transform duration-300 ring-8 ring-white/20">
+                        {/* contrast-125 improves black/white separation */}
+                        <img src={qrCodeURL} alt={`Scan to open ${tool.name}`} className="w-64 h-64 mix-blend-normal contrast-125" />
                     </div>
 
                     <div className="flex items-center gap-2 text-white/90 mb-3 bg-black/40 px-4 py-2 rounded-full border border-white/5">
