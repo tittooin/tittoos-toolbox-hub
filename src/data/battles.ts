@@ -23,171 +23,171 @@ export interface TrendingBattle {
 
 export const trendingBattles: TrendingBattle[] = [
   {
-    "id": "laptops-students-creators-vs-dell-xps-13-plus-vs-macbook-pro-14-m2-pro-2025",
-    "category": "Tech",
-    "itemA": "Dell XPS 13 Plus (2023/24 model)",
-    "itemB": "Apple MacBook Pro 14 with M2 Pro",
-    "winner": "Apple MacBook Pro 14 (M2 Pro)",
+    "id": "best-air-fryers-2025-vs-breville-smart-oven-air-bov900bss-vs-cosori-pro-ii-cp158-af",
+    "category": "Home & Kitchen Tech",
+    "itemA": "Breville The Smart Oven Air Fryer (BOV900BSS)",
+    "itemB": "Cosori Pro II 5-Quart Air Fryer CP158-AF II",
+    "winner": "Breville The Smart Oven Air Fryer",
     "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
     "borderColorClass": "border-l-purple-500",
-    "verdict": "MacBook Pro 14 dominates for student-creators due to CPU/GPU, display, and ecosystem.",
+    "verdict": "Breville wins for versatility and even cooking; more reliable bake/roast with crispier results.",
     "pros": [
-      "Outstanding performance and efficiency (Winner)",
-      "Top-tier display quality and color accuracy (Winner)",
-      "Excellent battery life (Winner)"
+      "Major Pro 1 (Winner): Multi-function with air fry, bake, roast, and toast",
+      "Major Pro 2 (Winner): Superior even heating and consistent browning",
+      "Major Pro 3 (Winner): Large internal capacity suitable for family meals"
     ],
     "cons": [
-      "Premium price",
-      "Limited upgradability",
-      "Fewer affordable options"
+      "Minor Con 1 (Winner): Bulky footprint",
+      "Minor Con 2: Higher price than basic air fryers",
+      "Minor Con 3: Heavier to move around"
     ],
-    "qualityMetric": "Apple Silicon M2 Pro",
-    "popularity": "4.8/5 Stars",
+    "qualityMetric": "UL Listed",
+    "popularity": "4.6/5 Stars",
+    "specs": [
+      {
+        "label": "Capacity",
+        "valueA": "1.0 cu ft",
+        "valueB": "5-qt",
+        "winner": "A"
+      },
+      {
+        "label": "Power",
+        "valueA": "1800 W",
+        "valueB": "1500 W",
+        "winner": "A"
+      },
+      {
+        "label": "Presets",
+        "valueA": "13 presets",
+        "valueB": "11 presets",
+        "winner": "A"
+      },
+      {
+        "label": "Dimensions",
+        "valueA": "17.4 x 15.7 x 11.6 in",
+        "valueB": "15.1 x 14.0 x 12.0 in",
+        "winner": "B"
+      },
+      {
+        "label": "Warranty",
+        "valueA": "1 year",
+        "valueB": "1 year",
+        "winner": "Tie"
+      }
+    ],
+    "affiliateLink": "https://www.amazon.in/s?k=Cosori%20Pro%20II%205-Quart%20Air%20Fryer%20CP158-AF%20II&tag=axevora-21",
+    "affiliateText": "Check Cosori Price"
+  },
+  {
+    "id": "best-coffeemakers-2025-drip-vs-espresso-technivorm-moccamaster-79312-kbt-vs-breville-bes870xl-barista-express",
+    "category": "Home & Kitchen Tech",
+    "itemA": "Technivorm Moccamaster 79312 KBT Coffee Maker",
+    "itemB": "Breville Barista Express (BES870XL) Espresso Machine",
+    "winner": "Breville Barista Express (BES870XL)",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "borderColorClass": "border-l-purple-500",
+    "verdict": "Espresso wins for depth and crema at home.",
+    "pros": [
+      "Major Pro 1 (Winner): Rich, café-quality espresso with crema",
+      "Major Pro 2 (Winner): Integrated grinder and milk frother for complete beverages",
+      "Major Pro 3 (Winner): Hands-on control and customization options"
+    ],
+    "cons": [
+      "Minor Con 1 (Winner): Higher cost than drip setups",
+      "Minor Con 2: Requires more counter space and routine maintenance",
+      "Minor Con 3: More complex to operate for beginners"
+    ],
+    "qualityMetric": "ETL Listed",
+    "popularity": "4.5/5 Stars",
+    "specs": [
+      {
+        "label": "Power",
+        "valueA": "1450 W",
+        "valueB": "1650 W",
+        "winner": "B"
+      },
+      {
+        "label": "Output / Brew Capacity",
+        "valueA": "10-12 cups",
+        "valueB": "2 shots per brew",
+        "winner": "A"
+      },
+      {
+        "label": "Programs/Features",
+        "valueA": "3 auto-drip, hot water, delay start",
+        "valueB": "Programmable shot time, steam wand",
+        "winner": "B"
+      },
+      {
+        "label": "Dimensions",
+        "valueA": "9.5 x 13.0 x 15.5 in",
+        "valueB": "12.1 x 10.0 x 15.5 in",
+        "winner": "B"
+      },
+      {
+        "label": "Warranty",
+        "valueA": "3 years",
+        "valueB": "1 year",
+        "winner": "A"
+      }
+    ],
+    "affiliateLink": "https://www.amazon.in/s?k=Breville%20Barista%20Express%20(BES870XL)%20Espresso%20Machine&tag=axevora-21",
+    "affiliateText": "Check Breville Price"
+  },
+  {
+    "id": "smartwatches-vs-fitness-trackers-2025-apple-watch-series-9-vs-samsung-galaxy-watch6",
+    "category": "Wearables Tech",
+    "itemA": "Apple Watch Series 9",
+    "itemB": "Samsung Galaxy Watch6",
+    "winner": "Apple Watch Series 9",
+    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
+    "borderColorClass": "border-l-purple-500",
+    "verdict": "Apple Watch wins for ecosystem, health features and app depth.",
+    "pros": [
+      "Major Pro 1 (Winner): Best-in-class health metrics with ECG and wellness features",
+      "Major Pro 2 (Winner): Smooth watchOS experience and broad app ecosystem",
+      "Major Pro 3 (Winner): Seamless iPhone integration and reliable daily use"
+    ],
+    "cons": [
+      "Minor Con 1 (Winner): Higher price than some Android options",
+      "Minor Con 2: Battery life can be shorter with heavy use",
+      "Minor Con 3: Limited compatibility with non-iPhone devices"
+    ],
+    "qualityMetric": "CE/FCC Certified",
+    "popularity": "4.7/5 Stars",
     "specs": [
       {
         "label": "Battery",
-        "valueA": "12-14 hours",
-        "valueB": "18-20 hours",
+        "valueA": "18-36 hours",
+        "valueB": "40-60 hours",
         "winner": "B"
       },
       {
         "label": "Screen",
-        "valueA": "13.4-inch, 500+ nits",
-        "valueB": "14.2-inch Liquid Retina XDR, 1000+ nits",
-        "winner": "B"
+        "valueA": "1.9-inch LTPO OLED",
+        "valueB": "1.4-1.6-inch Super AMOLED",
+        "winner": "A"
       },
       {
         "label": "Processor",
-        "valueA": "Intel Core i7 (12th/13th gen)",
-        "valueB": "Apple M2 Pro",
-        "winner": "B"
+        "valueA": "Apple S9",
+        "valueB": "Exynos W930",
+        "winner": "A"
       },
       {
         "label": "Weight",
-        "valueA": "1.2 kg (2.7 lb)",
-        "valueB": "1.6 kg (3.5 lb)",
-        "winner": "A"
+        "valueA": "approx 32-40 g",
+        "valueB": "approx 29 g",
+        "winner": "B"
       },
       {
         "label": "Warranty",
-        "valueA": "1-year limited",
-        "valueB": "1-year limited + AppleCare+ options",
-        "winner": "B"
-      }
-    ],
-    "affiliateLink": "https://www.amazon.in/s?k=Apple%20MacBook%20Pro%2014%20with%20M2%20Pro&tag=axevora-21",
-    "affiliateText": "Check Apple Price"
-  },
-  {
-    "id": "winter-jackets-down-vs-synthetic-patagonia-down-sweater-vs-arc-teryx-atom-lt-2025",
-    "category": "Apparel",
-    "itemA": "Patagonia Down Sweater Jacket",
-    "itemB": "Arc'teryx Atom LT Jacket (Synthetic Insulation)",
-    "winner": "Patagonia Down Sweater Jacket",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-purple-500",
-    "verdict": "Down excels in warmth-to-weight on dry-cold days, making it the go-to for most winter conditions.",
-    "pros": [
-      "Excellent warmth-to-weight ratio (Winner)",
-      "Very packable and compact (Winner)",
-      "Patagonia lifetime guarantee and repair support (Winner)"
-    ],
-    "cons": [
-      "Performance drops when wet",
-      "Higher price",
-      "Less effective in extremely damp conditions"
-    ],
-    "qualityMetric": "Lifetime guarantee",
-    "popularity": "4.6/5 Stars",
-    "specs": [
-      {
-        "label": "Insulation Type",
-        "valueA": "Down (800 Fill Power)",
-        "valueB": "Synthetic CoreLoft",
-        "winner": "A"
-      },
-      {
-        "label": "Weight (Size M)",
-        "valueA": "320 g",
-        "valueB": "450 g",
-        "winner": "A"
-      },
-      {
-        "label": "Packability",
-        "valueA": "Stuffs into compact pouch (~6x8 in)",
-        "valueB": "Stuffs into larger pouch (~9x8 in)",
-        "winner": "A"
-      },
-      {
-        "label": "Water Resistance",
-        "valueA": "DWR-coated, good repellency",
-        "valueB": "DWR-coated, basic repellency",
-        "winner": "A"
-      },
-      {
-        "label": "Warranty/Repair",
-        "valueA": "Lifetime guarantee & repairs",
-        "valueB": "Limited warranty",
-        "winner": "A"
-      }
-    ],
-    "affiliateLink": "https://www.amazon.in/s?k=Arc'teryx%20Atom%20LT%20Jacket%20(Synthetic%20Insulation)&tag=axevora-21",
-    "affiliateText": "Check Arc'teryx Price"
-  },
-  {
-    "id": "shampoos-hair-fall-nioxin-vs-vichy-dercos-densi-solutions-2025",
-    "category": "Beauty",
-    "itemA": "Nioxin System 2 Cleanser for Thinning Hair",
-    "itemB": "Vichy Dercos Densi-Solutions Shampoo",
-    "winner": "Nioxin System 2 Cleanser",
-    "winnerColorClass": "text-green-600 bg-green-50 dark:bg-green-900/20",
-    "borderColorClass": "border-l-purple-500",
-    "verdict": "Nioxin’s thinning-hair focused formula edges out the densifying option for targeting scalp health.",
-    "pros": [
-      "Designed for thinning hair and scalp care (Winner)",
-      "Salon-backed reputation and ecosystem (Winner)",
-      "Supports regimen with boosters and toners (Winner)"
-    ],
-    "cons": [
-      "Can be pricey over time",
-      "Results require consistent use",
-      "May be drying if used alone"
-    ],
-    "qualityMetric": "Dermatologist Tested",
-    "popularity": "4.5/5 Stars",
-    "specs": [
-      {
-        "label": "Active Ingredients",
-        "valueA": "Niacinamide, Panthenol, Caffeine",
-        "valueB": "Aminexil, Ceramides",
-        "winner": "A"
-      },
-      {
-        "label": "Hair Type",
-        "valueA": "Thinning, Fine Hair",
-        "valueB": "Thinning, Fine Hair",
+        "valueA": "1 year",
+        "valueB": "1 year",
         "winner": "Tie"
-      },
-      {
-        "label": "Fragrance",
-        "valueA": "Mild fragrance",
-        "valueB": "Fragrance-free",
-        "winner": "B"
-      },
-      {
-        "label": "Paraben-Free?",
-        "valueA": "Yes",
-        "valueB": "Yes",
-        "winner": "Tie"
-      },
-      {
-        "label": "Volume",
-        "valueA": "8.5 oz (250 ml)",
-        "valueB": "10 oz (300 ml)",
-        "winner": "B"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Vichy%20Dercos%20Densi-Solutions%20Shampoo&tag=axevora-21",
-    "affiliateText": "Check Vichy Price"
+    "affiliateLink": "https://www.amazon.in/s?k=Samsung%20Galaxy%20Watch6&tag=axevora-21",
+    "affiliateText": "Check Samsung Price"
   }
 ];
