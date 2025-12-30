@@ -1,15 +1,18 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { tools } from '@/data/tools';
-import { Download, MousePointer2, CheckCircle2, Zap } from "lucide-react";
+import { Download, MousePointer2, CheckCircle2, Zap, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import html2canvas from 'html2canvas';
+import GIF from 'gif.js';
 
 export default function ToolPoster() {
     const [searchParams] = useSearchParams();
     const toolId = searchParams.get('id') || 'video-to-shorts';
     const [isDownloading, setIsDownloading] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [recordingProgress, setRecordingProgress] = useState(0);
 
     const tool = tools.find(t => t.id === toolId) || tools[0];
     const toolURL = `https://axevora.com${tool.path}`;
@@ -59,9 +62,6 @@ export default function ToolPoster() {
 
     const content = getToolFeatures(toolId);
 
-    // Custom Title Splitting Strategy
-    // 1. Tech Battle Arena -> Tech Battle / Arena
-    // 2. Video to Shorts -> Convert Video / To Viral Shorts
     let line1 = tool.name;
     let line2 = "Tool";
 
@@ -78,7 +78,7 @@ export default function ToolPoster() {
             line1 = words.slice(0, mid).join(' ');
             line2 = words.slice(mid).join(' ');
         } else {
-            line2 = "Generator"; // Fallback if single word
+            line2 = "Generator";
         }
     }
 
@@ -115,24 +115,103 @@ export default function ToolPoster() {
         }
     };
 
+    const handleRecordGIF = async () => {
+        setIsRecording(true);
+        setRecordingProgress(0);
+
+        const element = document.getElementById('promo-poster');
+        if (!element) return;
+
+        try {
+            const gif = new GIF({
+                workers: 2,
+                quality: 10,
+                width: 1200,
+                height: 630,
+                workerScript: '/gif.worker.js' // Loads from public/
+            });
+
+            // Capture 10 frames over 2 seconds (5fps) to capture animations
+            const totalFrames = 10;
+            const captureInterval = 200; // ms
+
+            for (let i = 0; i < totalFrames; i++) {
+                // Wait for interval
+                await new Promise(resolve => setTimeout(resolve, captureInterval));
+
+                // Capture
+                const canvas = await html2canvas(element, {
+                    scale: 1, // Keep scale 1 for performance in GIF
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+
+                gif.addFrame(canvas, { delay: captureInterval });
+                setRecordingProgress(Math.round(((i + 1) / totalFrames) * 100));
+            }
+
+            gif.on('finished', (blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `Axevora_Ad_${toolId}_Animated.gif`;
+                link.href = url;
+                link.click();
+                setIsRecording(false);
+                setRecordingProgress(0);
+            });
+
+            gif.render();
+
+        } catch (error) {
+            console.error("Recording failed:", error);
+            alert("GIF Recording Failed.");
+            setIsRecording(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center p-4 gap-8 font-sans">
 
             {/* Controls */}
             <div className="text-white/60 text-sm text-center space-y-4">
                 <div>Ad Preview: <span className="text-white font-bold">{tool.name}</span></div>
-                <Button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className="bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-8 py-6 text-xl rounded-full transition-all shadow-lg hover:shadow-yellow-400/20"
-                >
-                    {isDownloading ? "Generating..." : "Download Ad Poster"}
-                </Button>
+                <div className="flex items-center justify-center gap-4">
+                    <Button
+                        onClick={handleDownload}
+                        disabled={isDownloading || isRecording}
+                        className="bg-neutral-800 text-white hover:bg-neutral-700 font-bold px-6 py-4 text-lg rounded-full transition-all border border-white/10"
+                    >
+                        {isDownloading ? "Saving..." : (
+                            <>
+                                <Download className="w-5 h-5 mr-2" />
+                                PNG
+                            </>
+                        )}
+                    </Button>
+
+                    <Button
+                        onClick={handleRecordGIF}
+                        disabled={isDownloading || isRecording}
+                        className="bg-yellow-400 text-black hover:bg-yellow-500 font-bold px-8 py-6 text-xl rounded-full transition-all shadow-lg hover:shadow-yellow-400/20"
+                    >
+                        {isRecording ? (
+                            <span className="flex items-center gap-2">
+                                <Video className="animate-pulse w-5 h-5 text-red-600" />
+                                {recordingProgress}% Rec...
+                            </span>
+                        ) : (
+                            <>
+                                <Video className="w-5 h-5 mr-2" />
+                                Record GIF
+                            </>
+                        )}
+                    </Button>
+                </div>
             </div>
 
             {/* 
                HIGH CONVERSION AD CONTAINER
-               Size: 1200 x 630 
             */}
             <div id="promo-poster" className="relative w-[1200px] h-[630px] bg-white text-black overflow-hidden shadow-2xl flex shrink-0">
 
@@ -152,8 +231,8 @@ export default function ToolPoster() {
                 {/* LEFT: THE HOOK */}
                 <div className="relative z-10 w-[60%] h-full flex flex-col justify-center pl-20 pr-10">
 
-                    {/* Dynamic Tagline Badge */}
-                    <div className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-lg font-black text-lg uppercase tracking-wider mb-6 w-fit shadow-xl transform -rotate-2">
+                    {/* Dynamic Tagline Badge with PULSE Animation (Will be captured) */}
+                    <div className="inline-flex items-center gap-2 bg-black text-white px-6 py-2 rounded-lg font-black text-lg uppercase tracking-wider mb-6 w-fit shadow-xl transform -rotate-2 animate-pulse">
                         <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                         {content.tagline}
                     </div>
@@ -167,7 +246,7 @@ export default function ToolPoster() {
                         </span>
                     </h1>
 
-                    {/* DYNAMIC SUBTEXT / FEATURES */}
+                    {/* DYNAMIC SUBTEXT */}
                     <div className="flex flex-col gap-4 text-xl font-bold opacity-90 text-neutral-900 mb-6">
                         {content.features.map((feature, i) => (
                             <div key={i} className="flex items-center gap-3">
@@ -192,6 +271,7 @@ export default function ToolPoster() {
                                 crossOrigin="anonymous"
                             />
                         </div>
+                        {/* Animated Arrow (Bounce effect) */}
                         <div className="absolute -bottom-10 -left-10 animate-bounce">
                             <MousePointer2 className="w-16 h-16 text-yellow-500 fill-yellow-500 stroke-black stroke-[3px] rotate-[-15deg] scale-x-[-1] drop-shadow-xl" />
                         </div>
