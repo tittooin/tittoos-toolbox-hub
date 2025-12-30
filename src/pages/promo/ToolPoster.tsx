@@ -2,11 +2,14 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { tools } from '@/data/tools'; // Assuming tools are exported here
-import { Zap, ArrowRight, ScanLine, Smartphone, Layout, Wrench } from "lucide-react";
+import { Zap, ArrowRight, ScanLine, Smartphone, Layout, Wrench, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import html2canvas from 'html2canvas';
 
 export default function ToolPoster() {
     const [searchParams] = useSearchParams();
     const toolId = searchParams.get('id') || 'video-to-shorts'; // Default to video-to-shorts
+    const [isDownloading, setIsDownloading] = useState(false);
 
     // Find tool data
     const tool = tools.find(t => t.id === toolId) || tools[0];
@@ -26,14 +29,58 @@ export default function ToolPoster() {
         line2: tool.name.split(' ').slice(1).join(' ')
     };
 
+    const handleDownload = async () => {
+        setIsDownloading(true);
+        const element = document.getElementById('promo-poster');
+        if (element) {
+            try {
+                // Wait for images to load explicitly if needed, but html2canvas handles most
+                // We add scale: 2 for better resolution (Retina-like)
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null, // Transparent background if any
+                });
+
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `${toolId}-poster.png`;
+                link.href = dataUrl;
+                link.click();
+            } catch (error) {
+                console.error("Download failed:", error);
+                alert("Failed to download image. Please try again.");
+            } finally {
+                setIsDownloading(false);
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 gap-6">
 
-            {/* Controls (Hidden in Screenshot) */}
-            <div className="text-white/50 text-sm mb-2 text-center">
-                Showing poster for: <span className="text-white font-bold">{tool.name}</span>
-                <br />
-                Add <code>?id=tool-id</code> to URL to change tool.
+            {/* Controls */}
+            <div className="text-white/50 text-sm mb-2 text-center space-y-4">
+                <div>
+                    Showing poster for: <span className="text-white font-bold">{tool.name}</span>
+                    <br />
+                    Add <code>?id=tool-id</code> to URL to change tool.
+                </div>
+
+                <Button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className="bg-white text-black hover:bg-gray-200 font-bold"
+                >
+                    {isDownloading ? (
+                        <span className="animate-pulse">Generating PNG...</span>
+                    ) : (
+                        <>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download High-Res PNG
+                        </>
+                    )}
+                </Button>
             </div>
 
             {/* Poster Container - 16:9 Social Card 1200x630 */}
@@ -103,7 +150,13 @@ export default function ToolPoster() {
 
                     {/* White Background for QR - MAX BRIGHTNESS - Increased Padding & Size */}
                     <div className="bg-white p-6 rounded-3xl shadow-[0_0_100px_rgba(255,255,255,0.8)] mb-8 transform hover:scale-105 transition-transform duration-300 ring-4 ring-white">
-                        <img src={qrCodeURL} alt={`Scan to open ${tool.name}`} className="w-64 h-64 mix-blend-normal object-contain bg-white rounded-lg" />
+                        {/* Note: CrossOrigin anonymous needed for html2canvas to capture if external */}
+                        <img
+                            src={qrCodeURL}
+                            alt={`Scan to open ${tool.name}`}
+                            className="w-64 h-64 mix-blend-normal object-contain bg-white rounded-lg"
+                            crossOrigin="anonymous"
+                        />
                     </div>
 
                     <div className="flex items-center gap-2 text-white/90 mb-3 bg-black/40 px-4 py-2 rounded-full border border-white/5">
@@ -126,4 +179,3 @@ export default function ToolPoster() {
         </div>
     );
 }
-
