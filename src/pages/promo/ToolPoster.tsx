@@ -118,30 +118,37 @@ export default function ToolPoster() {
     const handleRecordGIF = async () => {
         setIsRecording(true);
         setRecordingProgress(0);
+        console.log("Starting GIF Recording...");
 
         const element = document.getElementById('promo-poster');
-        if (!element) return;
+        if (!element) {
+            console.error("Poster element not found!");
+            setIsRecording(false);
+            return;
+        }
 
         try {
+            console.log("Initializing GIF Worker...");
             const gif = new GIF({
                 workers: 2,
                 quality: 10,
                 width: 1200,
                 height: 630,
-                workerScript: '/gif.worker.js' // Loads from public/
+                workerScript: '/gif.worker.js', // Ensure this file is in public/
+                debug: true
             });
 
-            // Capture 10 frames over 2 seconds (5fps) to capture animations
             const totalFrames = 10;
-            const captureInterval = 200; // ms
+            const captureInterval = 200;
 
             for (let i = 0; i < totalFrames; i++) {
                 // Wait for interval
                 await new Promise(resolve => setTimeout(resolve, captureInterval));
 
                 // Capture
+                console.log(`Capturing Frame ${i + 1}/${totalFrames}`);
                 const canvas = await html2canvas(element, {
-                    scale: 1, // Keep scale 1 for performance in GIF
+                    scale: 1,
                     useCORS: true,
                     backgroundColor: null,
                     logging: false
@@ -151,7 +158,10 @@ export default function ToolPoster() {
                 setRecordingProgress(Math.round(((i + 1) / totalFrames) * 100));
             }
 
+            console.log("All frames captured. Rendering GIF...");
+
             gif.on('finished', (blob) => {
+                console.log("GIF Rendering Finished. Blob Size:", blob.size);
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = `Axevora_Ad_${toolId}_Animated.gif`;
@@ -164,8 +174,8 @@ export default function ToolPoster() {
             gif.render();
 
         } catch (error) {
-            console.error("Recording failed:", error);
-            alert("GIF Recording Failed.");
+            console.error("Recording failed with error:", error);
+            alert("GIF Recording Failed. Check Console for details.");
             setIsRecording(false);
         }
     };
