@@ -333,11 +333,14 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
                 )}
 
 
-                {/* CAROUSELS SECTION */}
-                <div className="space-y-12 border-t pt-12">
+                {/* INJECTED CONTENT (Trending Battles - Big Cards) */}
+                <div className="mb-16">
+                    {children}
+                </div>
 
-                    {/* User History Carousel using new BattleCarousel */}
-                    {history.length > 0 && (
+                {/* USER HISTORY CAROUSEL (Small Cards) */}
+                {history.length > 0 && (
+                    <div className="border-t pt-12 animate-in fade-in duration-700">
                         <BattleCarousel
                             title="Your Recent Battles"
                             icon={History}
@@ -348,28 +351,8 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                         />
-                    )}
-
-                    {/* Trending Carousel using new BattleCarousel (Mapped from static data) */}
-                    <BattleCarousel
-                        title="Trending Now"
-                        icon={TrendingUp}
-                        battles={trendingBattles.map(b => ({
-                            id: b.id,
-                            itemA: b.itemA,
-                            itemB: b.itemB,
-                            winner: b.winner,
-                            category: b.category,
-                            winnerReason: b.verdict
-                        }))}
-                        onSelect={(battle) => {
-                            setItemA(battle.itemA);
-                            setItemB(battle.itemB);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                    />
-
-                </div>
+                    </div>
+                )}
 
             </main>
             <Footer />
