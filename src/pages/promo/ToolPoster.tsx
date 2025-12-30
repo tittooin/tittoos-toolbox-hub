@@ -124,47 +124,37 @@ export default function ToolPoster() {
     const handleRecordGIF = async () => {
         setIsRecording(true);
         setRecordingProgress(0);
-        console.log("Starting GIF Recording (Inlined Worker)...");
 
         const element = document.getElementById('promo-poster');
         if (!element) {
-            console.error("Poster element not found!");
             setIsRecording(false);
             return;
         }
 
         try {
-            console.log("Initializing GIF Worker from Blob...");
-
             // Create Blob URL for Inline Worker
             const workerBlob = new Blob([GIF_WORKER_SCRIPT], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(workerBlob);
 
             const gif = new GIF({
                 workers: 2,
-                quality: 10,
+                quality: 1, // High quality (1 is best)
                 width: 1200,
                 height: 630,
                 workerScript: workerUrl,
-                debug: true
             });
 
             // Listen for progress events
             gif.on('progress', (p) => {
-                const percent = Math.round(p * 100);
-                console.log(`GIF Rendering Progress: ${percent}%`);
-                setRecordingProgress(50 + Math.round(p * 50)); // 50% capture + 50% render
+                setRecordingProgress(50 + Math.round(p * 50));
             });
 
             const totalFrames = 10;
             const captureInterval = 200;
 
             for (let i = 0; i < totalFrames; i++) {
-                // Wait for interval
                 await new Promise(resolve => setTimeout(resolve, captureInterval));
 
-                // Capture
-                console.log(`Capturing Frame ${i + 1}/${totalFrames}`);
                 const canvas = await html2canvas(element, {
                     scale: 1,
                     useCORS: true,
@@ -173,21 +163,16 @@ export default function ToolPoster() {
                 });
 
                 gif.addFrame(canvas, { delay: captureInterval });
-                // Update UI: First 50% is capturing
                 setRecordingProgress(Math.round(((i + 1) / totalFrames) * 50));
             }
 
-            console.log("All frames captured. Rendering GIF...");
-
             gif.on('finished', (blob) => {
-                console.log("GIF Rendering Finished. Blob Size:", blob.size);
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = `Axevora_Ad_${toolId}_Animated.gif`;
                 link.href = url;
                 link.click();
 
-                // Cleanup
                 URL.revokeObjectURL(workerUrl);
                 setIsRecording(false);
                 setRecordingProgress(0);
@@ -196,8 +181,8 @@ export default function ToolPoster() {
             gif.render();
 
         } catch (error) {
-            console.error("Recording failed with error:", error);
-            alert("GIF Recording Failed. Check Console for details.");
+            console.error("Recording failed:", error);
+            alert("GIF Recording Failed.");
             setIsRecording(false);
         }
     };
@@ -270,10 +255,10 @@ export default function ToolPoster() {
                     </div>
 
                     {/* MASSIVE HEADLINE */}
-                    <h1 className="text-[100px] leading-[0.9] font-black text-black mb-8 tracking-tighter drop-shadow-sm">
+                    <h1 className="text-[100px] leading-tight font-black text-black mb-8 tracking-tighter drop-shadow-sm">
                         {line1.toUpperCase()}
                         <br />
-                        <span className="text-white text-shadow-black stroke-black bg-black px-4 italic transform -skew-x-6 inline-block mt-2">
+                        <span className="text-white text-shadow-black stroke-black bg-black px-4 italic transform -skew-x-6 inline-block mt-4 pt-1 pb-2">
                             {line2.toUpperCase()}
                         </span>
                     </h1>
