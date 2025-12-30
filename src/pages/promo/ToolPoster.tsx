@@ -17,6 +17,15 @@ export default function ToolPoster() {
     // Dynamic Icon Helper
     const ToolIcon = tool.icon || Wrench;
 
+    // Custom Title Logic for Video to Shorts
+    const customTitle = toolId === 'video-to-shorts' ? {
+        line1: "Convert Video",
+        line2: "To Viral Shorts"
+    } : {
+        line1: tool.name.split(' ')[0],
+        line2: tool.name.split(' ').slice(1).join(' ')
+    };
+
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 gap-6">
 
@@ -47,10 +56,10 @@ export default function ToolPoster() {
                     </div>
 
                     <h1 className="text-7xl font-black mb-6 leading-tight drop-shadow-lg">
-                        <span className="text-white">{tool.name.split(' ')[0]}</span>
+                        <span className="text-white">{customTitle.line1}</span>
                         <br />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 filter drop-shadow-sm">
-                            {tool.name.split(' ').slice(1).join(' ')}
+                            {customTitle.line2}
                         </span>
                     </h1>
 
@@ -92,10 +101,9 @@ export default function ToolPoster() {
                 {/* Right Content: Call to Action & QR */}
                 <div className="w-1/3 bg-slate-950/40 backdrop-blur-md border-l border-white/5 flex flex-col items-center justify-center p-12 text-center relative z-10">
 
-                    {/* White Background for QR - MAX BRIGHTNESS */}
-                    <div className="bg-white p-6 rounded-3xl shadow-[0_0_80px_rgba(255,255,255,0.6)] mb-8 transform hover:scale-105 transition-transform duration-300 ring-8 ring-white/20">
-                        {/* contrast-125 improves black/white separation */}
-                        <img src={qrCodeURL} alt={`Scan to open ${tool.name}`} className="w-64 h-64 mix-blend-normal contrast-125" />
+                    {/* White Background for QR - MAX BRIGHTNESS - Increased Padding & Size */}
+                    <div className="bg-white p-6 rounded-3xl shadow-[0_0_100px_rgba(255,255,255,0.8)] mb-8 transform hover:scale-105 transition-transform duration-300 ring-4 ring-white">
+                        <img src={qrCodeURL} alt={`Scan to open ${tool.name}`} className="w-64 h-64 mix-blend-normal object-contain bg-white rounded-lg" />
                     </div>
 
                     <div className="flex items-center gap-2 text-white/90 mb-3 bg-black/40 px-4 py-2 rounded-full border border-white/5">
@@ -118,3 +126,4 @@ export default function ToolPoster() {
         </div>
     );
 }
+
