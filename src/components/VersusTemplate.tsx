@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { ArrowRightLeft, Trophy, AlertCircle, ShoppingCart, Loader2, ArrowLeft } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
+import { ArrowRightLeft, Trophy, AlertCircle, ShoppingCart, Loader2, ArrowLeft, History, TrendingUp } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from 'sonner';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BattleCarousel, { BattleSummary } from './BattleCarousel';
+import { trendingBattles } from "@/data/battles";
 
 interface ComparisonPoint {
     feature: string;
@@ -55,6 +58,35 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
     const [itemB, setItemB] = useState("");
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<ComparisonResult | null>(null);
+    const [history, setHistory] = useState<BattleSummary[]>([]);
+
+    // Load History on Mount
+    useEffect(() => {
+        const saved = localStorage.getItem('versus_history');
+        if (saved) {
+            try {
+                setHistory(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to parse history", e);
+            }
+        }
+    }, []);
+
+    const saveToHistory = (res: ComparisonResult, a: string, b: string) => {
+        const newItem: BattleSummary = {
+            id: Date.now().toString(),
+            itemA: a,
+            itemB: b,
+            winner: res.winner,
+            winnerReason: res.winner_reason,
+            timestamp: Date.now(),
+            category: category.split(' ')[0]
+        };
+
+        const updated = [newItem, ...history].slice(0, 10); // Keep last 10
+        setHistory(updated);
+        localStorage.setItem('versus_history', JSON.stringify(updated));
+    };
 
     const handleCompare = async () => {
         if (!itemA.trim() || !itemB.trim()) {
@@ -101,6 +133,7 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
             const data: ComparisonResult = JSON.parse(jsonString);
 
             setResult(data);
+            saveToHistory(data, itemA, itemB);
             toast.success("Comparison Complete!");
 
         } catch (error) {
@@ -184,7 +217,7 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
 
                 {/* Results Section */}
                 {result && (
-                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-700 mb-16">
 
                         {/* Winner Banner */}
                         <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 p-8 rounded-2xl text-center relative overflow-hidden">
@@ -299,8 +332,44 @@ const VersusTemplate: React.FC<VersusTemplateProps> = ({
                     </div>
                 )}
 
-                {/* INJECTED CONTENT (e.g. Trending Battles) */}
-                {children}
+
+                {/* CAROUSELS SECTION */}
+                <div className="space-y-12 border-t pt-12">
+
+                    {/* User History Carousel using new BattleCarousel */}
+                    {history.length > 0 && (
+                        <BattleCarousel
+                            title="Your Recent Battles"
+                            icon={History}
+                            battles={history}
+                            onSelect={(battle) => {
+                                setItemA(battle.itemA);
+                                setItemB(battle.itemB);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                        />
+                    )}
+
+                    {/* Trending Carousel using new BattleCarousel (Mapped from static data) */}
+                    <BattleCarousel
+                        title="Trending Now"
+                        icon={TrendingUp}
+                        battles={trendingBattles.map(b => ({
+                            id: b.id,
+                            itemA: b.itemA,
+                            itemB: b.itemB,
+                            winner: b.winner,
+                            category: b.category,
+                            winnerReason: b.verdict
+                        }))}
+                        onSelect={(battle) => {
+                            setItemA(battle.itemA);
+                            setItemB(battle.itemB);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                    />
+
+                </div>
 
             </main>
             <Footer />
