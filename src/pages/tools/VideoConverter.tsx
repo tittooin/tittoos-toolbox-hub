@@ -452,7 +452,7 @@ const VideoConverter = () => {
             </div>
             <div className="pt-4">
               <dt className="font-bold text-lg text-gray-900 dark:text-gray-100">Can I extract audio from video?</dt>
-              <dd className="mt-2 text-gray-600 dark:text-gray-400">Yes! If you select "MP3" (coming soon in our <a href="/tools/audio-converter" className="text-red-500 hover:underline">Audio Tools</a> section), you can strip the sound from any video file.</dd>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">Yes! If you select "MP3" (available in our <a href="/tools/audio-converter" className="text-red-500 hover:underline">Audio Tools</a> section), you can strip the sound from any video file.</dd>
             </div>
           </dl>
 

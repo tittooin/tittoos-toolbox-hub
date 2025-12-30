@@ -70,6 +70,7 @@
     "heic2any": "^0.0.4",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
+    "jsbarcode": "^3.12.1",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
     "jszip": "^3.10.1",

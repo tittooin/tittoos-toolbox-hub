@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BarChart, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import JsBarcode from "jsbarcode";
 
 const BarcodeGenerator = () => {
   const [text, setText] = useState("");
-  const [format, setFormat] = useState("code128");
+  const [format, setFormat] = useState("CODE128");
   const [generated, setGenerated] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const generateBarcode = () => {
     if (!text.trim()) {
@@ -20,19 +22,41 @@ const BarcodeGenerator = () => {
       return;
     }
 
-    setGenerated(true);
-    toast.success("Barcode generated successfully!");
+    try {
+      if (canvasRef.current) {
+        JsBarcode(canvasRef.current, text, {
+          format: format,
+          lineColor: "#000",
+          width: 2,
+          height: 100,
+          displayValue: true
+        });
+        setGenerated(true);
+        toast.success("Barcode generated successfully!");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate barcode. Check strict format requirements (e.g. EAN-13 needs 13 digits).");
+      setGenerated(false);
+    }
   };
 
   const downloadBarcode = () => {
-    toast.info("Download feature coming soon!");
+    if (canvasRef.current && generated) {
+      const url = canvasRef.current.toDataURL("image/png");
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Barcode_${text}_${format}.png`;
+      link.click();
+      toast.success("Barcode downloaded!");
+    }
   };
 
   const features = [
-    "Multiple barcode formats",
+    "Multiple barcode formats (Code 128, EAN, UPC)",
     "Customizable dimensions",
     "High-quality output",
-    "Download as image",
+    "Download as PNG image",
     "Batch generation support"
   ];
 
@@ -52,11 +76,14 @@ const BarcodeGenerator = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="code128">Code 128</SelectItem>
-                <SelectItem value="code39">Code 39</SelectItem>
-                <SelectItem value="ean13">EAN-13</SelectItem>
-                <SelectItem value="ean8">EAN-8</SelectItem>
-                <SelectItem value="upc">UPC-A</SelectItem>
+                <SelectItem value="CODE128">Code 128 (Auto)</SelectItem>
+                <SelectItem value="CODE39">Code 39</SelectItem>
+                <SelectItem value="EAN13">EAN-13</SelectItem>
+                <SelectItem value="EAN8">EAN-8</SelectItem>
+                <SelectItem value="UPC">UPC-A</SelectItem>
+                <SelectItem value="ITF14">ITF-14</SelectItem>
+                <SelectItem value="MSI">MSI</SelectItem>
+                <SelectItem value="pharmacode">Pharmacode</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -75,32 +102,21 @@ const BarcodeGenerator = () => {
             Generate Barcode
           </Button>
 
-          {generated && (
+          <div className={!generated ? "hidden" : "block"}>
             <Card>
               <CardContent className="p-6">
                 <div className="text-center space-y-4">
-                  <div className="bg-card border-2 border-dashed border-border p-8 rounded-lg">
-                    <div className="space-y-1">
-                      {/* Mock barcode pattern */}
-                      <div className="flex justify-center space-x-px">
-                        {Array.from({ length: 50 }, (_, i) => (
-                          <div
-                            key={i}
-                            className={`h-16 ${Math.random() > 0.5 ? 'bg-black w-1' : 'bg-white w-1 barcode-bar'}`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-sm font-mono mt-2">{text}</p>
-                    </div>
+                  <div className="bg-white border-2 border-dashed border-gray-200 p-8 rounded-lg flex justify-center items-center overflow-x-auto">
+                    <canvas ref={canvasRef} />
                   </div>
-                  <Button onClick={downloadBarcode} variant="outline">
+                  <Button onClick={downloadBarcode} variant="outline" className="w-full">
                     <Download className="h-4 w-4 mr-2" />
-                    Download Barcode
+                    Download PNG
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          )}
+          </div>
         </div>
       </div>
 

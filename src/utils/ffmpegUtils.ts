@@ -10,18 +10,22 @@ export const loadFFmpeg = async (): Promise<FFmpeg> => {
     ffmpeg = new FFmpeg();
 
     // Load from specific CDN version to ensure compatibility
-    // Using unpkg for 0.12.10
-    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+    // Using unpkg for 0.12.10 (Matching @ffmpeg/ffmpeg version)
+    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
 
     // Note: We are using the MULTI-THREADED core by default.
     // If you see "SharedArrayBuffer is not defined" error in production,
     // you need to add COOP/COEP headers to your server.
-    // OR switch to single-threaded core (which is much slower).
 
-    await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-    });
+    try {
+        await ffmpeg.load({
+            coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+            wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+        });
+    } catch (error) {
+        console.error("FFmpeg load failed:", error);
+        throw new Error("Failed to load FFmpeg. Check browser console for COOP/COEP errors or network issues.");
+    }
 
     return ffmpeg;
 };
