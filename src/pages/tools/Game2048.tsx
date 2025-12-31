@@ -22,6 +22,13 @@ class SoundManager {
 
     setEnabled(enabled: boolean) { this.enabled = enabled; }
 
+    resizeAudioContext() {
+        // Resume context if suspended (browser requirements)
+        if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(console.error);
+        }
+    }
+
     private playTone(freq: number, type: OscillatorType, duration: number, vol: number = 0.1) {
         if (!this.enabled || !this.ctx) return;
         const osc = this.ctx.createOscillator();
@@ -37,24 +44,31 @@ class SoundManager {
     }
 
     move() { this.playTone(150, 'sine', 0.1, 0.05); }
+
     merge(value: number) {
-        // "Clap" Sound Effect for Merge
         if (!this.enabled || !this.ctx) return;
-        const bufferSize = this.ctx.sampleRate * 0.1; // 100ms
+
+        // Louder "Clap" Sound
+        const bufferSize = this.ctx.sampleRate * 0.15; // 150ms
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3)); // Decaying noise
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
         }
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
         const noiseGain = this.ctx.createGain();
-        noiseGain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        // Boost volume significantly
+        noiseGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
         noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
         noise.connect(noiseGain);
         noiseGain.connect(this.ctx.destination);
         noise.start();
+
+        // Little chime overlay
+        this.playTone(value * 10 + 400, 'sine', 0.1, 0.1);
     }
+
     win() {
         if (!this.enabled || !this.ctx) return;
         // Fanfare
@@ -65,24 +79,25 @@ class SoundManager {
                 this.playTone(f * 1.01, 'sawtooth', 0.2, 0.05);
             }, i * 150);
         });
-        // Applause
-        setTimeout(() => {
-            const bufferSize = this.ctx!.sampleRate * 2;
-            const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-            }
-            const noise = this.ctx!.createBufferSource();
-            noise.buffer = buffer;
-            const noiseGain = this.ctx!.createGain();
-            noiseGain.gain.setValueAtTime(0.1, this.ctx!.currentTime);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx!.currentTime + 2);
-            noise.connect(noiseGain);
-            noiseGain.connect(this.ctx!.destination);
-            noise.start();
-        }, 800);
+
+        // Long Applause
+        const applauseDuration = 2000; // 2s
+        const bufferSize = this.ctx.sampleRate * 2;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.5; // Quieter noise
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        noiseGain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 2);
+        noise.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start();
     }
+
     gameOver() {
         this.playTone(150, 'sawtooth', 0.3, 0.1);
         setTimeout(() => this.playTone(100, 'sawtooth', 0.5, 0.1), 300);
@@ -127,9 +142,12 @@ const Game2048 = () => {
         const newState = !soundEnabled;
         setSoundEnabled(newState);
         soundManager.current?.setEnabled(newState);
+        // Try to resume on toggle
+        if (newState) soundManager.current?.resizeAudioContext();
     };
 
     const startNewGame = () => {
+        soundManager.current?.resizeAudioContext();
         const newGrid = Array(4).fill(0).map(() => Array(4).fill(0));
         addRandomTile(newGrid);
         addRandomTile(newGrid);
@@ -179,6 +197,9 @@ const Game2048 = () => {
     };
 
     const move = useCallback((direction: Direction) => {
+        // Force audio resume
+        soundManager.current?.resizeAudioContext();
+
         if (gameOver || (won && !keepPlaying)) return;
 
         let newGrid = grid.map(row => [...row]);
@@ -259,15 +280,11 @@ const Game2048 = () => {
         }
     }, [grid, gameOver, won, bestScore, keepPlaying]);
 
+    // ... (rest of standard functions)
     const checkWin = (g: number[][]) => {
-        for (let r = 0; r < 4; r++) {
-            for (let c = 0; c < 4; c++) {
-                if (g[r][c] === 2048) return true;
-            }
-        }
+        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { if (g[r][c] === 2048) return true; } }
         return false;
     };
-
     const checkGameOver = (g: number[][]) => {
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
@@ -292,43 +309,41 @@ const Game2048 = () => {
 
     // Touch handling
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-
+    const handleTouchStart = (e: React.TouchEvent) => { setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY }); };
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (!touchStart) return;
         const touchEnd = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
         const dx = touchEnd.x - touchStart.x;
         const dy = touchEnd.y - touchStart.y;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT');
-        } else {
-            if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP');
-        }
+        if (Math.abs(dx) > Math.abs(dy)) { if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT'); }
+        else { if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP'); }
         setTouchStart(null);
     };
 
     const getTileStyle = (value: number) => {
-        // Neon Theme Colors
-        const baseStyle = "shadow-[0_0_10px_rgba(0,0,0,0.3)] border border-white/10 backdrop-blur-md";
-
+        // High Contrast Neon Colors
+        const base = "shadow-[0_0_15px_rgba(0,0,0,0.5)] border-2 backdrop-blur-md flex items-center justify-center relative z-10";
         switch (value) {
-            case 0: return "bg-white/5 border-transparent";
-            case 2: return `${baseStyle} bg-blue-900 border-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)]`;
-            case 4: return `${baseStyle} bg-indigo-900 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.6)]`;
-            case 8: return `${baseStyle} bg-violet-900 border-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.6)]`;
-            case 16: return `${baseStyle} bg-purple-900 border-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.6)]`;
-            case 32: return `${baseStyle} bg-fuchsia-900 border-fuchsia-500 text-white shadow-[0_0_20px_rgba(217,70,239,0.6)]`;
-            case 64: return `${baseStyle} bg-pink-900 border-pink-500 text-white shadow-[0_0_20px_rgba(236,72,153,0.6)]`;
-            case 128: return `${baseStyle} bg-red-900 border-red-500 text-white shadow-[0_0_25px_rgba(239,68,68,0.8)] animate-pulse`; // Dark Red
-            case 256: return `${baseStyle} bg-orange-900 border-orange-500 text-white shadow-[0_0_25px_rgba(249,115,22,0.8)]`;
-            case 512: return `${baseStyle} bg-amber-900 border-amber-500 text-white shadow-[0_0_25px_rgba(245,158,11,0.8)]`;
-            case 1024: return `${baseStyle} bg-yellow-900 border-yellow-500 text-white shadow-[0_0_30px_rgba(234,179,8,0.9)]`; // Dark Yellow
-            case 2048: return `${baseStyle} bg-white border-white text-black shadow-[0_0_50px_rgba(255,255,255,1)] animate-bounce`; // White
-            default: return `${baseStyle} bg-gray-900 border-gray-500 text-white`;
+            case 0: return "bg-white/5 border-transparent z-0";
+            // 2 -> Green
+            case 2: return `${base} bg-green-600 border-green-400 text-white shadow-[0_0_20px_rgba(34,197,94,0.6)]`;
+            // 4 -> Red
+            case 4: return `${base} bg-red-600 border-red-400 text-white shadow-[0_0_20px_rgba(239,68,68,0.6)]`;
+            // 8 -> Yellow
+            case 8: return `${base} bg-yellow-500 border-yellow-300 text-black shadow-[0_0_20px_rgba(234,179,8,0.6)]`;
+            // 16 -> Blue
+            case 16: return `${base} bg-blue-600 border-blue-400 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)]`;
+            // 32 -> Orange
+            case 32: return `${base} bg-orange-600 border-orange-400 text-white shadow-[0_0_20px_rgba(249,115,22,0.6)]`;
+            // 64 -> Dark Blue / Indigo
+            case 64: return `${base} bg-indigo-700 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.6)]`;
+            // 128+ -> Purple/Pink variants
+            case 128: return `${base} bg-purple-600 border-purple-400 text-white shadow-[0_0_25px_rgba(168,85,247,0.7)]`;
+            case 256: return `${base} bg-pink-600 border-pink-400 text-white shadow-[0_0_25px_rgba(236,72,153,0.7)]`;
+            case 512: return `${base} bg-teal-600 border-teal-400 text-white shadow-[0_0_25px_rgba(20,184,166,0.7)]`;
+            case 1024: return `${base} bg-cyan-600 border-cyan-400 text-white shadow-[0_0_30px_rgba(6,182,212,0.8)]`;
+            case 2048: return `${base} bg-white border-white text-black shadow-[0_0_50px_rgba(255,255,255,1)] animate-bounce`;
+            default: return `${base} bg-gray-800 border-gray-600 text-white`;
         }
     };
 
@@ -373,6 +388,7 @@ const Game2048 = () => {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
+                    {/* Emojis with high z-index */}
                     {emojis.map(e => (
                         <div
                             key={e.id}
@@ -395,7 +411,7 @@ const Game2048 = () => {
                         ))
                     ))}
 
-                    <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
+                    <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full relative z-10">
                         {grid.map((row, r) => (
                             row.map((val, c) => (
                                 <div
@@ -409,14 +425,14 @@ const Game2048 = () => {
                     </div>
 
                     {gameOver && !won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-20 animate-in fade-in">
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50 animate-in fade-in">
                             <h2 className="text-4xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">Game Over</h2>
                             <Button onClick={startNewGame} className="bg-white text-black hover:bg-gray-200 font-bold px-8">Try Again</Button>
                         </div>
                     )}
 
                     {won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-20 animate-in zoom-in">
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50 animate-in zoom-in">
                             <Trophy className="w-16 h-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-bounce" />
                             <h2 className="text-4xl font-bold text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">You Win!</h2>
                             <p className="text-white mb-6">You reached 2048!</p>
