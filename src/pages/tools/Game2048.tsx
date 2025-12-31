@@ -42,17 +42,45 @@ class SoundManager {
 
     move() { this.playTone(150, 'sine', 0.1, 0.05); }
     merge(value: number) {
-        // Higher pitch for higher values
-        const baseFreq = 220;
-        const semitones = Math.log2(value) * 2;
+        // Satisfying "pop" sound
+        const baseFreq = 200;
+        const semitones = Math.log2(value) * 3;
         const freq = baseFreq * Math.pow(2, semitones / 12);
-        this.playTone(freq, 'triangle', 0.15, 0.1);
+        this.playTone(freq, 'triangle', 0.1, 0.15);
+        setTimeout(() => this.playTone(freq * 1.5, 'sine', 0.1, 0.1), 50); // Chord effect
     }
     win() {
         if (!this.enabled || !this.ctx) return;
-        [440, 554, 659, 880].forEach((f, i) => setTimeout(() => this.playTone(f, 'sine', 0.3, 0.1), i * 100));
+        // "Applause" / Fanfare effect
+        const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        notes.forEach((f, i) => {
+            setTimeout(() => {
+                this.playTone(f, 'square', 0.2, 0.1);
+                this.playTone(f * 1.01, 'sawtooth', 0.2, 0.05); // Detune for "chorus" effect
+            }, i * 150);
+        });
+        // Simulated "Cheer" noise (white noise burst)
+        setTimeout(() => {
+            const bufferSize = this.ctx!.sampleRate * 2; // 2 seconds
+            const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = this.ctx!.createBufferSource();
+            noise.buffer = buffer;
+            const noiseGain = this.ctx!.createGain();
+            noiseGain.gain.setValueAtTime(0.1, this.ctx!.currentTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx!.currentTime + 2);
+            noise.connect(noiseGain);
+            noiseGain.connect(this.ctx!.destination);
+            noise.start();
+        }, 800);
     }
-    gameOver() { this.playTone(110, 'sawtooth', 0.5, 0.1); }
+    gameOver() {
+        this.playTone(150, 'sawtooth', 0.3, 0.1);
+        setTimeout(() => this.playTone(100, 'sawtooth', 0.5, 0.1), 300);
+    }
 }
 
 const Game2048 = () => {
@@ -248,18 +276,18 @@ const Game2048 = () => {
 
         switch (value) {
             case 0: return "bg-white/5 border-transparent";
-            case 2: return `${baseStyle} bg-cyan-500/20 text-cyan-400 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.4)]`;
-            case 4: return `${baseStyle} bg-teal-500/20 text-teal-400 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.4)]`;
-            case 8: return `${baseStyle} bg-green-500/20 text-green-400 border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]`;
-            case 16: return `${baseStyle} bg-lime-500/20 text-lime-400 border-lime-500/50 shadow-[0_0_15px_rgba(132,204,22,0.4)]`;
-            case 32: return `${baseStyle} bg-yellow-500/20 text-yellow-400 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.4)]`;
-            case 64: return `${baseStyle} bg-orange-500/20 text-orange-400 border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.5)]`;
-            case 128: return `${baseStyle} bg-red-500/20 text-red-400 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.5)]`;
-            case 256: return `${baseStyle} bg-pink-500/20 text-pink-400 border-pink-500/50 shadow-[0_0_25px_rgba(236,72,153,0.5)]`;
-            case 512: return `${baseStyle} bg-purple-500/20 text-purple-400 border-purple-500/50 shadow-[0_0_25px_rgba(168,85,247,0.5)]`;
-            case 1024: return `${baseStyle} bg-indigo-500/20 text-indigo-400 border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.6)]`;
-            case 2048: return `${baseStyle} bg-yellow-400/30 text-yellow-300 border-yellow-400 shadow-[0_0_40px_rgba(250,204,21,0.8)] animate-pulse`;
-            default: return `${baseStyle} bg-gray-500/20 text-white`;
+            case 2: return `${baseStyle} bg-blue-900 border-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)]`;
+            case 4: return `${baseStyle} bg-indigo-900 border-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.6)]`;
+            case 8: return `${baseStyle} bg-violet-900 border-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.6)]`;
+            case 16: return `${baseStyle} bg-purple-900 border-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.6)]`;
+            case 32: return `${baseStyle} bg-fuchsia-900 border-fuchsia-500 text-white shadow-[0_0_20px_rgba(217,70,239,0.6)]`;
+            case 64: return `${baseStyle} bg-pink-900 border-pink-500 text-white shadow-[0_0_20px_rgba(236,72,153,0.6)]`;
+            case 128: return `${baseStyle} bg-red-900 border-red-500 text-white shadow-[0_0_25px_rgba(239,68,68,0.8)] animate-pulse`; // Dark Red
+            case 256: return `${baseStyle} bg-orange-900 border-orange-500 text-white shadow-[0_0_25px_rgba(249,115,22,0.8)]`;
+            case 512: return `${baseStyle} bg-amber-900 border-amber-500 text-white shadow-[0_0_25px_rgba(245,158,11,0.8)]`;
+            case 1024: return `${baseStyle} bg-yellow-900 border-yellow-500 text-white shadow-[0_0_30px_rgba(234,179,8,0.9)]`; // Dark Yellow
+            case 2048: return `${baseStyle} bg-white border-white text-black shadow-[0_0_50px_rgba(255,255,255,1)] animate-bounce`; // White
+            default: return `${baseStyle} bg-gray-900 border-gray-500 text-white`;
         }
     };
 
