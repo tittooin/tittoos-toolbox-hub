@@ -79,6 +79,77 @@ const LoremGenerator = lazy(() => import("./pages/tools/LoremGenerator"));
 const HashGenerator = lazy(() => import("./pages/tools/HashGenerator"));
 const BarcodeGenerator = lazy(() => import("./pages/tools/BarcodeGenerator"));
 
+// Analyzer Tools
+const SEOAnalyzer = lazy(() => import("./pages/tools/SEOAnalyzer"));
+const WebsiteAnalyzer = lazy(() => import("./pages/tools/WebsiteAnalyzer"));
+const WebsiteSpeedChecker = lazy(() => import("./pages/tools/WebsiteSpeedChecker"));
+const TextAnalyzer = lazy(() => import("./pages/tools/TextAnalyzer"));
+const ColorAnalyzer = lazy(() => import("./pages/tools/ColorAnalyzer"));
+const ImageAnalyzer = lazy(() => import("./pages/tools/ImageAnalyzer"));
+
+// Editor Tools
+const ColorPicker = lazy(() => import("./pages/tools/ColorPicker"));
+const TextEditor = lazy(() => import("./pages/tools/TextEditor"));
+const JSONEditor = lazy(() => import("./pages/tools/JSONEditor"));
+const CSVEditor = lazy(() => import("./pages/tools/CSVEditor"));
+const HTMLEditor = lazy(() => import("./pages/tools/HTMLEditor"));
+const CSSEditor = lazy(() => import("./pages/tools/CSSEditor"));
+const MarkdownEditor = lazy(() => import("./pages/tools/MarkdownEditor"));
+const ImageBackgroundRemover = lazy(() => import("./pages/tools/ImageBackgroundRemover"));
+const AIImageEditor = lazy(() => import("./pages/tools/AIImageEditor"));
+const VideoEditor = lazy(() => import("./pages/tools/VideoEditor"));
+
+// Calculator Tools
+const Calculator = lazy(() => import("./pages/tools/Calculator"));
+const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
+const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
+const LoanCalculator = lazy(() => import("./pages/tools/LoanCalculator"));
+const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
+
+// Formatters
+const JSONFormatter = lazy(() => import("./pages/tools/JSONFormatter"));
+const XMLFormatter = lazy(() => import("./pages/tools/XMLFormatter"));
+const SQLFormatter = lazy(() => import("./pages/tools/SQLFormatter"));
+const HTMLFormatter = lazy(() => import("./pages/tools/HTMLFormatter"));
+const CSSFormatter = lazy(() => import("./pages/tools/CSSFormatter"));
+
+// Validators
+const PasswordValidator = lazy(() => import("./pages/tools/PasswordValidator"));
+const EmailValidator = lazy(() => import("./pages/tools/EmailValidator"));
+
+// Encoders & AI Tools
+const URLEncoder = lazy(() => import("./pages/tools/URLEncoder"));
+const TextToImage = lazy(() => import("./pages/tools/TextToImage"));
+const ThumbnailGenerator = lazy(() => import("./pages/tools/ThumbnailGenerator"));
+const TextToVideo = lazy(() => import("./pages/tools/TextToVideo"));
+const AIPromptAssistant = lazy(() => import("./pages/tools/AIPromptAssistant"));
+const AIWebsiteGenerator = lazy(() => import("./pages/tools/AIWebsiteGenerator"));
+const AIToolGenerator = lazy(() => import("./pages/tools/AIToolGenerator"));
+const IPAddressLookup = lazy(() => import("./pages/tools/IPAddressLookup"));
+const WhoisLookup = lazy(() => import("./pages/tools/WhoisLookup"));
+const InternetSpeedTest = lazy(() => import("./pages/tools/InternetSpeedTest"));
+const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
+const ResumeBuilder = lazy(() => import("./pages/tools/ResumeBuilder"));
+const OCRConverter = lazy(() => import("./pages/tools/OCRConverter"));
+
+// AI PDF Tools
+const ChatWithPDF = lazy(() => import("./pages/tools/ChatWithPDF"));
+const PDFSummarizer = lazy(() => import("./pages/tools/PDFSummarizer"));
+const PDFQuizGenerator = lazy(() => import("./pages/tools/PDFQuizGenerator"));
+const PDFStudyNotes = lazy(() => import("./pages/tools/PDFStudyNotes"));
+const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
+const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
+const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
+const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
+
+// Games
+const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
+const Game2048 = lazy(() => import("./pages/tools/Game2048"));
+const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
+const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
+const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
+const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
+
 // AI Social Media Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
