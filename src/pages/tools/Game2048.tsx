@@ -24,6 +24,7 @@ class SoundManager {
 
     resizeAudioContext() {
         // Resume context if suspended (browser requirements)
+        // This is crucial for fixing the "sound not working" issue on some browsers
         if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume().catch(console.error);
         }
@@ -48,7 +49,7 @@ class SoundManager {
     merge(value: number) {
         if (!this.enabled || !this.ctx) return;
 
-        // Louder "Clap" Sound
+        // Louder "Clap" Sound equivalent (Noise burst)
         const bufferSize = this.ctx.sampleRate * 0.15; // 150ms
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -67,6 +68,30 @@ class SoundManager {
 
         // Little chime overlay
         this.playTone(value * 10 + 400, 'sine', 0.1, 0.1);
+    }
+
+    newRecord() {
+        if (!this.enabled || !this.ctx) return;
+        // Distinct "New Record" Applause (Higher pitch/faster)
+        const bufferSize = this.ctx.sampleRate * 1.5;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.6; // Slightly different timbre
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 1.5);
+        noise.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start();
+
+        // Celebration Tones (Major chord arpeggio)
+        [440, 554, 659, 880].forEach((f, i) => {
+            setTimeout(() => this.playTone(f, 'triangle', 0.2, 0.2), i * 100);
+        });
     }
 
     win() {
@@ -116,6 +141,7 @@ const Game2048 = () => {
     const [emojis, setEmojis] = useState<{ id: number, x: number, y: number, text: string }[]>([]);
     const [recentScores, setRecentScores] = useState<number[]>([]);
     const soundManager = useRef<SoundManager | null>(null);
+    const hasBeatenBest = useRef(false);
 
     // Initialize game
     useEffect(() => {
@@ -157,6 +183,7 @@ const Game2048 = () => {
         setGameOver(false);
         setWon(false);
         setKeepPlaying(false);
+        hasBeatenBest.current = false;
     };
 
     const addRandomTile = (currentGrid: number[][]) => {
@@ -264,6 +291,12 @@ const Game2048 = () => {
                 if (newScore > bestScore) {
                     setBestScore(newScore);
                     localStorage.setItem('2048-best-score', newScore.toString());
+
+                    // Trigger "New Record" applause ONLY if we haven't already celebrated this session
+                    if (!hasBeatenBest.current && bestScore > 0) {
+                        soundManager.current?.newRecord();
+                        hasBeatenBest.current = true;
+                    }
                 }
                 return newScore;
             });
@@ -280,11 +313,11 @@ const Game2048 = () => {
         }
     }, [grid, gameOver, won, bestScore, keepPlaying]);
 
-    // ... (rest of standard functions)
     const checkWin = (g: number[][]) => {
         for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { if (g[r][c] === 2048) return true; } }
         return false;
     };
+
     const checkGameOver = (g: number[][]) => {
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
@@ -309,14 +342,22 @@ const Game2048 = () => {
 
     // Touch handling
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
-    const handleTouchStart = (e: React.TouchEvent) => { setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY }); };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    };
+
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (!touchStart) return;
         const touchEnd = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
         const dx = touchEnd.x - touchStart.x;
         const dy = touchEnd.y - touchStart.y;
-        if (Math.abs(dx) > Math.abs(dy)) { if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT'); }
-        else { if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP'); }
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT');
+        } else {
+            if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP');
+        }
         setTouchStart(null);
     };
 
@@ -349,11 +390,11 @@ const Game2048 = () => {
 
     return (
         <ToolTemplate
-            title="2048 Neon v2.1"
+            title="2048 Neon v2.2 - Best Score Clap"
             description="Experience the classic puzzle game with a futuristic neon look. Join the glowing tiles to reach 2048!"
         >
             <Helmet>
-                <title>2048 Neon v2.1 - Play Free Online Logic Game | Axevora</title>
+                <title>2048 Neon v2.2 - Play Free Online Logic Game | Axevora</title>
                 <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 
@@ -388,7 +429,6 @@ const Game2048 = () => {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {/* Emojis with high z-index */}
                     {emojis.map(e => (
                         <div
                             key={e.id}
