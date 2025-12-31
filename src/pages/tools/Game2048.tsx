@@ -121,11 +121,15 @@ const Game2048 = () => {
     // Initialize game
     useEffect(() => {
         soundManager.current = new SoundManager();
-        const savedBest = localStorage.getItem('2048-best-score');
-        if (savedBest) setBestScore(parseInt(savedBest));
+        try {
+            const savedBest = localStorage.getItem('2048-best-score');
+            if (savedBest) setBestScore(parseInt(savedBest));
 
-        const savedRecent = localStorage.getItem('2048-recent-scores');
-        if (savedRecent) setRecentScores(JSON.parse(savedRecent));
+            const savedRecent = localStorage.getItem('2048-recent-scores');
+            if (savedRecent) setRecentScores(JSON.parse(savedRecent));
+        } catch (e) {
+            console.warn("Storage access blocked", e);
+        }
 
         startNewGame();
     }, []);
@@ -266,10 +270,11 @@ const Game2048 = () => {
                 const newScore = prev + scoreToAdd;
                 if (newScore > bestScore) {
                     setBestScore(newScore);
-                    localStorage.setItem('2048-best-score', newScore.toString());
-
-                    // Trigger "New Record" applause ONLY if we haven't already celebrated this session
                     if (!hasBeatenBest.current && bestScore > 0) {
+                        try {
+                            localStorage.setItem('2048-best-score', newScore.toString());
+                        } catch (e) { console.warn("Storage blocked"); }
+
                         soundManager.current?.newRecord();
                         // Trigger Full Screen Celebration
                         setShowCelebration(true);
@@ -361,11 +366,11 @@ const Game2048 = () => {
 
     return (
         <ToolTemplate
-            title="2048 Neon v2.7 - Lite Version"
+            title="2048 Neon v2.8 - Debug Mode"
             description="Experience the classic puzzle game with a futuristic neon look. Optimized for performance."
         >
             <Helmet>
-                <title>2048 Neon v2.7 - Play Free Online Logic Game | Axevora</title>
+                <title>2048 Neon v2.8 - Play Free Online Logic Game | Axevora</title>
                 <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 

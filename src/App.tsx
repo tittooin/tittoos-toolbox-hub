@@ -174,197 +174,193 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <HelmetProvider>
-        <BrowserRouter>
-          <CookieConsent />
-          <GoogleAnalytics />
-          <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/tools" element={<AllTools />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/attributions" element={<Attributions />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<Blog />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/author/:slug" element={<Author />} />
-              <Route path="/submit-blog" element={<SubmitBlog />} />
+    <HelmetProvider>
+      <BrowserRouter>
+        <CookieConsent />
+        <GoogleAnalytics />
+        <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/tools" element={<AllTools />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/attributions" element={<Attributions />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<Blog />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/author/:slug" element={<Author />} />
+            <Route path="/submit-blog" element={<SubmitBlog />} />
 
-              {/* Blog Category Pages */}
-              <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />
-              <Route path="/blog-posts/calculators-category" element={<CalculatorsCategoryPage />} />
-              <Route path="/blog-posts/formatters-category" element={<FormattersCategoryPage />} />
-              <Route path="/blog-posts/ai-tools-category" element={<AIToolsCategoryPage />} />
-              <Route path="/blog-posts/validators-category" element={<ValidatorsCategoryPage />} />
-              <Route path="/blog-posts/converters-category" element={<ConvertersCategoryPage />} />
-              <Route path="/blog-posts/generators-category" element={<GeneratorsCategoryPage />} />
-              <Route path="/blog-posts/editors-category" element={<EditorsCategoryPage />} />
-              <Route path="/blog-posts/games-category" element={<GamesCategoryPage />} />
-              <Route path="/blog-posts/pdf-category" element={<PDFCategoryPage />} />
-              <Route path="/blog-posts/dev-tools-category" element={<DevToolsCategoryPage />} />
+            {/* Blog Category Pages */}
+            <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />
+            <Route path="/blog-posts/calculators-category" element={<CalculatorsCategoryPage />} />
+            <Route path="/blog-posts/formatters-category" element={<FormattersCategoryPage />} />
+            <Route path="/blog-posts/ai-tools-category" element={<AIToolsCategoryPage />} />
+            <Route path="/blog-posts/validators-category" element={<ValidatorsCategoryPage />} />
+            <Route path="/blog-posts/converters-category" element={<ConvertersCategoryPage />} />
+            <Route path="/blog-posts/generators-category" element={<GeneratorsCategoryPage />} />
+            <Route path="/blog-posts/editors-category" element={<EditorsCategoryPage />} />
+            <Route path="/blog-posts/games-category" element={<GamesCategoryPage />} />
+            <Route path="/blog-posts/pdf-category" element={<PDFCategoryPage />} />
+            <Route path="/blog-posts/dev-tools-category" element={<DevToolsCategoryPage />} />
 
-              {/* Converter Tools */}
-              <Route path="/tools/pdf-converter" element={<PDFConverter />} />
-              <Route path="/tools/pdf-to-word" element={<PDFToWord />} />
-              <Route path="/tools/word-to-pdf" element={<WordToPDF />} />
-              <Route path="/tools/pdf-to-jpg" element={<PDFToJPG />} />
-              <Route path="/tools/pdf-to-png" element={<PDFToPNG />} />
-              <Route path="/tools/jpg-to-pdf" element={<JPGToPDF />} />
-              <Route path="/tools/pdf-to-excel" element={<PDFToExcel />} />
-              <Route path="/tools/excel-to-pdf" element={<ExcelToPDF />} />
-              <Route path="/tools/pdf-to-ppt" element={<PDFToPPT />} />
-              <Route path="/tools/ppt-to-pdf" element={<PPTToPDF />} />
-              <Route path="/tools/lock-pdf" element={<LockPDF />} />
-              <Route path="/tools/unlock-pdf" element={<UnlockPDF />} />
-              <Route path="/tools/rotate-pdf" element={<RotatePDF />} />
-              <Route path="/tools/delete-pdf-pages" element={<DeletePDFPages />} />
-              <Route path="/tools/extract-pdf-pages" element={<ExtractPDFPages />} />
-              <Route path="/tools/watermark-pdf" element={<WatermarkPDF />} />
-              <Route path="/tools/rearrange-pdf" element={<RearrangePDF />} />
-              <Route path="/tools/pdf-text-extractor" element={<PDFTextExtractor />} />
-              <Route path="/tools/pdf-editor" element={<PDFEditor />} />
-              <Route path="/tools/image-converter" element={<ImageConverter />} />
-              <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
-              <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
-              <Route path="/tools/video-to-shorts" element={<Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}><VideoToShorts /></Suspense>} />
-              <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
-              <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
-              <Route path="/tools/video-converter" element={<VideoConverter />} />
-              <Route path="/tools/audio-converter" element={<AudioConverter />} />
-              <Route path="/tools/unit-converter" element={<UnitConverter />} />
-              <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
-              <Route path="/tools/temperature-converter" element={<TemperatureConverter />} />
-              <Route path="/tools/base64-converter" element={<Base64Converter />} />
-              <Route path="/tools/timestamp-converter" element={<TimestampConverter />} />
-              <Route path="/merge-pdf-online" element={<MergePDF />} />
-              <Route path="/split-pdf-online" element={<SplitPDF />} />
-              <Route path="/compress-pdf-online" element={<CompressPDF />} />
+            {/* Converter Tools */}
+            <Route path="/tools/pdf-converter" element={<PDFConverter />} />
+            <Route path="/tools/pdf-to-word" element={<PDFToWord />} />
+            <Route path="/tools/word-to-pdf" element={<WordToPDF />} />
+            <Route path="/tools/pdf-to-jpg" element={<PDFToJPG />} />
+            <Route path="/tools/pdf-to-png" element={<PDFToPNG />} />
+            <Route path="/tools/jpg-to-pdf" element={<JPGToPDF />} />
+            <Route path="/tools/pdf-to-excel" element={<PDFToExcel />} />
+            <Route path="/tools/excel-to-pdf" element={<ExcelToPDF />} />
+            <Route path="/tools/pdf-to-ppt" element={<PDFToPPT />} />
+            <Route path="/tools/ppt-to-pdf" element={<PPTToPDF />} />
+            <Route path="/tools/lock-pdf" element={<LockPDF />} />
+            <Route path="/tools/unlock-pdf" element={<UnlockPDF />} />
+            <Route path="/tools/rotate-pdf" element={<RotatePDF />} />
+            <Route path="/tools/delete-pdf-pages" element={<DeletePDFPages />} />
+            <Route path="/tools/extract-pdf-pages" element={<ExtractPDFPages />} />
+            <Route path="/tools/watermark-pdf" element={<WatermarkPDF />} />
+            <Route path="/tools/rearrange-pdf" element={<RearrangePDF />} />
+            <Route path="/tools/pdf-text-extractor" element={<PDFTextExtractor />} />
+            <Route path="/tools/pdf-editor" element={<PDFEditor />} />
+            <Route path="/tools/image-converter" element={<ImageConverter />} />
+            <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
+            <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
+            <Route path="/tools/video-to-shorts" element={<Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}><VideoToShorts /></Suspense>} />
+            <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
+            <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
+            <Route path="/tools/video-converter" element={<VideoConverter />} />
+            <Route path="/tools/audio-converter" element={<AudioConverter />} />
+            <Route path="/tools/unit-converter" element={<UnitConverter />} />
+            <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
+            <Route path="/tools/temperature-converter" element={<TemperatureConverter />} />
+            <Route path="/tools/base64-converter" element={<Base64Converter />} />
+            <Route path="/tools/timestamp-converter" element={<TimestampConverter />} />
+            <Route path="/merge-pdf-online" element={<MergePDF />} />
+            <Route path="/split-pdf-online" element={<SplitPDF />} />
+            <Route path="/compress-pdf-online" element={<CompressPDF />} />
 
-              {/* Generator Tools */}
-              <Route path="/tools/password-generator" element={<PasswordGenerator />} />
-              <Route path="/tools/qr-generator" element={<QRGenerator />} />
-              <Route path="/tools/uuid-generator" element={<UUIDGenerator />} />
-              <Route path="/tools/lorem-generator" element={<LoremGenerator />} />
-              <Route path="/tools/hash-generator" element={<HashGenerator />} />
-              <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
+            {/* Generator Tools */}
+            <Route path="/tools/password-generator" element={<PasswordGenerator />} />
+            <Route path="/tools/qr-generator" element={<QRGenerator />} />
+            <Route path="/tools/uuid-generator" element={<UUIDGenerator />} />
+            <Route path="/tools/lorem-generator" element={<LoremGenerator />} />
+            <Route path="/tools/hash-generator" element={<HashGenerator />} />
+            <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
 
-              {/* Analyzer Tools */}
-              <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
-              <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
-              <Route path="/tools/website-speed-checker" element={<WebsiteSpeedChecker />} />
-              <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
-              <Route path="/tools/color-analyzer" element={<ColorAnalyzer />} />
-              <Route path="/tools/image-analyzer" element={<ImageAnalyzer />} />
+            {/* Analyzer Tools */}
+            <Route path="/tools/seo-analyzer" element={<SEOAnalyzer />} />
+            <Route path="/tools/website-analyzer" element={<WebsiteAnalyzer />} />
+            <Route path="/tools/website-speed-checker" element={<WebsiteSpeedChecker />} />
+            <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
+            <Route path="/tools/color-analyzer" element={<ColorAnalyzer />} />
+            <Route path="/tools/image-analyzer" element={<ImageAnalyzer />} />
 
-              {/* Editor Tools */}
-              <Route path="/tools/color-picker" element={<ColorPicker />} />
-              <Route path="/tools/text-editor" element={<TextEditor />} />
-              <Route path="/tools/json-editor" element={<JSONEditor />} />
-              <Route path="/tools/csv-editor" element={<CSVEditor />} />
-              <Route path="/tools/html-editor" element={<HTMLEditor />} />
-              <Route path="/tools/css-editor" element={<CSSEditor />} />
-              <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
-              <Route path="/tools/image-background-remover" element={<ImageBackgroundRemover />} />
-              <Route path="/tools/ai-image-editor" element={<AIImageEditor />} />
-              <Route path="/tools/video-editor" element={<VideoEditor />} />
+            {/* Editor Tools */}
+            <Route path="/tools/color-picker" element={<ColorPicker />} />
+            <Route path="/tools/text-editor" element={<TextEditor />} />
+            <Route path="/tools/json-editor" element={<JSONEditor />} />
+            <Route path="/tools/csv-editor" element={<CSVEditor />} />
+            <Route path="/tools/html-editor" element={<HTMLEditor />} />
+            <Route path="/tools/css-editor" element={<CSSEditor />} />
+            <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
+            <Route path="/tools/image-background-remover" element={<ImageBackgroundRemover />} />
+            <Route path="/tools/ai-image-editor" element={<AIImageEditor />} />
+            <Route path="/tools/video-editor" element={<VideoEditor />} />
 
-              {/* Calculator Tools */}
-              <Route path="/tools/calculator" element={<Calculator />} />
-              <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
-              <Route path="/tools/bmi-calculator" element={<BMICalculator />} />
-              <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
-              <Route path="/tools/age-calculator" element={<AgeCalculator />} />
+            {/* Calculator Tools */}
+            <Route path="/tools/calculator" element={<Calculator />} />
+            <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
+            <Route path="/tools/bmi-calculator" element={<BMICalculator />} />
+            <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+            <Route path="/tools/age-calculator" element={<AgeCalculator />} />
 
-              {/* Formatters */}
-              <Route path="/tools/json-formatter" element={<JSONFormatter />} />
-              <Route path="/tools/xml-formatter" element={<XMLFormatter />} />
-              <Route path="/tools/sql-formatter" element={<SQLFormatter />} />
-              <Route path="/tools/html-formatter" element={<HTMLFormatter />} />
-              <Route path="/tools/css-formatter" element={<CSSFormatter />} />
+            {/* Formatters */}
+            <Route path="/tools/json-formatter" element={<JSONFormatter />} />
+            <Route path="/tools/xml-formatter" element={<XMLFormatter />} />
+            <Route path="/tools/sql-formatter" element={<SQLFormatter />} />
+            <Route path="/tools/html-formatter" element={<HTMLFormatter />} />
+            <Route path="/tools/css-formatter" element={<CSSFormatter />} />
 
-              {/* Validators */}
-              <Route path="/tools/json-validator" element={<JSONEditor mode="validator" />} />
-              <Route path="/tools/xml-validator" element={<XMLFormatter mode="validator" />} />
-              <Route path="/tools/password-validator" element={<PasswordValidator />} />
-              <Route path="/tools/email-validator" element={<EmailValidator />} />
+            {/* Validators */}
+            <Route path="/tools/json-validator" element={<JSONEditor mode="validator" />} />
+            <Route path="/tools/xml-validator" element={<XMLFormatter mode="validator" />} />
+            <Route path="/tools/password-validator" element={<PasswordValidator />} />
+            <Route path="/tools/email-validator" element={<EmailValidator />} />
 
 
-              {/* Encoders */}
-              <Route path="/tools/url-encoder" element={<URLEncoder />} />
-              <Route path="/tools/text-to-image" element={<TextToImage />} />
-              <Route path="/tools/thumbnail-generator" element={<ThumbnailGenerator />} />
-              <Route path="/tools/text-to-video" element={<TextToVideo />} />
-              <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
-              <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
-              <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
-              <Route path="/tools/ip-address-lookup" element={<IPAddressLookup />} />
-              <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
-              <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
-              <Route path="/tools/image-compressor" element={<ImageCompressor />} />
-              <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
-              <Route path="/tools/ocr-converter" element={<OCRConverter />} />
+            {/* Encoders */}
+            <Route path="/tools/url-encoder" element={<URLEncoder />} />
+            <Route path="/tools/text-to-image" element={<TextToImage />} />
+            <Route path="/tools/thumbnail-generator" element={<ThumbnailGenerator />} />
+            <Route path="/tools/text-to-video" element={<TextToVideo />} />
+            <Route path="/tools/ai-prompt-assistant" element={<AIPromptAssistant />} />
+            <Route path="/tools/ai-website-generator" element={<AIWebsiteGenerator />} />
+            <Route path="/tools/ai-tool-generator" element={<AIToolGenerator />} />
+            <Route path="/tools/ip-address-lookup" element={<IPAddressLookup />} />
+            <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
+            <Route path="/tools/internet-speed-test" element={<InternetSpeedTest />} />
+            <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+            <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
+            <Route path="/tools/ocr-converter" element={<OCRConverter />} />
 
-              {/* AI PDF Tools */}
-              <Route path="/tools/chat-with-pdf" element={<ChatWithPDF />} />
-              <Route path="/tools/pdf-summarizer" element={<PDFSummarizer />} />
-              <Route path="/tools/pdf-quiz-generator" element={<PDFQuizGenerator />} />
-              <Route path="/tools/pdf-study-notes" element={<PDFStudyNotes />} />
-              <Route path="/tools/pdf-translator" element={<PDFTranslator />} />
-              <Route path="/tools/image-resizer" element={<ImageResizer />} />
-              <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
-              <Route path="/tools/number-flow" element={<NumberFlow />} />
+            {/* AI PDF Tools */}
+            <Route path="/tools/chat-with-pdf" element={<ChatWithPDF />} />
+            <Route path="/tools/pdf-summarizer" element={<PDFSummarizer />} />
+            <Route path="/tools/pdf-quiz-generator" element={<PDFQuizGenerator />} />
+            <Route path="/tools/pdf-study-notes" element={<PDFStudyNotes />} />
+            <Route path="/tools/pdf-translator" element={<PDFTranslator />} />
+            <Route path="/tools/image-resizer" element={<ImageResizer />} />
+            <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
+            <Route path="/tools/number-flow" element={<NumberFlow />} />
 
-              {/* AI Social Media Tools */}
-              <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
-              <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
-              <Route path="/tools/ai-reel-script-generator" element={<AIReelScriptGenerator />} />
-              <Route path="/tools/tech-versus" element={
-                <SimpleErrorBoundary>
-                  <TechVersus />
-                </SimpleErrorBoundary>
-              } />
-              <Route path="/tools/software-versus" element={<SoftwareVersus />} />
-              <Route path="/tools/nutrition-versus" element={<NutritionVersus />} />
-              <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
-              <Route path="/tools/ai-bio-generator" element={<AIBioGenerator />} />
+            {/* AI Social Media Tools */}
+            <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
+            <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
+            <Route path="/tools/ai-reel-script-generator" element={<AIReelScriptGenerator />} />
+            <Route path="/tools/tech-versus" element={
+              <SimpleErrorBoundary>
+                <TechVersus />
+              </SimpleErrorBoundary>
+            } />
+            <Route path="/tools/software-versus" element={<SoftwareVersus />} />
+            <Route path="/tools/nutrition-versus" element={<NutritionVersus />} />
+            <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
+            <Route path="/tools/ai-bio-generator" element={<AIBioGenerator />} />
 
-              {/* Dev Tools */}
-              <Route path="/tools/windows-cmd-gen" element={<WindowsCommandGenerator />} />
-              <Route path="/tools/linux-cmd-gen" element={<LinuxCommandGenerator />} />
-              <Route path="/tools/mac-cmd-gen" element={<MacCommandGenerator />} />
-              <Route path="/tools/android-adb-gen" element={<AndroidCommandGenerator />} />
+            {/* Dev Tools */}
+            <Route path="/tools/windows-cmd-gen" element={<WindowsCommandGenerator />} />
+            <Route path="/tools/linux-cmd-gen" element={<LinuxCommandGenerator />} />
+            <Route path="/tools/mac-cmd-gen" element={<MacCommandGenerator />} />
+            <Route path="/tools/android-adb-gen" element={<AndroidCommandGenerator />} />
 
-              {/* Games */}
-              <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
-              <Route path="/tools/2048-game" element={<Game2048 />} />
-              <Route path="/tools/click-speed-test" element={<ClickSpeedTest />} />
-              <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
-              <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
-              <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
+            {/* Games */}
+            <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
+            <Route path="/tools/2048-game" element={<Game2048 />} />
+            <Route path="/tools/click-speed-test" element={<ClickSpeedTest />} />
+            <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
+            <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
+            <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge />} />
 
-              {/* Apps Support Pages */}
-              <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />
+            {/* Apps Support Pages */}
+            <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />
 
-              <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/sitemap" element={<Sitemap />} />
 
-              {/* Admin Routes */}
-              <Route path="/admin/blog" element={<BlogManager />} />
-              <Route path="/admin/battles" element={<BattleManager />} />
+            {/* Admin Routes */}
+            <Route path="/admin/blog" element={<BlogManager />} />
+            <Route path="/admin/battles" element={<BattleManager />} />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </HelmetProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </HelmetProvider>
+  </QueryClientProvider >
 );
 
 export default App;
