@@ -59,103 +59,17 @@ const ImageConverter = lazy(() => import("./pages/tools/ImageConverter"));
 const PDFToImage = lazy(() => import("./pages/tools/PDFToImage"));
 const PDFToEPUB = lazy(() => import("./pages/tools/PDFToEPUB"));
 const VideoToShorts = lazy(() => import("./pages/tools/VideoToShorts"));
-const ToolPoster = lazy(() => import("./pages/tools/ToolPoster"));
+// const ToolPoster = lazy(() => import("./pages/tools/ToolPoster")); 
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
 const AudioConverter = lazy(() => import("./pages/tools/AudioConverter"));
-const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
-const CurrencyConverter = lazy(() => import("./pages/tools/CurrencyConverter"));
-const TemperatureConverter = lazy(() => import("./pages/tools/TemperatureConverter"));
-const Base64Converter = lazy(() => import("./pages/tools/Base64Converter"));
-const TimestampConverter = lazy(() => import("./pages/tools/TimestampConverter"));
-const MergePDF = lazy(() => import("./pages/tools/MergePDF"));
-const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
-const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
-
-// Generator Tools
-const PasswordGenerator = lazy(() => import("./pages/tools/PasswordGenerator"));
-const QRGenerator = lazy(() => import("./pages/tools/QRGenerator"));
-const UUIDGenerator = lazy(() => import("./pages/tools/UUIDGenerator"));
-const LoremGenerator = lazy(() => import("./pages/tools/LoremGenerator"));
-const HashGenerator = lazy(() => import("./pages/tools/HashGenerator"));
-const BarcodeGenerator = lazy(() => import("./pages/tools/BarcodeGenerator"));
-
-// Analyzer Tools
-const SEOAnalyzer = lazy(() => import("./pages/tools/SEOAnalyzer"));
-const WebsiteAnalyzer = lazy(() => import("./pages/tools/WebsiteAnalyzer"));
-const WebsiteSpeedChecker = lazy(() => import("./pages/tools/WebsiteSpeedChecker"));
-const TextAnalyzer = lazy(() => import("./pages/tools/TextAnalyzer"));
-const ColorAnalyzer = lazy(() => import("./pages/tools/ColorAnalyzer"));
-const ImageAnalyzer = lazy(() => import("./pages/tools/ImageAnalyzer"));
-
-// Editor Tools
-const ColorPicker = lazy(() => import("./pages/tools/ColorPicker"));
-const TextEditor = lazy(() => import("./pages/tools/TextEditor"));
-const JSONEditor = lazy(() => import("./pages/tools/JSONEditor"));
-const CSVEditor = lazy(() => import("./pages/tools/CSVEditor"));
-const HTMLEditor = lazy(() => import("./pages/tools/HTMLEditor"));
-const CSSEditor = lazy(() => import("./pages/tools/CSSEditor"));
-const MarkdownEditor = lazy(() => import("./pages/tools/MarkdownEditor"));
-const ImageBackgroundRemover = lazy(() => import("./pages/tools/ImageBackgroundRemover"));
-const AIImageEditor = lazy(() => import("./pages/tools/AIImageEditor"));
-const VideoEditor = lazy(() => import("./pages/tools/VideoEditor"));
-
-// Calculator Tools
-const Calculator = lazy(() => import("./pages/tools/Calculator"));
-const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
-const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
-const LoanCalculator = lazy(() => import("./pages/tools/LoanCalculator"));
-const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
-
-// Formatters
-const JSONFormatter = lazy(() => import("./pages/tools/JSONFormatter"));
-const XMLFormatter = lazy(() => import("./pages/tools/XMLFormatter"));
-const SQLFormatter = lazy(() => import("./pages/tools/SQLFormatter"));
-const HTMLFormatter = lazy(() => import("./pages/tools/HTMLFormatter"));
-const CSSFormatter = lazy(() => import("./pages/tools/CSSFormatter"));
-
-// Validators
-const PasswordValidator = lazy(() => import("./pages/tools/PasswordValidator"));
-const EmailValidator = lazy(() => import("./pages/tools/EmailValidator"));
-
-
-// Encoders
-const URLEncoder = lazy(() => import("./pages/tools/URLEncoder"));
-const TextToImage = lazy(() => import("./pages/tools/TextToImage"));
-const ThumbnailGenerator = lazy(() => import("./pages/tools/ThumbnailGenerator"));
-const TextToVideo = lazy(() => import("./pages/tools/TextToVideo"));
-const AIPromptAssistant = lazy(() => import("./pages/tools/AIPromptAssistant"));
-const AIWebsiteGenerator = lazy(() => import("./pages/tools/AIWebsiteGenerator"));
-const AIToolGenerator = lazy(() => import("./pages/tools/AIToolGenerator"));
-const IPAddressLookup = lazy(() => import("./pages/tools/IPAddressLookup"));
-const WhoisLookup = lazy(() => import("./pages/tools/WhoisLookup"));
-const InternetSpeedTest = lazy(() => import("./pages/tools/InternetSpeedTest"));
-const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
-const Game2048 = lazy(() => import("./pages/tools/Game2048"));
-const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
-const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
-const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
-const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
-const ImageCompressor = lazy(() => import("./pages/tools/ImageCompressor"));
-const ResumeBuilder = lazy(() => import("./pages/tools/ResumeBuilder"));
-const OCRConverter = lazy(() => import("./pages/tools/OCRConverter"));
-
-// AI PDF Tools
-const ChatWithPDF = lazy(() => import("./pages/tools/ChatWithPDF"));
-const PDFSummarizer = lazy(() => import("./pages/tools/PDFSummarizer"));
-const PDFQuizGenerator = lazy(() => import("./pages/tools/PDFQuizGenerator"));
-const PDFStudyNotes = lazy(() => import("./pages/tools/PDFStudyNotes"));
-const PDFTranslator = lazy(() => import("./pages/tools/PDFTranslator"));
-const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
-const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
-const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
-
+...
 // AI Social Media Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
 const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
-const TechVersus = lazy(() => import("./pages/tools/TechVersus"));
-const SoftwareVersus = lazy(() => import("./pages/tools/SoftwareVersus"));
-const NutritionVersus = lazy(() => import("./pages/tools/NutritionVersus"));
+const TechVersus = lazy(() => import("./pages/versus/TechVersus"));
+const SoftwareVersus = lazy(() => import("./pages/versus/SoftwareVersus"));
+const NutritionVersus = lazy(() => import("./pages/versus/NutritionVersus"));
 const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
 const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
 
@@ -235,8 +149,8 @@ const App = () => (
                 <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
                 <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
                 <Route path="/tools/video-to-shorts" element={<Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}><VideoToShorts /></Suspense>} />
-                <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
-                <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
+                {/* <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} /> */}
+                {/* <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} /> */}
                 <Route path="/tools/video-converter" element={<VideoConverter />} />
                 <Route path="/tools/audio-converter" element={<AudioConverter />} />
                 <Route path="/tools/unit-converter" element={<UnitConverter />} />
