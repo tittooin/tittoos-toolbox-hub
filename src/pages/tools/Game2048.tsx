@@ -367,10 +367,33 @@ const Game2048 = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white p-10 flex flex-col items-center">
-            <h1 className="text-3xl text-green-500 mb-4">LOGIC CHECK PASS</h1>
-            <p className="text-xl">If you see this, App.tsx Providers are SAFE.</p>
-            <p>The crash is definitely inside the UI components of this game (Header/Buttons).</p>
+        <div className="min-h-screen bg-[#0f0f0f] text-white selection:bg-green-500/30 font-sans">
+            <Helmet>
+                <title>2048 Neon | Axevora Tools</title>
+                <meta name="description" content="Play the ultimate Neon 2048 game online. Combine tiles, beat your high score, and enjoy the satisfying visuals and sounds. Free and Unblocked." />
+                <meta name="keywords" content="2048 game, neon 2048, classic 2048, puzzle game, math game, unblocked games" />
+            </Helmet>
+
+            <Header />
+
+            <div className="container mx-auto px-4 py-8 flex flex-col items-center max-w-md">
+                <div className="w-full flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-5xl font-black bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">
+                            2048
+                        </h1>
+                        <p className="text-gray-400 text-sm font-medium tracking-wider mt-1">NEON EDITION</p>
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gray-900 rounded-lg text-center border border-gray-700">
+                    <h2 className="text-xl text-green-400 font-bold mb-2">GAME LOADING...</h2>
+                    <p className="text-gray-300">Checking UI Components...</p>
+                    <p className="text-xs text-gray-500 mt-2">If you see this, Header & Footer are SAFE.</p>
+                </div>
+            </div>
+
+            <Footer />
         </div>
     );
 };
