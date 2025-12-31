@@ -99,6 +99,7 @@ const WhoisLookup = lazy(() => import("./pages/tools/WhoisLookup"));
 const InternetSpeedTest = lazy(() => import("./pages/tools/InternetSpeedTest"));
 const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
 const Game2048 = lazy(() => import("./pages/tools/Game2048"));
+import Game2048Debug from "./pages/tools/Game2048Debug";
 const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
 const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
 const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
@@ -318,7 +319,7 @@ const App = () => (
 
               {/* Games */}
               <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
-              <Route path="/tools/2048-game" element={<Game2048 />} />
+              <Route path="/tools/2048-game" element={<Game2048Debug />} />
               <Route path="/tools/click-speed-test" element={<ClickSpeedTest />} />
               <Route path="/tools/reaction-time-test" element={<ReactionTimeTest />} />
               <Route path="/tools/memory-match-game" element={<MemoryMatchGame />} />
