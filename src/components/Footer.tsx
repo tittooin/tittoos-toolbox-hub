@@ -201,9 +201,11 @@ const Footer = () => {
             </a>
 
             {/* TrustBox widget - Review Collector */}
+            {/* 
             <div ref={trustpilotRef} className="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="694f95971d2da56aaca4f247" data-style-height="52px" data-style-width="100%" data-token="eef57abb-5d7c-4be7-a3c1-62a5bdad4ab6">
               <a href="https://www.trustpilot.com/review/axevora.com" target="_blank" rel="noopener">Trustpilot</a>
             </div>
+             */}
             {/* End TrustBox widget */}
           </div>
         </div>

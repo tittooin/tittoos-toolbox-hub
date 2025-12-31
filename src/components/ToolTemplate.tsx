@@ -255,6 +255,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                 />
 
                 {/* Embed Tool Feature - NEW */}
+                {/* Embed Tool Feature - Disabled for stability
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center">
@@ -301,6 +302,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                     </Dialog>
                   </CardContent>
                 </Card>
+                */}
 
                 {/* Tool Info */}
                 <Card>
