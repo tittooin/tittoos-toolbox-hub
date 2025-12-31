@@ -418,28 +418,18 @@ const Game2048 = () => {
                             onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
                         >
-                            {/* Grid Background */}
-                            {Array(16).fill(0).map((_, i) => (
-                                <div key={i} className="bg-gray-800/30 rounded-lg w-full h-full" />
-                            ))}
-
-                            {/* Active Tiles */}
+                            {/* Unified Grid Rendering for Perfect Alignment */}
                             {grid.map((row, r) => row.map((val, c) => (
-                                val > 0 && (
-                                    <div
-                                        key={`${r}-${c}-${val}`} // Simple key to force re-render on move/merge
-                                        className={`absolute transition-all duration-200 ease-in-out ${getTileStyle(val)}
-                                            w-[calc(25%-6px)] h-[calc(25%-6px)] rounded-lg flex items-center justify-center
-                                            text-2xl font-bold shadow-lg select-none
-                                        `}
-                                        style={{
-                                            top: `calc(${r * 25}% + 5px)`,
-                                            left: `calc(${c * 25}% + 5px)`,
-                                        }}
-                                    >
-                                        {val}
-                                    </div>
-                                )
+                                <div
+                                    key={`${r}-${c}`}
+                                    className="relative w-full h-full bg-gray-800/30 rounded-lg flex items-center justify-center"
+                                >
+                                    {val > 0 && (
+                                        <div className={`${getTileStyle(val)} w-full h-full rounded-lg flex items-center justify-center text-3xl font-bold shadow-lg select-none animate-in zoom-in duration-200`}>
+                                            {val}
+                                        </div>
+                                    )}
+                                </div>
                             )))}
 
                             {/* Overlays */}
