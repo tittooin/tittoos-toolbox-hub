@@ -244,6 +244,14 @@ const App = () => (
                 <Route path="/tools/text-to-handwriting" element={<TextToHandwriting />} />
                 <Route path="/tools/number-flow" element={<NumberFlow />} />
 
+                {/* Generator Tools */}
+const PasswordGenerator = lazy(() => import("./pages/tools/PasswordGenerator"));
+const QRGenerator = lazy(() => import("./pages/tools/QRGenerator"));
+const UUIDGenerator = lazy(() => import("./pages/tools/UUIDGenerator"));
+const LoremGenerator = lazy(() => import("./pages/tools/LoremGenerator"));
+const HashGenerator = lazy(() => import("./pages/tools/HashGenerator"));
+const BarcodeGenerator = lazy(() => import("./pages/tools/BarcodeGenerator"));
+
                 {/* AI Social Media Tools */}
                 <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
                 <Route path="/tools/ai-hashtag-generator" element={<AIHashtagGenerator />} />
