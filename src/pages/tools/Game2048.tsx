@@ -11,10 +11,15 @@ type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 class SoundManager {
     private ctx: AudioContext | null = null;
     private enabled: boolean = true;
+    private applauseAudio: HTMLAudioElement | null = null;
 
     constructor() {
         try {
             this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            // Preload Applause Sound from GitHub Raw
+            this.applauseAudio = new Audio('https://raw.githubusercontent.com/WoofJS/docs/master/sounds/applause.mp3');
+            this.applauseAudio.volume = 0.8;
+            this.applauseAudio.load();
         } catch (e) {
             console.error("AudioContext not supported");
         }
@@ -35,85 +40,61 @@ class SoundManager {
         osc.type = type;
         osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
         gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
         osc.stop(this.ctx.currentTime + duration);
     }
 
-    // Single clap sound (filtered noise burst)
-    private playClap(time: number) {
-        if (!this.enabled || !this.ctx) return;
-        const bufferSize = this.ctx.sampleRate * 0.1; // 100ms clap
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-
-        for (let i = 0; i < bufferSize; i++) {
-            // Decaying noise
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
-        }
-
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-
-        // Bandpass filter to make it sound like a hand clap (around 800-1200Hz)
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.value = 1000 + Math.random() * 200;
-        filter.Q.value = 1;
-
-        const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.7, time);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
-        noise.start(time);
-    }
-
     move() { this.playTone(150, 'sine', 0.1, 0.05); }
 
     merge(value: number) {
         if (!this.enabled || !this.ctx) return;
-        this.playClap(this.ctx.currentTime); // Single clap for merge
-        this.playTone(value * 10 + 400, 'sine', 0.1, 0.1);
+
+        // "Pop" Sound (Sine sweep) - cleaner than "tuk" noise
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.1); // Quick up-sweep
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.1);
+
+        // Musical Chime
+        this.playTone(value * 10 + 400, 'sine', 0.15, 0.1);
     }
 
     newRecord() {
-        if (!this.enabled || !this.ctx) return;
+        if (!this.enabled) return;
 
-        // Simulate a crowd clapping (Applause)
-        const now = this.ctx.currentTime;
-        // 30 claps over 2 seconds with random variation to sound like a crowd
-        for (let i = 0; i < 30; i++) {
-            const offset = Math.random() * 2;
-            this.playClap(now + offset);
+        // Play Real Applause MP3
+        if (this.applauseAudio) {
+            this.applauseAudio.currentTime = 0;
+            this.applauseAudio.play().catch(e => console.error("Audio play failed", e));
         }
 
-        // Cheering whistles (Sine slides)
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.linearRampToValueAtTime(1200, now + 0.3); // Tweet up
-        osc.frequency.linearRampToValueAtTime(800, now + 0.6);  // Tweet down
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.6);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.6);
+        // Celebration Fanfare Overlay
+        if (this.ctx) {
+            [440, 554, 659, 880, 1108].forEach((f, i) => {
+                setTimeout(() => this.playTone(f, 'triangle', 0.3, 0.2), i * 80);
+            });
+        }
     }
 
     win() {
-        if (!this.enabled || !this.ctx) return;
-        this.newRecord(); // Reuse applause
-        // Fanfare
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((f, i) => {
-            setTimeout(() => this.playTone(f, 'square', 0.2, 0.15), i * 150);
-        });
+        if (!this.enabled) return;
+        this.newRecord();
+
+        if (this.ctx) {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((f, i) => {
+                setTimeout(() => this.playTone(f, 'square', 0.2, 0.15), i * 150 + 500);
+            });
+        }
     }
 
     gameOver() {
@@ -132,7 +113,7 @@ const Game2048 = () => {
     const [history, setHistory] = useState<{ grid: number[][], score: number }[]>([]);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [emojis, setEmojis] = useState<{ id: number, x: number, y: number, text: string }[]>([]);
-    const [showCelebration, setShowCelebration] = useState(false); // Full screen celebration state
+    const [showCelebration, setShowCelebration] = useState(false);
     const [recentScores, setRecentScores] = useState<number[]>([]);
     const soundManager = useRef<SoundManager | null>(null);
     const hasBeatenBest = useRef(false);
@@ -380,11 +361,11 @@ const Game2048 = () => {
 
     return (
         <ToolTemplate
-            title="2048 Neon v2.3 - Applause"
+            title="2048 Neon v2.4 - Real Applause"
             description="Experience the classic puzzle game with a futuristic neon look. Join the glowing tiles to reach 2048!"
         >
             <Helmet>
-                <title>2048 Neon v2.3 - Play Free Online Logic Game | Axevora</title>
+                <title>2048 Neon v2.4 - Play Free Online Logic Game | Axevora</title>
                 <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 
@@ -522,5 +503,3 @@ const Game2048 = () => {
         </ToolTemplate>
     );
 };
-
-export default Game2048;
