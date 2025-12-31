@@ -3,7 +3,9 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RefreshCw, Trophy, Undo2, Volume2, VolumeX } from 'lucide-react';
-import ToolTemplate from '../../components/ToolTemplate';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+// import ToolTemplate from '../../components/ToolTemplate';
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 
@@ -365,146 +367,155 @@ const Game2048 = () => {
     };
 
     return (
-        <ToolTemplate
-            title="2048 Neon v2.8 - Debug Mode"
-            description="Experience the classic puzzle game with a futuristic neon look. Optimized for performance."
-        >
-            <Helmet>
-                <title>2048 Neon v2.8 - Play Free Online Logic Game | Axevora</title>
-                <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
-            </Helmet>
+        <div className="min-h-screen bg-background flex flex-col">
+            <Header />
 
-            <div className="max-w-md mx-auto space-y-6">
-                <div className="flex justify-between items-center gap-2">
-                    <div className="flex gap-2">
-                        <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Score</p>
-                            <p className="text-xl font-bold text-white shadow-cyan-500/50">{score}</p>
-                        </div>
-                        <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Best</p>
-                            <p className="text-xl font-bold text-white">{bestScore}</p>
-                        </div>
+            <main className="flex-grow container mx-auto px-4 py-8">
+                <Helmet>
+                    <title>2048 Neon v2.9 - Native Mode | Axevora</title>
+                    <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals. Native Mode for stability." />
+                </Helmet>
+
+                <div className="max-w-md mx-auto space-y-6">
+                    {/* Header Section */}
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-2">2048 NEON</h1>
+                        <p className="text-sm text-gray-400">v2.9 Native Mode (No Overlays)</p>
                     </div>
 
-                    <div className="flex gap-2">
-                        <Button onClick={undo} variant="outline" size="icon" disabled={history.length === 0 || gameOver} className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
-                            <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button onClick={toggleSound} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
-                            {soundEnabled ? <Volume2 className="w-5 h-5 text-green-400" /> : <VolumeX className="w-5 h-5 text-red-400" />}
-                        </Button>
-                        <Button onClick={startNewGame} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
-                            <RefreshCw className="w-5 h-5" />
-                        </Button>
-                    </div>
-                </div>
-
-                <div
-                    className="relative w-full max-w-[350px] mx-auto aspect-square bg-gray-900 rounded-xl p-3 border border-white/20 shadow-2xl overflow-hidden touch-none select-none"
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                >
-                    {/* Floating Emojis on Merge */}
-                    {emojis.map(e => (
-                        <div
-                            key={e.id}
-                            className="absolute z-50 text-4xl animate-[bounce_1s_infinite] transition-opacity duration-1000 pointer-events-none"
-                            style={{
-                                top: `calc(${e.y * 25 + 10}%)`,
-                                left: `calc(${e.x * 25 + 10}%)`
-                            }}
-                        >
-                            {e.text}
-                        </div>
-                    ))}
-
-                    {/* Full Screen Celebration Overlay */}
-                    {showCelebration && (
-                        <div className="absolute inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden">
-                            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm animate-in fade-in duration-300" />
-                            <div className="relative z-10 flex flex-col items-center animate-in zoom-in-50 duration-500">
-                                <h2 className="text-5xl font-black text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,1)] animate-bounce text-center leading-tight">
-                                    NEW<br />BEST!
-                                </h2>
-                                <div className="text-6xl animate-pulse mt-4">👏 🏆 👏</div>
+                    <div className="flex justify-between items-center gap-2">
+                        <div className="flex gap-2">
+                            <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Score</p>
+                                <p className="text-xl font-bold text-white shadow-cyan-500/50">{score}</p>
                             </div>
-                            {/* Confetti Emojis */}
-                            {Array.from({ length: 20 }).map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="absolute text-4xl animate-[ping_1s_ease-in-out_infinite]"
-                                    style={{
-                                        top: `${Math.random() * 100}%`,
-                                        left: `${Math.random() * 100}%`,
-                                        animationDelay: `${Math.random() * 2}s`,
-                                        animationDuration: `${0.5 + Math.random()}s`
-                                    }}
-                                >
-                                    👏
-                                </div>
-                            ))}
+                            <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Best</p>
+                                <p className="text-xl font-bold text-white">{bestScore}</p>
+                            </div>
                         </div>
-                    )}
 
-                    {grid.map((row, r) => (
-                        row.map((val, c) => (
+                        <div className="flex gap-2">
+                            <Button onClick={undo} variant="outline" size="icon" disabled={history.length === 0 || gameOver} className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                                <Undo2 className="w-5 h-5" />
+                            </Button>
+                            <Button onClick={toggleSound} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                                {soundEnabled ? <Volume2 className="w-5 h-5 text-green-400" /> : <VolumeX className="w-5 h-5 text-red-400" />}
+                            </Button>
+                            <Button onClick={startNewGame} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                                <RefreshCw className="w-5 h-5" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div
+                        className="relative w-full max-w-[350px] mx-auto aspect-square bg-gray-900 rounded-xl p-3 border border-white/20 shadow-2xl overflow-hidden touch-none select-none"
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        {/* Floating Emojis on Merge */}
+                        {emojis.map(e => (
                             <div
-                                key={`bg-${r}-${c}`}
-                                className="absolute transition-all duration-200"
-                            />
-                        ))
-                    ))}
+                                key={e.id}
+                                className="absolute z-50 text-4xl animate-[bounce_1s_infinite] transition-opacity duration-1000 pointer-events-none"
+                                style={{
+                                    top: `calc(${e.y * 25 + 10}%)`,
+                                    left: `calc(${e.x * 25 + 10}%)`
+                                }}
+                            >
+                                {e.text}
+                            </div>
+                        ))}
 
-                    <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full relative z-10">
+                        {/* Full Screen Celebration Overlay */}
+                        {showCelebration && (
+                            <div className="absolute inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden">
+                                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm animate-in fade-in duration-300" />
+                                <div className="relative z-10 flex flex-col items-center animate-in zoom-in-50 duration-500">
+                                    <h2 className="text-5xl font-black text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,1)] animate-bounce text-center leading-tight">
+                                        NEW<br />BEST!
+                                    </h2>
+                                    <div className="text-6xl animate-pulse mt-4">👏 🏆 👏</div>
+                                </div>
+                                {/* Confetti Emojis */}
+                                {Array.from({ length: 20 }).map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className="absolute text-4xl animate-[ping_1s_ease-in-out_infinite]"
+                                        style={{
+                                            top: `${Math.random() * 100}%`,
+                                            left: `${Math.random() * 100}%`,
+                                            animationDelay: `${Math.random() * 2}s`,
+                                            animationDuration: `${0.5 + Math.random()}s`
+                                        }}
+                                    >
+                                        👏
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         {grid.map((row, r) => (
                             row.map((val, c) => (
                                 <div
-                                    key={`${r}-${c}`}
-                                    className={`${getTileStyle(val)} rounded-lg font-bold text-2xl md:text-3xl transition-all duration-200 transform ${val ? 'scale-100' : 'scale-0'} flex items-center justify-center`}
-                                >
-                                    {val !== 0 && val}
-                                </div>
+                                    key={`bg-${r}-${c}`}
+                                    className="absolute transition-all duration-200"
+                                />
                             ))
                         ))}
+
+                        <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full relative z-10">
+                            {grid.map((row, r) => (
+                                row.map((val, c) => (
+                                    <div
+                                        key={`${r}-${c}`}
+                                        className={`${getTileStyle(val)} rounded-lg font-bold text-2xl md:text-3xl transition-all duration-200 transform ${val ? 'scale-100' : 'scale-0'} flex items-center justify-center`}
+                                    >
+                                        {val !== 0 && val}
+                                    </div>
+                                ))
+                            ))}
+                        </div>
+
+                        {gameOver && !won && (
+                            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in fade-in">
+                                <h2 className="text-4xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">Game Over</h2>
+                                <Button onClick={startNewGame} className="bg-white text-black hover:bg-gray-200 font-bold px-8">Try Again</Button>
+                            </div>
+                        )}
+
+                        {won && (
+                            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in zoom-in">
+                                <Trophy className="w-16 h-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-bounce" />
+                                <h2 className="text-4xl font-bold text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">You Win!</h2>
+                                <p className="text-white mb-6">You reached 2048!</p>
+                                <div className="flex gap-3">
+                                    <Button onClick={() => setKeepPlaying(true)} variant="outline" className="border-white/20 text-white hover:bg-white/10">Keep Playing</Button>
+                                    <Button onClick={startNewGame} className="bg-yellow-500 text-black hover:bg-yellow-400 font-bold">New Game</Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    {gameOver && !won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in fade-in">
-                            <h2 className="text-4xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">Game Over</h2>
-                            <Button onClick={startNewGame} className="bg-white text-black hover:bg-gray-200 font-bold px-8">Try Again</Button>
-                        </div>
-                    )}
-
-                    {won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in zoom-in">
-                            <Trophy className="w-16 h-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-bounce" />
-                            <h2 className="text-4xl font-bold text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">You Win!</h2>
-                            <p className="text-white mb-6">You reached 2048!</p>
-                            <div className="flex gap-3">
-                                <Button onClick={() => setKeepPlaying(true)} variant="outline" className="border-white/20 text-white hover:bg-white/10">Keep Playing</Button>
-                                <Button onClick={startNewGame} className="bg-yellow-500 text-black hover:bg-yellow-400 font-bold">New Game</Button>
+                    <Card className="bg-neutral-900 border-white/10 mt-6">
+                        <CardContent className="p-4">
+                            <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                                <Trophy className="w-4 h-4 text-yellow-500" />
+                                Recent History
+                            </h3>
+                            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
+                                {recentScores.length > 0 ? recentScores.map((s, i) => (
+                                    <div key={i} className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-sm text-gray-300 whitespace-nowrap">
+                                        Game {i + 1}: <span className="text-white font-bold">{s}</span>
+                                    </div>
+                                )) : <span className="text-muted-foreground text-sm">Play a game to see history!</span>}
                             </div>
-                        </div>
-                    )}
+                        </CardContent>
+                    </Card>
                 </div>
+            </main>
 
-                <Card className="bg-neutral-900 border-white/10 mt-6">
-                    <CardContent className="p-4">
-                        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-                            <Trophy className="w-4 h-4 text-yellow-500" />
-                            Recent History
-                        </h3>
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
-                            {recentScores.length > 0 ? recentScores.map((s, i) => (
-                                <div key={i} className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-sm text-gray-300 whitespace-nowrap">
-                                    Game {i + 1}: <span className="text-white font-bold">{s}</span>
-                                </div>
-                            )) : <span className="text-muted-foreground text-sm">Play a game to see history!</span>}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        </ToolTemplate>
+            <Footer />
+        </div>
     );
 };
