@@ -1,10 +1,21 @@
 
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const trustpilotRef = useRef(null);
+
+  useEffect(() => {
+    // Manually load Trustpilot widget when component mounts
+    // @ts-ignore
+    if (window.Trustpilot && trustpilotRef.current) {
+      // @ts-ignore
+      window.Trustpilot.loadFromElement(trustpilotRef.current, true);
+    }
+  }, []);
 
   return (
     <footer className="bg-background text-foreground">
@@ -173,7 +184,7 @@ const Footer = () => {
 
         <div className="border-t border-border mt-8 pt-8 text-center space-y-2">
           <p className="text-muted-foreground">
-            © {currentYear} Axevora. All rights reserved. Built with ❤️ for productivity.
+            © {currentYear} Axevora. All rights reserved. Built for productivity.
           </p>
           <div className="flex justify-center gap-4 text-xs text-muted-foreground">
             <span>Icons by lucide-react</span>
@@ -190,7 +201,7 @@ const Footer = () => {
             </a>
 
             {/* TrustBox widget - Review Collector */}
-            <div className="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="694f95971d2da56aaca4f247" data-style-height="52px" data-style-width="100%" data-token="eef57abb-5d7c-4be7-a3c1-62a5bdad4ab6">
+            <div ref={trustpilotRef} className="trustpilot-widget" data-locale="en-US" data-template-id="56278e9abfbbba0bdcd568bc" data-businessunit-id="694f95971d2da56aaca4f247" data-style-height="52px" data-style-width="100%" data-token="eef57abb-5d7c-4be7-a3c1-62a5bdad4ab6">
               <a href="https://www.trustpilot.com/review/axevora.com" target="_blank" rel="noopener">Trustpilot</a>
             </div>
             {/* End TrustBox widget */}
