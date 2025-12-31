@@ -72,6 +72,14 @@ const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
 const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
 
 // Generator Tools
+const PasswordGenerator = lazy(() => import("./pages/tools/PasswordGenerator"));
+const QRGenerator = lazy(() => import("./pages/tools/QRGenerator"));
+const UUIDGenerator = lazy(() => import("./pages/tools/UUIDGenerator"));
+const LoremGenerator = lazy(() => import("./pages/tools/LoremGenerator"));
+const HashGenerator = lazy(() => import("./pages/tools/HashGenerator"));
+const BarcodeGenerator = lazy(() => import("./pages/tools/BarcodeGenerator"));
+
+// AI Social Media Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
 const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
