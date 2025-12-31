@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gamepad2, Move, Undo2, Volume2, VolumeX } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { RefreshCw, Trophy, Undo2, Volume2, VolumeX } from 'lucide-react';
 import ToolTemplate from '../../components/ToolTemplate';
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
@@ -19,12 +20,7 @@ class SoundManager {
         }
     }
 
-    setEnabled(enabled: boolean) {
-        this.enabled = enabled;
-        if (enabled && this.ctx?.state === 'suspended') {
-            this.ctx.resume();
-        }
-    }
+    setEnabled(enabled: boolean) { this.enabled = enabled; }
 
     private playTone(freq: number, type: OscillatorType, duration: number, vol: number = 0.1) {
         if (!this.enabled || !this.ctx) return;
@@ -42,26 +38,36 @@ class SoundManager {
 
     move() { this.playTone(150, 'sine', 0.1, 0.05); }
     merge(value: number) {
-        // Satisfying "pop" sound
-        const baseFreq = 200;
-        const semitones = Math.log2(value) * 3;
-        const freq = baseFreq * Math.pow(2, semitones / 12);
-        this.playTone(freq, 'triangle', 0.1, 0.15);
-        setTimeout(() => this.playTone(freq * 1.5, 'sine', 0.1, 0.1), 50); // Chord effect
+        // "Clap" Sound Effect for Merge
+        if (!this.enabled || !this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 0.1; // 100ms
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3)); // Decaying noise
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+        noise.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start();
     }
     win() {
         if (!this.enabled || !this.ctx) return;
-        // "Applause" / Fanfare effect
+        // Fanfare
         const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
         notes.forEach((f, i) => {
             setTimeout(() => {
                 this.playTone(f, 'square', 0.2, 0.1);
-                this.playTone(f * 1.01, 'sawtooth', 0.2, 0.05); // Detune for "chorus" effect
+                this.playTone(f * 1.01, 'sawtooth', 0.2, 0.05);
             }, i * 150);
         });
-        // Simulated "Cheer" noise (white noise burst)
+        // Applause
         setTimeout(() => {
-            const bufferSize = this.ctx!.sampleRate * 2; // 2 seconds
+            const bufferSize = this.ctx!.sampleRate * 2;
             const buffer = this.ctx!.createBuffer(1, bufferSize, this.ctx!.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
@@ -92,6 +98,8 @@ const Game2048 = () => {
     const [keepPlaying, setKeepPlaying] = useState(false);
     const [history, setHistory] = useState<{ grid: number[][], score: number }[]>([]);
     const [soundEnabled, setSoundEnabled] = useState(true);
+    const [emojis, setEmojis] = useState<{ id: number, x: number, y: number, text: string }[]>([]);
+    const [recentScores, setRecentScores] = useState<number[]>([]);
     const soundManager = useRef<SoundManager | null>(null);
 
     // Initialize game
@@ -99,8 +107,21 @@ const Game2048 = () => {
         soundManager.current = new SoundManager();
         const savedBest = localStorage.getItem('2048-best-score');
         if (savedBest) setBestScore(parseInt(savedBest));
+
+        const savedRecent = localStorage.getItem('2048-recent-scores');
+        if (savedRecent) setRecentScores(JSON.parse(savedRecent));
+
         startNewGame();
     }, []);
+
+    // Save Score Logic
+    useEffect(() => {
+        if (gameOver) {
+            const newRecent = [score, ...recentScores].slice(0, 5); // Keep last 5
+            setRecentScores(newRecent);
+            localStorage.setItem('2048-recent-scores', JSON.stringify(newRecent));
+        }
+    }, [gameOver]);
 
     const toggleSound = () => {
         const newState = !soundEnabled;
@@ -151,13 +172,19 @@ const Game2048 = () => {
         setWon(false); // Reset win state if they undo back
     };
 
+    const triggerEmoji = (r: number, c: number) => {
+        const id = Date.now() + Math.random();
+        setEmojis(prev => [...prev, { id, x: c, y: r, text: '👏' }]);
+        setTimeout(() => setEmojis(prev => prev.filter(e => e.id !== id)), 1000);
+    };
+
     const move = useCallback((direction: Direction) => {
         if (gameOver || (won && !keepPlaying)) return;
 
         let newGrid = grid.map(row => [...row]);
         let moved = false;
         let scoreToAdd = 0;
-        let mergedValue = 0;
+        let mergedPositions: { r: number, c: number }[] = [];
 
         const rotateGrid = (g: number[][]) => g[0].map((_, i) => g.map(row => row[i]).reverse());
         const rotateGridCounter = (g: number[][]) => g[0].map((_, i) => g.map(row => row[g.length - 1 - i]));
@@ -174,9 +201,9 @@ const Game2048 = () => {
                 if (row[c] === row[c + 1]) {
                     row[c] *= 2;
                     scoreToAdd += row[c];
-                    mergedValue = Math.max(mergedValue, row[c]);
                     row.splice(c + 1, 1);
                     moved = true; // Merge happened
+                    mergedPositions.push({ r, c });
                 }
             }
             while (row.length < 4) row.push(0);
@@ -185,14 +212,28 @@ const Game2048 = () => {
         }
 
         // Restore orientation
-        if (direction === 'RIGHT') newGrid = newGrid.map(row => row.reverse());
-        if (direction === 'UP') newGrid = rotateGrid(newGrid);
-        if (direction === 'DOWN') newGrid = rotateGridCounter(newGrid);
+        if (direction === 'RIGHT') {
+            newGrid = newGrid.map(row => row.reverse());
+            mergedPositions = mergedPositions.map(p => ({ ...p, c: 3 - p.c }));
+        }
+        if (direction === 'UP') {
+            newGrid = rotateGrid(newGrid);
+            mergedPositions = mergedPositions.map(p => ({ r: p.c, c: 3 - p.r }));
+        }
+        if (direction === 'DOWN') {
+            newGrid = rotateGridCounter(newGrid);
+            mergedPositions = mergedPositions.map(p => ({ r: 3 - p.c, c: p.r }));
+        }
 
         if (moved) {
             saveToHistory();
             soundManager.current?.move();
-            if (mergedValue > 0) soundManager.current?.merge(mergedValue);
+
+            if (mergedPositions.length > 0) {
+                soundManager.current?.merge(2);
+                mergedPositions.forEach(pos => triggerEmoji(pos.r, pos.c));
+            }
+
             if (navigator.vibrate) navigator.vibrate(20); // Haptic feedback
 
             addRandomTile(newGrid);
@@ -302,7 +343,6 @@ const Game2048 = () => {
             </Helmet>
 
             <div className="max-w-md mx-auto space-y-6">
-                {/* Header Stats */}
                 <div className="flex justify-between items-center gap-2">
                     <div className="flex gap-2">
                         <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
@@ -328,90 +368,81 @@ const Game2048 = () => {
                     </div>
                 </div>
 
-                {/* Game Grid */}
                 <div
-                    className="relative bg-black p-4 rounded-2xl aspect-square touch-none select-none border border-white/5 shadow-2xl shadow-blue-900/20"
+                    className="relative w-full max-w-[350px] mx-auto aspect-square bg-gray-900 rounded-xl p-3 border border-white/20 shadow-2xl overflow-hidden touch-none select-none"
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {/* Grid Background Lines to simulate slots */}
-                    <div className="absolute inset-4 grid grid-cols-4 grid-rows-4 gap-3 z-0 pointer-events-none">
-                        {Array(16).fill(0).map((_, i) => (
-                            <div key={i} className="bg-white/5 rounded-lg border border-white/5"></div>
-                        ))}
-                    </div>
+                    {emojis.map(e => (
+                        <div
+                            key={e.id}
+                            className="absolute z-50 text-4xl animate-[bounce_1s_infinite] transition-opacity duration-1000 pointer-events-none"
+                            style={{
+                                top: `calc(${e.y * 25 + 10}%)`,
+                                left: `calc(${e.x * 25 + 10}%)`
+                            }}
+                        >
+                            {e.text}
+                        </div>
+                    ))}
 
-                    <div className="grid grid-cols-4 grid-rows-4 gap-3 h-full relative z-10">
+                    {grid.map((row, r) => (
+                        row.map((val, c) => (
+                            <div
+                                key={`bg-${r}-${c}`}
+                                className="absolute transition-all duration-200"
+                            />
+                        ))
+                    ))}
+
+                    <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
                         {grid.map((row, r) => (
-                            row.map((cell, c) => (
+                            row.map((val, c) => (
                                 <div
                                     key={`${r}-${c}`}
-                                    className={`rounded-lg flex items-center justify-center text-3xl md:text-4xl font-black transition-all duration-200 transform ${getTileStyle(cell)} ${cell > 0 ? 'scale-100' : 'scale-0'}`}
+                                    className={`${getTileStyle(val)} rounded-lg font-bold text-2xl md:text-3xl transition-all duration-200 transform ${val ? 'scale-100' : 'scale-0'} flex items-center justify-center`}
                                 >
-                                    {cell !== 0 && cell}
+                                    {val !== 0 && val}
                                 </div>
                             ))
                         ))}
                     </div>
 
-                    {/* Overlays */}
-                    {(gameOver || (won && !keepPlaying)) && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl z-20 animate-in fade-in duration-500">
-                            {won ? (
-                                <Trophy className="w-24 h-24 text-yellow-400 mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
-                            ) : (
-                                <Gamepad2 className="w-24 h-24 text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
-                            )}
-                            <h2 className={`text-5xl font-black mb-2 ${won ? 'text-yellow-400' : 'text-red-500'} tracking-tighter drop-shadow-lg`}>
-                                {won ? 'VICTORY!' : 'GAME OVER'}
-                            </h2>
-                            <p className="text-gray-300 text-lg mb-8">Final Score: <span className="text-white font-bold">{score}</span></p>
+                    {gameOver && !won && (
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-20 animate-in fade-in">
+                            <h2 className="text-4xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">Game Over</h2>
+                            <Button onClick={startNewGame} className="bg-white text-black hover:bg-gray-200 font-bold px-8">Try Again</Button>
+                        </div>
+                    )}
 
-                            <div className="flex flex-col gap-3 w-48">
-                                <Button size="lg" onClick={startNewGame} className="w-full bg-white text-black hover:bg-gray-200 font-bold">
-                                    {won ? 'Play Again' : 'Try Again'}
-                                </Button>
-                                {won && (
-                                    <Button variant="outline" size="lg" onClick={() => setKeepPlaying(true)} className="w-full border-white/20 hover:bg-white/10 text-white">
-                                        Keep Playing
-                                    </Button>
-                                )}
+                    {won && (
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-20 animate-in zoom-in">
+                            <Trophy className="w-16 h-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-bounce" />
+                            <h2 className="text-4xl font-bold text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">You Win!</h2>
+                            <p className="text-white mb-6">You reached 2048!</p>
+                            <div className="flex gap-3">
+                                <Button onClick={() => setKeepPlaying(true)} variant="outline" className="border-white/20 text-white hover:bg-white/10">Keep Playing</Button>
+                                <Button onClick={startNewGame} className="bg-yellow-500 text-black hover:bg-yellow-400 font-bold">New Game</Button>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Controls Hint */}
-                <div className="grid grid-cols-3 gap-4 text-center text-muted-foreground text-xs font-medium opacity-60">
-                    <div className="flex flex-col items-center gap-1">
-                        <div className="flex gap-1">
-                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowUp className="w-3 h-3" /></span>
+                <Card className="bg-neutral-900 border-white/10 mt-6">
+                    <CardContent className="p-4">
+                        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                            <Trophy className="w-4 h-4 text-yellow-500" />
+                            Recent History
+                        </h3>
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
+                            {recentScores.length > 0 ? recentScores.map((s, i) => (
+                                <div key={i} className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-sm text-gray-300 whitespace-nowrap">
+                                    Game {i + 1}: <span className="text-white font-bold">{s}</span>
+                                </div>
+                            )) : <span className="text-muted-foreground text-sm">Play a game to see history!</span>}
                         </div>
-                        <div className="flex gap-1">
-                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowLeft className="w-3 h-3" /></span>
-                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowDown className="w-3 h-3" /></span>
-                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowRight className="w-3 h-3" /></span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center">
-                        <span className="text-base font-bold">OR</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center gap-2">
-                        <Move className="w-6 h-6" />
-                        <span>Swipe</span>
-                    </div>
-                </div>
-
-                {/* Instructions */}
-                <div className="prose prose-invert max-w-none text-sm bg-neutral-900/50 p-4 rounded-xl border border-white/5">
-                    <h3 className="text-white mt-0">How to Play</h3>
-                    <p className="text-gray-400">
-                        Use your <strong>arrow keys</strong> or <strong>swipe</strong> to move the glowing tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
-                    </p>
-                    <p className="text-gray-400 mb-0">
-                        Join the numbers to create the legendary <strong>2048 tile!</strong>
-                    </p>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </ToolTemplate>
     );
