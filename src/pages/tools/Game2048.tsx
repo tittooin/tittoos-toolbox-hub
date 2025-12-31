@@ -201,9 +201,7 @@ const Game2048 = () => {
     };
 
     const triggerEmoji = (r: number, c: number) => {
-        const id = Date.now() + Math.random();
-        setEmojis(prev => [...prev, { id, x: c, y: r, text: '👏' }]);
-        setTimeout(() => setEmojis(prev => prev.filter(e => e.id !== id)), 1000);
+        // Disabled for visual stability
     };
 
     const move = useCallback((direction: Direction) => {
