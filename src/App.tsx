@@ -23,17 +23,17 @@ const Author = lazy(() => import("./pages/Author"));
 const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
 
 // Blog Categories
-const AnalyzersCategoryPage = lazy(() => import("./pages/blog/AnalyzersCategoryPage"));
-const CalculatorsCategoryPage = lazy(() => import("./pages/blog/CalculatorsCategoryPage"));
-const FormattersCategoryPage = lazy(() => import("./pages/blog/FormattersCategoryPage"));
-const AIToolsCategoryPage = lazy(() => import("./pages/blog/AIToolsCategoryPage"));
-const ValidatorsCategoryPage = lazy(() => import("./pages/blog/ValidatorsCategoryPage"));
-const ConvertersCategoryPage = lazy(() => import("./pages/blog/ConvertersCategoryPage"));
-const GeneratorsCategoryPage = lazy(() => import("./pages/blog/GeneratorsCategoryPage"));
-const EditorsCategoryPage = lazy(() => import("./pages/blog/EditorsCategoryPage"));
-const GamesCategoryPage = lazy(() => import("./pages/blog/GamesCategoryPage"));
-const PDFCategoryPage = lazy(() => import("./pages/blog/PDFCategoryPage"));
-const DevToolsCategoryPage = lazy(() => import("./pages/blog/DevToolsCategoryPage"));
+const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/AnalyzersCategoryPage"));
+const CalculatorsCategoryPage = lazy(() => import("./pages/blog-posts/CalculatorsCategoryPage"));
+const FormattersCategoryPage = lazy(() => import("./pages/blog-posts/FormattersCategoryPage"));
+const AIToolsCategoryPage = lazy(() => import("./pages/blog-posts/AIToolsCategoryPage"));
+const ValidatorsCategoryPage = lazy(() => import("./pages/blog-posts/ValidatorsCategoryPage"));
+const ConvertersCategoryPage = lazy(() => import("./pages/blog-posts/ConvertersCategoryPage"));
+const GeneratorsCategoryPage = lazy(() => import("./pages/blog-posts/GeneratorsCategoryPage"));
+const EditorsCategoryPage = lazy(() => import("./pages/blog-posts/EditorsCategoryPage"));
+const GamesCategoryPage = lazy(() => import("./pages/blog-posts/GamesCategoryPage"));
+const PDFCategoryPage = lazy(() => import("./pages/blog-posts/PDFCategoryPage"));
+const DevToolsCategoryPage = lazy(() => import("./pages/blog-posts/DevToolsCategoryPage"));
 
 // Converter Tools
 const PDFConverter = lazy(() => import("./pages/tools/PDFConverter"));
