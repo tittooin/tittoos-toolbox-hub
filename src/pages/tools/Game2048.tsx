@@ -23,8 +23,6 @@ class SoundManager {
     setEnabled(enabled: boolean) { this.enabled = enabled; }
 
     resizeAudioContext() {
-        // Resume context if suspended (browser requirements)
-        // This is crucial for fixing the "sound not working" issue on some browsers
         if (this.ctx && this.ctx.state === 'suspended') {
             this.ctx.resume().catch(console.error);
         }
@@ -44,83 +42,78 @@ class SoundManager {
         osc.stop(this.ctx.currentTime + duration);
     }
 
+    // Single clap sound (filtered noise burst)
+    private playClap(time: number) {
+        if (!this.enabled || !this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 0.1; // 100ms clap
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+            // Decaying noise
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        // Bandpass filter to make it sound like a hand clap (around 800-1200Hz)
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1000 + Math.random() * 200;
+        filter.Q.value = 1;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.7, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(time);
+    }
+
     move() { this.playTone(150, 'sine', 0.1, 0.05); }
 
     merge(value: number) {
         if (!this.enabled || !this.ctx) return;
-
-        // Louder "Clap" Sound equivalent (Noise burst)
-        const bufferSize = this.ctx.sampleRate * 0.15; // 150ms
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const noiseGain = this.ctx.createGain();
-        // Boost volume significantly
-        noiseGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
-        noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-        noise.connect(noiseGain);
-        noiseGain.connect(this.ctx.destination);
-        noise.start();
-
-        // Little chime overlay
+        this.playClap(this.ctx.currentTime); // Single clap for merge
         this.playTone(value * 10 + 400, 'sine', 0.1, 0.1);
     }
 
     newRecord() {
         if (!this.enabled || !this.ctx) return;
-        // Distinct "New Record" Applause (Higher pitch/faster)
-        const bufferSize = this.ctx.sampleRate * 1.5;
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * 0.6; // Slightly different timbre
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const noiseGain = this.ctx.createGain();
-        noiseGain.gain.setValueAtTime(0.6, this.ctx.currentTime);
-        noiseGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 1.5);
-        noise.connect(noiseGain);
-        noiseGain.connect(this.ctx.destination);
-        noise.start();
 
-        // Celebration Tones (Major chord arpeggio)
-        [440, 554, 659, 880].forEach((f, i) => {
-            setTimeout(() => this.playTone(f, 'triangle', 0.2, 0.2), i * 100);
-        });
+        // Simulate a crowd clapping (Applause)
+        const now = this.ctx.currentTime;
+        // 30 claps over 2 seconds with random variation to sound like a crowd
+        for (let i = 0; i < 30; i++) {
+            const offset = Math.random() * 2;
+            this.playClap(now + offset);
+        }
+
+        // Cheering whistles (Sine slides)
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.linearRampToValueAtTime(1200, now + 0.3); // Tweet up
+        osc.frequency.linearRampToValueAtTime(800, now + 0.6);  // Tweet down
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.6);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.6);
     }
 
     win() {
         if (!this.enabled || !this.ctx) return;
+        this.newRecord(); // Reuse applause
         // Fanfare
-        const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((f, i) => {
-            setTimeout(() => {
-                this.playTone(f, 'square', 0.2, 0.1);
-                this.playTone(f * 1.01, 'sawtooth', 0.2, 0.05);
-            }, i * 150);
+            setTimeout(() => this.playTone(f, 'square', 0.2, 0.15), i * 150);
         });
-
-        // Long Applause
-        const applauseDuration = 2000; // 2s
-        const bufferSize = this.ctx.sampleRate * 2;
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * 0.5; // Quieter noise
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const noiseGain = this.ctx.createGain();
-        noiseGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-        noiseGain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 2);
-        noise.connect(noiseGain);
-        noiseGain.connect(this.ctx.destination);
-        noise.start();
     }
 
     gameOver() {
@@ -139,6 +132,7 @@ const Game2048 = () => {
     const [history, setHistory] = useState<{ grid: number[][], score: number }[]>([]);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [emojis, setEmojis] = useState<{ id: number, x: number, y: number, text: string }[]>([]);
+    const [showCelebration, setShowCelebration] = useState(false); // Full screen celebration state
     const [recentScores, setRecentScores] = useState<number[]>([]);
     const soundManager = useRef<SoundManager | null>(null);
     const hasBeatenBest = useRef(false);
@@ -184,6 +178,7 @@ const Game2048 = () => {
         setWon(false);
         setKeepPlaying(false);
         hasBeatenBest.current = false;
+        setShowCelebration(false);
     };
 
     const addRandomTile = (currentGrid: number[][]) => {
@@ -295,6 +290,9 @@ const Game2048 = () => {
                     // Trigger "New Record" applause ONLY if we haven't already celebrated this session
                     if (!hasBeatenBest.current && bestScore > 0) {
                         soundManager.current?.newRecord();
+                        // Trigger Full Screen Celebration
+                        setShowCelebration(true);
+                        setTimeout(() => setShowCelebration(false), 3000); // Hide after 3s
                         hasBeatenBest.current = true;
                     }
                 }
@@ -313,11 +311,11 @@ const Game2048 = () => {
         }
     }, [grid, gameOver, won, bestScore, keepPlaying]);
 
+    // ... (rest of standard functions)
     const checkWin = (g: number[][]) => {
         for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { if (g[r][c] === 2048) return true; } }
         return false;
     };
-
     const checkGameOver = (g: number[][]) => {
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
@@ -342,22 +340,14 @@ const Game2048 = () => {
 
     // Touch handling
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-
+    const handleTouchStart = (e: React.TouchEvent) => { setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY }); };
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (!touchStart) return;
         const touchEnd = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
         const dx = touchEnd.x - touchStart.x;
         const dy = touchEnd.y - touchStart.y;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT');
-        } else {
-            if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP');
-        }
+        if (Math.abs(dx) > Math.abs(dy)) { if (Math.abs(dx) > 30) move(dx > 0 ? 'RIGHT' : 'LEFT'); }
+        else { if (Math.abs(dy) > 30) move(dy > 0 ? 'DOWN' : 'UP'); }
         setTouchStart(null);
     };
 
@@ -390,11 +380,11 @@ const Game2048 = () => {
 
     return (
         <ToolTemplate
-            title="2048 Neon v2.2 - Best Score Clap"
+            title="2048 Neon v2.3 - Applause"
             description="Experience the classic puzzle game with a futuristic neon look. Join the glowing tiles to reach 2048!"
         >
             <Helmet>
-                <title>2048 Neon v2.2 - Play Free Online Logic Game | Axevora</title>
+                <title>2048 Neon v2.3 - Play Free Online Logic Game | Axevora</title>
                 <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 
@@ -429,6 +419,7 @@ const Game2048 = () => {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
+                    {/* Floating Emojis on Merge */}
                     {emojis.map(e => (
                         <div
                             key={e.id}
@@ -441,6 +432,34 @@ const Game2048 = () => {
                             {e.text}
                         </div>
                     ))}
+
+                    {/* Full Screen Celebration Overlay */}
+                    {showCelebration && (
+                        <div className="absolute inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm animate-in fade-in duration-300" />
+                            <div className="relative z-10 flex flex-col items-center animate-in zoom-in-50 duration-500">
+                                <h2 className="text-5xl font-black text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,1)] animate-bounce text-center leading-tight">
+                                    NEW<br />BEST!
+                                </h2>
+                                <div className="text-6xl animate-pulse mt-4">👏 🏆 👏</div>
+                            </div>
+                            {/* Confetti Emojis */}
+                            {Array.from({ length: 20 }).map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="absolute text-4xl animate-[ping_1s_ease-in-out_infinite]"
+                                    style={{
+                                        top: `${Math.random() * 100}%`,
+                                        left: `${Math.random() * 100}%`,
+                                        animationDelay: `${Math.random() * 2}s`,
+                                        animationDuration: `${0.5 + Math.random()}s`
+                                    }}
+                                >
+                                    👏
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
                     {grid.map((row, r) => (
                         row.map((val, c) => (
@@ -465,14 +484,14 @@ const Game2048 = () => {
                     </div>
 
                     {gameOver && !won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50 animate-in fade-in">
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in fade-in">
                             <h2 className="text-4xl font-bold text-red-500 mb-4 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">Game Over</h2>
                             <Button onClick={startNewGame} className="bg-white text-black hover:bg-gray-200 font-bold px-8">Try Again</Button>
                         </div>
                     )}
 
                     {won && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50 animate-in zoom-in">
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-[60] animate-in zoom-in">
                             <Trophy className="w-16 h-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-bounce" />
                             <h2 className="text-4xl font-bold text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">You Win!</h2>
                             <p className="text-white mb-6">You reached 2048!</p>
