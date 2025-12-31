@@ -361,11 +361,11 @@ const Game2048 = () => {
 
     return (
         <ToolTemplate
-            title="2048 Neon v2.4 - Real Applause"
-            description="Experience the classic puzzle game with a futuristic neon look. Join the glowing tiles to reach 2048!"
+            title="2048 Neon v2.5 - Final Audio"
+            description="Experience the classic puzzle game with a futuristic neon look. Real applause sound included!"
         >
             <Helmet>
-                <title>2048 Neon v2.4 - Play Free Online Logic Game | Axevora</title>
+                <title>2048 Neon v2.5 - Play Free Online Logic Game | Axevora</title>
                 <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 
