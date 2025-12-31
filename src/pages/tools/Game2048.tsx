@@ -384,13 +384,105 @@ const Game2048 = () => {
                         </h1>
                         <p className="text-gray-400 text-sm font-medium tracking-wider mt-1">NEON EDITION</p>
                     </div>
+                    <div className="flex gap-4">
+                        <div className="bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-800 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                            <span className="block text-xs text-gray-400 font-bold uppercase tracking-wider text-center">Score</span>
+                            <span className="block text-2xl font-bold text-white text-center">{score}</span>
+                        </div>
+                        <div className="bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-800 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                            <span className="block text-xs text-gray-400 font-bold uppercase tracking-wider text-center">Best</span>
+                            <span className="block text-2xl font-bold text-green-400 text-center">{bestScore}</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="p-4 bg-gray-900 rounded-lg text-center border border-gray-700">
-                    <h2 className="text-xl text-green-400 font-bold mb-2">GAME LOADING...</h2>
-                    <p className="text-gray-300">Checking UI Components...</p>
-                    <p className="text-xs text-gray-500 mt-2">If you see this, Header & Footer are SAFE.</p>
+                <div className="w-full flex justify-between mb-6">
+                    <Button onClick={startNewGame} variant="outline" className="bg-gray-900 border-gray-700 hover:bg-green-600 hover:border-green-500 hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(0,0,0,0.3)]">
+                        <RefreshCw className="mr-2 h-4 w-4" /> New Game
+                    </Button>
+                    <div className="flex gap-2">
+                        <Button onClick={toggleSound} variant="ghost" size="icon" className="text-gray-400 hover:text-green-400 hover:bg-gray-900/50">
+                            {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+                        </Button>
+                        <Button onClick={undo} variant="ghost" size="icon" className="text-gray-400 hover:text-blue-400 hover:bg-gray-900/50" disabled={history.length === 0 || gameOver}>
+                            <Undo2 className="h-5 w-5" />
+                        </Button>
+                    </div>
                 </div>
+
+                <Card className="w-full max-w-[400px] aspect-square bg-gray-900/90 border-gray-800 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative overflow-hidden backdrop-blur-sm rounded-2xl">
+                    <CardContent className="p-4 h-full">
+                        <div
+                            className="bg-gray-950/50 rounded-xl h-full w-full p-2 grid grid-cols-4 grid-rows-4 gap-2 relative touch-none"
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                        >
+                            {/* Grid Background */}
+                            {Array(16).fill(0).map((_, i) => (
+                                <div key={i} className="bg-gray-800/30 rounded-lg w-full h-full" />
+                            ))}
+
+                            {/* Active Tiles */}
+                            {grid.map((row, r) => row.map((val, c) => (
+                                val > 0 && (
+                                    <div
+                                        key={`${r}-${c}-${val}`} // Simple key to force re-render on move/merge
+                                        className={`absolute transition-all duration-200 ease-in-out ${getTileStyle(val)}
+                                            w-[calc(25%-6px)] h-[calc(25%-6px)] rounded-lg flex items-center justify-center
+                                            text-2xl font-bold shadow-lg select-none
+                                        `}
+                                        style={{
+                                            top: `calc(${r * 25}% + 5px)`,
+                                            left: `calc(${c * 25}% + 5px)`,
+                                        }}
+                                    >
+                                        {val}
+                                    </div>
+                                )
+                            )))}
+
+                            {/* Overlays */}
+                            {gameOver && (
+                                <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 animate-in fade-in duration-500 rounded-xl">
+                                    <h2 className="text-4xl font-black text-red-500 mb-2 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">GAME OVER</h2>
+                                    <p className="text-gray-300 mb-6 font-medium">Final Score: {score}</p>
+                                    <Button onClick={startNewGame} size="lg" className="bg-green-600 hover:bg-green-500 text-white border-0 shadow-[0_0_20px_rgba(34,197,94,0.4)] animate-pulse">
+                                        Try Again
+                                    </Button>
+                                </div>
+                            )}
+
+                            {won && !keepPlaying && (
+                                <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50 animate-in fade-in duration-500 rounded-xl">
+                                    <Trophy className="h-16 w-16 text-yellow-400 mb-4 drop-shadow-[0_0_20px_rgba(250,204,21,0.6)] animate-bounce" />
+                                    <h2 className="text-4xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">YOU WIN!</h2>
+                                    <div className="flex gap-4 mt-6">
+                                        <Button onClick={() => setKeepPlaying(true)} variant="outline" className="border-green-500 text-green-400 hover:bg-green-500/10">
+                                            Keep Going
+                                        </Button>
+                                        <Button onClick={startNewGame} className="bg-green-600 hover:bg-green-500 text-white border-0 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+                                            New Game
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Instructions */}
+                <div className="mt-8 text-center text-gray-500 text-sm font-medium">
+                    <p>Use <span className="text-gray-300 font-bold">Arrow Keys</span> or <span className="text-gray-300 font-bold">Swipe</span> to move tiles</p>
+                    <p className="mt-1">Join numbers to get to <span className="text-green-400 font-bold">2048</span>!</p>
+                </div>
+
+                {/* Emojis & Celebration (Visual Effects) */}
+                {emojis.map(e => (
+                    <div key={e.id} className="absolute pointer-events-none animate-bounce text-4xl z-50 transition-opacity duration-1000"
+                        style={{ left: `calc(50% - 150px + ${e.x * 75}px)`, top: `calc(200px + ${e.y * 75}px)`, opacity: 0 }}>
+                        {e.text}
+                    </div>
+                ))}
             </div>
 
             <Footer />
