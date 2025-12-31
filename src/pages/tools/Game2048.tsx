@@ -1,11 +1,59 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { RefreshCw, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gamepad2, Move } from 'lucide-react';
+import { RefreshCw, Trophy, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Gamepad2, Move, Undo2, Volume2, VolumeX } from 'lucide-react';
 import ToolTemplate from '../../components/ToolTemplate';
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+
+// Simple Audio Synthesizer for Game Sounds
+class SoundManager {
+    private ctx: AudioContext | null = null;
+    private enabled: boolean = true;
+
+    constructor() {
+        try {
+            this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        } catch (e) {
+            console.error("AudioContext not supported");
+        }
+    }
+
+    setEnabled(enabled: boolean) {
+        this.enabled = enabled;
+        if (enabled && this.ctx?.state === 'suspended') {
+            this.ctx.resume();
+        }
+    }
+
+    private playTone(freq: number, type: OscillatorType, duration: number, vol: number = 0.1) {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+    }
+
+    move() { this.playTone(150, 'sine', 0.1, 0.05); }
+    merge(value: number) {
+        // Higher pitch for higher values
+        const baseFreq = 220;
+        const semitones = Math.log2(value) * 2;
+        const freq = baseFreq * Math.pow(2, semitones / 12);
+        this.playTone(freq, 'triangle', 0.15, 0.1);
+    }
+    win() {
+        if (!this.enabled || !this.ctx) return;
+        [440, 554, 659, 880].forEach((f, i) => setTimeout(() => this.playTone(f, 'sine', 0.3, 0.1), i * 100));
+    }
+    gameOver() { this.playTone(110, 'sawtooth', 0.5, 0.1); }
+}
 
 const Game2048 = () => {
     const [grid, setGrid] = useState<number[][]>(Array(4).fill(Array(4).fill(0)));
@@ -13,13 +61,24 @@ const Game2048 = () => {
     const [bestScore, setBestScore] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [won, setWon] = useState(false);
+    const [keepPlaying, setKeepPlaying] = useState(false);
+    const [history, setHistory] = useState<{ grid: number[][], score: number }[]>([]);
+    const [soundEnabled, setSoundEnabled] = useState(true);
+    const soundManager = useRef<SoundManager | null>(null);
 
     // Initialize game
     useEffect(() => {
+        soundManager.current = new SoundManager();
         const savedBest = localStorage.getItem('2048-best-score');
         if (savedBest) setBestScore(parseInt(savedBest));
         startNewGame();
     }, []);
+
+    const toggleSound = () => {
+        const newState = !soundEnabled;
+        setSoundEnabled(newState);
+        soundManager.current?.setEnabled(newState);
+    };
 
     const startNewGame = () => {
         const newGrid = Array(4).fill(0).map(() => Array(4).fill(0));
@@ -27,8 +86,10 @@ const Game2048 = () => {
         addRandomTile(newGrid);
         setGrid(newGrid);
         setScore(0);
+        setHistory([]);
         setGameOver(false);
         setWon(false);
+        setKeepPlaying(false);
     };
 
     const addRandomTile = (currentGrid: number[][]) => {
@@ -44,12 +105,31 @@ const Game2048 = () => {
         }
     };
 
+    const saveToHistory = () => {
+        setHistory(prev => {
+            const newHistory = [...prev, { grid: grid.map(row => [...row]), score }];
+            // Limit history to 5 moves to prevent memory issues and make it strategic
+            if (newHistory.length > 5) newHistory.shift();
+            return newHistory;
+        });
+    };
+
+    const undo = () => {
+        if (history.length === 0 || gameOver) return;
+        const lastState = history[history.length - 1];
+        setGrid(lastState.grid);
+        setScore(lastState.score);
+        setHistory(prev => prev.slice(0, -1));
+        setWon(false); // Reset win state if they undo back
+    };
+
     const move = useCallback((direction: Direction) => {
-        if (gameOver || won) return;
+        if (gameOver || (won && !keepPlaying)) return;
 
         let newGrid = grid.map(row => [...row]);
         let moved = false;
         let scoreToAdd = 0;
+        let mergedValue = 0;
 
         const rotateGrid = (g: number[][]) => g[0].map((_, i) => g.map(row => row[i]).reverse());
         const rotateGridCounter = (g: number[][]) => g[0].map((_, i) => g.map(row => row[g.length - 1 - i]));
@@ -66,6 +146,7 @@ const Game2048 = () => {
                 if (row[c] === row[c + 1]) {
                     row[c] *= 2;
                     scoreToAdd += row[c];
+                    mergedValue = Math.max(mergedValue, row[c]);
                     row.splice(c + 1, 1);
                     moved = true; // Merge happened
                 }
@@ -77,10 +158,15 @@ const Game2048 = () => {
 
         // Restore orientation
         if (direction === 'RIGHT') newGrid = newGrid.map(row => row.reverse());
-        if (direction === 'UP') newGrid = rotateGrid(newGrid); // Rotate back (counter of counter is normal, wait. UP was counter, so rotate clockwise to fix)
-        if (direction === 'DOWN') newGrid = rotateGridCounter(newGrid); // DOWN was clockwise, so rotate counter to fix
+        if (direction === 'UP') newGrid = rotateGrid(newGrid);
+        if (direction === 'DOWN') newGrid = rotateGridCounter(newGrid);
 
         if (moved) {
+            saveToHistory();
+            soundManager.current?.move();
+            if (mergedValue > 0) soundManager.current?.merge(mergedValue);
+            if (navigator.vibrate) navigator.vibrate(20); // Haptic feedback
+
             addRandomTile(newGrid);
             setGrid(newGrid);
             setScore(prev => {
@@ -92,10 +178,17 @@ const Game2048 = () => {
                 return newScore;
             });
 
-            if (checkWin(newGrid)) setWon(true);
-            if (checkGameOver(newGrid)) setGameOver(true);
+            if (checkWin(newGrid) && !won && !keepPlaying) {
+                setWon(true);
+                soundManager.current?.win();
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            } else if (checkGameOver(newGrid)) {
+                setGameOver(true);
+                soundManager.current?.gameOver();
+                if (navigator.vibrate) navigator.vibrate(200);
+            }
         }
-    }, [grid, gameOver, won, bestScore]);
+    }, [grid, gameOver, won, bestScore, keepPlaying]);
 
     const checkWin = (g: number[][]) => {
         for (let r = 0; r < 4; r++) {
@@ -149,62 +242,83 @@ const Game2048 = () => {
         setTouchStart(null);
     };
 
-    const getTileColor = (value: number) => {
-        const colors: { [key: number]: string } = {
-            0: 'bg-muted/30',
-            2: 'bg-blue-100 text-blue-900 dark:bg-blue-900/50 dark:text-blue-100',
-            4: 'bg-blue-200 text-blue-900 dark:bg-blue-800/50 dark:text-blue-100',
-            8: 'bg-cyan-200 text-cyan-900 dark:bg-cyan-800/50 dark:text-cyan-100',
-            16: 'bg-teal-200 text-teal-900 dark:bg-teal-800/50 dark:text-teal-100',
-            32: 'bg-green-200 text-green-900 dark:bg-green-800/50 dark:text-green-100',
-            64: 'bg-lime-200 text-lime-900 dark:bg-lime-800/50 dark:text-lime-100',
-            128: 'bg-yellow-200 text-yellow-900 dark:bg-yellow-800/50 dark:text-yellow-100',
-            256: 'bg-orange-200 text-orange-900 dark:bg-orange-800/50 dark:text-orange-100',
-            512: 'bg-red-200 text-red-900 dark:bg-red-800/50 dark:text-red-100',
-            1024: 'bg-pink-200 text-pink-900 dark:bg-pink-800/50 dark:text-pink-100',
-            2048: 'bg-purple-200 text-purple-900 dark:bg-purple-800/50 dark:text-purple-100',
-        };
-        return colors[value] || 'bg-primary text-primary-foreground';
+    const getTileStyle = (value: number) => {
+        // Neon Theme Colors
+        const baseStyle = "shadow-[0_0_10px_rgba(0,0,0,0.3)] border border-white/10 backdrop-blur-md";
+
+        switch (value) {
+            case 0: return "bg-white/5 border-transparent";
+            case 2: return `${baseStyle} bg-cyan-500/20 text-cyan-400 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.4)]`;
+            case 4: return `${baseStyle} bg-teal-500/20 text-teal-400 border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.4)]`;
+            case 8: return `${baseStyle} bg-green-500/20 text-green-400 border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]`;
+            case 16: return `${baseStyle} bg-lime-500/20 text-lime-400 border-lime-500/50 shadow-[0_0_15px_rgba(132,204,22,0.4)]`;
+            case 32: return `${baseStyle} bg-yellow-500/20 text-yellow-400 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.4)]`;
+            case 64: return `${baseStyle} bg-orange-500/20 text-orange-400 border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.5)]`;
+            case 128: return `${baseStyle} bg-red-500/20 text-red-400 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.5)]`;
+            case 256: return `${baseStyle} bg-pink-500/20 text-pink-400 border-pink-500/50 shadow-[0_0_25px_rgba(236,72,153,0.5)]`;
+            case 512: return `${baseStyle} bg-purple-500/20 text-purple-400 border-purple-500/50 shadow-[0_0_25px_rgba(168,85,247,0.5)]`;
+            case 1024: return `${baseStyle} bg-indigo-500/20 text-indigo-400 border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.6)]`;
+            case 2048: return `${baseStyle} bg-yellow-400/30 text-yellow-300 border-yellow-400 shadow-[0_0_40px_rgba(250,204,21,0.8)] animate-pulse`;
+            default: return `${baseStyle} bg-gray-500/20 text-white`;
+        }
     };
 
     return (
         <ToolTemplate
-            title="2048 Game"
-            description="Play the classic 2048 puzzle game online. Join the numbers and get to the 2048 tile! A fun and addictive logic puzzle."
+            title="2048 Neon"
+            description="Experience the classic puzzle game with a futuristic neon look. Join the glowing tiles to reach 2048!"
         >
             <Helmet>
-                <title>2048 Game - Play Online Free | Axevora</title>
-                <meta name="description" content="Play 2048 online for free. The addictive sliding tile puzzle game. Merge numbers to reach the 2048 tile. Mobile friendly and responsive." />
+                <title>2048 Neon - Play Free Online Logic Game | Axevora</title>
+                <meta name="description" content="Play the enhanced 2048 Neon game online. Features glowing Cyberpunk visuals, sound effects, undo move, and haptic feedback. Fully responsive and free." />
             </Helmet>
 
-            <div className="max-w-md mx-auto space-y-8">
+            <div className="max-w-md mx-auto space-y-6">
                 {/* Header Stats */}
-                <div className="flex justify-between items-center bg-card/50 p-4 rounded-xl border border-border">
-                    <div className="text-center">
-                        <p className="text-xs text-muted-foreground uppercase font-bold">Score</p>
-                        <p className="text-2xl font-bold text-primary">{score}</p>
+                <div className="flex justify-between items-center gap-2">
+                    <div className="flex gap-2">
+                        <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Score</p>
+                            <p className="text-xl font-bold text-white shadow-cyan-500/50">{score}</p>
+                        </div>
+                        <div className="bg-neutral-900/80 border border-white/10 p-3 rounded-xl min-w-[80px] text-center">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Best</p>
+                            <p className="text-xl font-bold text-white">{bestScore}</p>
+                        </div>
                     </div>
-                    <div className="text-center">
-                        <p className="text-xs text-muted-foreground uppercase font-bold">Best</p>
-                        <p className="text-2xl font-bold text-primary">{bestScore}</p>
+
+                    <div className="flex gap-2">
+                        <Button onClick={undo} variant="outline" size="icon" disabled={history.length === 0 || gameOver} className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                            <Undo2 className="w-5 h-5" />
+                        </Button>
+                        <Button onClick={toggleSound} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                            {soundEnabled ? <Volume2 className="w-5 h-5 text-green-400" /> : <VolumeX className="w-5 h-5 text-red-400" />}
+                        </Button>
+                        <Button onClick={startNewGame} variant="outline" size="icon" className="bg-neutral-900 border-white/10 hover:bg-neutral-800">
+                            <RefreshCw className="w-5 h-5" />
+                        </Button>
                     </div>
-                    <Button onClick={startNewGame} variant="outline" size="icon">
-                        <RefreshCw className="w-5 h-5" />
-                    </Button>
                 </div>
 
                 {/* Game Grid */}
                 <div
-                    className="bg-muted p-4 rounded-xl aspect-square relative touch-none select-none"
+                    className="relative bg-black p-4 rounded-2xl aspect-square touch-none select-none border border-white/5 shadow-2xl shadow-blue-900/20"
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    <div className="grid grid-cols-4 grid-rows-4 gap-3 h-full">
+                    {/* Grid Background Lines to simulate slots */}
+                    <div className="absolute inset-4 grid grid-cols-4 grid-rows-4 gap-3 z-0 pointer-events-none">
+                        {Array(16).fill(0).map((_, i) => (
+                            <div key={i} className="bg-white/5 rounded-lg border border-white/5"></div>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-4 grid-rows-4 gap-3 h-full relative z-10">
                         {grid.map((row, r) => (
                             row.map((cell, c) => (
                                 <div
                                     key={`${r}-${c}`}
-                                    className={`rounded-lg flex items-center justify-center text-3xl font-bold transition-all duration-100 ${getTileColor(cell)}`}
+                                    className={`rounded-lg flex items-center justify-center text-3xl md:text-4xl font-black transition-all duration-200 transform ${getTileStyle(cell)} ${cell > 0 ? 'scale-100' : 'scale-0'}`}
                                 >
                                     {cell !== 0 && cell}
                                 </div>
@@ -213,52 +327,61 @@ const Game2048 = () => {
                     </div>
 
                     {/* Overlays */}
-                    {(gameOver || won) && (
-                        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl z-10 animate-in fade-in">
+                    {(gameOver || (won && !keepPlaying)) && (
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl z-20 animate-in fade-in duration-500">
                             {won ? (
-                                <Trophy className="w-20 h-20 text-yellow-500 mb-4 animate-bounce" />
+                                <Trophy className="w-24 h-24 text-yellow-400 mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
                             ) : (
-                                <Gamepad2 className="w-20 h-20 text-muted-foreground mb-4" />
+                                <Gamepad2 className="w-24 h-24 text-red-500 mb-6 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
                             )}
-                            <h2 className="text-4xl font-bold mb-2">{won ? 'You Win!' : 'Game Over!'}</h2>
-                            <p className="text-muted-foreground mb-6">Score: {score}</p>
-                            <Button size="lg" onClick={startNewGame}>
-                                {won ? 'Play Again' : 'Try Again'}
-                            </Button>
+                            <h2 className={`text-5xl font-black mb-2 ${won ? 'text-yellow-400' : 'text-red-500'} tracking-tighter drop-shadow-lg`}>
+                                {won ? 'VICTORY!' : 'GAME OVER'}
+                            </h2>
+                            <p className="text-gray-300 text-lg mb-8">Final Score: <span className="text-white font-bold">{score}</span></p>
+
+                            <div className="flex flex-col gap-3 w-48">
+                                <Button size="lg" onClick={startNewGame} className="w-full bg-white text-black hover:bg-gray-200 font-bold">
+                                    {won ? 'Play Again' : 'Try Again'}
+                                </Button>
+                                {won && (
+                                    <Button variant="outline" size="lg" onClick={() => setKeepPlaying(true)} className="w-full border-white/20 hover:bg-white/10 text-white">
+                                        Keep Playing
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {/* Controls Hint */}
-                <div className="grid grid-cols-3 gap-4 text-center text-muted-foreground text-sm">
+                <div className="grid grid-cols-3 gap-4 text-center text-muted-foreground text-xs font-medium opacity-60">
                     <div className="flex flex-col items-center gap-1">
                         <div className="flex gap-1">
-                            <span className="p-1 border rounded"><ArrowUp className="w-4 h-4" /></span>
+                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowUp className="w-3 h-3" /></span>
                         </div>
                         <div className="flex gap-1">
-                            <span className="p-1 border rounded"><ArrowLeft className="w-4 h-4" /></span>
-                            <span className="p-1 border rounded"><ArrowDown className="w-4 h-4" /></span>
-                            <span className="p-1 border rounded"><ArrowRight className="w-4 h-4" /></span>
+                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowLeft className="w-3 h-3" /></span>
+                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowDown className="w-3 h-3" /></span>
+                            <span className="p-1.5 border border-white/20 rounded bg-white/5"><ArrowRight className="w-3 h-3" /></span>
                         </div>
-                        <span>Use Arrow Keys</span>
                     </div>
                     <div className="flex flex-col items-center justify-center">
-                        <span className="font-bold text-lg">OR</span>
+                        <span className="text-base font-bold">OR</span>
                     </div>
                     <div className="flex flex-col items-center justify-center gap-2">
-                        <Move className="w-8 h-8" />
-                        <span>Swipe on Screen</span>
+                        <Move className="w-6 h-6" />
+                        <span>Swipe</span>
                     </div>
                 </div>
 
                 {/* Instructions */}
-                <div className="prose dark:prose-invert max-w-none text-sm">
-                    <h3>How to Play</h3>
-                    <p>
-                        Use your <strong>arrow keys</strong> or <strong>swipe</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
+                <div className="prose prose-invert max-w-none text-sm bg-neutral-900/50 p-4 rounded-xl border border-white/5">
+                    <h3 className="text-white mt-0">How to Play</h3>
+                    <p className="text-gray-400">
+                        Use your <strong>arrow keys</strong> or <strong>swipe</strong> to move the glowing tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
                     </p>
-                    <p>
-                        Join the numbers and get to the <strong>2048 tile!</strong>
+                    <p className="text-gray-400 mb-0">
+                        Join the numbers to create the legendary <strong>2048 tile!</strong>
                     </p>
                 </div>
             </div>
