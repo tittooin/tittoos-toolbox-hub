@@ -62,7 +62,16 @@ const VideoToShorts = lazy(() => import("./pages/tools/VideoToShorts"));
 // const ToolPoster = lazy(() => import("./pages/tools/ToolPoster")); 
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
 const AudioConverter = lazy(() => import("./pages/tools/AudioConverter"));
-// AI Social Media Tools
+const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
+const CurrencyConverter = lazy(() => import("./pages/tools/CurrencyConverter"));
+const TemperatureConverter = lazy(() => import("./pages/tools/TemperatureConverter"));
+const Base64Converter = lazy(() => import("./pages/tools/Base64Converter"));
+const TimestampConverter = lazy(() => import("./pages/tools/TimestampConverter"));
+const MergePDF = lazy(() => import("./pages/tools/MergePDF"));
+const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
+const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
+
+// Generator Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
 const AIHashtagGenerator = lazy(() => import("./pages/tools/AIHashtagGenerator"));
 const AIReelScriptGenerator = lazy(() => import("./pages/tools/AIReelScriptGenerator"));
