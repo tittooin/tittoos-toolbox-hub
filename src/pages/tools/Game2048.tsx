@@ -122,6 +122,7 @@ const Game2048 = () => {
 
     // Initialize game
     useEffect(() => {
+        console.log("🚀 2048 GAME LOADED: FINAL NEON VERSION 2.0");
         soundManager.current = new SoundManager();
         try {
             const savedBest = localStorage.getItem('2048-best-score');
