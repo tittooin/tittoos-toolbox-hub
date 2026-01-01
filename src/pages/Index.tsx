@@ -68,6 +68,29 @@ const Index = () => {
       <Header />
       <main id="main-content" role="main">
 
+        {/* NEW: Happy New Year 2026 Banner (Gold/Amber Theme) */}
+        <section className="relative py-10 bg-black overflow-hidden border-b border-yellow-900/50">
+          {/* Animated Background Elements */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+            <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-gradient-to-tr from-yellow-600/20 via-transparent to-transparent rounded-full blur-3xl animate-blob"></div>
+            <div className="absolute bottom-[-50%] right-[-20%] w-[80%] h-[200%] bg-gradient-to-bl from-amber-600/20 via-transparent to-transparent rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+          </div>
+
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <div className="inline-block animate-bounce mb-2">
+              <span className="text-4xl filter drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">✨</span>
+            </div>
+            <h2 className="text-4xl md:text-7xl font-black tracking-tight mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-200 to-yellow-400 drop-shadow-[0_0_25px_rgba(234,179,8,0.3)]">
+                HAPPY NEW YEAR 2026
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-amber-100/80 font-medium max-w-3xl mx-auto leading-relaxed">
+              Wishing you a calm, productive, and prosperous year ahead. <br className="hidden md:block" /> May your code fly and your bugs be few! 🚀
+            </p>
+          </div>
+        </section>
+
         {/* NEW: Premium Hero Section */}
         <section className="relative overflow-hidden bg-background pt-20 pb-16 lg:pt-32 lg:pb-24">
           {/* Background Ambient Glow */}
