@@ -136,9 +136,9 @@ const Index = () => {
                   { id: 'all', label: 'All' },
                   { id: 'pdf', label: '📄 PDF' },
                   { id: 'ai', label: '🤖 AI Tools' },
-                  { id: 'image-converter', label: '🖼️ Image' }, // Using a known category or I need to check categories. 'converter' or 'utility'. Let's use 'pdf', 'ai', 'converter'
+                  { id: 'image', label: '🖼️ Image' },
                   { id: 'converter', label: '⚡ Converters' },
-                  { id: 'seo', label: '🌐 SEO' } // SEO tools might be under 'analyzer' or 'utility'. Let's check categories. Reverting to safe ones.
+                  { id: 'analyzer', label: '🌐 SEO' }
                 ].map((chip) => (
                   <Button
                     key={chip.id}

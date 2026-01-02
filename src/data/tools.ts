@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 const allCategories = [
+  { id: "image", name: "Image Tools", guidePath: "/blog-posts/converters-category" },
   { id: "converter", name: "Converters", guidePath: "/blog-posts/converters-category" },
   { id: "pdf", name: "PDF Tools", guidePath: "/blog-posts/pdf-category" },
   { id: "generator", name: "Generators", guidePath: "/blog-posts/generators-category" },
@@ -1335,7 +1336,7 @@ const allTools = [
     name: "Background Remover",
     subheading: "AI-powered background removal",
     description: "Remove backgrounds from images with high accuracy using AI technology.",
-    category: "editor",
+    category: "image",
     icon: Scissors,
     path: "/tools/image-background-remover"
   },
@@ -1744,7 +1745,7 @@ const allTools = [
     name: "AI Text to Image",
     subheading: "Generate stunning visuals",
     description: "Generate stunning images from text descriptions using AI.",
-    category: "ai",
+    category: "image",
     icon: Image,
     path: "/tools/text-to-image",
     longDescription: `
@@ -2108,7 +2109,7 @@ const allTools = [
     name: "Image Resizer",
     subheading: "Resize images online",
     description: "Resize images by pixel dimensions or percentage quickly and easily.",
-    category: "editor",
+    category: "image",
     icon: Image,
     path: "/tools/image-resizer",
     longDescription: `
