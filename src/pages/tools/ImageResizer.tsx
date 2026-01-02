@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Download, Image as ImageIcon, RefreshCw, Lock, Unlock, ArrowRightLeft } from 'lucide-react';
+import { Upload, Download, Image as ImageIcon, RefreshCw, Lock, Unlock, ArrowRightLeft, Edit } from 'lucide-react';
 import { toast } from "sonner";
 import ToolTemplate from '@/components/ToolTemplate';
 
@@ -284,19 +284,40 @@ const ImageResizer = () => {
                         {/* Preview */}
                         <div className="space-y-4">
                             <Card className="overflow-hidden bg-muted/30">
-                                <CardContent className="p-0 flex items-center justify-center min-h-[300px] relative">
-                                    <div className="relative max-w-full max-h-[400px] p-4">
-                                        <img
-                                            src={imageSrc}
-                                            alt="Preview"
-                                            className="max-w-full max-h-full object-contain shadow-lg rounded mx-auto"
-                                            style={{
-                                                aspectRatio: `${newDimensions.width}/${newDimensions.height}`
-                                                // Note: We don't actually resize the preview DOM element to pixel perfection to keep UI responsive,
-                                                // but we show the aspect ratio correctly.
-                                            }}
+                                <CardContent className="p-0 flex items-center justify-center min-h-[300px] relative group">
+                                    <div className="relative max-w-full max-h-[400px] p-4 w-full flex justify-center">
+
+                                        {/* Hidden Input for Changing Image */}
+                                        <input
+                                            type="file"
+                                            id="change-image-input"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            className="hidden"
                                         />
-                                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
+
+                                        <label
+                                            htmlFor="change-image-input"
+                                            className="relative cursor-pointer block group-hover:ring-4 ring-primary/20 rounded-lg transition-all"
+                                            title="Click to Change Image"
+                                        >
+                                            <img
+                                                src={imageSrc}
+                                                alt="Preview"
+                                                className="max-w-full max-h-[400px] object-contain shadow-lg rounded mx-auto"
+                                                style={{
+                                                    aspectRatio: `${newDimensions.width}/${newDimensions.height}`
+                                                }}
+                                            />
+
+                                            {/* Hover Overlay */}
+                                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-lg backdrop-blur-sm">
+                                                <Edit className="w-8 h-8 mb-2" />
+                                                <span className="font-semibold">Change Image</span>
+                                            </div>
+                                        </label>
+
+                                        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
                                             Original: {originalDimensions.width}x{originalDimensions.height}
                                         </div>
                                     </div>
