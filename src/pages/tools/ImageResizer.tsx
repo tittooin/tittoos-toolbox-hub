@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Download, Image as ImageIcon, RefreshCw, Lock, Unlock } from 'lucide-react';
 import { toast } from "sonner";
@@ -143,6 +143,63 @@ const ImageResizer = () => {
                                         }}>
                                             <RefreshCw className="w-4 h-4 mr-2" /> Reset
                                         </Button>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label>Quick Presets</Label>
+                                        <Select onValueChange={(val) => {
+                                            const [w, h] = val.split('x').map(Number);
+                                            if (w && h) {
+                                                setNewDimensions({ width: w, height: h });
+                                                // Switch to dimensions mode if not already
+                                                if (resizeMode !== 'dimensions') setResizeMode('dimensions');
+                                            }
+                                        }}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a preset (e.g. Android Icon)" />
+                                            </SelectTrigger>
+                                            <SelectContent className="max-h-[300px]">
+                                                <SelectItem value="custom">Custom (Manual Input)</SelectItem>
+
+                                                <SelectGroup>
+                                                    <SelectLabel>Google Play Store</SelectLabel>
+                                                    <SelectItem value="512x512">App Icon (512x512)</SelectItem>
+                                                    <SelectItem value="1024x500">Feature Graphic (1024x500)</SelectItem>
+                                                    <SelectItem value="1080x1920">Phone Screenshot (1080x1920)</SelectItem>
+                                                    <SelectItem value="1920x1080">Tablet/TV Screenshot (1920x1080)</SelectItem>
+                                                </SelectGroup>
+
+                                                <SelectGroup>
+                                                    <SelectLabel>Amazon Appstore</SelectLabel>
+                                                    <SelectItem value="512x512">App Icon (512x512)</SelectItem>
+                                                    <SelectItem value="1024x500">Promotional Image (1024x500)</SelectItem>
+                                                    <SelectItem value="800x480">Screenshot 7" (800x480)</SelectItem>
+                                                    <SelectItem value="1920x1200">Screenshot 8.9" (1920x1200)</SelectItem>
+                                                    <SelectItem value="1920x1080">Fire TV Screenshot (1920x1080)</SelectItem>
+                                                </SelectGroup>
+
+                                                <SelectGroup>
+                                                    <SelectLabel>Social Media</SelectLabel>
+                                                    <SelectItem value="1080x1080">Instagram Square (1080x1080)</SelectItem>
+                                                    <SelectItem value="1080x1350">Instagram Portrait (1080x1350)</SelectItem>
+                                                    <SelectItem value="1080x1920">Instagram Story (1080x1920)</SelectItem>
+                                                    <SelectItem value="1200x675">Twitter/X Post (1200x675)</SelectItem>
+                                                    <SelectItem value="1500x500">Twitter/X Header (1500x500)</SelectItem>
+                                                    <SelectItem value="1280x720">YouTube Thumbnail (1280x720)</SelectItem>
+                                                    <SelectItem value="2560x1440">YouTube Channel Art (2560x1440)</SelectItem>
+                                                    <SelectItem value="1200x630">Facebook Post (1200x630)</SelectItem>
+                                                    <SelectItem value="820x312">Facebook Cover (820x312)</SelectItem>
+                                                    <SelectItem value="1080x1920">TikTok/Reels (1080x1920)</SelectItem>
+                                                </SelectGroup>
+
+                                                <SelectGroup>
+                                                    <SelectLabel>Common Standards</SelectLabel>
+                                                    <SelectItem value="1920x1080">Full HD (1920x1080)</SelectItem>
+                                                    <SelectItem value="1280x720">HD (1280x720)</SelectItem>
+                                                    <SelectItem value="32x32">Favicon (32x32)</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                     <Tabs value={resizeMode} onValueChange={(v: any) => setResizeMode(v)} className="w-full">
