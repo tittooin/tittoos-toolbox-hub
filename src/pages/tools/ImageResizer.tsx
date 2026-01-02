@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Download, Image as ImageIcon, RefreshCw, Lock, Unlock } from 'lucide-react';
+import { Upload, Download, Image as ImageIcon, RefreshCw, Lock, Unlock, ArrowRightLeft } from 'lucide-react';
 import { toast } from "sonner";
 import ToolTemplate from '@/components/ToolTemplate';
 
@@ -214,6 +214,16 @@ const ImageResizer = () => {
                                                     <Label>Width (px)</Label>
                                                     <Input type="number" value={newDimensions.width} onChange={handleWidthChange} />
                                                 </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        setNewDimensions(prev => ({ width: prev.height, height: prev.width }));
+                                                    }}
+                                                    title="Swap Width & Height"
+                                                >
+                                                    <ArrowRightLeft className="w-4 h-4" />
+                                                </Button>
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
