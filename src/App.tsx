@@ -59,7 +59,7 @@ const ImageConverter = lazy(() => import("./pages/tools/ImageConverter"));
 const PDFToImage = lazy(() => import("./pages/tools/PDFToImage"));
 const PDFToEPUB = lazy(() => import("./pages/tools/PDFToEPUB"));
 const VideoToShorts = lazy(() => import("./pages/tools/VideoToShorts"));
-// const ToolPoster = lazy(() => import("./pages/tools/ToolPoster")); 
+const ToolPoster = lazy(() => import("./pages/tools/ToolPoster"));
 const VideoConverter = lazy(() => import("./pages/tools/VideoConverter"));
 const AudioConverter = lazy(() => import("./pages/tools/AudioConverter"));
 const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
@@ -236,7 +236,7 @@ const App = () => (
                 <Route path="/tools/pdf-to-image" element={<PDFToImage />} />
                 <Route path="/tools/pdf-to-epub" element={<PDFToEPUB />} />
                 <Route path="/tools/video-to-shorts" element={<Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}><VideoToShorts /></Suspense>} />
-                {/* <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} /> */}
+                <Route path="/promo/poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} />
                 {/* <Route path="/promo/video-shorts-poster" element={<Suspense fallback={<div>Loading Poster Generator...</div>}><ToolPoster /></Suspense>} /> */}
                 <Route path="/tools/video-converter" element={<VideoConverter />} />
                 <Route path="/tools/audio-converter" element={<AudioConverter />} />
