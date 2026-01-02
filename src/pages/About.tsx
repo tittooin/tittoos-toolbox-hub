@@ -121,26 +121,27 @@ const About = () => {
 
         {/* The Team / EEAT Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-10 text-foreground">Meet the Minds Behind Axevora</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center text-center p-6 bg-card rounded-xl border border-border shadow-sm">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-600 mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                JD
-              </div>
-              <h3 className="font-bold text-xl">John Doe</h3>
-              <p className="text-primary font-medium mb-2">Lead Developer & Founder</p>
-              <p className="text-muted-foreground text-sm">
-                With 10+ years in full-stack development, John built Axevora to solve the frustration of "paywalled" simple tools. He specializes in React and WebAssembly performance.
-              </p>
+          <h2 className="text-3xl font-bold text-center mb-10 text-foreground">Meet the Creator</h2>
+          <div className="flex flex-col items-center text-center max-w-2xl mx-auto p-8 bg-card rounded-xl border border-border shadow-sm">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-blue-600 mb-6 flex items-center justify-center text-white font-bold text-4xl shadow-lg">
+              PM
             </div>
-            <div className="flex flex-col items-center text-center p-6 bg-card rounded-xl border border-border shadow-sm">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                AS
-              </div>
-              <h3 className="font-bold text-xl">Alice Smith</h3>
-              <p className="text-primary font-medium mb-2">Product & UI Designer</p>
-              <p className="text-muted-foreground text-sm">
-                Alice ensures that Axevora isn't just functional, but beautiful. She focuses on accessibility and creating intuitive user experiences for millions of visitors.
+            <h3 className="font-bold text-2xl mb-2">Pankaj More</h3>
+            <p className="text-primary font-medium mb-4 text-lg">Lead Developer & Founder</p>
+            <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+              Pankaj is a passionate full-stack developer dedicated to building open, accessible, and privacy-first web utilities. He created Axevora to solve the frustration of "paywalled" simple tools, ensuring everyone has access to powerful technology for free.
+            </p>
+
+            {/* Amazon AppStore Verification Badge */}
+            <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-dashed border-muted-foreground/30">
+              <p className="text-sm font-semibold text-muted-foreground">
+                <Shield className="w-4 h-4 inline-block mr-1 mb-0.5" />
+                Verification Statement
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Official Android App for Amazon AppStore is managed by <strong>Rajweda</strong> (Pankaj More).
+                <br />
+                Owner of <strong>axevora.com</strong>.
               </p>
             </div>
           </div>
