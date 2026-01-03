@@ -5,11 +5,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Download, Share2, Sparkles, ArrowLeft } from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
+import { QRCodeSVG } from "qrcode.react";
 
 const ToolPoster = () => {
     const [searchParams] = useSearchParams();
     const toolId = searchParams.get("id");
     const posterRef = useRef<HTMLDivElement>(null);
+
+    // Import QRCode dynamically or use the installed package
+    // Since we just installed it, we validly assume it's available.
+    // If not, we might need a fallback, but for now we implement it.
+    // Note: We need to import it at the top, but I'll add it to the import block in a separate edit or assume the user wants me to rewrite the file content structure here. 
+    // Wait, replace_file_content replaces a block. I should probably rewrite the whole component return to match the new style.
 
     const tool = tools.find((t) => t.id === toolId);
 
@@ -17,7 +24,7 @@ const ToolPoster = () => {
         if (posterRef.current) {
             const canvas = await html2canvas(posterRef.current, {
                 scale: 2, // High resolution
-                backgroundColor: "#000", // Ensure styling matches
+                backgroundColor: "#FACC15",
                 useCORS: true,
             });
             const link = document.createElement("a");
@@ -52,60 +59,77 @@ const ToolPoster = () => {
                 <h1 className="text-xl font-medium text-gray-400">Promotional Poster Generator</h1>
             </div>
 
-            {/* POSTER PREVIEW AREA */}
+            {/* POSTER PREVIEW AREA - YELLOW THEME */}
             <div
                 ref={posterRef}
-                className="w-[1080px] h-[1080px] md:w-[600px] md:h-[600px] bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl relative overflow-hidden flex flex-col items-center justify-center text-center p-12 shadow-2xl"
+                className="w-[1080px] h-[1080px] md:w-[600px] md:h-[600px] bg-[#FFD000] text-black rounded-3xl relative overflow-hidden flex flex-col items-center justify-between p-12 shadow-2xl border-8 border-black"
                 id="promo-poster"
             >
-                {/* Background Effects */}
-                <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-                    <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-blue-600/20 rounded-full blur-3xl animate-blob"></div>
-                    <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-purple-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+                {/* Decorative Patterns */}
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
                 </div>
 
-                {/* Content */}
-                <div className="relative z-10 flex flex-col items-center">
-                    {/* Logo Badge */}
-                    <div className="mb-8 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 flex items-center gap-2">
-                        <span className="font-bold tracking-wider text-sm uppercase text-gray-300">Axevora Tools</span>
-                        <Sparkles className="w-4 h-4 text-yellow-500" />
+                {/* Top Badge */}
+                <div className="relative z-10 mt-8">
+                    <div className="px-6 py-2 bg-black text-white rounded-full font-bold tracking-widest uppercase text-sm flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-[#FFD000]" />
+                        Axevora Tools
                     </div>
+                </div>
 
-                    {/* Icon */}
-                    <div className="w-32 h-32 md:w-32 md:h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg shadow-purple-500/20 mb-8 transform scale-125">
-                        {ToolIcon ? <ToolIcon className="w-16 h-16 text-white" /> : <Sparkles className="w-16 h-16 text-white" />}
+                {/* Main Content */}
+                <div className="relative z-10 flex flex-col items-center flex-1 justify-center w-full">
+
+                    {/* Floating Icon Card */}
+                    <div className="bg-white border-4 border-black p-8 rounded-[2rem] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-10 transform -rotate-3 transition-transform hover:rotate-0">
+                        {ToolIcon ? <ToolIcon className="w-24 h-24 text-black" /> : <Sparkles className="w-24 h-24 text-black" />}
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-5xl md:text-5xl font-black tracking-tight mb-4 text-white drop-shadow-lg">
+                    <h2 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-center leading-tight uppercase">
                         {tool.name}
                     </h2>
 
                     {/* Description */}
-                    <p className="text-xl md:text-xl text-gray-300 max-w-md leading-relaxed mb-8">
+                    <p className="text-xl md:text-2xl font-medium text-black/80 max-w-lg text-center leading-relaxed">
                         {tool.description}
                     </p>
+                </div>
 
-                    {/* CTA */}
-                    <div className="mt-4 px-8 py-3 bg-white text-black font-bold rounded-full text-lg shadow-xl">
-                        Try it Free on Axevora.com
+                {/* Footer / QR / CTA */}
+                <div className="relative z-10 flex flex-col items-center w-full mb-8">
+                    <div className="flex items-center gap-6 bg-black text-white p-4 rounded-2xl pr-8 w-full max-w-md mx-auto shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)]">
+                        {/* QR Code */}
+                        <div className="bg-white p-2 rounded-lg shrink-0">
+                            {/* We use specific sizing for the QR code to fit well */}
+                            <QRCodeSVG
+                                value={`https://axevora.com${tool.path}`}
+                                size={80}
+                                level={"H"}
+                                fgColor={"#000000"}
+                                bgColor={"#ffffff"}
+                            />
+                        </div>
+
+                        <div className="text-left">
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Try it for Free</p>
+                            <p className="text-xl font-bold leading-none">Scan to Open</p>
+                            <p className="text-sm text-[#FFD000] mt-1 break-all">axevora.com{tool.path}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* ACTIONS */}
             <div className="mt-8 flex gap-4">
-                <Button size="lg" onClick={handleDownload} className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold">
+                <Button size="lg" onClick={handleDownload} className="bg-[#FFD000] hover:bg-yellow-400 text-black font-bold text-lg px-8 border-2 border-transparent">
                     <Download className="mr-2 h-5 w-5" /> Download Poster
                 </Button>
-                {/* <Button size="lg" variant="secondary">
-          <Share2 className="mr-2 h-5 w-5" /> Share
-        </Button> */}
             </div>
 
             <p className="mt-6 text-sm text-gray-500">
-                Preview size is scaled down. Download for full 1080x1080 quality.
+                Preview size is scaled down. Download for full 1080x1080 resolution.
             </p>
         </div>
     );

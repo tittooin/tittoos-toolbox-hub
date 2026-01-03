@@ -1,6 +1,6 @@
 
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Search, Filter, ArrowRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText } from "lucide-react";
+import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,112 +73,205 @@ const Index = () => {
             Visible only on small screens (< 768px)
            ========================================= */}
         <div className="block md:hidden min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
-          {/* Mobile Header */}
-          <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                A
+          {selectedCategory === 'all' ? (
+            <>
+              {/* Mobile Header (Home) */}
+              <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                    A
+                  </div>
+                  <span className="font-bold text-lg">Axevora</span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                  <Smartphone className="w-4 h-4" />
+                </div>
               </div>
-              <span className="font-bold text-lg">Axevora</span>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-              <Smartphone className="w-4 h-4" />
-            </div>
-          </div>
 
-          <div className="px-4 py-6 space-y-6">
-            {/* Mobile Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Search any tool..."
-                className="pl-10 h-12 rounded-xl bg-card border shadow-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            {/* Main Category Grid */}
-            {!searchTerm && (
-              <div className="grid grid-cols-2 gap-4">
-                <Link to="/tools/pdf-converter" className="bg-blue-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-blue-500/20 active:scale-95 transition-transform">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <FileText size={24} />
-                    {/* Note: FileText needs to be imported if used. Using what's available or Generic Icons */}
-                  </div>
-                  <span className="font-bold">PDF Tools</span>
-                </Link>
-
-                <div onClick={() => setSelectedCategory('ai')} className="bg-indigo-600 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-indigo-500/20 active:scale-95 transition-transform cursor-pointer">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <Sparkles size={24} />
-                  </div>
-                  <span className="font-bold">AI Tools</span>
+              <div className="px-4 py-6 space-y-6">
+                {/* Mobile Search (Global) */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Search any tool..."
+                    className="pl-10 h-12 rounded-xl bg-card border shadow-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
 
-                <div onClick={() => setSelectedCategory('converter')} className="bg-emerald-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform cursor-pointer">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <Zap size={24} />
-                  </div>
-                  <span className="font-bold">Converters</span>
-                </div>
+                {/* Main Home Grid */}
+                {!searchTerm && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button variant="ghost" onClick={() => setSelectedCategory('pdf')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-blue-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-blue-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <FileText size={24} />
+                        </div>
+                        <span className="font-bold">PDF Tools</span>
+                      </div>
+                    </Button>
 
-                <div onClick={() => setSelectedCategory('editor')} className="bg-orange-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-orange-500/20 active:scale-95 transition-transform cursor-pointer">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <Scissors size={24} />
-                  </div>
-                  <span className="font-bold">Editors</span>
-                </div>
+                    <Button variant="ghost" onClick={() => setSelectedCategory('ai')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-indigo-600 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-indigo-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Sparkles size={24} />
+                        </div>
+                        <span className="font-bold">AI Tools</span>
+                      </div>
+                    </Button>
 
-                <div onClick={() => setSelectedCategory('analyzer')} className="bg-purple-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-purple-500/20 active:scale-95 transition-transform cursor-pointer">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <TrendingUp size={24} />
-                  </div>
-                  <span className="font-bold">Analyzers</span>
-                </div>
+                    <Button variant="ghost" onClick={() => setSelectedCategory('converter')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-emerald-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Zap size={24} />
+                        </div>
+                        <span className="font-bold">Converters</span>
+                      </div>
+                    </Button>
 
-                <Link to="/tools/calculator" className="bg-pink-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-pink-500/20 active:scale-95 transition-transform cursor-pointer">
-                  <div className="p-2 bg-white/20 rounded-full">
-                    <Zap size={24} />
-                  </div>
-                  <span className="font-bold">Calculators</span>
-                </Link>
-              </div>
-            )}
+                    <Button variant="ghost" onClick={() => setSelectedCategory('editor')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-orange-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-orange-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Scissors size={24} />
+                        </div>
+                        <span className="font-bold">Editors</span>
+                      </div>
+                    </Button>
 
-            {/* Favorites / Recent Tools (Mobile) */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-lg">
-                  {searchTerm ? `Results for "${searchTerm}"` : (selectedCategory !== 'all' ? `${categories.find(c => c.id === selectedCategory)?.name || 'Tools'}` : "Favorites & Trending")}
-                </h3>
-                {selectedCategory !== 'all' && (
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedCategory('all')}>Clear Filter</Button>
+                    <Button variant="ghost" onClick={() => setSelectedCategory('analyzer')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-purple-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-purple-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <TrendingUp size={24} />
+                        </div>
+                        <span className="font-bold">Analyzers</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('calculator')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-pink-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-pink-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Zap size={24} />
+                        </div>
+                        <span className="font-bold">Calculators</span>
+                      </div>
+                    </Button>
+                  </div>
                 )}
+
+              </div>
+            </>
+          ) : (
+            /* Category Detail View (The Requested Screen) */
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+              {/* Header */}
+              <div className={`sticky top-0 z-50 px-4 py-3 flex items-center gap-3 shadow-sm ${selectedCategory === 'pdf' ? 'bg-blue-600' :
+                selectedCategory === 'ai' ? 'bg-indigo-600' :
+                  selectedCategory === 'converter' ? 'bg-emerald-600' :
+                    selectedCategory === 'editor' ? 'bg-orange-500' :
+                      selectedCategory === 'analyzer' ? 'bg-purple-600' :
+                        selectedCategory === 'calculator' ? 'bg-pink-500' :
+                          'bg-slate-800'
+                } text-white transition-colors duration-300`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/20 rounded-full"
+                  onClick={() => setSelectedCategory('all')}
+                >
+                  <ArrowLeft size={24} />
+                </Button>
+                <h2 className="font-bold text-lg flex-1">
+                  {categories.find(c => c.id === selectedCategory)?.name || 'Tools'}
+                </h2>
+                {/* Optional Right Icon (e.g., Home) */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/20 rounded-full"
+                  onClick={() => setSelectedCategory('all')}
+                >
+                  <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center font-bold text-xs">A</div>
+                </Button>
               </div>
 
-              <div className="space-y-3">
-                {filteredTools.slice(0, searchTerm ? 20 : 6).map((tool) => {
-                  if (!tool.icon) return null;
-                  return (
-                    <Link key={tool.id} to={tool.path} className="flex items-center gap-4 p-3 bg-card border rounded-xl shadow-sm active:bg-accent transition-colors">
-                      <div className="p-2.5 bg-primary/10 text-primary rounded-lg">
-                        <tool.icon size={20} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm truncate">{tool.name}</h4>
-                        <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
-                      </div>
-                      <div className="text-muted-foreground">
-                        <ArrowRight size={16} />
-                      </div>
-                    </Link>
-                  );
-                })}
+              {/* Content */}
+              <div className="p-4 space-y-4">
+                {/* Inner Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder={`Search in ${categories.find(c => c.id === selectedCategory)?.name}...`}
+                    className="pl-10 h-12 rounded-xl bg-white dark:bg-slate-900 border shadow-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+
+                {/* List */}
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border divide-y overflow-hidden">
+                  {filteredTools.length > 0 ? (
+                    filteredTools.map((tool) => (
+                      <Link key={tool.id} to={tool.path} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors active:bg-slate-100">
+                        <div className={`p-3 rounded-lg ${selectedCategory === 'pdf' ? 'bg-blue-100 text-blue-600' :
+                          selectedCategory === 'ai' ? 'bg-indigo-100 text-indigo-600' :
+                            'bg-slate-100 text-slate-600'
+                          } dark:bg-slate-800`}>
+                          {tool.icon && <tool.icon size={22} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-base text-foreground mb-0.5">{tool.name}</h4>
+                          <p className="text-sm text-muted-foreground line-clamp-1">{tool.description}</p>
+                        </div>
+                        <div className="text-muted-foreground/50">
+                          <ChevronRight size={20} />
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="p-8 text-center text-muted-foreground">
+                      <p>No tools found in this category.</p>
+                    </div>
+                  )}
+                </div>
               </div>
+            </div>
+          )}
+
+
+          {/* Favorites / Recent Tools (Mobile) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-lg">
+                {searchTerm ? `Results for "${searchTerm}"` : (selectedCategory !== 'all' ? `${categories.find(c => c.id === selectedCategory)?.name || 'Tools'}` : "Favorites & Trending")}
+              </h3>
+              {selectedCategory !== 'all' && (
+                <Button variant="ghost" size="sm" onClick={() => setSelectedCategory('all')}>Clear Filter</Button>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              {filteredTools.slice(0, searchTerm ? 20 : 6).map((tool) => {
+                if (!tool.icon) return null;
+                return (
+                  <Link key={tool.id} to={tool.path} className="flex items-center gap-4 p-3 bg-card border rounded-xl shadow-sm active:bg-accent transition-colors">
+                    <div className="p-2.5 bg-primary/10 text-primary rounded-lg">
+                      <tool.icon size={20} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-sm truncate">{tool.name}</h4>
+                      <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
+                    </div>
+                    <div className="text-muted-foreground">
+                      <ArrowRight size={16} />
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
+
 
         {/* =========================================
             DESKTOP VIEW (Original Site)
@@ -435,7 +528,7 @@ const Index = () => {
 
         </div>
 
-      </main>
+      </main >
       <Footer />
     </div >
   );
