@@ -1,6 +1,6 @@
 
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText } from "lucide-react";
+import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText, Wand2, AlignLeft, Code, Gamepad2, Stamp, Archive, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -156,6 +156,69 @@ const Index = () => {
                         <span className="font-bold">Calculators</span>
                       </div>
                     </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('image')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-cyan-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-cyan-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Image size={24} />
+                        </div>
+                        <span className="font-bold">Image</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('generator')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-amber-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-amber-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Wand2 size={24} />
+                        </div>
+                        <span className="font-bold">Generators</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('formatter')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-teal-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-teal-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <AlignLeft size={24} />
+                        </div>
+                        <span className="font-bold">Formatters</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('dev')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-slate-600 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-slate-600/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Code size={24} />
+                        </div>
+                        <span className="font-bold">Dev Tools</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('games')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-rose-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-rose-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Gamepad2 size={24} />
+                        </div>
+                        <span className="font-bold">Games</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('validators')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-green-600 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-green-600/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Stamp size={24} />
+                        </div>
+                        <span className="font-bold">Validators</span>
+                      </div>
+                    </Button>
+
+                    <Button variant="ghost" onClick={() => setSelectedCategory('utility')} className="h-auto p-0 bg-transparent hover:bg-transparent">
+                      <div className="w-full bg-gray-500 text-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 aspect-[4/3] shadow-lg shadow-gray-500/20 active:scale-95 transition-transform">
+                        <div className="p-2 bg-white/20 rounded-full">
+                          <Archive size={24} />
+                        </div>
+                        <span className="font-bold">Utilities</span>
+                      </div>
+                    </Button>
                   </div>
                 )}
 
@@ -171,7 +234,14 @@ const Index = () => {
                     selectedCategory === 'editor' ? 'bg-orange-500' :
                       selectedCategory === 'analyzer' ? 'bg-purple-600' :
                         selectedCategory === 'calculator' ? 'bg-pink-500' :
-                          'bg-slate-800'
+                          selectedCategory === 'image' ? 'bg-cyan-600' :
+                            selectedCategory === 'generator' ? 'bg-amber-600' :
+                              selectedCategory === 'formatter' ? 'bg-teal-600' :
+                                selectedCategory === 'dev' ? 'bg-slate-700' :
+                                  selectedCategory === 'games' ? 'bg-rose-600' :
+                                    selectedCategory === 'validators' ? 'bg-green-700' :
+                                      selectedCategory === 'utility' ? 'bg-gray-600' :
+                                        'bg-slate-800'
                 } text-white transition-colors duration-300`}>
                 <Button
                   variant="ghost"
