@@ -25,3 +25,9 @@ dist-ssr
 
 # Marketing Assets
 marketing_assets/
+
+# Android
+*.apk
+*.aab
+android/.gradle
+android/build
