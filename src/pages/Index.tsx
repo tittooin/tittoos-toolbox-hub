@@ -169,7 +169,7 @@ const Index = () => {
                       </Link>
 
                       {/* Poster Generator */}
-                      <Link to="/tools/list?category=generator" className="shrink-0 w-36">
+                      <Link to="/tools" className="shrink-0 w-36">
                         <div className="h-40 rounded-xl bg-gray-800 relative overflow-hidden p-3 flex flex-col justify-end shadow-md active:scale-95 transition-transform">
                           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
                           <ArrowRight className="text-white absolute top-3 left-3" size={20} />
