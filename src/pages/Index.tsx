@@ -116,7 +116,7 @@ const Index = () => {
                     </div>
 
                     {/* 1. Tech Battle (Flashing) */}
-                    <Link to="/battles">
+                    <Link to="/tools/tech-versus">
                       <div className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-xl p-4 shadow-lg active:scale-95 transition-transform relative overflow-hidden group mb-4">
                         {/* Flashing Overlay */}
                         <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 animate-pulse pointer-events-none"></div>
