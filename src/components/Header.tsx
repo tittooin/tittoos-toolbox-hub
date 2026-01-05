@@ -49,7 +49,7 @@ const Header = () => {
             <Link to="/attributions" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               Attributions
             </Link>
-            <a href="/axevora-tools-v1.2.apk" download className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl active:scale-95 transform animate-pulse">
+            <a href="/axevora-tools-v1.3.apk" download className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl active:scale-95 transform animate-pulse">
               Download App
             </a>
           </nav>
@@ -157,7 +157,7 @@ const Header = () => {
                 Attributions
               </Link>
               <a
-                href="/axevora-tools-v1.2.apk"
+                href="/axevora-tools-v1.3.apk"
                 download
                 className="bg-primary text-primary-foreground px-4 py-3 rounded-xl font-bold text-center hover:bg-primary/90 transition-colors shadow-lg"
                 onClick={() => setIsMenuOpen(false)}

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy } from "react";
 import SimpleErrorBoundary from "./components/SimpleErrorBoundary";
@@ -182,7 +182,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <HashRouter>
           <SimpleErrorBoundary>
             <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
               <Routes>
@@ -364,7 +364,7 @@ const App = () => (
               </Routes>
             </Suspense>
           </SimpleErrorBoundary>
-        </BrowserRouter>
+        </HashRouter>
       </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider >
