@@ -9,6 +9,7 @@ import { Suspense, lazy } from "react";
 import SimpleErrorBoundary from "./components/SimpleErrorBoundary";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import AdMobBanner from "./components/AdMobBanner";
 
 // Lazy load pages for better performance
 const Categories = lazy(() => import("./pages/Categories"));
@@ -365,6 +366,7 @@ const App = () => (
             </Suspense>
           </SimpleErrorBoundary>
         </HashRouter>
+        <AdMobBanner />
       </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider >

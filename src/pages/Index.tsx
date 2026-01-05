@@ -115,29 +115,29 @@ const Index = () => {
                       </Button>
                     </div>
 
-                    {/* 0. 2048 Game (Super Highlight) */}
-                    <Link to="/tools/2048-game">
-                      <div className="w-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl p-4 shadow-lg active:scale-95 transition-transform relative overflow-hidden group mb-4 border-2 border-white/20">
-                        <div className="absolute top-0 right-0 p-3 opacity-20 transform rotate-12 scale-150">
-                          <Gamepad2 size={64} className="text-white" />
-                        </div>
+                    {/* 0. 2048 Game (Catchy Square Banner) */}
+                    <div className="flex justify-center mb-6">
+                      <Link to="/tools/2048-game" className="w-full max-w-[300px] aspect-square group relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-3xl shadow-2xl transform transition-transform group-active:scale-95 group-hover:scale-105 duration-300 border-4 border-white/30 animate-in zoom-in-50">
+                          {/* Floating Particles/Bg */}
+                          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
 
-                        <div className="flex justify-between items-center relative z-10">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm animate-pulse">
-                              <span className="font-black text-white text-xl">2048</span>
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-white text-lg leading-none">Play 2048</h4>
-                              <p className="text-white/90 text-xs mt-1 font-medium">Addictive Puzzle!</p>
+                          {/* Content */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 text-white">
+                            <Gamepad2 size={80} className="mb-4 drop-shadow-lg animate-bounce" />
+                            <h1 className="text-6xl font-black tracking-tighter drop-shadow-md mb-2">2048</h1>
+                            <p className="font-bold text-lg opacity-90 mb-6 uppercase tracking-widest">Puzzle Game</p>
+
+                            <div className="bg-white text-orange-600 px-8 py-3 rounded-full font-black text-xl shadow-lg animate-pulse flex items-center gap-2 group-hover:bg-yellow-100 transition-colors">
+                              PLAY NOW <Play size={20} fill="currentColor" />
                             </div>
                           </div>
-                          <span className="bg-white text-orange-600 text-[10px] font-black px-2 py-1 rounded shadow-sm">
-                            PLAY NOW
-                          </span>
+
+                          {/* Shine Effect */}
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none" />
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                    </div>
 
                     {/* 1. Tech Battle (Flashing) */}
                     <Link to="/tools/tech-versus">
