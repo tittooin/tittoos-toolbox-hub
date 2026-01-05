@@ -115,6 +115,30 @@ const Index = () => {
                       </Button>
                     </div>
 
+                    {/* 0. 2048 Game (Super Highlight) */}
+                    <Link to="/tools/2048-game">
+                      <div className="w-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl p-4 shadow-lg active:scale-95 transition-transform relative overflow-hidden group mb-4 border-2 border-white/20">
+                        <div className="absolute top-0 right-0 p-3 opacity-20 transform rotate-12 scale-150">
+                          <Gamepad2 size={64} className="text-white" />
+                        </div>
+
+                        <div className="flex justify-between items-center relative z-10">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm animate-pulse">
+                              <span className="font-black text-white text-xl">2048</span>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-white text-lg leading-none">Play 2048</h4>
+                              <p className="text-white/90 text-xs mt-1 font-medium">Addictive Puzzle!</p>
+                            </div>
+                          </div>
+                          <span className="bg-white text-orange-600 text-[10px] font-black px-2 py-1 rounded shadow-sm">
+                            PLAY NOW
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+
                     {/* 1. Tech Battle (Flashing) */}
                     <Link to="/tools/tech-versus">
                       <div className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-xl p-4 shadow-lg active:scale-95 transition-transform relative overflow-hidden group mb-4">
@@ -530,6 +554,20 @@ const Index = () => {
 
               {/* Compact Grid for Top Tools */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* 0. 2048 Game (Featured) */}
+                <Link to="/tools/2048-game" className="group">
+                  <Card className="h-full border-2 border-amber-400/50 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                    <CardContent className="p-5 flex flex-row items-center gap-4">
+                      <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600">
+                        <Gamepad2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-foreground group-hover:text-amber-600 transition-colors">2048 Puzzle</h3>
+                        <p className="text-xs text-muted-foreground">Addictive Logic Game</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
                 {/* 1. Tech Versus */}
                 <Link to="/tools/tech-versus" className="group">
                   <Card className="h-full border hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer">
