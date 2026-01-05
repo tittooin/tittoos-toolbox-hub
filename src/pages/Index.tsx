@@ -100,6 +100,86 @@ const Index = () => {
                   />
                 </div>
 
+                {/* --- TRENDING & FEATURED SECTION (New) --- */}
+                {!searchTerm && (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-bold text-lg">Featured</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-primary h-auto p-0 hover:bg-transparent"
+                        onClick={() => window.open("https://play.google.com/store/apps/details?id=com.axevora.tools", "_blank")}
+                      >
+                        Rate App ⭐
+                      </Button>
+                    </div>
+
+                    {/* 1. Tech Battle (Flashing) */}
+                    <Link to="/battles">
+                      <div className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-xl p-4 shadow-lg active:scale-95 transition-transform relative overflow-hidden group mb-4">
+                        {/* Flashing Overlay */}
+                        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 animate-pulse pointer-events-none"></div>
+
+                        <div className="flex justify-between items-center relative z-10">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white/20 rounded-full animate-bounce">
+                              <Trophy size={20} className="text-yellow-300" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-white text-lg leading-none">Tech Battles</h4>
+                              <p className="text-white/80 text-xs mt-1">Vote & Win!</p>
+                            </div>
+                          </div>
+                          <span className="bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded animate-pulse">
+                            🔥 NEW
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+
+                    {/* 2. Horizontal Scroll Trending Tools */}
+                    <h3 className="font-bold text-lg">Trending Tools 🔥</h3>
+                    <div className="flex overflow-x-auto gap-3 pb-2 -mx-4 px-4 scrollbar-hide">
+                      {/* Video to Shorts */}
+                      <Link to="/tools/video-to-shorts" className="shrink-0 w-36">
+                        <div className="h-40 rounded-xl bg-amber-500 relative overflow-hidden p-3 flex flex-col justify-end shadow-md active:scale-95 transition-transform">
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
+                          <Video className="text-white absolute top-3 left-3" size={20} />
+                          <span className="relative z-10 text-white font-bold text-sm leading-tight">Shorts Generator</span>
+                        </div>
+                      </Link>
+
+                      {/* Thumbnail Maker */}
+                      <Link to="/tools/thumbnail-generator" className="shrink-0 w-36">
+                        <div className="h-40 rounded-xl bg-red-600 relative overflow-hidden p-3 flex flex-col justify-end shadow-md active:scale-95 transition-transform">
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
+                          <Image className="text-white absolute top-3 left-3" size={20} />
+                          <span className="relative z-10 text-white font-bold text-sm leading-tight">Thumbnail Maker</span>
+                        </div>
+                      </Link>
+
+                      {/* Text to Image */}
+                      <Link to="/tools/text-to-image" className="shrink-0 w-36">
+                        <div className="h-40 rounded-xl bg-purple-600 relative overflow-hidden p-3 flex flex-col justify-end shadow-md active:scale-95 transition-transform">
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
+                          <Sparkles className="text-white absolute top-3 left-3" size={20} />
+                          <span className="relative z-10 text-white font-bold text-sm leading-tight">AI Image Gen</span>
+                        </div>
+                      </Link>
+
+                      {/* Poster Generator */}
+                      <Link to="/tools/list?category=generator" className="shrink-0 w-36">
+                        <div className="h-40 rounded-xl bg-gray-800 relative overflow-hidden p-3 flex flex-col justify-end shadow-md active:scale-95 transition-transform">
+                          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
+                          <ArrowRight className="text-white absolute top-3 left-3" size={20} />
+                          <span className="relative z-10 text-white font-bold text-sm leading-tight">View All</span>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
                 {/* Main Home Grid */}
                 {!searchTerm && (
                   <div className="grid grid-cols-2 gap-4">

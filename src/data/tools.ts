@@ -6,7 +6,7 @@ import {
   Phone, MapPin, CreditCard, Calendar, Timer,
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
-  Bot, Video, Wand2, Sparkles, Brain, Youtube,
+  Bot, Video, Wand2, Sparkles, Brain,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
   AppWindow, Utensils, Apple
@@ -1703,10 +1703,10 @@ const allTools = [
   {
     id: "thumbnail-generator",
     name: "AI Thumbnail Generator",
-    subheading: "Create Viral YouTube Thumbnails",
+    subheading: "Create Viral Video Thumbnails",
     description: "Auto-generate clickbait-worthy thumbnails with AI background and text overlay.",
     category: "ai",
-    icon: Youtube,
+    icon: Image,
     path: "/tools/thumbnail-generator",
     longDescription: `
       <article className="prose prose-lg max-w-none">
@@ -1729,7 +1729,7 @@ const allTools = [
     ],
     benefits: [
       "100% Free AI Generation.",
-      "Perfect YouTube Aspect Ratio (16:9).",
+      "Perfect Video Aspect Ratio (16:9).",
       "No Watermarks.",
       "Instant 'Burn-In' of Text."
     ],
@@ -2717,7 +2717,7 @@ const allTools = [
   {
     id: "video-to-shorts",
     name: "Video to Shorts Converter",
-    description: "Convert long YouTube videos into viral Shorts & Reels. Auto-crop and split tool.",
+    description: "Convert long videos into viral Shorts & Reels. Auto-crop and split tool.",
     path: "/tools/video-to-shorts",
     icon: Scissors,
     category: "converter",
@@ -2727,7 +2727,7 @@ const allTools = [
     id: "ai-thumbnail-text-generator",
     name: "AI Thumbnail Text Gen",
     subheading: "Catchy thumbnail text",
-    description: "Brainstorm high-CTR text overlays for your YouTube thumbnails.",
+    description: "Brainstorm high-CTR text overlays for your video thumbnails.",
     category: "ai",
     icon: Type,
     path: "/tools/ai-thumbnail-text-generator"

@@ -21,6 +21,7 @@ const Attributions = lazy(() => import("./pages/Attributions"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Author = lazy(() => import("./pages/Author"));
 const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
+const AdMobBanner = lazy(() => import("./components/AdMobBanner"));
 
 // Blog Categories
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
