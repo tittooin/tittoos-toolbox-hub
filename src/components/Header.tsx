@@ -52,17 +52,6 @@ const Header = () => {
 
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden lg:flex items-center">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search tools..."
-                aria-label="Search tools"
-                className="pl-10 w-64"
-              />
-            </div>
-          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -155,9 +144,6 @@ const Header = () => {
                 Attributions
               </Link>
 
-              <div className="pt-4 border-t">
-                <Input placeholder="Search tools..." aria-label="Search tools" className="mb-3" />
-              </div>
             </nav>
           </div>
         )}

@@ -1,6 +1,6 @@
 
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText, Wand2, AlignLeft, Code, Gamepad2, Stamp, Archive, Image } from "lucide-react";
+import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText, Wand2, AlignLeft, Code, Gamepad2, Stamp, Archive, Image, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 import BlogPreview from "@/components/BlogPreview";
 import TrendingBattles from "@/components/TrendingBattles";
 import Testimonials from "@/components/Testimonials";
+import { MagicBar } from "@/components/MagicBar";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,16 +90,8 @@ const Index = () => {
               </div>
 
               <div className="px-4 py-6 space-y-6">
-                {/* Mobile Search (Global) */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Search any tool..."
-                    className="pl-10 h-12 rounded-xl bg-card border shadow-sm"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
+                {/* Magic Bar (AI Search) */}
+                <MagicBar className="px-0" />
 
                 {/* --- TRENDING & FEATURED SECTION (New) --- */}
                 {!searchTerm && (
@@ -113,6 +106,31 @@ const Index = () => {
                       >
                         Rate App ⭐
                       </Button>
+                    </div>
+
+                    {/* 1. Axevora Circle (NEW High Impact Mobile Banner) */}
+                    <div className="flex justify-center mb-6">
+                      <Link to="/tools/axevora-circle" className="w-full max-w-[350px] group relative overflow-hidden rounded-3xl shadow-[0_0_30px_rgba(79,70,229,0.3)] border-2 border-primary/20">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-700 to-slate-900"></div>
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+
+                        <div className="relative p-6 flex items-center gap-4">
+                          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                            <Users className="w-8 h-8 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse">LIVE NOW</span>
+                              <span className="text-white/60 text-[8px] font-bold uppercase tracking-widest">No Signup</span>
+                            </div>
+                            <h2 className="text-xl font-black text-white leading-tight">AXEVORA CIRCLE</h2>
+                            <p className="text-white/70 text-xs font-medium">Join Anonymous Real-time Discussions</p>
+                          </div>
+                          <div className="p-2 bg-white/20 rounded-full text-white group-hover:translate-x-1 transition-transform">
+                            <ArrowRight size={18} />
+                          </div>
+                        </div>
+                      </Link>
                     </div>
 
                     {/* 0. Pool Game (Featured Large Banner) */}
@@ -471,7 +489,6 @@ const Index = () => {
           </div>
         </div>
 
-
         {/* =========================================
             DESKTOP VIEW (Original Site)
             Visible only on larger screens (md+)
@@ -518,161 +535,194 @@ const Index = () => {
                 The smartest web toolkit. Compare gadgets, generate viral content, and optimize your workflow.
               </p>
 
-              {/* SEARCH BAR & CHIPS */}
-              <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                  <div className="relative flex items-center bg-card rounded-xl border-2 shadow-xl">
-                    <Search className="absolute left-4 text-muted-foreground h-6 w-6" />
-                    <Input
-                      placeholder="Search tools (e.g. 'pdf', 'resize', 'instagram')..."
-                      value={searchTerm}
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        if (e.target.value) scrollToTools();
-                      }}
-                      className="pl-12 h-16 text-lg border-0 bg-transparent focus-visible:ring-0 rounded-xl"
-                    />
-                    <Button className="hidden md:flex absolute right-2 h-12 px-6 rounded-lg bg-primary text-primary-foreground font-semibold" onClick={scrollToTools}>
-                      Search
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Quick Chips */}
-                <div className="flex flex-wrap justify-center gap-2">
-                  <span className="text-sm font-medium text-muted-foreground py-1">Quick Filters:</span>
-                  {[
-                    { id: 'all', label: 'All' },
-                    { id: 'pdf', label: '📄 PDF' },
-                    { id: 'ai', label: '🤖 AI Tools' },
-                    { id: 'image', label: '🖼️ Image' },
-                    { id: 'converter', label: '⚡ Converters' },
-                    { id: 'analyzer', label: '🌐 SEO' }
-                  ].map((chip) => (
-                    <Button
-                      key={chip.id}
-                      variant={selectedCategory === chip.id ? "default" : "outline"}
-                      size="sm"
-                      className="rounded-full text-xs md:text-sm px-4 h-9"
-                      onClick={() => {
-                        setSelectedCategory(chip.id);
-                        scrollToTools();
-                      }}
-                    >
-                      {chip.label}
-                    </Button>
-                  ))}
-                </div>
+              {/* MAGIC BAR (AI SMART SEARCH) */}
+              <div className="max-w-4xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+                <MagicBar />
               </div>
 
+              {/* Quick Chips */}
+              <div className="flex flex-wrap justify-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground py-1">Quick Filters:</span>
+                {[
+                  { id: 'all', label: 'All' },
+                  { id: 'pdf', label: '📄 PDF' },
+                  { id: 'ai', label: '🤖 AI Tools' },
+                  { id: 'image', label: '🖼️ Image' },
+                  { id: 'converter', label: '⚡ Converters' },
+                  { id: 'analyzer', label: '🌐 SEO' }
+                ].map((chip) => (
+                  <Button
+                    key={chip.id}
+                    variant={selectedCategory === chip.id ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full text-xs md:text-sm px-4 h-9"
+                    onClick={() => {
+                      setSelectedCategory(chip.id);
+                      scrollToTools();
+                    }}
+                  >
+                    {chip.label}
+                  </Button>
+                ))}
+              </div>
             </div>
           </section>
 
           {/* Compact Featured Section */}
           <section className="container mx-auto px-4 pb-12">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-yellow-500" />
-                <h2 className="text-xl font-bold uppercase tracking-wide text-muted-foreground">Trending Now</h2>
+                <h2 className="text-xl font-bold uppercase tracking-wide text-muted-foreground">Featured Tool</h2>
               </div>
+            </div>
 
-              {/* Compact Grid for Top Tools */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* 0. Pool Shooter (Featured) */}
-                <Link to="/tools/pool-shooter" className="group col-span-1 md:col-span-2 relative overflow-hidden rounded-xl border-0 shadow-md hover:shadow-xl transition-all">
-                  <div className="absolute inset-0">
-                    <img src="/assets/pool-feature.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" alt="Pool Banner" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                  </div>
-                  <Card className="h-full bg-transparent border-0 relative z-10 flex flex-col justify-end min-h-[160px]">
-                    <CardContent className="p-5">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-emerald-600 text-white rounded-lg shadow-lg">
-                          <Trophy className="w-5 h-5" />
+            {/* NEW: Desktop Spotlight Banner for Axevora Circle */}
+            <div className="mb-10">
+              <Link to="/tools/axevora-circle" className="block group">
+                <div className="relative h-48 md:h-64 rounded-3xl overflow-hidden shadow-2xl border border-white/10 transition-all duration-700 bg-slate-950">
+                  {/* Animated Background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 via-purple-900/40 to-slate-900/40 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-purple-600/10 blur-3xl"></div>
+
+                  <div className="absolute inset-0 flex items-center px-8 md:px-16 gap-8">
+                    <div className="hidden md:flex w-32 h-32 bg-indigo-600 rounded-3xl p-6 items-center justify-center shadow-[0_0_50px_rgba(79,70,229,0.5)] transform -rotate-6 group-hover:rotate-0 transition-transform duration-500">
+                      <Users className="w-full h-full text-white" />
+                    </div>
+
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Badge className="bg-indigo-500 hover:bg-indigo-600 border-0 animate-pulse">LIVE: Axevora Circle</Badge>
+                        <span className="text-white/40 text-xs font-bold tracking-[0.2em] uppercase">Private & Instant</span>
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
+                        Anonymous <span className="text-indigo-400">Global Hub</span>
+                      </h2>
+                      <p className="text-white/60 text-base md:text-lg max-w-xl font-medium">
+                        No accounts. No history. Just pure real-time discussions with everyone around the globe.
+                      </p>
+                      <div className="flex items-center gap-4 pt-2">
+                        <Button size="lg" className="rounded-full bg-white text-indigo-950 font-black hover:bg-indigo-50 px-8 shadow-xl transform active:scale-95 transition-all">
+                          JOIN THE CIRCLE
+                        </Button>
+                        <div className="flex -space-x-3 overflow-hidden opacity-50">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-950 bg-indigo-500/20 backdrop-blur-sm" />
+                          ))}
                         </div>
-                        <Badge className="bg-emerald-500 hover:bg-emerald-600 border-0">NEW GAME</Badge>
                       </div>
-                      <h3 className="font-black text-2xl text-white group-hover:text-emerald-400 transition-colors">Pool Shooter</h3>
-                      <p className="text-emerald-100/80 font-medium">Relaxing Bubble Shooter with Arcade Physics</p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                    </div>
+                  </div>
 
-                {/* 0.1 2048 Game (Featured) */}
-                <Link to="/tools/2048-game" className="group">
-                  <Card className="h-full border-2 border-amber-400/50 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer shadow-sm hover:shadow-md">
-                    <CardContent className="p-5 flex flex-row items-center gap-4">
-                      <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600">
-                        <Gamepad2 className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground group-hover:text-amber-600 transition-colors">2048 Puzzle</h3>
-                        <p className="text-xs text-muted-foreground">Addictive Logic Game</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-                {/* 1. Tech Versus */}
-                <Link to="/tools/tech-versus" className="group">
-                  <Card className="h-full border hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer">
-                    <CardContent className="p-5 flex flex-row items-center gap-4">
-                      <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600">
-                        <Smartphone className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground group-hover:text-indigo-600 transition-colors">AI Comparison</h3>
-                        <p className="text-xs text-muted-foreground">Gadgets, Food, anything.</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                  {/* Decorative Elements */}
+                  <div className="absolute top-4 right-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                    <Sparkles className="w-12 h-12 text-white animate-spin-slow" />
+                  </div>
+                </div>
+              </Link>
+            </div>
 
-                {/* 2. Video to Shorts */}
-                <Link to="/tools/video-to-shorts" className="group">
-                  <Card className="h-full border hover:border-red-500/50 hover:bg-red-500/5 transition-all cursor-pointer">
-                    <CardContent className="p-5 flex flex-row items-center gap-4">
-                      <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600">
-                        <Scissors className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground group-hover:text-red-600 transition-colors">Video to Shorts</h3>
-                        <p className="text-xs text-muted-foreground">Viral AI Clipper</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+            <div className="flex items-center gap-2 mb-6">
+              <TrendingUp className="w-5 h-5 text-orange-500" />
+              <h2 className="text-xl font-bold uppercase tracking-wide text-muted-foreground">Trending Now</h2>
+            </div>
 
-                {/* 3. Image Resizer (New) */}
-                <Link to="/tools/image-resizer" className="group">
-                  <Card className="h-full border hover:border-green-500/50 hover:bg-green-500/5 transition-all cursor-pointer">
-                    <CardContent className="p-5 flex flex-row items-center gap-4">
-                      <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600">
-                        <Smartphone className="w-6 h-6" /> {/* Using Smartphone/Image icon */}
+            {/* Compact Grid for Top Tools */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* 0. Pool Shooter (Featured) */}
+              <Link to="/tools/pool-shooter" className="group col-span-1 md:col-span-2 relative overflow-hidden rounded-xl border-0 shadow-md hover:shadow-xl transition-all">
+                <div className="absolute inset-0">
+                  <img src="/assets/pool-feature.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" alt="Pool Banner" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                </div>
+                <Card className="h-full bg-transparent border-0 relative z-10 flex flex-col justify-end min-h-[160px]">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-emerald-600 text-white rounded-lg shadow-lg">
+                        <Trophy className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="font-bold text-foreground group-hover:text-green-600 transition-colors">Image Resizer</h3>
-                        <p className="text-xs text-muted-foreground">For Insta & Amazon</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      <Badge className="bg-emerald-500 hover:bg-emerald-600 border-0">NEW GAME</Badge>
+                    </div>
+                    <h3 className="font-black text-2xl text-white group-hover:text-emerald-400 transition-colors">Pool Shooter</h3>
+                    <p className="text-emerald-100/80 font-medium">Relaxing Bubble Shooter with Arcade Physics</p>
+                  </CardContent>
+                </Card>
+              </Link>
 
-                {/* 4. Caption Gen */}
-                <Link to="/tools/ai-caption-generator" className="group">
-                  <Card className="h-full border hover:border-purple-500/50 hover:bg-purple-500/5 transition-all cursor-pointer">
-                    <CardContent className="p-5 flex flex-row items-center gap-4">
-                      <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600">
-                        <Sparkles className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground group-hover:text-purple-600 transition-colors">Caption Gen</h3>
-                        <p className="text-xs text-muted-foreground">Viral Hooks AI</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </div>
+              {/* 0.1 2048 Game (Featured) */}
+              <Link to="/tools/2048-game" className="group">
+                <Card className="h-full border-2 border-amber-400/50 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                  <CardContent className="p-5 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600">
+                      <Gamepad2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-amber-600 transition-colors">2048 Puzzle</h3>
+                      <p className="text-xs text-muted-foreground">Addictive Logic Game</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+              {/* 1. Tech Versus */}
+              <Link to="/tools/tech-versus" className="group">
+                <Card className="h-full border hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer">
+                  <CardContent className="p-5 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600">
+                      <Smartphone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-indigo-600 transition-colors">AI Comparison</h3>
+                      <p className="text-xs text-muted-foreground">Gadgets, Food, anything.</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* 2. Video to Shorts */}
+              <Link to="/tools/video-to-shorts" className="group">
+                <Card className="h-full border hover:border-red-500/50 hover:bg-red-500/5 transition-all cursor-pointer">
+                  <CardContent className="p-5 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600">
+                      <Scissors className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-red-600 transition-colors">Video to Shorts</h3>
+                      <p className="text-xs text-muted-foreground">Viral AI Clipper</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* 3. Image Resizer (New) */}
+              <Link to="/tools/image-resizer" className="group">
+                <Card className="h-full border hover:border-green-500/50 hover:bg-green-500/5 transition-all cursor-pointer">
+                  <CardContent className="p-5 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600">
+                      <Smartphone className="w-6 h-6" /> {/* Using Smartphone/Image icon */}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-green-600 transition-colors">Image Resizer</h3>
+                      <p className="text-xs text-muted-foreground">For Insta & Amazon</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* 4. Caption Gen */}
+              <Link to="/tools/ai-caption-generator" className="group">
+                <Card className="h-full border hover:border-purple-500/50 hover:bg-purple-500/5 transition-all cursor-pointer">
+                  <CardContent className="p-5 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-purple-600 transition-colors">Caption Gen</h3>
+                      <p className="text-xs text-muted-foreground">Viral Hooks AI</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </section>
 
@@ -760,10 +810,9 @@ const Index = () => {
           {/* Blog & Resources */}
 
         </div>
-
-      </main >
+      </main>
       <Footer />
-    </div >
+    </div>
   );
 };
 

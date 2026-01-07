@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Utensils, Apple, Target
+  AppWindow, Utensils, Apple, Target, Users
 } from "lucide-react";
 
 const allCategories = [
@@ -1336,6 +1336,7 @@ const allTools = [
     name: "Background Remover",
     subheading: "AI-powered background removal",
     description: "Remove backgrounds from images with high accuracy using AI technology.",
+    keywords: ["bg", "remove", "transparent", "isolate", "social", "profile"],
     category: "image",
     icon: Scissors,
     path: "/tools/image-background-remover"
@@ -2019,6 +2020,7 @@ const allTools = [
     name: "Typing Speed Test",
     subheading: "Check your WPM",
     description: "Test your typing speed and accuracy with our free online typing test.",
+    keywords: ["typing", "wpm", "speed", "keyboard", "test", "game"],
     category: "games",
     icon: Keyboard,
     path: "/tools/typing-speed-test",
@@ -2053,6 +2055,7 @@ const allTools = [
     name: "2048 Game",
     subheading: "Classic puzzle game",
     description: "Play the addictive 2048 puzzle game online. Merge numbers to win!",
+    keywords: ["2048", "puzzle", "numbers", "math", "logic", "game"],
     category: "games",
     icon: Gamepad2,
     path: "/tools/2048-game",
@@ -2082,6 +2085,7 @@ const allTools = [
     name: "Number Flow",
     subheading: "Connect numbers logic puzzle",
     description: "Connect the numbered dots in order to fill the entire grid. A relaxing logic puzzle.",
+    keywords: ["dots", "connect", "flow", "logic", "numbers", "game"],
     category: "games",
     icon: Gamepad2,
     path: "/tools/number-flow",
@@ -2215,6 +2219,7 @@ const allTools = [
     name: "Click Speed Test",
     subheading: "Check your CPS",
     description: "Test your clicking speed with our CPS (Clicks Per Second) test.",
+    keywords: ["click", "cps", "speed", "mouse", "test", "game"],
     category: "games",
     icon: MousePointer2,
     path: "/tools/click-speed-test",
@@ -2255,6 +2260,7 @@ const allTools = [
     name: "Reaction Time Test",
     subheading: "Test your reflexes",
     description: "Measure your visual reaction time in milliseconds. Are you fast enough?",
+    keywords: ["reaction", "reflex", "speed", "test", "game", "ms"],
     category: "games",
     icon: Timer,
     path: "/tools/reaction-time-test",
@@ -2289,6 +2295,7 @@ const allTools = [
     name: "Memory Match Game",
     subheading: "Train your brain",
     description: "Classic card matching game to improve your short-term memory and focus.",
+    keywords: ["memory", "cards", "match", "brain", "train", "game"],
     category: "games",
     icon: Brain,
     path: "/tools/memory-match-game",
@@ -2316,6 +2323,7 @@ const allTools = [
     name: "Math Speed Challenge",
     subheading: "Mental math practice",
     description: "Solve rapid-fire arithmetic problems against the clock. Great for students!",
+    keywords: ["math", "arithmetic", "numbers", "speed", "challenge", "game"],
     category: "games",
     icon: Calculator,
     path: "/tools/math-speed-challenge",
@@ -2627,6 +2635,7 @@ const allTools = [
     name: "AI Thumbnail Generator",
     subheading: "Create viral YouTube thumbnails",
     description: "Generate high-CTR thumbnails with AI. Remove backgrounds, add neon text, and use MrBeast-style effects.",
+    keywords: ["youtube", "thumbnail", "viral", "ctr", "mrbeast", "video"],
     category: "ai",
     icon: Sparkles,
     path: "/tools/thumbnail-generator"
@@ -2676,15 +2685,6 @@ const allTools = [
     icon: Code,
     path: "/tools/ai-tool-generator"
   },
-  {
-    id: "chat-with-pdf",
-    name: "Chat with PDF",
-    subheading: "Talk to your documents",
-    description: "Upload a PDF and ask questions, summarize, or extract data using AI.",
-    category: "ai",
-    icon: MessageSquare,
-    path: "/tools/chat-with-pdf"
-  },
 
 
   {
@@ -2710,6 +2710,7 @@ const allTools = [
     name: "AI Reel Script Generator",
     subheading: "Video scripts in seconds",
     description: "Generate viral scripts for Reels, Shorts, and TikTok videos.",
+    keywords: ["youtube", "tiktok", "shorts", "viral", "video", "script"],
     category: "ai",
     icon: Video,
     path: "/tools/ai-reel-script-generator"
@@ -2866,11 +2867,39 @@ const allTools = [
     name: "Pool Bubble Shooter",
     subheading: "Classic Pool Theme",
     description: "Classic bubble shooter game with a pool table theme. Match balls to clear the table!",
+    keywords: ["pool", "billiards", "game", "shooter", "bubbles", "ball"],
     category: "games",
     icon: Target,
     path: "/tools/pool-shooter",
   },
-
+  {
+    id: "ai-remix-suite",
+    name: "AI Content Remix",
+    subheading: "Rewrite & Transform Text",
+    description: "Summarize, professionalize, and remix content using advanced AI personas.",
+    category: "ai",
+    icon: Sparkles,
+    path: "/tools/ai-remix-suite",
+  },
+  {
+    id: "smart-pdf",
+    name: "Smart PDF AI",
+    subheading: "Analyze & Chat with PDF",
+    description: "Extract text and chat with your PDF documents using intelligent AI analysis.",
+    category: "ai",
+    icon: FileText,
+    path: "/tools/smart-pdf",
+  },
+  {
+    id: "axevora-circle",
+    name: "Axevora Circle",
+    subheading: "Instant Discussion Hub",
+    description: "Join or create private discussion 'circles' for students, friends, and colleagues. No signup, real-time sync, and private DM support.",
+    category: "ai",
+    icon: Users,
+    path: "/tools/axevora-circle",
+    keywords: ["chat", "discussion", "group", "private", "message", "circle", "student", "colleague"]
+  },
 ];
 
 export const categories = allCategories;
