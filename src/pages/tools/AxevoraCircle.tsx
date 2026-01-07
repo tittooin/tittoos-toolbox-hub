@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
 import { auth, db } from "@/lib/firebase";
@@ -47,6 +48,12 @@ interface CircleUser {
     lastSeen: any;
     isOnline: boolean;
 }
+
+const FEATURED_ROOMS = [
+    "Global Chat 🌍", "Marketing 🚀", "Coding & Dev 💻",
+    "Design Hub 🎨", "Startup Talk 💼", "Recipes 🍳",
+    "True News 📰", "Storytelling 📖", "Art Work 🎭", "Affiliate 💸"
+];
 
 export default function AxevoraCircle() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -254,6 +261,25 @@ export default function AxevoraCircle() {
                                     onChange={(e) => setRoomId(e.target.value)}
                                     className="bg-white/50"
                                 />
+                            </div>
+
+                            {/* Featured Rooms Helper */}
+                            <div className="pt-2">
+                                <p className="text-xs text-muted-foreground mb-2 font-semibold flex items-center gap-1">
+                                    <Sparkles className="w-3 h-3 text-yellow-500" /> Trending Circles:
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {FEATURED_ROOMS.map((room) => (
+                                        <Badge
+                                            key={room}
+                                            variant="outline"
+                                            className="cursor-pointer hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-900/20 transition-all py-1.5 px-3 text-xs"
+                                            onClick={() => setRoomId(room)}
+                                        >
+                                            {room}
+                                        </Badge>
+                                    ))}
+                                </div>
                             </div>
                             <Button onClick={handleJoin} className="w-full h-12 text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600">
                                 Join Circle Now
