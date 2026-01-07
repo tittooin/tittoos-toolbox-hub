@@ -17,10 +17,20 @@ const Privacy = () => {
       <Header />
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 className="text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
+
         <h2 className="text-2xl font-semibold text-foreground mb-4">DMCA / Removal Requests</h2>
         <p className="mb-6">
           To submit a removal request, email <a href="mailto:admin@axevora.com" className="text-primary hover:text-primary/80">admin@axevora.com</a>
           with links, a description of the content, and proof of ownership. We aim to respond promptly.
+        </p>
+
+        <h2 className="text-2xl font-semibold text-foreground mb-4">AI Services & Third-Party APIs</h2>
+        <p className="mb-6">
+          The Axevora app and website utilize third-party Generative AI services (including but not limited to
+          <strong> Google Gemini</strong> and <strong>Pollinations.ai</strong>) to provide content generation,
+          image creation, and productivity features. These services are integrated as third-party APIs.
+          No personal user data is shared with these providers except for the prompts explicitly provided by the user.
         </p>
 
         <h3 className="text-2xl font-semibold text-foreground mb-4">Games & Apps Privacy</h3>
@@ -52,7 +62,7 @@ const Privacy = () => {
       </main>
 
       <Footer />
-    </div>
+    </div >
   );
 };
 

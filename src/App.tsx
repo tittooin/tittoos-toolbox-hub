@@ -145,7 +145,10 @@ const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
 
 // Games
 const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
+const PoolBubbles = lazy(() => import("./pages/tools/PoolBubbles"));
+const PromoShowcase = lazy(() => import("./pages/PromoShowcase")); // Added Promo Showcase
 const Game2048 = lazy(() => import("./pages/tools/Game2048"));
+
 const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
 const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
 const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
@@ -196,6 +199,7 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/attributions" element={<Attributions />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/promo" element={<PromoShowcase />} /> {/* Registered Promo route */}
                 <Route path="/blog/:slug" element={<Blog />} />
                 <Route path="/author/:slug" element={<Author />} />
                 <Route path="/submit-blog" element={<SubmitBlog />} />
@@ -297,6 +301,9 @@ const App = () => (
                 <Route path="/tools/xml-validator" element={<XMLFormatter mode="validator" />} />
                 <Route path="/tools/password-validator" element={<PasswordValidator />} />
                 <Route path="/tools/email-validator" element={<EmailValidator />} />
+
+                {/* Games */}
+                <Route path="/tools/pool-shooter" element={<PoolBubbles />} />
 
 
                 {/* Encoders */}

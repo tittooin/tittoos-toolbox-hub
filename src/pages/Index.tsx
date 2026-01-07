@@ -115,7 +115,32 @@ const Index = () => {
                       </Button>
                     </div>
 
-                    {/* 0. 2048 Game (Catchy Square Banner) */}
+                    {/* 0. Pool Game (Featured Large Banner) */}
+                    <div className="flex justify-center mb-6">
+                      <Link to="/tools/pool-shooter" className="w-full max-w-[350px] aspect-[2/1] group relative overflow-hidden rounded-3xl shadow-2xl border-4 border-emerald-900/50">
+                        {/* Background Image */}
+                        <img
+                          src="/assets/pool-feature.png"
+                          alt="Pool Shooter"
+                          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        />
+
+                        {/* Overlay Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+                        {/* Content */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 text-center text-white z-10">
+                          <h1 className="text-3xl font-black tracking-tighter drop-shadow-md mb-1 text-emerald-400">POOL SHOOTER</h1>
+                          <p className="font-bold text-xs opacity-90 mb-3 uppercase tracking-widest text-emerald-100">Classic Arcade</p>
+
+                          <div className="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg animate-pulse flex items-center gap-2 group-hover:bg-emerald-500 transition-colors">
+                            PLAY NOW <Play size={16} fill="currentColor" />
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+
+                    {/* 0.1 2048 Game (Catchy Square Banner) */}
                     <div className="flex justify-center mb-6">
                       <Link to="/tools/2048-game" className="w-full max-w-[300px] aspect-square group relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-3xl shadow-2xl transform transition-transform group-active:scale-95 group-hover:scale-105 duration-300 border-4 border-white/30 animate-in zoom-in-50">
@@ -554,7 +579,27 @@ const Index = () => {
 
               {/* Compact Grid for Top Tools */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* 0. 2048 Game (Featured) */}
+                {/* 0. Pool Shooter (Featured) */}
+                <Link to="/tools/pool-shooter" className="group col-span-1 md:col-span-2 relative overflow-hidden rounded-xl border-0 shadow-md hover:shadow-xl transition-all">
+                  <div className="absolute inset-0">
+                    <img src="/assets/pool-feature.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" alt="Pool Banner" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                  </div>
+                  <Card className="h-full bg-transparent border-0 relative z-10 flex flex-col justify-end min-h-[160px]">
+                    <CardContent className="p-5">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-emerald-600 text-white rounded-lg shadow-lg">
+                          <Trophy className="w-5 h-5" />
+                        </div>
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600 border-0">NEW GAME</Badge>
+                      </div>
+                      <h3 className="font-black text-2xl text-white group-hover:text-emerald-400 transition-colors">Pool Shooter</h3>
+                      <p className="text-emerald-100/80 font-medium">Relaxing Bubble Shooter with Arcade Physics</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* 0.1 2048 Game (Featured) */}
                 <Link to="/tools/2048-game" className="group">
                   <Card className="h-full border-2 border-amber-400/50 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer shadow-sm hover:shadow-md">
                     <CardContent className="p-5 flex flex-row items-center gap-4">

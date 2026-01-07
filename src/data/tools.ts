@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Utensils, Apple
+  AppWindow, Utensils, Apple, Target
 } from "lucide-react";
 
 const allCategories = [
@@ -2860,6 +2860,15 @@ const allTools = [
     category: "validators",
     icon: Mail,
     path: "/tools/email-validator"
+  },
+  {
+    id: "pool-shooter",
+    name: "Pool Bubble Shooter",
+    subheading: "Classic Pool Theme",
+    description: "Classic bubble shooter game with a pool table theme. Match balls to clear the table!",
+    category: "games",
+    icon: Target,
+    path: "/tools/pool-shooter",
   },
 
 ];
