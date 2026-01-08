@@ -107,11 +107,12 @@ export default function AxevoraCircle() {
             const unsubUsers = onSnapshot(uq, (snapshot) => {
                 console.log("👥 Snapshot received. Docs:", snapshot.size);
                 const roomUsers = snapshot.docs.map(doc => {
-                    console.log("Found User:", doc.id, doc.data());
-                    return doc.data() as CircleUser;
+                    const data = doc.data() as CircleUser;
+                    return { ...data, uid: doc.id }; // Ensure UID is grabbed
                 });
-                // DEBUG: Show ALL users, even myself, to confirm server read works
-                setUsers(roomUsers);
+
+                // Normal behavior: Filter out self
+                setUsers(roomUsers.filter(u => u.uid !== user.uid));
             }, (error) => {
                 console.error("🔥 Snapshot Error:", error);
                 toast.error("Sync Error: " + error.message);
