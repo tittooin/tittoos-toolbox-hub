@@ -110,7 +110,8 @@ export default function AxevoraCircle() {
                     console.log("Found User:", doc.id, doc.data());
                     return doc.data() as CircleUser;
                 });
-                setUsers(roomUsers.filter(u => u.uid !== user.uid));
+                // DEBUG: Show ALL users, even myself, to confirm server read works
+                setUsers(roomUsers);
             }, (error) => {
                 console.error("🔥 Snapshot Error:", error);
                 toast.error("Sync Error: " + error.message);
