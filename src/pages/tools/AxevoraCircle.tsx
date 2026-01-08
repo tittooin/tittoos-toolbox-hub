@@ -98,10 +98,11 @@ export default function AxevoraCircle() {
                 setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
             });
 
-            // Listen for users (Presence)
+            // Listen for users (Presence) - RELAXED QUERY FOR DEBUGGING
+            // Removed 'where' clause to ensure we see everyone. We rely on 'limit' and client-side logic.
             const uq = query(
                 collection(db, "circle_rooms", roomId, "users"),
-                where("lastSeen", ">", new Date(Date.now() - 5 * 60 * 1000)), // Active in last 5 mins
+                orderBy("lastSeen", "desc"), // Show most active first
                 limit(100)
             );
 
@@ -112,13 +113,18 @@ export default function AxevoraCircle() {
 
             // Heartbeat System (Every 60s)
             const updatePresence = async () => {
-                const userDocRef = doc(db, "circle_rooms", roomId, "users", user.uid);
-                await setDoc(userDocRef, {
-                    uid: user.uid,
-                    name: nickname || "Anonymous",
-                    isOnline: true,
-                    lastSeen: serverTimestamp() // Always update server time
-                }, { merge: true });
+                try {
+                    const userDocRef = doc(db, "circle_rooms", roomId, "users", user.uid);
+                    await setDoc(userDocRef, {
+                        uid: user.uid,
+                        name: nickname || "Anonymous",
+                        isOnline: true,
+                        lastSeen: serverTimestamp()
+                    }, { merge: true });
+                    console.log("Heartbeat sent for:", user.uid);
+                } catch (err) {
+                    console.error("Presence Update Failed:", err);
+                }
             };
 
             // Initial presence update
@@ -130,9 +136,9 @@ export default function AxevoraCircle() {
                 unsubMessages();
                 unsubUsers();
                 clearInterval(interval);
+                // Mark offline on exit
                 const userDocRef = doc(db, "circle_rooms", roomId, "users", user.uid);
-                // We don't mark offline explicitly here to avoid "flicker" on refresh, relying on lastSeen instead.
-                // But for explicit leave, we can.
+                setDoc(userDocRef, { isOnline: false }, { merge: true }).catch(err => console.error("Offline mark failed:", err));
             };
         }
     }, [hasJoined, user, roomId]);
