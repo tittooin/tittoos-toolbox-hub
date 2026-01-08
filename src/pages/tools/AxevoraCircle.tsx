@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import {
     Users, MessageSquare, Shield, Send, User,
     ArrowLeft, Share2, Copy, Trash2, Phone, Mail,
-    Search, Plus, Sparkles, LogOut
+    Search, Plus, Sparkles, LogOut, Mic, Zap, Palette, Heart, Check, X
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +39,7 @@ interface Message {
     senderUid: string;
     senderName: string;
     timestamp: any;
-    type: 'text' | 'contact';
+    type: 'text' | 'contact' | 'buzz';
 }
 
 interface CircleUser {
@@ -67,6 +67,8 @@ export default function AxevoraCircle() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [users, setUsers] = useState<CircleUser[]>([]);
+    const [theme, setTheme] = useState('default');
+    const [isBuzzing, setIsBuzzing] = useState(false);
 
     const [privateChats, setPrivateChats] = useState<{ [key: string]: Message[] }>({});
     const [activePrivateUser, setActivePrivateUser] = useState<CircleUser | null>(null);
@@ -85,7 +87,7 @@ export default function AxevoraCircle() {
         if (hasJoined && user && roomId) {
             // Listen for group messages
             const q = query(
-                collection(db, "circles", roomId, "messages"),
+                collection(db, "circles", "rooms", roomId, "messages"),
                 orderBy("timestamp", "asc"),
                 limit(100)
             );
@@ -96,11 +98,11 @@ export default function AxevoraCircle() {
                 setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
             });
 
-            // Listen for users in this room
+            // Listen for users (Presence)
             const uq = query(
-                collection(db, "circles", roomId, "users"),
-                where("isOnline", "==", true),
-                limit(50)
+                collection(db, "circles", "rooms", roomId, "users"),
+                where("lastSeen", ">", new Date(Date.now() - 5 * 60 * 1000)), // Active in last 5 mins
+                limit(100)
             );
 
             const unsubUsers = onSnapshot(uq, (snapshot) => {
@@ -108,20 +110,29 @@ export default function AxevoraCircle() {
                 setUsers(roomUsers.filter(u => u.uid !== user.uid));
             });
 
-            // Set self as active
-            const userDocRef = doc(db, "circles", roomId, "users", user.uid);
-            setDoc(userDocRef, {
-                uid: user.uid,
-                name: nickname || "Anonymous",
-                isOnline: true,
-                lastSeen: serverTimestamp()
-            });
+            // Heartbeat System (Every 60s)
+            const updatePresence = async () => {
+                const userDocRef = doc(db, "circles", "rooms", roomId, "users", user.uid);
+                await setDoc(userDocRef, {
+                    uid: user.uid,
+                    name: nickname || "Anonymous",
+                    isOnline: true,
+                    lastSeen: serverTimestamp() // Always update server time
+                }, { merge: true });
+            };
 
-            // Cleanup on unmount/leave
+            // Initial presence update
+            updatePresence();
+            const interval = setInterval(updatePresence, 60000);
+
+            // Cleanup
             return () => {
                 unsubMessages();
                 unsubUsers();
-                setDoc(userDocRef, { isOnline: false }, { merge: true });
+                clearInterval(interval);
+                const userDocRef = doc(db, "circles", "rooms", roomId, "users", user.uid);
+                // We don't mark offline explicitly here to avoid "flicker" on refresh, relying on lastSeen instead.
+                // But for explicit leave, we can.
             };
         }
     }, [hasJoined, user, roomId]);
@@ -142,6 +153,21 @@ export default function AxevoraCircle() {
                     ...prev,
                     [chatId]: msgs
                 }));
+
+                // Check for "Buzz" messages
+                const lastMsg = msgs[msgs.length - 1];
+                if (lastMsg && lastMsg.type === 'buzz' && Date.now() - (lastMsg.timestamp?.toMillis() || 0) < 5000 && lastMsg.senderUid !== user.uid) {
+                    if (!isBuzzing) {
+                        setIsBuzzing(true);
+                        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                        // Simple Audio Beep Logic
+                        const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3");
+                        audio.volume = 0.5;
+                        audio.play().catch(() => { });
+                        setTimeout(() => setIsBuzzing(false), 2000);
+                    }
+                }
+
                 setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
             });
 
@@ -159,13 +185,16 @@ export default function AxevoraCircle() {
             return;
         }
 
+        const normalizedRoom = roomId.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
         try {
             if (!user) {
                 await signInAnonymously(auth);
             }
             setHasJoined(true);
-            setSearchParams({ room: roomId });
-            toast.success(`Joined Circle: ${roomId}`);
+            setRoomId(normalizedRoom); // Critical: Use normalized ID for DB
+            setSearchParams({ room: normalizedRoom });
+            toast.success(`Joined Circle: ${normalizedRoom}`);
         } catch (error: any) {
             console.error("Firebase Auth Error:", error);
             toast.error(`Failed: ${error.message || "Check your connection"}`);
@@ -184,21 +213,31 @@ export default function AxevoraCircle() {
             type: 'text'
         };
 
-        // Optimistically clear input for instant feedback
+        // Optimistically clear input
         setNewMessage('');
 
         try {
             if (isPrivate && activePrivateUser) {
-                // Private DM Logic
                 const chatId = [user.uid, activePrivateUser.uid].sort().join('_');
                 await addDoc(collection(db, "private_chats", chatId, "messages"), msgData);
             } else {
-                await addDoc(collection(db, "circles", roomId, "messages"), msgData);
+                await addDoc(collection(db, "circles", "rooms", roomId, "messages"), msgData);
             }
         } catch (error) {
             toast.error("Message failed to send");
-            // Optional: Restore message on failure could go here, but omitted for simplicity
         }
+    };
+
+    const sendBuzz = async () => {
+        if (!user || !activePrivateUser) return;
+        const chatId = [user.uid, activePrivateUser.uid].sort().join('_');
+        await addDoc(collection(db, "private_chats", chatId, "messages"), {
+            text: "BUZZED YOU! 📳",
+            senderUid: user.uid,
+            senderName: nickname,
+            timestamp: serverTimestamp(),
+            type: 'buzz'
+        });
     };
 
     const shareContact = async (type: 'phone' | 'mail') => {
@@ -216,6 +255,32 @@ export default function AxevoraCircle() {
         });
     };
 
+    // Voice Input Handler
+    const handleVoiceInput = () => {
+        if (!('webkitSpeechRecognition' in window)) {
+            toast.error("Voice input not supported in this browser.");
+            return;
+        }
+        // @ts-ignore
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.start();
+        recognition.onresult = (event: any) => {
+            setNewMessage(prev => prev + " " + event.results[0][0].transcript);
+        };
+    };
+
+    // Theme Backgrounds
+    const getThemeClass = () => {
+        switch (theme) {
+            case 'love': return "bg-gradient-from-pink-100-to-rose-100 dark:bg-gradient-to-br dark:from-pink-950 dark:via-red-950 dark:to-pink-950";
+            case 'cyberpunk': return "bg-[conic-gradient(at_bottom_left,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900 border-neon";
+            case 'sunset': return "bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 dark:from-orange-950 dark:via-amber-950 dark:to-yellow-950";
+            case 'nature': return "bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950 dark:to-emerald-950";
+            default: return "";
+        }
+    };
+
     // 2. Render Join View
     if (!hasJoined) {
         return (
@@ -223,13 +288,6 @@ export default function AxevoraCircle() {
                 title="Axevora Circle"
                 description="Anonymous real-time discussions for everyone."
                 icon={Users}
-                features={[
-                    "No Signup required",
-                    "Disposable Chat Rooms",
-                    "Private 1:1 Messaging",
-                    "Secure Contact Sharing",
-                    "Real-time Collaboration"
-                ]}
             >
                 <div className="max-w-md mx-auto py-12">
                     <Card className="border-2 border-primary/20 shadow-2xl glassmorphism">
@@ -240,7 +298,6 @@ export default function AxevoraCircle() {
                             <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-400">Start a Discussion</CardTitle>
                             <CardDescription className="px-4">
                                 Create a <strong>Room ID</strong> (e.g. <code>TittoosChat</code>) and share it.
-                                Anyone with the same ID can join instantly.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -256,7 +313,7 @@ export default function AxevoraCircle() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Room Name or ID</label>
                                 <Input
-                                    placeholder="e.g. StudyRoom77, FamilyGroup"
+                                    placeholder="e.g. StudyRoom77"
                                     value={roomId}
                                     onChange={(e) => setRoomId(e.target.value)}
                                     className="bg-white/50"
@@ -295,21 +352,21 @@ export default function AxevoraCircle() {
     return (
         <ToolTemplate
             title={`Circle: ${roomId}`}
-            description="You are discussing anonymously. Share room name to invite others."
+            description="You are discussing anonymously."
             icon={Users}
         >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[700px]">
+            <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 h-[700px] transition-all duration-500 rounded-xl p-2 ${getThemeClass()} ${isBuzzing ? 'animate-shake' : ''}`}>
 
                 {/* Sidebar: Users List */}
                 <div className="lg:col-span-3 space-y-4">
-                    <Card className="h-full border-primary/10">
+                    <Card className="h-full border-primary/10 bg-background/80 backdrop-blur-md">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-semibold flex items-center gap-2">
                                 <Users className="w-4 h-4" /> Active People ({users.length + 1})
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ScrollArea className="h-[600px] pr-4">
+                            <ScrollArea className="h-[550px] pr-4">
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-3 p-2 rounded-lg bg-primary/5 border border-primary/20">
                                         <Avatar className="h-8 w-8">
@@ -338,22 +395,26 @@ export default function AxevoraCircle() {
                                             <MessageSquare className="w-3 h-3 text-primary opacity-50" />
                                         </div>
                                     ))}
-
-                                    {users.length === 0 && (
-                                        <div className="text-center py-10 opacity-50">
-                                            <Users className="w-8 h-8 mx-auto mb-2" />
-                                            <p className="text-xs">Waiting for others to join...</p>
-                                        </div>
-                                    )}
                                 </div>
                             </ScrollArea>
+                            {/* Theme Selector Small */}
+                            <div className="pt-4 border-t mt-2">
+                                <p className="text-xs font-bold mb-2 flex items-center gap-1"><Palette className="w-3 h-3" /> Mood:</p>
+                                <div className="flex gap-1 justify-between">
+                                    <div onClick={() => setTheme('default')} className="w-6 h-6 rounded-full bg-gray-200 cursor-pointer border hover:scale-110 transition" />
+                                    <div onClick={() => setTheme('love')} className="w-6 h-6 rounded-full bg-pink-400 cursor-pointer border hover:scale-110 transition" />
+                                    <div onClick={() => setTheme('cyberpunk')} className="w-6 h-6 rounded-full bg-purple-600 cursor-pointer border hover:scale-110 transition" />
+                                    <div onClick={() => setTheme('sunset')} className="w-6 h-6 rounded-full bg-orange-400 cursor-pointer border hover:scale-110 transition" />
+                                    <div onClick={() => setTheme('nature')} className="w-6 h-6 rounded-full bg-green-400 cursor-pointer border hover:scale-110 transition" />
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Center: Chat Window */}
                 <div className="lg:col-span-9 flex flex-col gap-4">
-                    <Card className="flex-1 flex flex-col border-primary/10 overflow-hidden shadow-lg relative">
+                    <Card className="flex-1 flex flex-col border-primary/10 overflow-hidden shadow-lg relative bg-background/90 backdrop-blur-sm">
 
                         {/* Chat Tabs */}
                         <div className="bg-muted/50 border-b p-1 flex items-center justify-between">
@@ -364,37 +425,36 @@ export default function AxevoraCircle() {
                                     size="sm"
                                     className="h-8"
                                 >
-                                    <Users className="w-4 h-4 mr-2" /> Group Chat
+                                    <Users className="w-4 h-4 mr-2" /> Group ({roomId})
                                 </Button>
                                 {activePrivateUser && (
                                     <Button
                                         variant="default"
                                         size="sm"
-                                        className="h-8 bg-indigo-600 hover:bg-indigo-700"
+                                        className="h-8 bg-indigo-600 hover:bg-indigo-700 animate-pulse"
                                     >
-                                        <User className="w-4 h-4 mr-2" /> Private: {activePrivateUser.name}
+                                        <User className="w-4 h-4 mr-2" /> {activePrivateUser.name}
                                     </Button>
                                 )}
                             </div>
                             <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-8 border-primary/20 hover:bg-primary/10 gap-2"
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(window.location.href);
-                                        toast.success("Invite Link Copied! Share it with friends.");
-                                    }}
-                                >
-                                    <Share2 className="w-3 h-3" />
-                                    <span className="text-xs">Invite Friends</span>
-                                </Button>
+                                {activePrivateUser && (
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        className="h-8 px-2 font-bold"
+                                        onClick={sendBuzz}
+                                        title="Send a Buzz!"
+                                    >
+                                        <Zap className="w-4 h-4 mr-1 fill-yellow-300 text-yellow-300" /> BUZZ!
+                                    </Button>
+                                )}
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     className="h-8 w-8 text-muted-foreground hover:text-destructive"
                                     onClick={() => {
-                                        if (confirm("Leave this circle and wipe your local session?")) {
+                                        if (confirm("Leave this circle?")) {
                                             window.location.reload();
                                         }
                                     }}
@@ -419,40 +479,29 @@ export default function AxevoraCircle() {
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span className="text-[10px] font-bold text-muted-foreground">
                                                     {msg.senderUid === user?.uid ? 'Me' : msg.senderName}
+                                                    <span className="opacity-50 ml-1 text-[8px]">{msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </span>
                                             </div>
                                             <div className={`px-4 py-2 rounded-2xl max-w-[80%] shadow-sm ${msg.senderUid === user?.uid
                                                 ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                                : 'bg-muted rounded-tl-none'
+                                                : msg.type === 'buzz' ? 'bg-yellow-500 font-black text-black animate-bounce' : 'bg-muted rounded-tl-none'
                                                 }`}>
                                                 {msg.type === 'contact' ? (
                                                     <div className="flex items-center gap-2 p-1 font-bold">
                                                         <Sparkles className="w-4 h-4 text-yellow-300" />
                                                         <span>{msg.text}</span>
                                                     </div>
+                                                ) : msg.type === 'buzz' ? (
+                                                    <div className="flex items-center gap-2 p-1">
+                                                        <Zap className="w-5 h-5 fill-black" />
+                                                        <span>{msg.text}</span>
+                                                    </div>
                                                 ) : (
-                                                    <p className="text-sm">{msg.text}</p>
+                                                    <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                                                 )}
                                             </div>
                                         </div>
                                     ))}
-
-                                    {activePrivateUser && (
-                                        <div className="text-center py-20 opacity-40">
-                                            <Shield className="w-12 h-12 mx-auto mb-4" />
-                                            <p className="font-bold">End-to-End Encrypted Private Channel</p>
-                                            <p className="text-xs">Visible only to you and {activePrivateUser.name}</p>
-                                            <div className="flex justify-center gap-4 mt-6">
-                                                <Button variant="outline" size="sm" onClick={() => shareContact('phone')}>
-                                                    <Phone className="w-3 h-3 mr-2" /> Share My Number
-                                                </Button>
-                                                <Button variant="outline" size="sm" onClick={() => shareContact('mail')}>
-                                                    <Mail className="w-3 h-3 mr-2" /> Share My Email
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-
                                     <div ref={scrollRef} />
                                 </div>
                             </ScrollArea>
@@ -460,28 +509,22 @@ export default function AxevoraCircle() {
 
                         {/* Input Area */}
                         <div className="p-4 border-t bg-background/50 backdrop-blur-sm">
-                            <form onSubmit={(e) => sendMessage(e, !!activePrivateUser)} className="flex gap-2">
+                            <form onSubmit={(e) => sendMessage(e, !!activePrivateUser)} className="flex gap-2 items-center">
+                                <Button type="button" variant="ghost" size="icon" onClick={handleVoiceInput} className="hover:bg-primary/20">
+                                    <Mic className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
+                                </Button>
                                 <Input
-                                    placeholder={activePrivateUser ? `Message @${activePrivateUser.name} privately...` : "Say something to the group..."}
+                                    placeholder={activePrivateUser ? `Message @${activePrivateUser.name}...` : `Message #${roomId}...`}
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    className="flex-1 h-12"
+                                    className="flex-1 h-12 border-primary/20 focus-visible:ring-indigo-500"
                                 />
-                                <Button type="submit" className="h-12 w-12 rounded-full shadow-indigo-500/20 shadow-lg">
+                                <Button type="submit" className="h-12 w-12 rounded-full shadow-indigo-500/20 shadow-lg bg-gradient-to-r from-primary to-indigo-600 hover:scale-105 transition-transform">
                                     <Send className="w-5 h-5" />
                                 </Button>
                             </form>
                         </div>
                     </Card>
-
-                    <div className="flex justify-between items-center text-xs text-muted-foreground px-2">
-                        <p className="flex items-center gap-1">
-                            <Shield className="w-3 h-3 text-green-500" /> Anonymous Session Active
-                        </p>
-                        <p onClick={() => window.location.reload()} className="cursor-pointer hover:underline">
-                            Leave & Wipe Session
-                        </p>
-                    </div>
                 </div>
             </div>
         </ToolTemplate>
