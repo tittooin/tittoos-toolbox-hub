@@ -87,7 +87,7 @@ export default function AxevoraCircle() {
         if (hasJoined && user && roomId) {
             // Listen for group messages
             const q = query(
-                collection(db, "circles", "rooms", roomId, "messages"),
+                collection(db, "circle_rooms", roomId, "messages"),
                 orderBy("timestamp", "asc"),
                 limit(100)
             );
@@ -100,7 +100,7 @@ export default function AxevoraCircle() {
 
             // Listen for users (Presence)
             const uq = query(
-                collection(db, "circles", "rooms", roomId, "users"),
+                collection(db, "circle_rooms", roomId, "users"),
                 where("lastSeen", ">", new Date(Date.now() - 5 * 60 * 1000)), // Active in last 5 mins
                 limit(100)
             );
@@ -112,7 +112,7 @@ export default function AxevoraCircle() {
 
             // Heartbeat System (Every 60s)
             const updatePresence = async () => {
-                const userDocRef = doc(db, "circles", "rooms", roomId, "users", user.uid);
+                const userDocRef = doc(db, "circle_rooms", roomId, "users", user.uid);
                 await setDoc(userDocRef, {
                     uid: user.uid,
                     name: nickname || "Anonymous",
@@ -130,7 +130,7 @@ export default function AxevoraCircle() {
                 unsubMessages();
                 unsubUsers();
                 clearInterval(interval);
-                const userDocRef = doc(db, "circles", "rooms", roomId, "users", user.uid);
+                const userDocRef = doc(db, "circle_rooms", roomId, "users", user.uid);
                 // We don't mark offline explicitly here to avoid "flicker" on refresh, relying on lastSeen instead.
                 // But for explicit leave, we can.
             };
@@ -221,7 +221,7 @@ export default function AxevoraCircle() {
                 const chatId = [user.uid, activePrivateUser.uid].sort().join('_');
                 await addDoc(collection(db, "private_chats", chatId, "messages"), msgData);
             } else {
-                await addDoc(collection(db, "circles", "rooms", roomId, "messages"), msgData);
+                await addDoc(collection(db, "circle_rooms", roomId, "messages"), msgData);
             }
         } catch (error) {
             toast.error("Message failed to send");
