@@ -4,8 +4,14 @@ import { useSearchParams } from 'react-router-dom';
 import {
     Users, MessageSquare, Shield, Send, User,
     ArrowLeft, Share2, Copy, Trash2, Phone, Mail,
-    Search, Plus, Sparkles, LogOut, Mic, Zap, Palette, Heart, Check, X
+    Search, Plus, Sparkles, LogOut, Mic, Zap, Palette, Heart, Check, X,
+    Smile
 } from 'lucide-react';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -300,6 +306,24 @@ export default function AxevoraCircle() {
     };
 
     // Theme Backgrounds
+    const EmojiPicker = ({ onSelect }: { onSelect: (emoji: string) => void }) => {
+        const emojis = ["😀", "😂", "🥰", "😍", "😎", "😭", "😡", "👍", "👎", "🎉", "🔥", "❤️", "💔", "💯", "👋", "🙏", "🤝", "👀", "🧠", "💀", "👻", "👽", "🤖", "💩", "🌟", "✨", "🎵", "🍕", "🍎", "☕"];
+        return (
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hover:bg-primary/20"><Smile className="w-5 h-5 text-yellow-500" /></Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-2">
+                    <div className="grid grid-cols-6 gap-1">
+                        {emojis.map(e => (
+                            <button key={e} onClick={() => onSelect(e)} className="text-xl hover:bg-muted p-1 rounded transition-colors">{e}</button>
+                        ))}
+                    </div>
+                </PopoverContent>
+            </Popover>
+        );
+    };
+
     const getThemeClass = () => {
         switch (theme) {
             case 'love': return "bg-gradient-from-pink-100-to-rose-100 dark:bg-gradient-to-br dark:from-pink-950 dark:via-red-950 dark:to-pink-950";
@@ -538,21 +562,26 @@ export default function AxevoraCircle() {
                         </CardContent>
 
                         {/* Input Area */}
-                        <div className="p-4 border-t bg-background/50 backdrop-blur-sm">
-                            <form onSubmit={(e) => sendMessage(e)} className="flex gap-2 items-center">
-                                <Button type="button" variant="ghost" size="icon" onClick={handleVoiceInput} className="hover:bg-primary/20">
+                        <div className="p-4 border-t bg-background/50 backdrop-blur-sm relative">
+                            <div className="flex gap-2 items-end">
+                                <Button type="button" variant="ghost" size="icon" onClick={handleVoiceInput} className="hover:bg-primary/20 mb-2">
                                     <Mic className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
                                 </Button>
-                                <Input
-                                    placeholder={activePrivateUser ? `Message @${activePrivateUser.name}...` : `Message #${roomId}...`}
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    className="flex-1 h-12 border-primary/20 focus-visible:ring-indigo-500"
-                                />
-                                <Button type="submit" className="h-12 w-12 rounded-full shadow-indigo-500/20 shadow-lg bg-gradient-to-r from-primary to-indigo-600 hover:scale-105 transition-transform">
-                                    <Send className="w-5 h-5" />
+                                <EmojiPicker onSelect={(e) => setNewMessage(prev => prev + e)} />
+                                <div className="flex-1 bg-background rounded-lg border border-primary/20">
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={newMessage}
+                                        onChange={setNewMessage}
+                                        modules={{ toolbar: false }} // Minimal for main chat
+                                        className="min-h-[40px] max-h-[100px] overflow-y-auto no-toolbar"
+                                        placeholder={`Message #${roomId}...`}
+                                    />
+                                </div>
+                                <Button onClick={(e) => sendMessage(e)} className="h-10 w-10 mb-1 rounded-full shadow-indigo-500/20 shadow-lg bg-gradient-to-r from-primary to-indigo-600 hover:scale-105 transition-transform">
+                                    <Send className="w-4 h-4" />
                                 </Button>
-                            </form>
+                            </div>
                         </div>
                     </Card>
                 </div>
@@ -560,7 +589,7 @@ export default function AxevoraCircle() {
 
             {/* FLOATING DM POPUP */}
             {activePrivateUser && (
-                <Card className="fixed bottom-4 right-4 w-[350px] md:w-[450px] h-[500px] shadow-2xl border-2 border-indigo-500 flex flex-col z-50 bg-background overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 rounded-t-xl">
+                <Card className={`fixed bottom-4 right-4 w-[350px] md:w-[450px] h-[500px] shadow-2xl border-2 border-indigo-500 flex flex-col z-50 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 rounded-t-xl ${getThemeClass()}`}>
                     {/* Header */}
                     <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-3 text-white flex justify-between items-center shadow-md">
                         <div className="flex items-center gap-2">
@@ -613,9 +642,10 @@ export default function AxevoraCircle() {
                                     [{ 'size': ['small', false, 'large', 'huge'] }]
                                 ]
                             }}
-                            className="bg-background mb-10 h-[80px]"
+                            className="bg-background-transparent mb-10 h-[80px]"
                         />
-                        <div className="absolute bottom-2 right-2 z-10">
+                        <div className="absolute bottom-2 right-2 z-10 flex gap-1">
+                            <EmojiPicker onSelect={(e) => setNewPrivateMessage(prev => prev + e)} />
                             <Button onClick={sendPrivateMessage} size="sm" className="rounded-full h-8 w-8 p-0 bg-indigo-600 hover:bg-indigo-700 shadow-lg"><Send className="w-4 h-4 text-white" /></Button>
                         </div>
                         {/* Spacer for Toolbar */}
