@@ -98,17 +98,22 @@ export default function AxevoraCircle() {
                 setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
             });
 
-            // Listen for users (Presence) - RELAXED QUERY FOR DEBUGGING
-            // Removed 'where' clause to ensure we see everyone. We rely on 'limit' and client-side logic.
+            // Listen for users (Presence) - SUPER SIMPLE QUERY
             const uq = query(
                 collection(db, "circle_rooms", roomId, "users"),
-                orderBy("lastSeen", "desc"), // Show most active first
                 limit(100)
             );
 
             const unsubUsers = onSnapshot(uq, (snapshot) => {
-                const roomUsers = snapshot.docs.map(doc => doc.data() as CircleUser);
+                console.log("👥 Snapshot received. Docs:", snapshot.size);
+                const roomUsers = snapshot.docs.map(doc => {
+                    console.log("Found User:", doc.id, doc.data());
+                    return doc.data() as CircleUser;
+                });
                 setUsers(roomUsers.filter(u => u.uid !== user.uid));
+            }, (error) => {
+                console.error("🔥 Snapshot Error:", error);
+                toast.error("Sync Error: " + error.message);
             });
 
             // Heartbeat System (Every 60s)
