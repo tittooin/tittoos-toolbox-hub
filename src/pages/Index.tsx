@@ -643,6 +643,69 @@ const Index = () => {
             </div>
           </section>
 
+          {/* NEW: App Download Section (Desktop) */}
+          <section className="container mx-auto px-4 mb-16">
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 rounded-3xl p-8 md:p-12 relative overflow-hidden border border-red-100 dark:border-red-900/30 shadow-xl">
+              {/* Decorative Background */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+                <div className="space-y-4 max-w-2xl">
+                  <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                    <Smartphone size={14} />
+                    <span>Mobile App</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+                    Access Tools Anywhere.
+                  </h2>
+                  <p className="text-lg text-muted-foreground">
+                    Download the Axevora app for faster access, offline tools, and exclusive mobile features.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  {/* Indus Appstore Badge */}
+                  <a
+                    href="https://indusapp.store/onxmeb1t"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block transition-transform active:scale-95 hover:opacity-90 hover:-translate-y-1 duration-300"
+                  >
+                    <svg viewBox="0 0 498 148" className="h-16 w-auto drop-shadow-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="498" height="148" rx="28" fill="black" />
+                      <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                      <path d="M70 74L95 35H60L35 74L60 113H95L70 74Z" fill="#F48020" />
+                      <path d="M105 74L130 35H95L70 74L95 113H130L105 74Z" fill="#7E57C2" />
+                      <text x="160" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">GET IT ON</text>
+                      <text x="160" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">Indus Appstore</text>
+                    </svg>
+                  </a>
+
+                  {/* Huawei AppGallery Badge */}
+                  <a
+                    href="https://appgallery.huawei.com/#/app/C116590843"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block transition-transform active:scale-95 hover:opacity-90 hover:-translate-y-1 duration-300"
+                  >
+                    <svg viewBox="0 0 498 148" className="h-16 w-auto drop-shadow-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="498" height="148" rx="28" fill="black" />
+                      <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                      <path d="M99.5 35C122.972 35 142 54.0279 142 77.5C142 100.972 122.972 120 99.5 120C76.0279 120 57 100.972 57 77.5C57 54.0279 76.0279 35 99.5 35Z" fill="#C7000B" />
+                      <path d="M109.8 110H89.2V115H109.8V110ZM109.8 110C109.8 110 99.5 110 99.5 110C99.5 110 89.2 110 89.2 110" fill="#C7000B" />
+                      <path d="M117.84 83.6599C115.68 83.6599 113.92 81.8999 113.92 79.7399V73.4599C113.88 66.8299 108.87 61.4299 102.24 60.9899C102.16 60.9899 102.08 60.9899 102 60.9899H96.9999C90.3699 61.4299 85.3599 66.8299 85.3199 73.4599V79.7399C85.3199 81.8999 83.5599 83.6599 81.3999 83.6599C79.2399 83.6599 77.4799 81.8999 77.4799 79.7399V73.4599C77.5399 62.5399 85.7999 53.5899 96.6599 52.5499C96.7699 52.5399 96.8899 52.5399 96.9999 52.5399H102C112.87 53.5899 121.13 62.5399 121.19 73.4599V79.7399C121.76 81.8999 120 83.6599 117.84 83.6599Z" fill="white" />
+                      <path d="M72 87H127" stroke="white" strokeWidth="0" />
+                      <path d="M192 19H394V34H192V19Z" fill="current" fill-opacity="0" />
+                      <text x="182" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">EXPLORE IT ON</text>
+                      <text x="182" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">AppGallery</text>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Compact Featured Section */}
           <section className="container mx-auto px-4 pb-12">
             <div className="flex items-center justify-between mb-6">
