@@ -1,6 +1,7 @@
 
 import { useState, useEffect, Suspense, lazy } from "react";
 import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText, Wand2, AlignLeft, Code, Gamepad2, Stamp, Archive, Image, Users } from "lucide-react";
+import { QRCodeSVG } from 'qrcode.react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -99,12 +100,12 @@ const Index = () => {
                     <div className="flex justify-between items-center">
                       <h3 className="font-bold text-lg">Featured</h3>
                       <Button
-                        variant="ghost"
+                        variant="secondary"
                         size="sm"
-                        className="text-xs text-primary h-auto p-0 hover:bg-transparent"
-                        onClick={() => window.open("https://play.google.com/store/apps/details?id=com.axevora.tools", "_blank")}
+                        className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm"
+                        onClick={() => window.open("https://indusapp.store/onxmeb1t", "_blank")}
                       >
-                        Rate App ⭐
+                        Rate on Indus ⭐
                       </Button>
                     </div>
 
@@ -243,6 +244,57 @@ const Index = () => {
                           <span className="relative z-10 text-white font-bold text-sm leading-tight">View All</span>
                         </div>
                       </Link>
+                    </div>
+
+                    {/* --- HUAWEI APP GALLERY DOWNLOAD SECTION (NEW) --- */}
+                    <div className="bg-gradient-to-br from-red-50 to-white dark:from-red-950/20 dark:to-slate-900 border border-red-200 dark:border-red-900/50 rounded-2xl p-5 mb-6 relative overflow-hidden shadow-sm mt-6">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center text-red-600">
+                          <Smartphone size={24} />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg leading-none text-foreground">Get the App</h3>
+                          <p className="text-xs text-muted-foreground mt-1">Available on Huawei AppGallery</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-3">
+                        <Button
+                          className="w-full bg-[#C71D23] hover:bg-[#A61419] text-white font-bold shadow-md h-12 rounded-xl flex items-center justify-center gap-2 group transition-all"
+                          onClick={() => window.open("https://url.cloud.huawei.com/yL2FaqmrQc?shareTo=qrcode", "_blank")}
+                        >
+                          {/* Huawei Icon SVG Placeholder (using simple red circle if image fails, but using provided URL) */}
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Huawei_AppGallery_logo.svg" className="w-6 h-6 bg-white rounded-full p-0.5" alt="Huawei" />
+                          <span>Download on AppGallery</span>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-900 dark:text-blue-400 dark:hover:bg-blue-900/20 h-10 rounded-xl"
+                          onClick={() => window.open("hiapplink://com.huawei.appmarket?appId=C116590843&channelId=Axevora+Official", "_blank")}
+                        >
+                          Open in AppGallery App
+                        </Button>
+                      </div>
+
+                      {/* QR Code Concept */}
+                      <div className="mt-4 flex items-center justify-between bg-white dark:bg-slate-800 p-3 rounded-xl border border-dashed border-red-200 dark:border-red-900/50">
+                        <div className="text-xs text-muted-foreground">
+                          <span className="font-bold text-foreground block mb-0.5">Scan to Download</span>
+                          Direct Link
+                        </div>
+                        <div className="bg-white p-1 rounded-lg">
+                          <QRCodeSVG
+                            value="https://url.cloud.huawei.com/yL2FaqmrQc?shareTo=qrcode"
+                            size={50}
+                            level="M"
+                            fgColor="#000000"
+                            bgColor="#ffffff"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

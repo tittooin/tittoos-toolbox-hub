@@ -13,7 +13,8 @@ import { pipeline } from '@huggingface/transformers';
 
 export default function VideoToShorts() {
     const [loaded, setLoaded] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isEngineLoading, setIsEngineLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [videoFile, setVideoFile] = useState<File | null>(null);
     const [message, setMessage] = useState('Click "Load Engine" to initialize the video processor.');
     const [progress, setProgress] = useState(0);
@@ -32,35 +33,43 @@ export default function VideoToShorts() {
     }, []);
 
     const load = async () => {
-        setIsLoading(true);
+        setIsEngineLoading(true);
         const ffmpeg = ffmpegRef.current;
         ffmpeg.on('log', ({ message }) => {
             if (messageRef.current) messageRef.current.innerHTML = message;
-            // console.log(message);
         });
         ffmpeg.on('progress', ({ progress }) => {
             setProgress(Math.round(progress * 100));
         });
 
         try {
+            setMessage("Loading FFmpeg engine...");
             const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
             await ffmpeg.load({
                 coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                 wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
             });
 
-            // Load Font for Captions
-            setMessage("Loading Fonts...");
-            const fontURL = "https://raw.githubusercontent.com/ffmpegwasm/testdata/master/arial.ttf";
-            await ffmpeg.writeFile('arial.ttf', await fetchFile(fontURL));
-
             setLoaded(true);
             setMessage("Engine Ready. Upload a video to start.");
+
+            // Load Font in background (Don't block UI)
+            (async () => {
+                try {
+                    console.log("Loading Fonts...");
+                    const fontURL = "https://raw.githubusercontent.com/ffmpegwasm/testdata/master/arial.ttf";
+                    await ffmpeg.writeFile('arial.ttf', await fetchFile(fontURL));
+                    console.log("Fonts Loaded.");
+                } catch (e) {
+                    console.error("Font Load Warning (Captions may fail):", e);
+                }
+            })();
+
         } catch (e: any) {
             console.error("Load Error:", e);
-            setMessage(`Engine Error: ${e.message}. Try using a different browser.`);
+            setMessage(`Engine Error: ${e.message}. Try refreshing.`);
         } finally {
-            setIsLoading(false);
+            setIsEngineLoading(false);
         }
     };
 
@@ -99,7 +108,7 @@ export default function VideoToShorts() {
 
     const convertVideo = async () => {
         if (!videoFile || !loaded) return;
-        setIsLoading(true);
+        setIsProcessing(true);
         setDownloadLinks([]);
         const ffmpeg = ffmpegRef.current;
 
@@ -126,8 +135,6 @@ export default function VideoToShorts() {
                 const audioData = await ffmpeg.readFile('audio.wav');
 
                 // Decode Audio (Simple WAV header parsing or using Web Audio API)
-                // Since transformers.js expects Float32Array, we need to decode.
-                // A reliable way in browser is using AudioContext.
                 const audioContext = new AudioContext({ sampleRate: 16000 });
                 const audioBuffer = await audioContext.decodeAudioData(audioData.buffer as ArrayBuffer);
                 const audioFloat32 = audioBuffer.getChannelData(0);
@@ -135,23 +142,42 @@ export default function VideoToShorts() {
                 const transcription = await transcribeAudio(audioFloat32);
 
                 if (transcription && transcription.chunks) {
-                    setMessage("Applying Colorful Captions...");
-                    // Build drawtext filters
-                    // We need to escape text for FFmpeg
+                    setMessage("Generating Colorful Captions...");
                     const chunks = transcription.chunks;
+
+                    console.log("📝 Transcription Chunks:", chunks.length);
+
+                    // Helper to sanitize text for FFmpeg drawtext
+                    // Must escape: \ ' : and % (sometimes)
+                    const sanitizeForFFmpeg = (str: string) => {
+                        return str
+                            .replace(/\\/g, '\\\\')
+                            .replace(/:/g, '\\:')
+                            .replace(/'/g, '') // Removing quotes strictly to avoid issues
+                            .replace(/"/g, '')
+                            .replace(/%/g, '\\%')
+                            .trim();
+                    };
+
                     const drawTextFilters = chunks.map((chunk: any) => {
                         const start = chunk.timestamp[0];
                         const end = chunk.timestamp[1] || chunks[chunks.length - 1].timestamp[1];
-                        const text = chunk.text.replace(/'/g, '').trim(); // Remove quotes for safety
+                        const rawText = chunk.text;
+                        const text = sanitizeForFFmpeg(rawText);
+
                         if (!text) return '';
 
                         // Yellow text, Black outline, Bottom center
                         // fontsize 50, fontfile arial.ttf
-                        return `drawtext=fontfile=arial.ttf:text='${text}':fontcolor=yellow:fontsize=48:borderw=2:bordercolor=black:x=(w-text_w)/2:y=h-150:enable='between(t,${start},${end})'`;
+                        // Using box=1 for better readability background
+                        return `drawtext=fontfile=arial.ttf:text='${text}':fontcolor=yellow:fontsize=52:borderw=3:bordercolor=black:x=(w-text_w)/2:y=h-250:enable='between(t,${start},${end})'`;
                     }).filter(Boolean).join(',');
 
                     if (drawTextFilters) {
+                        console.log("✨ Applying Caption Filters:", drawTextFilters.substring(0, 200) + "...");
                         vfFilters.push(drawTextFilters);
+                    } else {
+                        console.warn("⚠️ No valid caption filters generated.");
                     }
                 }
             }
@@ -165,6 +191,9 @@ export default function VideoToShorts() {
             await ffmpeg.exec([
                 '-i', inputName,
                 '-vf', filterComplex,
+                '-c:v', 'libx264',      // Enforce H.264
+                '-preset', 'ultrafast', // S P E E D
+                '-pix_fmt', 'yuv420p',  // Compatibility
                 '-f', 'segment',
                 '-segment_time', splitDuration,
                 '-reset_timestamps', '1',
@@ -193,7 +222,7 @@ export default function VideoToShorts() {
             console.error("Processing Error:", error);
             setMessage(`Error: ${error.message || 'Processing failed'}`);
         } finally {
-            setIsLoading(false);
+            setIsProcessing(false);
             setProgress(0);
         }
     };
@@ -229,7 +258,6 @@ export default function VideoToShorts() {
                                 accept="video/*"
                                 onChange={handleFileUpload}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                disabled={!loaded || isLoading}
                             />
                             <div className="space-y-4">
                                 <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -300,29 +328,31 @@ export default function VideoToShorts() {
                         </div>
 
                         {/* Progress & Log */}
-                        {(isLoading || progress > 0) && (
+                        {(isProcessing || isEngineLoading || progress > 0) && (
                             <div className="space-y-2">
                                 <div className="flex justify-between text-sm font-medium">
-                                    <span>{message.includes('Rendering') ? 'Rendering Video...' : 'Processing...'}</span>
+                                    <span>{message.includes('Rendering') ? 'Rendering Video...' : isProcessing ? 'Processing...' : 'Engine Status'}</span>
                                     <span>{progress}%</span>
                                 </div>
-                                <Progress value={progress} className="h-3 bg-secondary" indicatorClassName={progress < 100 ? "animate-pulse" : ""} />
+                                <Progress value={progress} className="h-3 bg-secondary" />
                             </div>
                         )}
 
                         {/* Action Button */}
                         <Button
                             onClick={convertVideo}
-                            disabled={!loaded || !videoFile || isLoading}
+                            disabled={!loaded || !videoFile || isProcessing || isEngineLoading}
                             size="lg"
-                            className={`w-full text-lg h-14 font-bold shadow-lg transition-all ${isLoading ? 'opacity-80 cursor-not-allowed' : 'hover:scale-[1.01]'
+                            className={`w-full text-lg h-14 font-bold shadow-lg transition-all ${isProcessing || isEngineLoading ? 'opacity-80 cursor-not-allowed' : 'hover:scale-[1.01]'
                                 } ${enableCaptions
                                     ? 'bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 shadow-purple-500/20'
                                     : 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 shadow-red-500/20'
                                 }`}
                         >
-                            {isLoading ? (
+                            {isProcessing ? (
                                 <>Processing... Check Status Below</>
+                            ) : isEngineLoading ? (
+                                <>Initializing Engine...</>
                             ) : (
                                 <><Scissors className="mr-2 w-5 h-5" /> {enableCaptions ? "Create Viral Shorts with AI" : "Convert to Shorts"}</>
                             )}

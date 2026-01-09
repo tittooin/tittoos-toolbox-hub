@@ -102,6 +102,11 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
+                <a href="https://url.cloud.huawei.com/yL2FaqmrQc" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[#C71D23] transition-colors font-medium flex items-center gap-2">
+                  Huawei AppGallery
+                </a>
+              </li>
+              <li>
                 <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
                   About Us
                 </Link>

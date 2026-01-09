@@ -5,13 +5,19 @@ import {
     Users, MessageSquare, Shield, Send, User,
     ArrowLeft, Share2, Copy, Trash2, Phone, Mail,
     Search, Plus, Sparkles, LogOut, Mic, Zap, Palette, Heart, Check, X,
-    Smile
+    Smile, Lock, Gift, Trophy, Ticket, Star
 } from 'lucide-react';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +25,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useAxevoraGamification, ScratchCard } from "@/hooks/useAxevoraGamification";
 import { toast } from "sonner";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
@@ -69,6 +78,7 @@ export default function AxevoraCircle() {
 
     const [user, setUser] = useState<any>(null);
     const [nickname, setNickname] = useState('');
+    const [pin, setPin] = useState('');
     const [hasJoined, setHasJoined] = useState(false);
     const [roomId, setRoomId] = useState(roomIdFromUrl || '');
 
@@ -81,6 +91,14 @@ export default function AxevoraCircle() {
 
     const [privateChats, setPrivateChats] = useState<{ [key: string]: Message[] }>({});
     const [activePrivateUser, setActivePrivateUser] = useState<CircleUser | null>(null);
+
+
+
+    const {
+        userProfile, awardXP, newReward, claimReward, showLevelUp, setShowLevelUp,
+        checkNickname, registerNickname, recoverAccount, setNewReward
+    } = useAxevoraGamification();
+    const [isScratching, setIsScratching] = useState(false);
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -206,6 +224,10 @@ export default function AxevoraCircle() {
             toast.error("Please enter a Room ID or Name");
             return;
         }
+        if (!pin.trim() || pin.length !== 4) {
+            toast.error("Please enter a 4-digit PIN to secure your identity.");
+            return;
+        }
 
         const normalizedRoom = roomId.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -213,12 +235,31 @@ export default function AxevoraCircle() {
             if (!user) {
                 await signInAnonymously(auth);
             }
+
+            // Secure Nickname Logic
+            const status = await checkNickname(nickname);
+
+            if (status.exists) {
+                // Name Taken: Try Recover
+                try {
+                    await recoverAccount(nickname, pin);
+                    toast.success("Identity Verified! Welcome back.");
+                } catch (err) {
+                    toast.error("Wrong PIN! This nickname is owned by someone else.");
+                    return; // Stop Join
+                }
+            } else {
+                // New Name: Register
+                await registerNickname(nickname, pin);
+                toast.success("Nickname Secured with PIN!");
+            }
+
             setHasJoined(true);
             setRoomId(normalizedRoom); // Critical: Use normalized ID for DB
             setSearchParams({ room: normalizedRoom });
             toast.success(`Joined Circle: ${normalizedRoom}`);
         } catch (error: any) {
-            console.error("Firebase Auth Error:", error);
+            console.error("Firebase Auth/Join Error:", error);
             toast.error(`Failed: ${error.message || "Check your connection"}`);
         }
     };
@@ -238,6 +279,7 @@ export default function AxevoraCircle() {
         setNewMessage('');
         try {
             await addDoc(collection(db, "circle_rooms", roomId, "messages"), msgData);
+            awardXP(5, 'group_chat');
         } catch (error) {
             toast.error("Message failed to send");
         }
@@ -258,6 +300,7 @@ export default function AxevoraCircle() {
         setNewPrivateMessage('');
         try {
             await addDoc(collection(db, "private_chats", chatId, "messages"), msgData);
+            awardXP(10, 'private_chat');
         } catch (error) {
             toast.error("DM failed to send");
         }
@@ -355,13 +398,33 @@ export default function AxevoraCircle() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Nickname</label>
+                                <label className="text-sm font-medium flex items-center gap-1">
+                                    <User className="w-4 h-4" /> Nickname
+                                </label>
                                 <Input
                                     placeholder="e.g. Rahul, Student99"
                                     value={nickname}
                                     onChange={(e) => setNickname(e.target.value)}
                                     className="bg-white/50"
+                                    maxLength={15}
                                 />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium flex items-center gap-1 text-indigo-600">
+                                    <Shield className="w-4 h-4" /> Secure PIN (4 Digits)
+                                </label>
+                                <Input
+                                    type="password"
+                                    inputMode="numeric"
+                                    maxLength={4}
+                                    placeholder="#### (To protect your Levels/XP)"
+                                    value={pin}
+                                    onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+                                    className="bg-white/50 border-indigo-200 tracking-[0.5em] font-mono text-center font-bold"
+                                />
+                                <p className="text-[10px] text-muted-foreground">
+                                    Use this PIN to login again and restore your Rewards.
+                                </p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Room Name or ID</label>
@@ -428,8 +491,44 @@ export default function AxevoraCircle() {
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">{nickname} (You)</p>
                                             <p className="text-[10px] text-green-500 font-bold">Online</p>
+                                            {/* DEV TEST BUTTON */}
+                                            <button
+                                                onClick={() => awardXP(50, 'dev_test')}
+                                                className="ml-auto text-[10px] bg-red-500 text-white px-1 rounded hover:bg-red-600"
+                                                title="Cheat: Add 50 XP"
+                                            >
+                                                +50 XP
+                                            </button>
                                         </div>
                                     </div>
+                                    {/* XP BAR */}
+                                    {userProfile && (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <div className="px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded border border-indigo-100 dark:border-indigo-900 cursor-help">
+                                                        <div className="flex justify-between items-center mb-1">
+                                                            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                                                                <Trophy className="w-3 h-3" /> Lvl {userProfile.level} <span className="text-muted-foreground font-normal">({userProfile.xp} XP)</span>
+                                                            </span>
+                                                            <span className="text-[9px] bg-yellow-100 text-yellow-800 px-1 rounded border border-yellow-200">
+                                                                {userProfile.level < 3 ? "Rookie" : userProfile.level < 5 ? "Pro" : "Legend"}
+                                                            </span>
+                                                        </div>
+                                                        <Progress value={(userProfile.xp % 50) * 2} className="h-1.5 bg-indigo-200" indicatorClassName="bg-gradient-to-r from-indigo-500 to-purple-600" />
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="bg-slate-900 text-white border-slate-700 max-w-[200px]">
+                                                    <p className="font-bold mb-1">How it works:</p>
+                                                    <ul className="list-disc pl-4 text-xs space-y-1">
+                                                        <li>Chat to earn XP</li>
+                                                        <li>Level Up to unlock <strong>Premium Themes</strong></li>
+                                                        <li><strong>Level 3+</strong>: Unlock Shopping Coupons (Amazon, Croma) via Scratch Cards!</li>
+                                                    </ul>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
 
                                     {users.map(u => (
                                         <div
@@ -455,10 +554,18 @@ export default function AxevoraCircle() {
                                 <p className="text-xs font-bold mb-2 flex items-center gap-1"><Palette className="w-3 h-3" /> Mood:</p>
                                 <div className="flex gap-1 justify-between">
                                     <div onClick={() => setTheme('default')} className="w-6 h-6 rounded-full bg-gray-200 cursor-pointer border hover:scale-110 transition" />
-                                    <div onClick={() => setTheme('love')} className="w-6 h-6 rounded-full bg-pink-400 cursor-pointer border hover:scale-110 transition" />
-                                    <div onClick={() => setTheme('cyberpunk')} className="w-6 h-6 rounded-full bg-purple-600 cursor-pointer border hover:scale-110 transition" />
-                                    <div onClick={() => setTheme('sunset')} className="w-6 h-6 rounded-full bg-orange-400 cursor-pointer border hover:scale-110 transition" />
-                                    <div onClick={() => setTheme('nature')} className="w-6 h-6 rounded-full bg-green-400 cursor-pointer border hover:scale-110 transition" />
+                                    <Button variant="ghost" size="sm" onClick={() => userProfile && userProfile.level >= 5 ? setTheme('love') : toast.error("Reach Level 5 to unlock!")} className="p-0 h-6 w-6 rounded-full bg-pink-400 border hover:scale-110 transition relative">
+                                        {(!userProfile || userProfile.level < 5) && <Lock className="w-3 h-3 text-white absolute" />}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => userProfile && userProfile.level >= 10 ? setTheme('cyberpunk') : toast.error("Reach Level 10 to unlock!")} className="p-0 h-6 w-6 rounded-full bg-purple-600 border hover:scale-110 transition relative">
+                                        {(!userProfile || userProfile.level < 10) && <Lock className="w-3 h-3 text-white absolute" />}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => userProfile && userProfile.level >= 3 ? setTheme('sunset') : toast.error("Reach Level 3 to unlock!")} className="p-0 h-6 w-6 rounded-full bg-orange-400 border hover:scale-110 transition relative">
+                                        {(!userProfile || userProfile.level < 3) && <Lock className="w-3 h-3 text-white absolute" />}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={() => userProfile && userProfile.level >= 2 ? setTheme('nature') : toast.error("Reach Level 2 to unlock!")} className="p-0 h-6 w-6 rounded-full bg-green-400 border hover:scale-110 transition relative">
+                                        {(!userProfile || userProfile.level < 2) && <Lock className="w-3 h-3 text-white absolute" />}
+                                    </Button>
                                 </div>
                             </div>
                         </CardContent>
@@ -653,6 +760,110 @@ export default function AxevoraCircle() {
                     </div>
                 </Card>
             )}
-        </ToolTemplate>
+
+            {/* REWARD MODAL */}
+            <Dialog open={showLevelUp || !!newReward} onOpenChange={(open) => {
+                if (!open) {
+                    setShowLevelUp(false);
+                    setNewReward(null);
+                }
+            }}>
+                <DialogContent className="sm:max-w-md bg-gradient-to-br from-indigo-900 to-purple-900 border-2 border-yellow-500 text-white shadow-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-center text-2xl font-bold flex items-center justify-center gap-2 text-yellow-300">
+                            <Gift className="w-8 h-8 animate-bounce" /> Level Up Reward!
+                        </DialogTitle>
+                        <DialogDescription className="text-center text-indigo-200">
+                            You reached Level {userProfile?.level}! Here is your Mystery Scratch Card.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col items-center justify-center py-6 space-y-4">
+                        <div
+                            className={`w-72 h-40 rounded-xl relative overflow-hidden cursor-pointer transition-all duration-500 shadow-xl border-4 ${isScratching ? 'border-yellow-400 scale-105' : 'border-white/20 hover:rotate-1'}`}
+                            onClick={() => {
+                                if (!isScratching && !newReward?.isClaimed) {
+                                    setIsScratching(true);
+                                    // Just reveal, DO NOT CLOSE automatically
+                                    setTimeout(() => {
+                                        setIsScratching(false);
+                                        if (newReward) claimReward(newReward.id);
+                                        toast.success("Reward Revealed!");
+                                    }, 1000);
+                                }
+                            }}
+                        >
+                            {/* Hidden Reward Layer (Affiliate Card) */}
+                            <div className="absolute inset-0 bg-white text-black flex flex-col items-center justify-center p-4 text-center z-0">
+                                {newReward?.discount && (
+                                    <Badge className="absolute top-2 right-2 bg-red-600 text-white font-bold animate-pulse">
+                                        {newReward.discount}
+                                    </Badge>
+                                )}
+                                <span className="font-bold text-xl text-indigo-900 leading-tight">{newReward?.rewardLabel || "Mystery Prize"}</span>
+
+                                <div className="my-2 bg-gray-100 px-4 py-2 rounded-lg border-dashed border-2 border-indigo-300 w-full flex flex-col items-center">
+                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Use Code at Checkout</span>
+                                    <div className="flex items-center gap-2">
+                                        <code className="text-lg font-black text-indigo-600 select-all">{newReward?.rewardValue || "X7K-99"}</code>
+                                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigator.clipboard.writeText(newReward?.rewardValue || "");
+                                            toast.success("Code Copied!");
+                                        }}>
+                                            <Copy className="w-3 h-3" />
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {newReward?.affiliateLink && (
+                                    <Button
+                                        size="sm"
+                                        className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold shadow-md animate-bounce"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            window.open(newReward.affiliateLink, '_blank');
+                                            if (newReward && !newReward.isClaimed) {
+                                                claimReward(newReward.id);
+                                            }
+                                        }}
+                                    >
+                                        Claim Deal Now 🚀
+                                    </Button>
+                                )}
+                            </div>
+
+                            {/* Scratch Overlay */}
+                            <div className={`absolute inset-0 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 z-10 flex flex-col items-center justify-center transition-opacity duration-700 ${isScratching || (newReward?.isClaimed) ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                                <Gift className="w-10 h-10 text-white mb-2 animate-bounce" />
+                                <span className="font-black text-yellow-900 text-xl tracking-widest shadow-sm">SCRATCH</span>
+                                <span className="text-xs text-yellow-800 font-medium">Click to Reveal Deal</span>
+                            </div>
+                        </div>
+
+                        <p className="text-xs text-center opacity-70 max-w-[250px]">
+                            {newReward?.affiliateLink
+                                ? "Exclusive deal for Axevora members. Copy the code and click the link to redeem."
+                                : "Collect more XP to unlock bigger rewards!"}
+                        </p>
+
+                        {/* Explicit Close Button */}
+                        <Button
+                            onClick={() => {
+                                if (newReward && !newReward.isClaimed) {
+                                    claimReward(newReward.id);
+                                }
+                                setShowLevelUp(false);
+                                setNewReward(null);
+                                setIsScratching(false);
+                            }}
+                            variant="secondary"
+                            className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 mt-2"
+                        >
+                            {newReward?.rewardType === 'xp' ? "Collect XP & Continue" : "Close & Continue"}
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </ToolTemplate >
     );
 }
