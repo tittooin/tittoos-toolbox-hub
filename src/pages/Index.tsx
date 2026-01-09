@@ -261,6 +261,26 @@ const Index = () => {
                       </div>
 
                       <div className="flex flex-col gap-3">
+                        {/* Indus Appstore Badge */}
+                        <a
+                          href="https://indusapp.store/onxmeb1t"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-block transition-transform active:scale-95 hover:opacity-90"
+                        >
+                          <svg viewBox="0 0 498 148" className="h-14 w-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="498" height="148" rx="28" fill="black" />
+                            <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                            {/* Indus Logo / Star Concept */}
+                            <path d="M70 74L95 35H60L35 74L60 113H95L70 74Z" fill="#F48020" />
+                            <path d="M105 74L130 35H95L70 74L95 113H130L105 74Z" fill="#7E57C2" />
+
+                            <text x="160" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">GET IT ON</text>
+                            <text x="160" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">Indus Appstore</text>
+                          </svg>
+                        </a>
+
+                        {/* Huawei AppGallery Badge */}
                         <a
                           href="https://appgallery.huawei.com/#/app/C116590843"
                           target="_blank"
