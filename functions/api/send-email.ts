@@ -39,7 +39,7 @@ export const onRequestPost = async ({ request, env }: any) => {
       },
       body: JSON.stringify({
         from,
-        to: ['admin@tittoos.online'],
+        to: ['admin@axevora.com'],
         subject: safeSubject,
         html,
         reply_to: safeEmail || undefined,

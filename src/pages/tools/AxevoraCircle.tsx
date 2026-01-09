@@ -393,7 +393,7 @@ export default function AxevoraCircle() {
                             </div>
                             <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-400">Start a Discussion</CardTitle>
                             <CardDescription className="px-4">
-                                Create a <strong>Room ID</strong> (e.g. <code>TittoosChat</code>) and share it.
+                                Create a <strong>Room ID</strong> (e.g. <code>AxevoraChat</code>) and share it.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">

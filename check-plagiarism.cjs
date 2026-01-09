@@ -79,7 +79,7 @@ async function checkPlagiarism() {
                 const results = await googleIt({ query: query, 'no-display': true });
 
                 // Filter out our own site matches
-                const exactMatches = results.filter(r => r.snippet.includes(sample.substring(0, 40)) && !r.link.includes('tittoos.online'));
+                const exactMatches = results.filter(r => r.snippet.includes(sample.substring(0, 40)) && !r.link.includes('axevora.com'));
 
                 if (exactMatches.length > 0) {
                     console.warn(`⚠️ Potential Plagiarism Detected!`);

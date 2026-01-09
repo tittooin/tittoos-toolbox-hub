@@ -261,22 +261,25 @@ const Index = () => {
                       </div>
 
                       <div className="flex flex-col gap-3">
-                        <Button
-                          className="w-full bg-[#C71D23] hover:bg-[#A61419] text-white font-bold shadow-md h-12 rounded-xl flex items-center justify-center gap-2 group transition-all"
-                          onClick={() => window.open("https://url.cloud.huawei.com/yL2FaqmrQc?shareTo=qrcode", "_blank")}
+                        <a
+                          href="https://appgallery.huawei.com/#/app/C116590843"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-block transition-transform active:scale-95 hover:opacity-90"
                         >
-                          {/* Huawei Icon SVG Placeholder (using simple red circle if image fails, but using provided URL) */}
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Huawei_AppGallery_logo.svg" className="w-6 h-6 bg-white rounded-full p-0.5" alt="Huawei" />
-                          <span>Download on AppGallery</span>
-                        </Button>
-
-                        <Button
-                          variant="outline"
-                          className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-900 dark:text-blue-400 dark:hover:bg-blue-900/20 h-10 rounded-xl"
-                          onClick={() => window.open("hiapplink://com.huawei.appmarket?appId=C116590843&channelId=Axevora+Official", "_blank")}
-                        >
-                          Open in AppGallery App
-                        </Button>
+                          <svg viewBox="0 0 498 148" className="h-14 w-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="498" height="148" rx="28" fill="black" />
+                            <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                            <path d="M99.5 35C122.972 35 142 54.0279 142 77.5C142 100.972 122.972 120 99.5 120C76.0279 120 57 100.972 57 77.5C57 54.0279 76.0279 35 99.5 35Z" fill="#C7000B" />
+                            <path d="M109.8 110H89.2V115H109.8V110ZM109.8 110C109.8 110 99.5 110 99.5 110C99.5 110 89.2 110 89.2 110" fill="#C7000B" />
+                            <path d="M117.84 83.6599C115.68 83.6599 113.92 81.8999 113.92 79.7399V73.4599C113.88 66.8299 108.87 61.4299 102.24 60.9899C102.16 60.9899 102.08 60.9899 102 60.9899H96.9999C90.3699 61.4299 85.3599 66.8299 85.3199 73.4599V79.7399C85.3199 81.8999 83.5599 83.6599 81.3999 83.6599C79.2399 83.6599 77.4799 81.8999 77.4799 79.7399V73.4599C77.5399 62.5399 85.7999 53.5899 96.6599 52.5499C96.7699 52.5399 96.8899 52.5399 96.9999 52.5399H102C112.87 53.5899 121.13 62.5399 121.19 73.4599V79.7399C121.76 81.8999 120 83.6599 117.84 83.6599Z" fill="white" />
+                            <path d="M72 87H127" stroke="white" strokeWidth="0" />
+                            <path fillRule="evenodd" clipRule="evenodd" d="M187.97 60H198.85L205.25 78.49L211.37 60H221.41L211.01 89H200.25L194.57 72.88L189.05 89H178.29L167.89 60H178.01L183.89 78.21L187.97 60ZM235.15 80.24H246.23V89H223.99V60H246.23V68.76H235.15V70.64H243.83V78.36H235.15V80.24ZM265.59 78.16C265.59 75.32 267.43 73.4 270.39 73.4C273.19 73.4 275.03 75.12 275.23 77.8H285.87C285.59 70.04 279.75 64.6 270.39 64.6C261.27 64.6 254.51 70.64 254.51 79.6C254.51 88.6 261.11 94.6 270.43 94.6C279.35 94.6 285.47 89.28 285.83 81.52H275.27C275.07 84 273.35 85.8 270.43 85.8C267.55 85.8 265.59 83.92 265.59 81.16V78.16ZM309.89 60H321.05L327.45 78.49L333.57 60H343.61L333.21 89H322.45L316.77 72.88L311.25 89H300.49L290.09 60H300.21L306.09 78.21L309.89 60ZM368.52 79.52C368.64 83.96 364.64 85.64 360.72 85.64H360.2V73.4H360.72C364.48 73.4 368.4 75.08 368.52 79.52ZM360.2 68.96V60H353.64C351.48 60 349.04 60 349.04 62.48V89H360.2V94.4H371.32V87.88C376.68 86.88 379.72 83.2 379.72 78.84V73.96C379.72 69.8 376.84 65.56 371.8 64.92V62.48C371.8 60 369.36 60 367.2 60H360.2V68.96ZM397.46 80.24H408.54V89H386.3V60H408.54V68.76H397.46V70.64H406.14V78.36H397.46V80.24ZM420.26 60H431.34V89H420.26V60Z" fill="white" />
+                            <path d="M192 19H394V34H192V19Z" fill="current" fill-opacity="0" />
+                            <text x="182" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">EXPLORE IT ON</text>
+                            <text x="182" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">AppGallery</text>
+                          </svg>
+                        </a>
                       </div>
 
                       {/* QR Code Concept */}

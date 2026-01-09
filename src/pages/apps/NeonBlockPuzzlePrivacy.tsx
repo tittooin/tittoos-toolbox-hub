@@ -12,7 +12,7 @@ const NeonBlockPuzzlePrivacy = () => {
     useEffect(() => {
         setSEO({
             title: "Privacy Policy - Neon Block Puzzle",
-            description: "Privacy Policy for Neon Block Puzzle app by Tittoos Corporation.",
+            description: "Privacy Policy for Neon Block Puzzle app by Axevora.",
             url: window.location.href,
             image: "https://axevora.com/og-image.jpg"
         });
@@ -36,8 +36,8 @@ const NeonBlockPuzzlePrivacy = () => {
                 </CardHeader>
                 <CardContent className="prose dark:prose-invert max-w-none p-8 space-y-6">
                     <p>
-                        <strong>Tittoos Corporation</strong> built the <strong>Neon Block Puzzle</strong> app as an Ad Supported app.
-                        This SERVICE is provided by Tittoos Corporation at no cost and is intended for use as is.
+                        <strong>Axevora</strong> built the <strong>Neon Block Puzzle</strong> app as an Ad Supported app.
+                        This SERVICE is provided by Axevora at no cost and is intended for use as is.
                     </p>
                     <p>
                         This page is used to inform visitors regarding our policies with the collection, use, and disclosure of Personal Information if anyone decided to use our Service.

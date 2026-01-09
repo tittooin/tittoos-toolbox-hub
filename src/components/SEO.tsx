@@ -15,9 +15,9 @@ export const SEO: React.FC<SEOProps> = ({
     description,
     keywords,
     canonical,
-    image = "https://tittoos.online/og-image.png"
+    image = "https://axevora.com/og-image.png"
 }) => {
-    const siteTitle = "Tittoos Toolbox";
+    const siteTitle = "Axevora Toolbox";
     const fullTitle = `${title} | ${siteTitle}`;
 
     // Use current URL if canonical is not provided
