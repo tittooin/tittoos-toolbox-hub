@@ -9,7 +9,12 @@ import {
     increment,
     getDoc,
     arrayUnion,
-    serverTimestamp
+    serverTimestamp,
+    getDocs,
+    collection,
+    query,
+    orderBy,
+    limit
 } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -17,6 +22,7 @@ export interface UserProfile {
     uid: string;
     xp: number;
     level: number;
+    displayName?: string; // Cache nickname for Leaderboard
     badges: string[];
     scratchCards: ScratchCard[];
 }
@@ -139,32 +145,38 @@ export const useAxevoraGamification = () => {
             };
         }
 
-        // 2. Affiliate Levels (3+): Real Shopping Deals
-        // Simplified Affiliate Logic for Demo
+        // 2. Affiliate Levels (3+): Real Amazon Shopping Deals (User Requested: Amazon Only)
+        // Using "tittoos-21" tag for all links temporarily
         const deals = [
             {
-                label: 'Amazon Gadgets',
-                val: 'AMZ-TITTOO-20',
-                disc: '20% OFF',
-                link: 'https://www.amazon.in/b?node=1389401031&tag=tittoos-21'
+                label: 'Amazon: Tech Deals',
+                val: 'AMZ-TECH-50',
+                disc: 'UP TO 50% OFF',
+                link: 'https://www.amazon.in/b?node=1389401031&tag=tittoos-21' // Gadgets
             },
             {
-                label: 'Hostinger Hosting',
-                val: 'HOST-WEB-70',
-                disc: '70% OFF',
-                link: 'https://www.hostinger.in/tittoo'
+                label: 'Amazon: Fashion',
+                val: 'AMZ-STYLE-70',
+                disc: 'UP TO 70% OFF',
+                link: 'https://www.amazon.in/b?node=1571271031&tag=tittoos-21' // Fashion
             },
             {
-                label: 'Boat Headphones',
-                val: 'BOAT-HEAD-30',
-                disc: '30% OFF',
-                link: 'https://www.boat-lifestyle.com'
+                label: 'Amazon: Home & Kitchen',
+                val: 'AMZ-HOME-30',
+                disc: 'STARTING ₹99',
+                link: 'https://www.amazon.in/b?node=1380365031&tag=tittoos-21' // Home
             },
             {
-                label: 'MamaEarth Care',
-                val: 'MAMA-EARTH-25',
-                disc: '25% OFF',
-                link: 'https://mamaearth.in'
+                label: 'Amazon: Books',
+                val: 'AMZ-READ-20',
+                disc: 'BESTSELLERS',
+                link: 'https://www.amazon.in/b?node=976389031&tag=tittoos-21' // Books
+            },
+            {
+                label: 'Amazon: Today\'s Deals',
+                val: 'AMZ-DAILY-LUCKY',
+                disc: 'LIGHTNING DEALS',
+                link: 'https://www.amazon.in/gp/goldbox?tag=tittoos-21' // Goldbox
             }
         ];
 
@@ -218,12 +230,19 @@ export const useAxevoraGamification = () => {
     const registerNickname = async (nickname: string, pin: string) => {
         if (!auth.currentUser) throw new Error("Not authenticated");
         const id = nickname.toLowerCase().trim();
+
+        // 1. Save Secure PIN
         const pinDoc = {
             pin: pin, // In production, hash this!
             ownerUid: auth.currentUser.uid,
             createdAt: serverTimestamp()
         };
         await setDoc(doc(db, 'nicknames', id), pinDoc);
+
+        // 2. Sync Display Name to Profile (For Leaderboard)
+        await updateDoc(doc(db, 'user_profiles', auth.currentUser.uid), {
+            displayName: nickname
+        });
     };
 
     // Recover account using PIN
@@ -253,6 +272,22 @@ export const useAxevoraGamification = () => {
                 await updateDoc(docRef, { ownerUid: newUid });
             }
         }
+
+        // Ensure current profile has the name (Migration/Recovery)
+        await updateDoc(doc(db, 'user_profiles', newUid), {
+            displayName: nickname
+        });
+    };
+
+    // --- Leaderboard Logic ---
+    const getLeaderboard = async () => {
+        const q = query(
+            collection(db, 'user_profiles'),
+            orderBy('xp', 'desc'),
+            limit(20)
+        );
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => doc.data() as UserProfile);
     };
 
     return {
@@ -266,6 +301,7 @@ export const useAxevoraGamification = () => {
         checkNickname,
         registerNickname,
         recoverAccount,
+        getLeaderboard,
         setNewReward
     };
 };

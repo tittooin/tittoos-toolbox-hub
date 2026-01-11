@@ -13,6 +13,7 @@ import AdMobBanner from "./components/AdMobBanner";
 
 // Lazy load pages for better performance
 const Categories = lazy(() => import("./pages/Categories"));
+const SocialScheduler = lazy(() => import("./pages/tools/SocialScheduler"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const AllTools = lazy(() => import("./pages/AllTools"));
@@ -281,6 +282,7 @@ const App = () => (
                 <Route path="/tools/html-editor" element={<HTMLEditor />} />
                 <Route path="/tools/css-editor" element={<CSSEditor />} />
                 <Route path="/tools/markdown-editor" element={<MarkdownEditor />} />
+                <Route path="/tools/social-scheduler" element={<SocialScheduler />} />
                 <Route path="/tools/image-background-remover" element={<ImageBackgroundRemover />} />
                 <Route path="/tools/ai-image-editor" element={<AIImageEditor />} />
                 <Route path="/tools/video-editor" element={<VideoEditor />} />

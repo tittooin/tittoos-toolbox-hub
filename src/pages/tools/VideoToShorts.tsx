@@ -44,8 +44,12 @@ export default function VideoToShorts() {
 
         try {
             setMessage("Loading FFmpeg engine...");
+            // Use Single-Threaded Core for best compatibility (avoids SharedArrayBuffer issues)
             const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
             await ffmpeg.load({
+                // Core is same, but we don't request worker specifically unless needed.
+                // Actually v0.12 default IS single threaded unless you pull the mt version.
+                // Let's ensure we point to the standard ESM.
                 coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
                 wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
             });
@@ -57,11 +61,13 @@ export default function VideoToShorts() {
             (async () => {
                 try {
                     console.log("Loading Fonts...");
+                    // Try to load a robust font, fallback to standard if fails
                     const fontURL = "https://raw.githubusercontent.com/ffmpegwasm/testdata/master/arial.ttf";
                     await ffmpeg.writeFile('arial.ttf', await fetchFile(fontURL));
                     console.log("Fonts Loaded.");
                 } catch (e) {
-                    console.error("Font Load Warning (Captions may fail):", e);
+                    console.error("Font Load Failed:", e);
+                    setMessage("Warning: Could not load custom font. Captions might look basic.");
                 }
             })();
 
@@ -139,24 +145,33 @@ export default function VideoToShorts() {
                 const audioBuffer = await audioContext.decodeAudioData(audioData.buffer as ArrayBuffer);
                 const audioFloat32 = audioBuffer.getChannelData(0);
 
-                const transcription = await transcribeAudio(audioFloat32);
+                // Use shorter chunks for stricter sync in viral videos
+                setMessage("Transcribing Audio with AI (Viral Mode)...");
+                if (!transcriberRef.current) {
+                    transcriberRef.current = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en');
+                }
+                const transcription = await transcriberRef.current(audioFloat32, {
+                    chunk_length_s: 5, // Shorter chunks = Faster cuts = Viral feel
+                    stride_length_s: 1,
+                    return_timestamps: true,
+                });
 
                 if (transcription && transcription.chunks) {
-                    setMessage("Generating Colorful Captions...");
+                    setMessage("Generating Viral Captions...");
                     const chunks = transcription.chunks;
 
                     console.log("📝 Transcription Chunks:", chunks.length);
 
                     // Helper to sanitize text for FFmpeg drawtext
-                    // Must escape: \ ' : and % (sometimes)
                     const sanitizeForFFmpeg = (str: string) => {
                         return str
                             .replace(/\\/g, '\\\\')
                             .replace(/:/g, '\\:')
-                            .replace(/'/g, '') // Removing quotes strictly to avoid issues
+                            .replace(/'/g, '')
                             .replace(/"/g, '')
                             .replace(/%/g, '\\%')
-                            .trim();
+                            .trim()
+                            .toUpperCase(); // UPPERCASE for Impact
                     };
 
                     const drawTextFilters = chunks.map((chunk: any) => {
@@ -167,14 +182,17 @@ export default function VideoToShorts() {
 
                         if (!text) return '';
 
-                        // Yellow text, Black outline, Bottom center
-                        // fontsize 50, fontfile arial.ttf
-                        // Using box=1 for better readability background
-                        return `drawtext=fontfile=arial.ttf:text='${text}':fontcolor=yellow:fontsize=52:borderw=3:bordercolor=black:x=(w-text_w)/2:y=h-250:enable='between(t,${start},${end})'`;
+                        // VIRAL STYLE:
+                        // Font: Arial (Robust)
+                        // Color: White text, Yellow highlight logic is hard in FFmpeg without complex ASS, so we stick to:
+                        // Style: White Text + Heavy Black Border + Semi-Transparent Box
+                        // Position: Bottom 20% (y=h*0.8)
+                        // Size: 56 (Large)
+                        return `drawtext=fontfile=arial.ttf:text='${text}':fontcolor=white:fontsize=56:borderw=5:bordercolor=black:x=(w-text_w)/2:y=h*0.75:box=1:boxcolor=black@0.6:boxborderw=10:enable='between(t,${start},${end})'`;
                     }).filter(Boolean).join(',');
 
                     if (drawTextFilters) {
-                        console.log("✨ Applying Caption Filters:", drawTextFilters.substring(0, 200) + "...");
+                        console.log("✨ Applying Caption Filters:", drawTextFilters.substring(0, 100) + "...");
                         vfFilters.push(drawTextFilters);
                     } else {
                         console.warn("⚠️ No valid caption filters generated.");

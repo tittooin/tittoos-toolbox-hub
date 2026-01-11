@@ -2900,6 +2900,15 @@ const allTools = [
     path: "/tools/axevora-circle",
     keywords: ["chat", "discussion", "group", "private", "message", "circle", "student", "colleague"]
   },
+  {
+    id: "social-scheduler",
+    name: "Social Scheduler",
+    subheading: "AI Content Planner",
+    description: "Generate viral posts and schedule them locally using AI.",
+    category: "ai",
+    icon: Calendar,
+    path: "/tools/social-scheduler"
+  },
 ];
 
 export const categories = allCategories;
