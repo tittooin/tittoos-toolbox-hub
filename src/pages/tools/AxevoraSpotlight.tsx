@@ -296,18 +296,21 @@ export default function AxevoraSpotlight() {
         setCanClaim(false);
 
 
+        let newWindow = null;
         if (item.type === 'channel') {
             // Channel Flow
-            window.open(item.url, '_blank');
-            setTimer(WATCH_TIME_SECONDS);
-            setIsVerifying(true);
+            newWindow = window.open(item.url, '_blank');
         } else {
             // Video Flow (External Popup with Dimensions)
             // Opens in a 1000x600 floating window
-            window.open(item.url, '_blank', 'width=1000,height=600,resizable=yes,scrollbars=yes');
+            newWindow = window.open(item.url, '_blank', 'width=1000,height=600,resizable=yes,scrollbars=yes');
+        }
+
+        if (newWindow) {
             setTimer(WATCH_TIME_SECONDS);
             setIsVerifying(true);
-            // setIsVideoModalOpen(true); // Disable internal modal
+        } else {
+            toast.error("Popup Blocked! 🚫 Please allow popups for this site to watch videos.");
         }
     };
 
@@ -497,7 +500,10 @@ export default function AxevoraSpotlight() {
                     {/* Items */}
                     {items.map((item) => (
                         <Card key={item.id} className="group overflow-hidden border-2 border-transparent hover:border-indigo-500/30 transition-all bg-card hover:shadow-2xl hover:-translate-y-1 flex flex-col h-full">
-                            <div className="aspect-video bg-black relative">
+                            <div
+                                className="aspect-video bg-black relative cursor-pointer"
+                                onClick={() => startVerification(item)}
+                            >
                                 <div className="w-full h-full flex items-center justify-center bg-slate-900 group-hover:scale-105 transition-transform duration-700">
                                     {item.thumbnail ? (
                                         <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -525,7 +531,7 @@ export default function AxevoraSpotlight() {
                                     </Badge>
                                 </div>
                                 <div className="absolute top-2 right-2">
-                                    <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full bg-black/50 hover:bg-red-500/20 text-white hover:text-red-500 backdrop-blur-sm" title="Report Spam" onClick={() => handleReport(item.id)}>
+                                    <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full bg-black/50 hover:bg-red-500/20 text-white hover:text-red-500 backdrop-blur-sm" title="Report Spam" onClick={(e) => { e.stopPropagation(); handleReport(item.id); }}>
                                         <Flag className="w-3 h-3" />
                                     </Button>
                                 </div>
