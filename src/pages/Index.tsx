@@ -329,6 +329,24 @@ const Index = () => {
                             <text x="182" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">AppGallery</text>
                           </svg>
                         </a>
+                        {/* APKPure Badge (NEW) */}
+                        <a
+                          href="https://apkpure.com/p/com.axevora.tools"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-block transition-transform active:scale-95 hover:opacity-90"
+                        >
+                          <svg viewBox="0 0 498 148" className="h-14 w-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="498" height="148" rx="28" fill="black" />
+                            <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                            {/* APKPure Logo (Stylized 'a') */}
+                            <path d="M78.5 74C78.5 98.5767 98.5767 118.5 123 118.5H138V129H123C92.6243 129 68 104.376 68 74C68 43.6243 92.6243 19 123 19H138V29.5H123C98.5767 29.5 78.5 49.4233 78.5 74Z" fill="#24CD77" />
+                            <path d="M123 74H148V74.01H123V74ZM123 63.5H138V84.5H123V63.5Z" fill="#24CD77" />
+
+                            <text x="170" y="44" fill="white" fontFamily="Arial, sans-serif" fontSize="19" fontWeight="bold" letterSpacing="1">DOWNLOAD ON</text>
+                            <text x="170" y="86" fill="white" fontFamily="Arial, sans-serif" fontSize="42" fontWeight="bold">APKPure</text>
+                          </svg>
+                        </a>
                       </div>
 
                       {/* QR Code Concept */}
@@ -339,7 +357,7 @@ const Index = () => {
                         </div>
                         <div className="bg-white p-1 rounded-lg">
                           <QRCodeSVG
-                            value="https://url.cloud.huawei.com/yL2FaqmrQc?shareTo=qrcode"
+                            value="https://apkpure.com/p/com.axevora.tools"
                             size={50}
                             level="M"
                             fgColor="#000000"
@@ -630,21 +648,22 @@ const Index = () => {
               </div>
 
               {/* 2. CENTER: Indus Appstore Badge */}
-              {/* 2. CENTER: Indus Appstore Badge & QR */}
+              {/* 2. CENTER: Indus Appstore & APKPure Badge */}
               <div className="hidden lg:flex items-center gap-4">
                 <a href="https://indusapp.store/onxmeb1t" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105 active:scale-95">
                   <img src="/assets/indus-badge.png" alt="Download on Indus Appstore" className="h-12 w-auto object-contain drop-shadow-lg" />
                 </a>
-                <div className="group relative">
-                  <div className="w-12 h-12 bg-white rounded-lg p-1 shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer overflow-hidden">
-                    <img src="/assets/indus-qr.png" alt="Scan QR" className="w-full h-full object-cover" />
-                  </div>
-                  {/* Hover Zoom Effect for QR */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 h-32 bg-white rounded-xl p-2 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 scale-0 group-hover:scale-100 origin-top">
-                    <img src="/assets/indus-qr.png" alt="Scan QR" className="w-full h-full object-cover" />
-                    <p className="text-black text-[10px] text-center font-bold mt-1">Scan to Install</p>
-                  </div>
-                </div>
+
+                {/* APKPure Desktop Badge */}
+                <a href="https://apkpure.com/p/com.axevora.tools" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105 active:scale-95">
+                  <svg viewBox="0 0 498 148" className="h-12 w-auto drop-shadow-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="498" height="148" rx="28" fill="black" />
+                    <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
+                    <path d="M78.5 74C78.5 98.5767 98.5767 118.5 123 118.5H138V129H123C92.6243 129 68 104.376 68 74C68 43.6243 92.6243 19 123 19H138V29.5H123C98.5767 29.5 78.5 49.4233 78.5 74Z" fill="#24CD77" />
+                    <text x="170" y="44" fill="white" fontFamily="Arial, sans-serif" fontSize="19" fontWeight="bold" letterSpacing="1">DOWNLOAD ON</text>
+                    <text x="170" y="86" fill="white" fontFamily="Arial, sans-serif" fontSize="42" fontWeight="bold">APKPure</text>
+                  </svg>
+                </a>
               </div>
 
               {/* 3. RIGHT: Actions (Network Status + Button) */}

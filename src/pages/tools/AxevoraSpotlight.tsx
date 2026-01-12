@@ -53,6 +53,24 @@ export default function AxevoraSpotlight() {
     const [loading, setLoading] = useState(true);
     const { userProfile, awardXP, updateCoins } = useAxevoraGamification();
 
+    // Helper: Extract YouTube Thumbnail
+    const getYouTubeThumbnail = (url: string) => {
+        let videoId = '';
+        if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1];
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1];
+        }
+        if (videoId) {
+            const ampersandPosition = videoId.indexOf('&');
+            if (ampersandPosition !== -1) {
+                videoId = videoId.substring(0, ampersandPosition);
+            }
+            return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        }
+        return null;
+    };
+
     useEffect(() => {
         // Debug Flash
         toast.info("Verifying Identity...", { duration: 2000 });
@@ -108,6 +126,7 @@ export default function AxevoraSpotlight() {
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [showFallbackLogin, setShowFallbackLogin] = useState(false);
 
+    const [isLoginOpen, setIsLoginOpen] = useState(false); // Added for Login Modal Control
     const [isSubmitOpen, setIsSubmitOpen] = useState(false);
 
     // Submission State
@@ -276,16 +295,19 @@ export default function AxevoraSpotlight() {
         setActiveItem(item);
         setCanClaim(false);
 
+
         if (item.type === 'channel') {
             // Channel Flow
             window.open(item.url, '_blank');
             setTimer(WATCH_TIME_SECONDS);
             setIsVerifying(true);
         } else {
-            // Video Popup Flow
+            // Video Flow (Now External Popup as requested)
+            // Opens in new dimensioned window or tab depending on device
+            window.open(item.url, '_blank');
             setTimer(WATCH_TIME_SECONDS);
             setIsVerifying(true);
-            setIsVideoModalOpen(true);
+            // setIsVideoModalOpen(true); // Disable internal modal
         }
     };
 
@@ -374,19 +396,19 @@ export default function AxevoraSpotlight() {
                                 )}
                             </Button>
 
-                            {/* FALLBACK BUTTON (Visible only if popup fails) */}
-                            {showFallbackLogin && (
-                                <div className="mt-4 animate-in fade-in slide-in-from-top-2">
-                                    <p className="text-red-400 text-xs mb-2 font-bold">⚠️ Popup Blocked? Try this instead:</p>
-                                    <Button
-                                        className="w-full h-12 text-md font-bold bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700"
-                                        onClick={handleRedirectLogin}
-                                        disabled={isLoggingIn}
-                                    >
-                                        Use Alternative Login (Redirect)
-                                    </Button>
-                                </div>
-                            )}
+
+                            {/* FALLBACK BUTTON (Always Visible for robustness) */}
+                            <div className="mt-6 border-t border-white/10 pt-4">
+                                <p className="text-zinc-500 text-xs mb-2">Having trouble with the popup?</p>
+                                <Button
+                                    variant="outline"
+                                    className="w-full h-10 text-sm bg-transparent text-zinc-400 hover:text-white border-zinc-700 hover:bg-zinc-800"
+                                    onClick={handleRedirectLogin}
+                                    disabled={isLoggingIn}
+                                >
+                                    Try Alternative Login (Redirect)
+                                </Button>
+                            </div>
 
                             <p className="text-center text-[10px] text-zinc-500 mt-6">
                                 We only use your email to verify you are a real person.<br />No fake bots allowed.
