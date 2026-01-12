@@ -302,9 +302,9 @@ export default function AxevoraSpotlight() {
             setTimer(WATCH_TIME_SECONDS);
             setIsVerifying(true);
         } else {
-            // Video Flow (Now External Popup as requested)
-            // Opens in new dimensioned window or tab depending on device
-            window.open(item.url, '_blank');
+            // Video Flow (External Popup with Dimensions)
+            // Opens in a 1000x600 floating window
+            window.open(item.url, '_blank', 'width=1000,height=600,resizable=yes,scrollbars=yes');
             setTimer(WATCH_TIME_SECONDS);
             setIsVerifying(true);
             // setIsVideoModalOpen(true); // Disable internal modal
