@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +9,12 @@ import { tools, categories } from "@/data/tools";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO } from "@/utils/seoUtils";
+import { AdMobService } from "@/services/AdMobService";
 
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const navigate = useNavigate();
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,6 +34,18 @@ const AllTools = () => {
       image: `${window.location.origin}/placeholder.svg`,
     });
   }, []);
+
+  const handleToolClick = async (path: string) => {
+    // 1. Attempt to show Interstitial Ad (Safe Cooldown Check)
+    try {
+      await AdMobService.checkAndShowAd();
+    } catch (error) {
+      console.error("Ad Trigger Error:", error);
+    }
+
+    // 2. Navigate to the tool
+    navigate(path);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,8 +104,8 @@ const AllTools = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredTools.map((tool) => (
-                <Link key={tool.id} to={tool.path}>
-                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
+                <div key={tool.id} onClick={() => handleToolClick(tool.path)} className="cursor-pointer">
+                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between mb-2">
                         <div className="p-2 bg-muted rounded-lg">
@@ -111,7 +125,7 @@ const AllTools = () => {
                       </CardDescription>
                     </CardContent>
                   </Card>
-                </Link>
+                </div>
               ))}
             </div>
           )}

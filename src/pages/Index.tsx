@@ -1,6 +1,13 @@
+﻿
+// Inject Font
+const fontLink = document.createElement('link');
+fontLink.href = "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap";
+fontLink.rel = "stylesheet";
+document.head.appendChild(fontLink);
 
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Search, Filter, ArrowRight, ArrowLeft, ChevronRight, Sparkles, TrendingUp, Zap, Smartphone, Trophy, ShoppingCart, Video, Scissors, Play, FileText, Wand2, AlignLeft, Code, Gamepad2, Stamp, Archive, Image, Users } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { Search, Grid, List as ListIcon, Zap, Smartphone, ExternalLink, Menu, X, ChevronRight, Play, ArrowRight, Trophy, Users, Scissors, Image, Gamepad2, Video, Sparkles, Filter, AlignLeft, Wand2, TrendingUp, FileText, Code, Stamp, Archive, ArrowLeft } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +26,7 @@ import Testimonials from "@/components/Testimonials";
 import { MagicBar } from "@/components/MagicBar";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -105,30 +113,51 @@ const Index = () => {
                         className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm"
                         onClick={() => window.open("https://indusapp.store/onxmeb1t", "_blank")}
                       >
-                        Rate on Indus ⭐
+                        Rate on Indus â­
                       </Button>
                     </div>
 
-                    {/* 1. Axevora Circle (NEW High Impact Mobile Banner) */}
+                    {/* 0. Axevora Spotlight (NEW - VIRAL HERO) */}
                     <div className="flex justify-center mb-6">
-                      <Link to="/tools/axevora-circle" className="w-full max-w-[350px] group relative overflow-hidden rounded-3xl shadow-[0_0_30px_rgba(79,70,229,0.3)] border-2 border-primary/20">
-                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-700 to-slate-900"></div>
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                      <Link to="/tools/axevora-spotlight" className="w-full max-w-[350px] group relative overflow-hidden rounded-3xl shadow-[0_0_40px_rgba(249,115,22,0.4)] border-2 border-orange-500/50 animate-in fade-in zoom-in duration-500">
+                        {/* Animated Gradient BG */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-600 to-amber-700 animate-pulse"></div>
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30"></div>
+
+                        {/* Shimmer Effect */}
+                        <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform skew-x-12 animate-[shimmer_2s_infinite]"></div>
 
                         <div className="relative p-6 flex items-center gap-4">
-                          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                            <Users className="w-8 h-8 text-white" />
+                          <div className="w-16 h-16 bg-black/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                            <Play className="w-8 h-8 text-white fill-white" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse">LIVE NOW</span>
-                              <span className="text-white/60 text-[8px] font-bold uppercase tracking-widest">No Signup</span>
+                              <span className="bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-widest shadow-lg">New Viral Tool</span>
                             </div>
-                            <h2 className="text-xl font-black text-white leading-tight">AXEVORA CIRCLE</h2>
-                            <p className="text-white/70 text-xs font-medium">Join Anonymous Real-time Discussions</p>
+                            <h2 className="text-2xl font-black text-white leading-none drop-shadow-md">SPOTLIGHT</h2>
+                            <p className="text-orange-100 text-xs font-bold mt-1">Watch 15s â€¢ Earn Coins â€¢ Go Viral ðŸš€</p>
                           </div>
-                          <div className="p-2 bg-white/20 rounded-full text-white group-hover:translate-x-1 transition-transform">
-                            <ArrowRight size={18} />
+                          <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center text-white border border-white/30">
+                            <Zap className="w-5 h-5 fill-yellow-300 text-yellow-300" />
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+
+                    {/* 1. Axevora Circle (Secondary) */}
+                    <div className="flex justify-center mb-6">
+                      <Link to="/tools/axevora-circle" className="w-full max-w-[350px] group relative overflow-hidden rounded-3xl shadow-lg border border-indigo-200 dark:border-indigo-900/50">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-700 to-slate-900"></div>
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+
+                        <div className="relative p-5 flex items-center gap-4">
+                          <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20 shadow-inner">
+                            <Users className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h2 className="text-lg font-black text-white leading-tight">Axevora Circle</h2>
+                            <p className="text-indigo-100/80 text-xs font-medium">Anonymous Global Chat</p>
                           </div>
                         </div>
                       </Link>
@@ -200,14 +229,14 @@ const Index = () => {
                             </div>
                           </div>
                           <span className="bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded animate-pulse">
-                            🔥 NEW
+                            ðŸ”¥ NEW
                           </span>
                         </div>
                       </div>
                     </Link>
 
                     {/* 2. Horizontal Scroll Trending Tools */}
-                    <h3 className="font-bold text-lg">Trending Tools 🔥</h3>
+                    <h3 className="font-bold text-lg">Trending Tools ðŸ”¥</h3>
                     <div className="flex overflow-x-auto gap-3 pb-2 -mx-4 px-4 scrollbar-hide">
                       {/* Video to Shorts */}
                       <Link to="/tools/video-to-shorts" className="shrink-0 w-36">
@@ -275,8 +304,8 @@ const Index = () => {
                             <path d="M70 74L95 35H60L35 74L60 113H95L70 74Z" fill="#F48020" />
                             <path d="M105 74L130 35H95L70 74L95 113H130L105 74Z" fill="#7E57C2" />
 
-                            <text x="160" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">GET IT ON</text>
-                            <text x="160" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">Indus Appstore</text>
+                            <text x="160" y="44" fill="white" fontFamily="Arial, sans-serif" fontSize="19" fontWeight="bold" letterSpacing="1">GET IT ON</text>
+                            <text x="160" y="86" fill="white" fontFamily="Arial, sans-serif" fontSize="42" fontWeight="bold">Indus Appstore</text>
                           </svg>
                         </a>
 
@@ -568,389 +597,220 @@ const Index = () => {
             DESKTOP VIEW (Original Site)
             Visible only on larger screens (md+)
            ========================================= */}
-        <div className="hidden md:block">
+        {/* =========================================
+            DESKTOP VIEW (FUTURISTIC APP GRID - VISUAL OVERHAUL)
+            Visible only on larger screens (md+)
+           ========================================= */}
+        <div className="hidden md:block min-h-screen bg-[#050510] relative overflow-hidden font-['Orbitron'] selection:bg-cyan-500/30 selection:text-cyan-100">
 
-          {/* NEW: Happy New Year 2026 Banner (Gold/Amber Theme) */}
-          <section className="relative py-10 bg-black overflow-hidden border-b border-yellow-900/50">
-            {/* Animated Background Elements */}
-            <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-              <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-gradient-to-tr from-yellow-600/20 via-transparent to-transparent rounded-full blur-3xl animate-blob"></div>
-              <div className="absolute bottom-[-50%] right-[-20%] w-[80%] h-[200%] bg-gradient-to-bl from-amber-600/20 via-transparent to-transparent rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-            </div>
+          {/* BACKGROUND EFFECTS (Deep Space + Particles) */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Space Nebulas */}
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse animation-delay-2000"></div>
+            <div className="absolute top-[20%] right-[20%] w-[30%] h-[30%] bg-cyan-900/10 rounded-full blur-[100px]"></div>
 
-            <div className="container mx-auto px-4 text-center relative z-10">
-              <div className="inline-block animate-bounce mb-2">
-                <span className="text-4xl filter drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">✨</span>
-              </div>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tight mb-4">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-200 to-yellow-400 drop-shadow-[0_0_25px_rgba(234,179,8,0.3)]">
-                  HAPPY NEW YEAR 2026
-                </span>
-              </h2>
-              <p className="text-xl md:text-2xl text-amber-100/80 font-medium max-w-3xl mx-auto leading-relaxed">
-                Wishing you a calm, productive, and prosperous year ahead. <br className="hidden md:block" /> May your code fly and your bugs be few! 🚀
-              </p>
-            </div>
-          </section>
+            {/* Mesh Grid Floor Effect */}
+            <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-[linear-gradient(to_top,rgba(0,255,255,0.05)_1px,transparent_1px),linear-gradient(to_right,rgba(0,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] [transform:perspective(500px)_rotateX(60deg)] origin-bottom opacity-30"></div>
+          </div>
 
-          {/* NEW: Search-First Hero Section */}
-          <section className="relative overflow-hidden bg-background pt-16 pb-12 lg:pt-24 lg:pb-20">
-            {/* Background Ambient Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-              <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl mix-blend-multiply animate-blob"></div>
-              <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl mix-blend-multiply animate-blob animation-delay-2000"></div>
-            </div>
+          <div className="relative z-10 container mx-auto px-6 py-10">
 
-            <div className="relative container mx-auto px-4 text-center z-10">
-              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-foreground leading-tight animate-in fade-in slide-in-from-bottom-8 duration-700">
-                Stop Guessing. <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">Start Doing.</span>
-              </h1>
+            {/* HEADER / HUD */}
+            <div className="relative z-50 flex items-center justify-between mb-12 border-b border-white/10 pb-6 backdrop-blur-sm">
 
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                The smartest web toolkit. Compare gadgets, generate viral content, and optimize your workflow.
-              </p>
-
-              {/* MAGIC BAR (AI SMART SEARCH) */}
-              <div className="max-w-4xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                <MagicBar />
+              {/* 1. LEFT: Logo */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/50 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                  <Zap className="w-6 h-6 text-cyan-400" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-black text-white tracking-widest uppercase" style={{ textShadow: "0 0 10px rgba(6,182,212,0.8)" }}>Axevora</h1>
+                </div>
               </div>
 
-              {/* Quick Chips */}
-              <div className="flex flex-wrap justify-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground py-1">Quick Filters:</span>
-                {[
-                  { id: 'all', label: 'All' },
-                  { id: 'pdf', label: '📄 PDF' },
-                  { id: 'ai', label: '🤖 AI Tools' },
-                  { id: 'image', label: '🖼️ Image' },
-                  { id: 'converter', label: '⚡ Converters' },
-                  { id: 'analyzer', label: '🌐 SEO' }
-                ].map((chip) => (
-                  <Button
-                    key={chip.id}
-                    variant={selectedCategory === chip.id ? "default" : "outline"}
-                    size="sm"
-                    className="rounded-full text-xs md:text-sm px-4 h-9"
-                    onClick={() => {
-                      setSelectedCategory(chip.id);
-                      scrollToTools();
-                    }}
-                  >
-                    {chip.label}
+              {/* 2. CENTER: Indus Appstore Badge */}
+              {/* 2. CENTER: Indus Appstore Badge & QR */}
+              <div className="hidden lg:flex items-center gap-4">
+                <a href="https://indusapp.store/onxmeb1t" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-105 active:scale-95">
+                  <img src="/assets/indus-badge.png" alt="Download on Indus Appstore" className="h-12 w-auto object-contain drop-shadow-lg" />
+                </a>
+                <div className="group relative">
+                  <div className="w-12 h-12 bg-white rounded-lg p-1 shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer overflow-hidden">
+                    <img src="/assets/indus-qr.png" alt="Scan QR" className="w-full h-full object-cover" />
+                  </div>
+                  {/* Hover Zoom Effect for QR */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 h-32 bg-white rounded-xl p-2 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 scale-0 group-hover:scale-100 origin-top">
+                    <img src="/assets/indus-qr.png" alt="Scan QR" className="w-full h-full object-cover" />
+                    <p className="text-black text-[10px] text-center font-bold mt-1">Scan to Install</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. RIGHT: Actions (Network Status + Button) */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 px-4 py-2 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className="text-xs text-green-500 font-bold tracking-wider">NETWORK STABLE</span>
+                </div>
+                <Link to="/tools/axevora-spotlight">
+                  <Button className="bg-cyan-600/20 border border-cyan-500/50 hover:bg-cyan-500/30 text-cyan-400 font-bold tracking-widest hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all">
+                    <Zap className="w-4 h-4 mr-2" /> LAUNCH SPOTLIGHT
                   </Button>
-                ))}
+                </Link>
               </div>
             </div>
-          </section>
 
-          {/* NEW: App Download Section (Desktop) */}
-          <section className="container mx-auto px-4 mb-16">
-            <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 rounded-3xl p-8 md:p-12 relative overflow-hidden border border-red-100 dark:border-red-900/30 shadow-xl">
-              {/* Decorative Background */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -ml-20 -mb-20"></div>
+            {/* HERO: SPOTLIGHT FEATURE (Holographic Card) */}
+            <div className="mb-16 relative group cursor-pointer" onClick={() => navigate('/tools/axevora-spotlight')}>
+              {/* Glow Behind */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
 
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-                <div className="space-y-4 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                    <Smartphone size={14} />
-                    <span>Mobile App</span>
+              <div className="relative h-[280px] rounded-3xl bg-black/60 border border-orange-500/50 backdrop-blur-xl overflow-hidden flex items-center shadow-[0_0_30px_rgba(249,115,22,0.15)] group-hover:shadow-[0_0_50px_rgba(249,115,22,0.4)] transition-all duration-500">
+
+                {/* Animated Scanline */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-50 animate-[scan_3s_linear_infinite]"></div>
+
+                <div className="flex w-full items-center p-12 gap-12">
+                  {/* Icon/Visual */}
+                  <div className="w-40 h-40 flex-shrink-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-2xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30"></div>
+                    <Play className="w-20 h-20 text-white fill-white drop-shadow-lg" />
+
+                    {/* Floating Particles */}
+                    <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-300 rounded-full animate-ping"></div>
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                    Access Tools Anywhere.
-                  </h2>
-                  <p className="text-lg text-muted-foreground">
-                    Download the Axevora app for faster access, offline tools, and exclusive mobile features.
-                  </p>
-                </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  {/* Indus Appstore Badge */}
-                  <a
-                    href="https://indusapp.store/onxmeb1t"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block transition-transform active:scale-95 hover:opacity-90 hover:-translate-y-1 duration-300"
-                  >
-                    <svg viewBox="0 0 498 148" className="h-16 w-auto drop-shadow-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="498" height="148" rx="28" fill="black" />
-                      <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
-                      <path d="M70 74L95 35H60L35 74L60 113H95L70 74Z" fill="#F48020" />
-                      <path d="M105 74L130 35H95L70 74L95 113H130L105 74Z" fill="#7E57C2" />
-                      <text x="160" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">GET IT ON</text>
-                      <text x="160" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">Indus Appstore</text>
-                    </svg>
-                  </a>
+                  {/* Content */}
+                  <div className="flex-1 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Badge className="bg-orange-500/10 text-orange-400 border border-orange-500/50 px-3 py-1 text-xs tracking-widest uppercase shadow-[0_0_10px_rgba(249,115,22,0.3)]">Viral Engine</Badge>
+                      <span className="text-white/40 text-xs font-bold tracking-widest animate-pulse">/// REC</span>
+                    </div>
+                    <h2 className="text-5xl font-black text-white tracking-widest uppercase leading-none drop-shadow-xl">
+                      Axevora <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Spotlight</span>
+                    </h2>
+                    <p className="text-orange-100/70 text-lg max-w-2xl font-light tracking-wide">
+                      The ultimate creator launchpad. Post your content, earn coins, and go viral.
+                      <span className="text-orange-400 font-bold ml-2">Get Views. Get Famous.</span>
+                    </p>
+                  </div>
 
-                  {/* Huawei AppGallery Badge */}
-                  <a
-                    href="https://appgallery.huawei.com/#/app/C116590843"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block transition-transform active:scale-95 hover:opacity-90 hover:-translate-y-1 duration-300"
-                  >
-                    <svg viewBox="0 0 498 148" className="h-16 w-auto drop-shadow-lg" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="498" height="148" rx="28" fill="black" />
-                      <rect x="2" y="2" width="494" height="144" rx="26" stroke="white" strokeOpacity="0.2" strokeWidth="4" />
-                      <path d="M99.5 35C122.972 35 142 54.0279 142 77.5C142 100.972 122.972 120 99.5 120C76.0279 120 57 100.972 57 77.5C57 54.0279 76.0279 35 99.5 35Z" fill="#C7000B" />
-                      <path d="M109.8 110H89.2V115H109.8V110ZM109.8 110C109.8 110 99.5 110 99.5 110C99.5 110 89.2 110 89.2 110" fill="#C7000B" />
-                      <path d="M117.84 83.6599C115.68 83.6599 113.92 81.8999 113.92 79.7399V73.4599C113.88 66.8299 108.87 61.4299 102.24 60.9899C102.16 60.9899 102.08 60.9899 102 60.9899H96.9999C90.3699 61.4299 85.3599 66.8299 85.3199 73.4599V79.7399C85.3199 81.8999 83.5599 83.6599 81.3999 83.6599C79.2399 83.6599 77.4799 81.8999 77.4799 79.7399V73.4599C77.5399 62.5399 85.7999 53.5899 96.6599 52.5499C96.7699 52.5399 96.8899 52.5399 96.9999 52.5399H102C112.87 53.5899 121.13 62.5399 121.19 73.4599V79.7399C121.76 81.8999 120 83.6599 117.84 83.6599Z" fill="white" />
-                      <path d="M72 87H127" stroke="white" strokeWidth="0" />
-                      <path d="M192 19H394V34H192V19Z" fill="current" fill-opacity="0" />
-                      <text x="182" y="44" fill="white" font-family="Arial, sans-serif" font-size="19" font-weight="bold" letter-spacing="1">EXPLORE IT ON</text>
-                      <text x="182" y="86" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="bold">AppGallery</text>
-                    </svg>
-                  </a>
+                  {/* CTA Button Replica */}
+                  <div className="mr-8">
+                    <div className="h-16 w-16 rounded-full border-2 border-orange-500 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-black transition-all text-orange-500">
+                      <ArrowRight className="w-8 h-8" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </section>
 
-          {/* Compact Featured Section */}
-          <section className="container mx-auto px-4 pb-12">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-yellow-500" />
-                <h2 className="text-xl font-bold uppercase tracking-wide text-muted-foreground">Featured Tool</h2>
-              </div>
-            </div>
 
-            {/* NEW: Desktop Spotlight Banner for Axevora Circle */}
-            <div className="mb-10">
-              <Link to="/tools/axevora-circle" className="block group">
-                <div className="relative h-48 md:h-64 rounded-3xl overflow-hidden shadow-2xl border border-white/10 transition-all duration-700 bg-slate-950">
-                  {/* Animated Background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 via-purple-900/40 to-slate-900/40 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-purple-600/10 blur-3xl"></div>
+            {/* APP GRID (The "Laptop Screen" Look) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
 
-                  <div className="absolute inset-0 flex items-center px-8 md:px-16 gap-8">
-                    <div className="hidden md:flex w-32 h-32 bg-indigo-600 rounded-3xl p-6 items-center justify-center shadow-[0_0_50px_rgba(79,70,229,0.5)] transform -rotate-6 group-hover:rotate-0 transition-transform duration-500">
-                      <Users className="w-full h-full text-white" />
-                    </div>
+              {/* --- TOP HIGHLIGHTED APPS (CIRCLE, TECH, YT, GAMES) --- */}
 
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <Badge className="bg-indigo-500 hover:bg-indigo-600 border-0 animate-pulse">LIVE: Axevora Circle</Badge>
-                        <span className="text-white/40 text-xs font-bold tracking-[0.2em] uppercase">Private & Instant</span>
-                      </div>
-                      <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
-                        Anonymous <span className="text-indigo-400">Global Hub</span>
-                      </h2>
-                      <p className="text-white/60 text-base md:text-lg max-w-xl font-medium">
-                        No accounts. No history. Just pure real-time discussions with everyone around the globe.
-                      </p>
-                      <div className="flex items-center gap-4 pt-2">
-                        <Button size="lg" className="rounded-full bg-white text-indigo-950 font-black hover:bg-indigo-50 px-8 shadow-xl transform active:scale-95 transition-all">
-                          JOIN THE CIRCLE
-                        </Button>
-                        <div className="flex -space-x-3 overflow-hidden opacity-50">
-                          {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-950 bg-indigo-500/20 backdrop-blur-sm" />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+              {/* --- TOP HIGHLIGHTED APPS (USER PRIORITY) --- */}
+
+              {/* 1. YouTube Shorts Creator (Viral Tool) - WIDE */}
+              <Link to="/tools/video-to-shorts" className="group col-span-2 md:col-span-2 bg-gradient-to-br from-red-900/40 to-orange-900/40 rounded-2xl border border-red-500/40 relative overflow-hidden hover:shadow-[0_0_40px_rgba(239,68,68,0.4)] transition-all">
+                <div className="absolute inset-0 bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="h-full flex items-center p-6 gap-6">
+                  <div className="w-16 h-16 rounded-xl bg-red-500/20 flex items-center justify-center border border-red-400/30">
+                    <Scissors className="w-8 h-8 text-red-300" />
                   </div>
-
-                  {/* Decorative Elements */}
-                  <div className="absolute top-4 right-8 opacity-20 group-hover:opacity-40 transition-opacity">
-                    <Sparkles className="w-12 h-12 text-white animate-spin-slow" />
+                  <div>
+                    <Badge className="bg-red-500 text-white mb-2 border-0">AI VIRAL</Badge>
+                    <h3 className="text-xl font-bold text-white tracking-wider">Shorts Creator</h3>
+                    <p className="text-red-200/60 text-xs">Turn Videos into Viral Shorts</p>
                   </div>
                 </div>
               </Link>
-            </div>
 
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp className="w-5 h-5 text-orange-500" />
-              <h2 className="text-xl font-bold uppercase tracking-wide text-muted-foreground">Trending Now</h2>
-            </div>
-
-            {/* Compact Grid for Top Tools */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* 0. Pool Shooter (Featured) */}
-              <Link to="/tools/pool-shooter" className="group col-span-1 md:col-span-2 relative overflow-hidden rounded-xl border-0 shadow-md hover:shadow-xl transition-all">
-                <div className="absolute inset-0">
-                  <img src="/assets/pool-feature.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" alt="Pool Banner" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                </div>
-                <Card className="h-full bg-transparent border-0 relative z-10 flex flex-col justify-end min-h-[160px]">
-                  <CardContent className="p-5">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-emerald-600 text-white rounded-lg shadow-lg">
-                        <Trophy className="w-5 h-5" />
-                      </div>
-                      <Badge className="bg-emerald-500 hover:bg-emerald-600 border-0">NEW GAME</Badge>
-                    </div>
-                    <h3 className="font-black text-2xl text-white group-hover:text-emerald-400 transition-colors">Pool Shooter</h3>
-                    <p className="text-emerald-100/80 font-medium">Relaxing Bubble Shooter with Arcade Physics</p>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* 0.1 2048 Game (Featured) */}
-              <Link to="/tools/2048-game" className="group">
-                <Card className="h-full border-2 border-amber-400/50 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer shadow-sm hover:shadow-md">
-                  <CardContent className="p-5 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600">
-                      <Gamepad2 className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground group-hover:text-amber-600 transition-colors">2048 Puzzle</h3>
-                      <p className="text-xs text-muted-foreground">Addictive Logic Game</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-              {/* 1. Tech Versus */}
-              <Link to="/tools/tech-versus" className="group">
-                <Card className="h-full border hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer">
-                  <CardContent className="p-5 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600">
-                      <Smartphone className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground group-hover:text-indigo-600 transition-colors">AI Comparison</h3>
-                      <p className="text-xs text-muted-foreground">Gadgets, Food, anything.</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* 2. Video to Shorts */}
-              <Link to="/tools/video-to-shorts" className="group">
-                <Card className="h-full border hover:border-red-500/50 hover:bg-red-500/5 transition-all cursor-pointer">
-                  <CardContent className="p-5 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-600">
-                      <Scissors className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground group-hover:text-red-600 transition-colors">Video to Shorts</h3>
-                      <p className="text-xs text-muted-foreground">Viral AI Clipper</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* 3. Image Resizer (New) */}
-              <Link to="/tools/image-resizer" className="group">
-                <Card className="h-full border hover:border-green-500/50 hover:bg-green-500/5 transition-all cursor-pointer">
-                  <CardContent className="p-5 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600">
-                      <Smartphone className="w-6 h-6" /> {/* Using Smartphone/Image icon */}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground group-hover:text-green-600 transition-colors">Image Resizer</h3>
-                      <p className="text-xs text-muted-foreground">For Insta & Amazon</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* 4. Caption Gen */}
-              <Link to="/tools/ai-caption-generator" className="group">
-                <Card className="h-full border hover:border-purple-500/50 hover:bg-purple-500/5 transition-all cursor-pointer">
-                  <CardContent className="p-5 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground group-hover:text-purple-600 transition-colors">Caption Gen</h3>
-                      <p className="text-xs text-muted-foreground">Viral Hooks AI</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
-          </section>
-
-          {/* Existing Content Blocks (Keep Specialized Toolkits etc) */}
-
-          {/* Search & Tool Grid (Redesigned Header) */}
-          <section id="tools-section" className="container mx-auto px-4 py-8">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">All Tools</h2>
-                <div className="text-sm text-muted-foreground">
-                  Showing {filteredTools.length} tools
-                </div>
-              </div>
-
-              {/* Tools Grid */}
-              <div className="space-y-16">
-                {selectedCategory === "all" ? (
-                  Object.entries(toolsByCategory).map(([categoryId, categoryData]) => (
-                    <div key={categoryId} className="scroll-mt-20" id={categoryId}>
-                      <div className="flex items-center gap-4 mb-8">
-                        <div className="h-px bg-border flex-1"></div>
-                        <h3 className="text-2xl font-bold text-foreground px-4 py-2 bg-background border rounded-full shadow-sm">
-                          {categoryData.name}
-                        </h3>
-                        <div className="h-px bg-border flex-1"></div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {categoryData.tools.map((tool) => {
-                          if (!tool.icon) return null;
-                          return (
-                            <Link key={tool.id} to={tool.path}>
-                              <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group border-transparent hover:border-primary/10 bg-card hover:bg-accent/5">
-                                <CardHeader className="pb-3">
-                                  <div className="flex items-center justify-between mb-4">
-                                    <div className="p-2.5 bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                                      <tool.icon className="h-6 w-6" />
-                                    </div>
-                                  </div>
-                                  <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                                    {tool.name}
-                                  </CardTitle>
-                                  <CardDescription className="line-clamp-2 mt-2">
-                                    {tool.description}
-                                  </CardDescription>
-                                </CardHeader>
-                              </Card>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredTools.map((tool) => {
-                      // Safety check for missing icons
-                      if (!tool.icon) {
-                        console.warn('Tool missing icon:', tool.name);
-                        return null;
-                      }
-                      return (
-                        <Link key={tool.id} to={tool.path}>
-                          <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group hover:border-primary/20">
-                            <CardHeader className="pb-3">
-                              <div className="p-2.5 w-fit bg-primary/5 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 mb-4">
-                                <tool.icon className="h-6 w-6" />
-                              </div>
-                              <CardTitle className="text-lg">{tool.name}</CardTitle>
-                              <CardDescription>{tool.description}</CardDescription>
-                            </CardHeader>
-                          </Card>
-                        </Link>
-                      );
-                    })}
+              {/* 2. Pool Shooter (Game) - WIDE */}
+              <Link to="/tools/pool-shooter" className="group col-span-2 md:col-span-2 bg-gradient-to-br from-emerald-900/40 to-teal-900/40 rounded-2xl border border-emerald-500/40 relative overflow-hidden hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] transition-all">
+                <div className="h-full flex items-center p-6 gap-4">
+                  <div className="w-16 h-16 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-400/30 group-hover:scale-110 transition-transform">
+                    <Trophy className="w-8 h-8 text-emerald-300" />
                   </div>
-                )}
+                  <div>
+                    <Badge className="bg-emerald-500 text-white mb-2 border-0">TOP GAME</Badge>
+                    <h3 className="text-xl font-bold text-white tracking-wider">Pool Shooter</h3>
+                    <p className="text-emerald-200/60 text-xs">Classic Arcade Billiards</p>
+                  </div>
+                </div>
+              </Link>
+
+              {/* 3. Games Arcade (Category Hub) */}
+              <div onClick={() => { setSelectedCategory('game'); scrollToTools(); }} className="group col-span-1 bg-black/40 rounded-2xl border border-amber-500/40 relative overflow-hidden hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all flex flex-col items-center justify-center p-4 text-center cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <Gamepad2 className="w-6 h-6 text-amber-400" />
+                </div>
+                <h3 className="text-sm font-bold text-white">All Games</h3>
               </div>
+
+              {/* 4. Axevora Circle (Social) */}
+              <Link to="/tools/axevora-circle" className="group col-span-1 bg-black/40 rounded-2xl border border-indigo-500/40 relative overflow-hidden hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all flex flex-col items-center justify-center p-4 text-center">
+                <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <Users className="w-6 h-6 text-indigo-400" />
+                </div>
+                <h3 className="text-sm font-bold text-white">Circle Chat</h3>
+              </Link>
+
+              {/* Spacer / Divider */}
+              <div className="col-span-full h-px bg-white/10 my-4"></div>
+
+              {/* Grid Items Loop */}
+              {filteredTools.slice(0, 24).map((tool, idx) => (
+                <Link to={tool.path} key={tool.id} className="group relative">
+                  {/* Box */}
+                  <div className="
+                            aspect-square rounded-2xl 
+                            bg-black/40 backdrop-blur-md 
+                            border border-white/10 
+                            hover:border-cyan-500/50 hover:bg-cyan-900/10
+                            flex flex-col items-center justify-center text-center p-4 
+                            transition-all duration-300 
+                            group-hover:-translate-y-2 group-hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]
+                        ">
+
+                    {/* Icon Glow */}
+                    <div className={`
+                                w-14 h-14 rounded-xl mb-3 flex items-center justify-center 
+                                bg-gradient-to-br from-gray-800 to-black border border-white/5
+                                group-hover:scale-110 transition-transform duration-300
+                                ${idx % 3 === 0 ? 'group-hover:border-cyan-500 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.6)]' : ''}
+                                ${idx % 3 === 1 ? 'group-hover:border-purple-500 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.6)]' : ''}
+                                ${idx % 3 === 2 ? 'group-hover:border-pink-500 group-hover:shadow-[0_0_15px_rgba(236,72,153,0.6)]' : ''}
+                            `}>
+                      {tool.icon && <tool.icon className={`w-7 h-7 text-white/70 group-hover:text-white transition-colors`} />}
+                    </div>
+
+                    {/* Label */}
+                    <h3 className="text-white text-xs font-bold tracking-wider uppercase opacity-70 group-hover:opacity-100 group-hover:text-cyan-300">{tool.name}</h3>
+                  </div>
+                </Link>
+              ))}
+
+              {/* View All Button Block */}
+              <Link to="/tools" className="group relative col-span-2 md:col-span-2 lg:col-span-2 aspect-[2/1] md:aspect-auto">
+                <div className="h-full w-full rounded-2xl bg-cyan-900/20 border border-cyan-500/30 hover:bg-cyan-900/40 flex items-center justify-center gap-4 transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                  <span className="text-cyan-400 font-bold tracking-[0.2em] text-lg">ACCESS ALL APPS</span>
+                  <div className="p-2 bg-cyan-500/20 rounded-full">
+                    <ArrowRight className="text-cyan-400" />
+                  </div>
+                </div>
+              </Link>
+
             </div>
-          </section>
 
-          {/* Testimonials / Social Proof */}
-          <Testimonials />
-
-          {/* Blog & Resources */}
-
-        </div>
-      </main>
+          </div>
+        </div >
+      </main >
       <Footer />
-    </div>
+    </div >
   );
 };
 

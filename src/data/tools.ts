@@ -2016,6 +2016,55 @@ const allTools = [
     ]
   },
   {
+    id: "axevora-spotlight",
+    name: "Viral Spotlight",
+    subheading: "Creator Traffic Exchange",
+    description: "Promote your YouTube & Instagram content. Earn coins by watching, spend coins to get views.",
+    category: "ai",
+    icon: Zap,
+    path: "/tools/axevora-spotlight",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>The Creator's Launchpad 🚀</h2>
+        <p>Struggling to get your first 1,000 views? <strong>Axevora Spotlight</strong> is a community-driven traffic exchange platform designed for valid, organic growth.</p>
+        
+        <h3>How It Works</h3>
+        <ul>
+          <li><strong>Earn Coins:</strong> Watch other creators' videos or subscribe to channels to earn credits.</li>
+          <li><strong>Spend Coins:</strong> Use your credits to post your own YouTube Videos or Instagram Reels.</li>
+          <li><strong>Get Views:</strong> Other users watch your content to earn their own coins. It's a cycle of support!</li>
+        </ul>
+
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg my-4 border-l-4 border-yellow-500">
+          <h4>⚡ Smart Verification</h4>
+          <p>We use a smart timer system to ensure users actually spend time on your content before claiming rewards. No bots, just real people.</p>
+        </div>
+      </article>
+    `,
+    howToUse: [
+      "Login to Axevora.",
+      "Watch videos to build your Coin Balance.",
+      "Click 'Post Your Link' to add your YouTube/Instagram URL.",
+      "Watch your views grow as the community supports you."
+    ],
+    benefits: [
+      "100% Free Organic Traffic.",
+      "Real User Engagement.",
+      "Safe & Legal (Embeds Only).",
+      "Gamified Rewards System."
+    ],
+    faqs: [
+      {
+        question: "Is this safe for my channel?",
+        answer: "Yes! We use standard YouTube/Instagram embeds. Views count as 'External' traffic, which is perfectly normal and safe."
+      },
+      {
+        question: "Can I buy coins?",
+        answer: "Currently, coins are only earned by supporting other creators. This keeps the ecosystem fair."
+      }
+    ]
+  },
+  {
     id: "typing-speed-test",
     name: "Typing Speed Test",
     subheading: "Check your WPM",
@@ -2630,61 +2679,7 @@ const allTools = [
       }
     ]
   },
-  {
-    id: "thumbnail-generator",
-    name: "AI Thumbnail Generator",
-    subheading: "Create viral YouTube thumbnails",
-    description: "Generate high-CTR thumbnails with AI. Remove backgrounds, add neon text, and use MrBeast-style effects.",
-    keywords: ["youtube", "thumbnail", "viral", "ctr", "mrbeast", "video"],
-    category: "ai",
-    icon: Sparkles,
-    path: "/tools/thumbnail-generator"
-  },
-  {
-    id: "video-editor",
-    name: "Online Video Editor",
-    subheading: "Edit videos in browser",
-    description: "Trim, cut, and edit videos directly in your browser without watermarks.",
-    category: "editor",
-    icon: Video,
-    path: "/tools/video-editor"
-  },
-  {
-    id: "text-to-video",
-    name: "AI Text to Video",
-    subheading: "Turn text into video",
-    description: "Generate engaging videos from simple text prompts using AI.",
-    category: "ai",
-    icon: Bot,
-    path: "/tools/text-to-video"
-  },
-  {
-    id: "ai-image-editor",
-    name: "AI Image Editor",
-    subheading: "Edit images with AI",
-    description: "Magic erase, background removal, and smart enhancement tools powered by AI.",
-    category: "ai",
-    icon: Image,
-    path: "/tools/ai-image-editor"
-  },
-  {
-    id: "ai-website-generator",
-    name: "AI Website Generator",
-    subheading: "Build websites in seconds",
-    description: "Generate full landing pages and websites from a single prompt.",
-    category: "ai",
-    icon: Globe,
-    path: "/tools/ai-website-generator"
-  },
-  {
-    id: "ai-tool-generator",
-    name: "AI Tool Generator",
-    subheading: "Create your own tools",
-    description: "Describe a tool and let AI build it for you instantly.",
-    category: "ai",
-    icon: Code,
-    path: "/tools/ai-tool-generator"
-  },
+
 
 
   {

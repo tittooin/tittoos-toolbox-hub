@@ -21,6 +21,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 export interface UserProfile {
     uid: string;
     xp: number;
+    coins: number;
     level: number;
     displayName?: string; // Cache nickname for Leaderboard
     badges: string[];
@@ -57,6 +58,7 @@ export const useAxevoraGamification = () => {
                     await setDoc(docRef, {
                         uid: user.uid,
                         xp: 0,
+                        coins: 50, // Start with 50 coins
                         level: 1,
                         badges: ['Rookie'],
                         scratchCards: []
@@ -126,6 +128,18 @@ export const useAxevoraGamification = () => {
             await updateDoc(userRef, updates);
         } catch (error) {
             console.error("Error awarding XP:", error);
+        }
+    };
+
+    const updateCoins = async (amount: number) => {
+        if (!auth.currentUser) return;
+        const userRef = doc(db, 'user_profiles', auth.currentUser.uid);
+        try {
+            await updateDoc(userRef, {
+                coins: increment(amount)
+            });
+        } catch (error) {
+            console.error("Error updating coins:", error);
         }
     };
 
@@ -292,6 +306,7 @@ export const useAxevoraGamification = () => {
 
     return {
         userProfile,
+        updateCoins,
         loading,
         showLevelUp,
         setShowLevelUp,

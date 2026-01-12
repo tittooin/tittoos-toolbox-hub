@@ -146,6 +146,7 @@ const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
 const AIRemixSuite = lazy(() => import("./pages/tools/AIRemixSuite"));
 const SmartPDF = lazy(() => import("./pages/tools/SmartPDF"));
 const AxevoraCircle = lazy(() => import("./pages/tools/AxevoraCircle"));
+const AxevoraSpotlight = lazy(() => import("./pages/tools/AxevoraSpotlight"));
 
 // Games
 const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
@@ -338,6 +339,7 @@ const App = () => (
                 <Route path="/tools/ai-remix-suite" element={<AIRemixSuite />} />
                 <Route path="/tools/smart-pdf" element={<SmartPDF />} />
                 <Route path="/tools/axevora-circle" element={<AxevoraCircle />} />
+                <Route path="/tools/axevora-spotlight" element={<AxevoraSpotlight />} />
 
                 {/* AI Social Media Tools */}
                 <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
