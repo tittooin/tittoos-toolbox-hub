@@ -486,7 +486,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       </ul>
 
       <p>Try it now: <a href="/tools/compress-pdf">Compress your PDF</a> and see how much space you save. It is not uncommon to see reductions of 80-90%!</p>
-    \`
+    `
   },
   {
     id: 7,
@@ -499,7 +499,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     authorSlug: "design-team",
     slug: "jpg-vs-png-vs-webp-guide",
     tags: ["images", "design", "web-dev"],
-    content: \`
+    content: `
       <p>In the early days of the web, choices were simple. Today, we have a confusing alphabet soup of image formats. Using the wrong one can lead to blurry photos, transparent backgrounds turning black, or slow-loading websites.</p>
 
       <h2>JPG (JPEG): The Photographer's Friend</h2>
@@ -546,7 +546,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       </table>
 
       <p>Need to switch formats? Use our <a href="/tools/image-converter">Image Converter</a> to swap between them instantly.</p>
-    \`
+    `
   },
   {
     id: 8,
@@ -559,7 +559,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     authorSlug: "security-expert",
     slug: "security-privacy-free-online-tools",
     tags: ["security", "privacy", "education"],
-    content: \`
+    content: `
       <p>It is a common scenario: you need to convert a sensitive bank statement to PDF or resize a photo of your ID card. You Google "free pdf converter," click the first link, and upload your file. Stop right there. Do you know where that file just went?</p>
 
       <h2>Server-Side vs. Client-Side</h2>
@@ -579,7 +579,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>If a tool works instantly and doesn't show a "Uploading 50%..." bar for small files, it's likely client-side. Also, try turning off your Wi-Fi after the page loads. If the tool still works, it's client-side (and 100% secure!).</p>
 
       <p>We are committed to privacy. We don't want your data. We just want to give you the tools to manage it.</p>
-    \`
+    `
   },
   {
     id: 9,
@@ -592,7 +592,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     authorSlug: "devrel-team",
     slug: "top-developer-tools-2024",
     tags: ["development", "coding", "productivity"],
-    content: \`
+    content: `
       <p>Coding is about solving problems, not wrestling with syntax or formatting JSON strings manually. Here are the top 5 tools every developer should have bookmarked:</p>
 
       <h2>1. JSON Formatter & Validator</h2>
@@ -611,7 +611,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>Sometimes you don't need a full Git commit history; you just need to know "what changed between this text and that text?" A quick Diff tool is unbeatable for spot-checks.</p>
 
       <p>Axevora provides all these tools free, without any API limits.</p>
-    \`
+    `
   },
   {
     id: 10,
@@ -624,7 +624,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
     authorSlug: "privacy-advocate",
     slug: "what-is-exif-data-guide",
     tags: ["privacy", "images", "tech-literacy"],
-    content: \`
+    content: `
       <p>When you take a photo with your smartphone or DSLR, it saves more than just the image. It saves a hidden set of data called <strong>EXIF (Exchangeable Image File Format)</strong>.</p>
 
       <h2>What's inside EXIF?</h2>
@@ -642,7 +642,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>You can view this data using our <a href="/tools/image-analyzer">Image Analyzer</a> (or Exif Viewer). To remove it, you often just need to re-save the image using a tool or screenshot it. Many social networks (like Facebook and Twitter) automatically strip this data, but email and direct file sharing often do not.</p>
 
       <p>Stay safe: always scrub sensitive metadata before sharing files publicly.</p>
-    \`
+    `
   },
   // Surfaced Category Guides
   {
