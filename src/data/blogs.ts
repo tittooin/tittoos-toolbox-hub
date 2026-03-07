@@ -451,6 +451,199 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>Improving website speed is one of the highest-ROI activities you can do. It costs nothing but time, yet it directly impacts your SEO rankings and user conversion rates. Start with image compression today—it's the easiest win with the biggest impact.</p>
     `
   },
+  {
+    id: 6,
+    title: "Why Your PDF is Too Big (and How to Fix It)",
+    image: "https://images.unsplash.com/photo-1544396821-4dd40b938ad3?auto=format&fit=crop&w=1200",
+    excerpt: "Struggling with email attachment limits? Learn why PDFs get so bloated and how to compress them without ruining the quality.",
+    date: "2024-04-02",
+    readTime: "7 min read",
+    author: "Axevora Team",
+    authorSlug: "axevora-team",
+    slug: "why-is-my-pdf-so-big-compression-guide",
+    tags: ["pdf", "compression", "optimization"],
+    content: `
+      <p>We have all been there: you finish a report, export it to PDF, and try to email it, only to get bounced back because the file size exceeds 25MB. Why is a simple 10-page document taking up more space than a high-definition video clip?</p>
+
+      <h2>The Culprits: What Bloats a PDF?</h2>
+      <p>PDFs are containers. They don't just hold text; they hold fonts, images, vector graphics, and sometimes even other files. Here are the main reasons your file is huge:</p>
+
+      <h3>1. Uncompressed Images</h3>
+      <p>If you dragged 4K photos directly into your Word document before converting, those full-resolution images are likely still sitting inside your PDF. You don't need 12-megapixel photos for a document meant to be read on a screen.</p>
+
+      <h3>2. Embedded Fonts</h3>
+      <p>To ensure your document looks the same on every computer, PDFs "embed" the font files. If you used 10 different custom fonts, you just packed 10 font files into your document.</p>
+
+      <h3>3. Hidden Metadata and Layers</h3>
+      <p>Graphic design software (like Illustrator or Photoshop) often saves "editing capabilities" inside the PDF. This means layers, history, and raw data are included, even if you can't see them.</p>
+
+      <h2>How to Fix It (The Easy Way)</h2>
+      <p>You don't need to rebuild your document. The fastest solution is to use a <a href="/tools/compress-pdf">PDF Compressor</a>. Here is what it does:</p>
+      <ul>
+        <li><strong>Downsamples Images:</strong> Reduces image resolution to standard screen density (72-144 DPI).</li>
+        <li><strong>Strips Metadata:</strong> Removes hidden layers and unnecessary data.</li>
+        <li><strong>Subsets Fonts:</strong> Keeps only the characters you actually used, not the whole alphabet.</li>
+      </ul>
+
+      <p>Try it now: <a href="/tools/compress-pdf">Compress your PDF</a> and see how much space you save. It is not uncommon to see reductions of 80-90%!</p>
+    \`
+  },
+  {
+    id: 7,
+    title: "JPG vs PNG vs WebP: The Ultimate Image Format Showdown",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200",
+    excerpt: "Stop guessing which format to use. We break down the pros and cons of each image type for websites, social media, and print.",
+    date: "2024-04-05",
+    readTime: "9 min read",
+    author: "Design Team",
+    authorSlug: "design-team",
+    slug: "jpg-vs-png-vs-webp-guide",
+    tags: ["images", "design", "web-dev"],
+    content: \`
+      <p>In the early days of the web, choices were simple. Today, we have a confusing alphabet soup of image formats. Using the wrong one can lead to blurry photos, transparent backgrounds turning black, or slow-loading websites.</p>
+
+      <h2>JPG (JPEG): The Photographer's Friend</h2>
+      <p><strong>Best for:</strong> Photos, real-world scenes, complex gradients.</p>
+      <p><strong>Pros:</strong> Very small file sizes; universal compatibility.</p>
+      <p><strong>Cons:</strong> No transparency support; quality degrades with every save ("lossy" compression).</p>
+
+      <h2>PNG: The Designer's Choice</h2>
+      <p><strong>Best for:</strong> Logos, screenshots, graphics with text, images needing transparency.</p>
+      <p><strong>Pros:</strong> Crisp lines (lossless); supports transparent backgrounds.</p>
+      <p><strong>Cons:</strong> File sizes can be huge for photographs.</p>
+
+      <h2>WebP: The Modern Standard</h2>
+      <p><strong>Best for:</strong> Websites and apps.</p>
+      <p><strong>Pros:</strong> Superior compression (smaller than both JPG and PNG) with high quality; supports transparency.</p>
+      <p><strong>Cons:</strong> Older software might not open it (though all modern browsers do).</p>
+
+      <h2>Summary Table</h2>
+      <table class="w-full text-left border-collapse my-6">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="p-3 border">Format</th>
+            <th class="p-3 border">Transparency?</th>
+            <th class="p-3 border">Best Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="p-3 border">JPG</td>
+            <td class="p-3 border">No</td>
+            <td class="p-3 border">Photos</td>
+          </tr>
+          <tr>
+            <td class="p-3 border">PNG</td>
+            <td class="p-3 border">Yes</td>
+            <td class="p-3 border">Logos / Screenshots</td>
+          </tr>
+           <tr>
+            <td class="p-3 border">WebP</td>
+            <td class="p-3 border">Yes</td>
+            <td class="p-3 border">Website Speed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Need to switch formats? Use our <a href="/tools/image-converter">Image Converter</a> to swap between them instantly.</p>
+    \`
+  },
+  {
+    id: 8,
+    title: "The Hidden Dangers of Free Online Tools (And Why We Are Different)",
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200",
+    excerpt: "Not all free tools are created equal. Learn why 'client-side processing' is the most important feature you should look for.",
+    date: "2024-04-08",
+    readTime: "6 min read",
+    author: "Security Expert",
+    authorSlug: "security-expert",
+    slug: "security-privacy-free-online-tools",
+    tags: ["security", "privacy", "education"],
+    content: \`
+      <p>It is a common scenario: you need to convert a sensitive bank statement to PDF or resize a photo of your ID card. You Google "free pdf converter," click the first link, and upload your file. Stop right there. Do you know where that file just went?</p>
+
+      <h2>Server-Side vs. Client-Side</h2>
+      <p>Most online tools work by <strong>uploading</strong> your file to their server. Their computer processes it, and sends it back. This means:</p>
+      <ol>
+        <li>Your file leaves your computer.</li>
+        <li>It sits on someone else's server (even if briefly).</li>
+        <li>You are trusting them not to look at it or get hacked.</li>
+      </ol>
+
+      <h2>The Axevora Difference: Client-Side First</h2>
+      <p>We built Axevora differently. For many of our tools (like our Image Converters, Token Generators, and Code Formatters), we use <strong>Client-Side Processing</strong>.</p>
+      
+      <p>This means the "tool" is actually a small program downloaded to <em>your</em> browser. When you select a file, the processing happens <strong>inside Chrome, Firefox, or Edge on your own device</strong>. Your data never travels over the internet to us.</p>
+
+      <h2>How can I tell?</h2>
+      <p>If a tool works instantly and doesn't show a "Uploading 50%..." bar for small files, it's likely client-side. Also, try turning off your Wi-Fi after the page loads. If the tool still works, it's client-side (and 100% secure!).</p>
+
+      <p>We are committed to privacy. We don't want your data. We just want to give you the tools to manage it.</p>
+    \`
+  },
+  {
+    id: 9,
+    title: "Top 5 Developer Tools to Boost Productivity in 2024",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200",
+    excerpt: "Stop wasting time on boilerplate tasks. These 5 browser-based utilities will save you hours of coding time every week.",
+    date: "2024-04-12",
+    readTime: "8 min read",
+    author: "DevRel Team",
+    authorSlug: "devrel-team",
+    slug: "top-developer-tools-2024",
+    tags: ["development", "coding", "productivity"],
+    content: \`
+      <p>Coding is about solving problems, not wrestling with syntax or formatting JSON strings manually. Here are the top 5 tools every developer should have bookmarked:</p>
+
+      <h2>1. JSON Formatter & Validator</h2>
+      <p>APIs often return ugly, minified JSON. A good <a href="/tools/json-formatter">JSON Formatter</a> is essential for debugging. Look for one that handles syntax errors gracefully and allows for collapsible properties.</p>
+
+      <h2>2. Regex Tester</h2>
+      <p>Regular expressions are powerful but notoriously difficult to get right on the first try. An online tester (like the ones built into many of our text tools) helps you visualize matches before you deploy the code.</p>
+
+      <h2>3. Base64 Encoder/Decoder</h2>
+      <p>For moving binary data (like images) over text-based protocols, Base64 is king. Using an <a href="/tools/base64-encoder">online encoder</a> is faster than writing a script for one-off tasks.</p>
+
+      <h2>4. SQL Formatter</h2>
+      <p>Inherited a legacy codebase with one massive line of SQL? A <a href="/tools/sql-formatter">SQL Formatter</a> instantly makes it readable, helping you understand the query logic in seconds.</p>
+
+      <h2>5. Diff Checker</h2>
+      <p>Sometimes you don't need a full Git commit history; you just need to know "what changed between this text and that text?" A quick Diff tool is unbeatable for spot-checks.</p>
+
+      <p>Axevora provides all these tools free, without any API limits.</p>
+    \`
+  },
+  {
+    id: 10,
+    title: "Understanding Image Metadata: What is EXIF Data?",
+    image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=1200",
+    excerpt: "Your photos contain hidden information. Learn what EXIF data is, why it exists, and when you should remove it for privacy.",
+    date: "2024-04-15",
+    readTime: "6 min read",
+    author: "Privacy Advocate",
+    authorSlug: "privacy-advocate",
+    slug: "what-is-exif-data-guide",
+    tags: ["privacy", "images", "tech-literacy"],
+    content: \`
+      <p>When you take a photo with your smartphone or DSLR, it saves more than just the image. It saves a hidden set of data called <strong>EXIF (Exchangeable Image File Format)</strong>.</p>
+
+      <h2>What's inside EXIF?</h2>
+      <ul>
+        <li><strong>Camera Settings:</strong> Shutter speed, ISO, aperture, flash status.</li>
+        <li><strong>Date and Time:</strong> Precise down to the second.</li>
+        <li><strong>Device Info:</strong> Phone model and manufacturer.</li>
+        <li><strong>GPS Location:</strong> Latitude and longitude coordinates of exactly where you stood.</li>
+      </ul>
+
+      <h2>The Privacy Concern</h2>
+      <p>GPS data is the scary one. If you take a photo of your new gaming setup at home and upload it directly to a public forum or social media site that doesn't strip metadata, a savvy user could download the image, read the GPS coordinates, and find your home address.</p>
+
+      <h2>How to View and Remove It</h2>
+      <p>You can view this data using our <a href="/tools/image-analyzer">Image Analyzer</a> (or Exif Viewer). To remove it, you often just need to re-save the image using a tool or screenshot it. Many social networks (like Facebook and Twitter) automatically strip this data, but email and direct file sharing often do not.</p>
+
+      <p>Stay safe: always scrub sensitive metadata before sharing files publicly.</p>
+    \`
+  },
   // Surfaced Category Guides
   {
     id: 101,

@@ -12,7 +12,7 @@ import {
   AppWindow, Utensils, Apple, Target, Users
 } from "lucide-react";
 
-const allCategories = [
+export const allCategories = [
   { id: "image", name: "Image Tools", guidePath: "/blog-posts/converters-category" },
   { id: "converter", name: "Converters", guidePath: "/blog-posts/converters-category" },
   { id: "pdf", name: "PDF Tools", guidePath: "/blog-posts/pdf-category" },
@@ -25,10 +25,11 @@ const allCategories = [
   { id: "dev", name: "Developer Tools", guidePath: "/blog-posts/dev-tools-category" },
   { id: "games", name: "Games & Brain", guidePath: "/blog-posts/games-category" },
   { id: "validators", name: "Validators", guidePath: "/blog-posts/validators-category" },
+  { id: "admin", name: "Admin Tools", guidePath: "/admin" },
   { id: "utility", name: "Utilities", guidePath: "/blog-posts/analyzers-category" }, // Fallback to analyzers or create utility if needed
 ];
 
-const allTools = [
+export const allTools = [
   // Converters - Updated
   {
     id: "pdf-converter",
@@ -2736,6 +2737,24 @@ const allTools = [
     category: "ai",
     icon: UserCircle,
     path: "/tools/ai-bio-generator"
+  },
+  {
+    id: "ai-blog-admin",
+    name: "Auto Blog Manager (Admin)",
+    subheading: "Manage & Schedule Content",
+    description: "Admin dashboard to generate, schedule, and deploy blog posts to the site.",
+    category: "admin",
+    icon: FileText,
+    path: "/admin/blog"
+  },
+  {
+    id: "battle-manager-admin",
+    name: "Battle Manager (Admin)",
+    subheading: "Generate Tech Battles",
+    description: "Admin dashboard to research and generate trending 'Versus' battles.",
+    category: "admin",
+    icon: Zap,
+    path: "/admin/battles"
   },
   // Versus Tools
   {

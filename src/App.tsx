@@ -168,6 +168,7 @@ const SoftwareVersus = lazy(() => import("./pages/versus/SoftwareVersus"));
 const NutritionVersus = lazy(() => import("./pages/versus/NutritionVersus"));
 const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
 const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
+const AIBlogGeneratorPage = lazy(() => import("./pages/tools/AIBlogGeneratorPage"));
 
 // Dev Tools
 const WindowsCommandGenerator = lazy(() => import("./pages/tools/WindowsCommandGenerator"));
@@ -181,6 +182,7 @@ const BattleManager = lazy(() => import("./pages/admin/BattleManager"));
 
 // App Support
 const NeonBlockPuzzlePrivacy = lazy(() => import("./pages/apps/NeonBlockPuzzlePrivacy"));
+const Game2048SagaPrivacy = lazy(() => import("./pages/apps/Game2048SagaPrivacy"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
 
 const queryClient = new QueryClient();
@@ -354,6 +356,7 @@ const App = () => (
                 <Route path="/tools/nutrition-versus" element={<NutritionVersus />} />
                 <Route path="/tools/ai-thumbnail-text-generator" element={<AIThumbnailTextGenerator />} />
                 <Route path="/tools/ai-bio-generator" element={<AIBioGenerator />} />
+                <Route path="/tools/ai-blog-generator" element={<AIBlogGeneratorPage />} />
 
                 {/* Dev Tools */}
                 <Route path="/tools/windows-cmd-gen" element={<WindowsCommandGenerator />} />
@@ -371,6 +374,7 @@ const App = () => (
 
                 {/* Apps Support Pages */}
                 <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />
+                <Route path="/apps/2048-saga-jewel-puzzle/privacy" element={<Game2048SagaPrivacy />} />
 
                 <Route path="/sitemap" element={<Sitemap />} />
 
@@ -383,7 +387,7 @@ const App = () => (
             </Suspense>
           </SimpleErrorBoundary>
         </HashRouter>
-        <AdMobBanner />
+        {/* <AdMobBanner /> */}
       </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider >

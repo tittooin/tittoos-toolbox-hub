@@ -30,18 +30,24 @@ export function whenAdsScriptReady(): Promise<void> {
   });
 }
 
+// export async function loadAdsScript(): Promise<void> {
+//   if (typeof document === 'undefined') return;
+//   if (isScriptLoaded()) return;
+//   // Preconnect to ads origins to minimize handshake time
+//   ensurePreconnect('https://pagead2.googlesyndication.com');
+//   ensurePreconnect('https://googleads.g.doubleclick.net');
+//   const script = document.createElement('script');
+//   script.async = true;
+//   script.src = ADS_SCRIPT_SRC;
+//   script.crossOrigin = 'anonymous';
+//   script.onload = () => {
+//     document.dispatchEvent(new Event('adsbygoogle:loaded'));
+//   };
+//   document.head.appendChild(script);
+// }
+
+// DISABLED FOR ADSENSE COMPLIANCE
 export async function loadAdsScript(): Promise<void> {
-  if (typeof document === 'undefined') return;
-  if (isScriptLoaded()) return;
-  // Preconnect to ads origins to minimize handshake time
-  ensurePreconnect('https://pagead2.googlesyndication.com');
-  ensurePreconnect('https://googleads.g.doubleclick.net');
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = ADS_SCRIPT_SRC;
-  script.crossOrigin = 'anonymous';
-  script.onload = () => {
-    document.dispatchEvent(new Event('adsbygoogle:loaded'));
-  };
-  document.head.appendChild(script);
+  console.log("AdSense disabled for policy compliance");
+  return Promise.resolve();
 }
