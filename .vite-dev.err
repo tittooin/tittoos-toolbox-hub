@@ -1,0 +1,9 @@
+Browserslist: browsers data (caniuse-lite) is 17 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[1m[33mwarn[39m[22m - The class `duration-[4500ms]` is ambiguous and matches multiple utilities.
+[1m[33mwarn[39m[22m - If this is content and not a class, replace it with `duration-&lsqb;4500ms&rsqb;` to silence this warning.
+
+[1m[33mwarn[39m[22m - The class `duration-[5000ms]` is ambiguous and matches multiple utilities.
+[1m[33mwarn[39m[22m - If this is content and not a class, replace it with `duration-&lsqb;5000ms&rsqb;` to silence this warning.
