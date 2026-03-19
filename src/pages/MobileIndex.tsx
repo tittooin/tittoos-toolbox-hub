@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
     Search, Grid, Star, Settings, User,
-    ChevronRight, Sparkles
+    ChevronRight, Sparkles, Radio, ArrowRight
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
 import { motion } from "framer-motion";
@@ -64,21 +64,45 @@ const MobileIndex = () => {
 
                 {/* Featured / Hero for Mobile */}
                 {!searchQuery && activeCategory === 'all' && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="p-5 rounded-2xl bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-white/10 relative overflow-hidden"
-                    >
-                        <div className="relative z-10">
-                            <Badge className="bg-cyan-500/20 text-cyan-300 border-0 mb-2">New</Badge>
-                            <h2 className="text-xl font-bold mb-2">Welcome Back</h2>
-                            <p className="text-white/70 text-sm mb-4">You have access to {tools.length}+ premium tools for free.</p>
-                            <Button size="sm" className="bg-white text-black hover:bg-white/90 rounded-lg text-xs">
-                                Browse Popular
-                            </Button>
-                        </div>
-                        <Sparkles className="absolute -bottom-4 -right-4 w-32 h-32 text-purple-500/20 rotate-12" />
-                    </motion.div>
+                    <div className="space-y-4">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-5 rounded-2xl bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-white/10 relative overflow-hidden"
+                        >
+                            <div className="relative z-10">
+                                <Badge className="bg-cyan-500/20 text-cyan-300 border-0 mb-2">Welcome</Badge>
+                                <h2 className="text-xl font-bold mb-2">Premium AI Tools</h2>
+                                <p className="text-white/70 text-sm mb-4">Access {tools.length}+ professional utilities securely for free.</p>
+                                <Button size="sm" className="bg-white text-black hover:bg-white/90 rounded-lg text-xs">
+                                    Browse All
+                                </Button>
+                            </div>
+                            <Sparkles className="absolute -bottom-4 -right-4 w-32 h-32 text-purple-500/20 rotate-12" />
+                        </motion.div>
+
+                        <Link to="/tools/axevora-live-rooms">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="p-5 rounded-2xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-cyan-500/30 relative overflow-hidden"
+                            >
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <Radio className="w-5 h-5 text-cyan-400 animate-pulse" />
+                                        <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Live Rooms</span>
+                                    </div>
+                                    <Badge className="bg-red-500 text-white text-[10px] uppercase font-black px-1.5 py-0">New</Badge>
+                                </div>
+                                <h3 className="text-lg font-bold text-white mb-1">Axevora Live Rooms</h3>
+                                <p className="text-white/60 text-xs mb-3">Host private hangouts with mood themes and real-time fun.</p>
+                                <div className="flex items-center text-cyan-400 text-xs font-bold gap-1">
+                                    Join Now <ArrowRight className="w-3 h-3" />
+                                </div>
+                            </motion.div>
+                        </Link>
+                    </div>
                 )}
 
                 {/* Categories Scroll */}

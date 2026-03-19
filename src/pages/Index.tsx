@@ -1,4 +1,4 @@
-﻿
+
 import { useState, useMemo, useEffect, Suspense, lazy } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -16,7 +16,7 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, ArrowRight,
-  Shield, Cpu, CheckCircle2, Star
+  Shield, Cpu, CheckCircle2, Star, Radio
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";
@@ -251,7 +251,18 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <Link to="/tools/axevora-live-rooms" className="group rounded-3xl border border-primary/30 bg-primary/5 p-6 hover:border-primary/60 transition-all relative overflow-hidden">
+                <div className="absolute top-3 right-3">
+                  <Badge className="bg-primary text-primary-foreground animate-pulse">Live Now</Badge>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Radio className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Axevora Live Rooms</h3>
+                <p className="text-muted-foreground mt-2">Private live room hangouts with mood themes, mic control, and real-time vibes.</p>
+              </Link>
+
               <Link to="/tools/ai-command-center" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                   <Bot className="w-6 h-6 text-primary" />
