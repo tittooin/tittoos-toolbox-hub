@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Utensils, Apple, Target, Users
+  AppWindow, Utensils, Apple, Target, Users, Heart, Radio
 } from "lucide-react";
 
 export const allCategories = [
@@ -2915,6 +2915,26 @@ export const allTools = [
     keywords: ["chat", "discussion", "group", "private", "message", "circle", "student", "colleague"]
   },
   {
+    id: "axevora-dedications",
+    name: "Axevora Dedications",
+    subheading: "Private media gifting chats",
+    description: "Chat one-to-one and dedicate songs, books, stories, images, and videos with personal notes.",
+    category: "ai",
+    icon: Heart,
+    path: "/tools/axevora-dedications",
+    keywords: ["dedication", "chat", "song", "book", "story", "image", "video", "private"]
+  },
+  {
+    id: "axevora-live-rooms",
+    name: "Axevora Live Rooms",
+    subheading: "Private live room hangouts",
+    description: "Create multi-user private live rooms with mood themes, dedication drops, host mic control, and cricket-ready vibes.",
+    category: "ai",
+    icon: Radio,
+    path: "/tools/axevora-live-rooms",
+    keywords: ["live room", "group chat", "watch party", "mic", "dedication", "cricket", "host control"]
+  },
+  {
     id: "social-scheduler",
     name: "Social Scheduler",
     subheading: "AI Content Planner",
@@ -2923,8 +2943,70 @@ export const allTools = [
     icon: Calendar,
     path: "/tools/social-scheduler"
   },
+  {
+    id: "ai-command-center",
+    name: "AI Command Center",
+    subheading: "Intent to workflow routing",
+    description: "Describe the outcome you want and get the right tools, recipes, and launch steps instantly.",
+    category: "ai",
+    icon: Bot,
+    path: "/tools/ai-command-center",
+    keywords: ["workflow", "magic", "command", "router", "tool finder", "ai assistant"]
+  },
+  {
+    id: "workspace",
+    name: "Workspace Dashboard",
+    subheading: "Favorites, recents, and saved flows",
+    description: "Track your favorite tools, recent jobs, installed templates, and saved workflow shortcuts in one place.",
+    category: "utility",
+    icon: AppWindow,
+    path: "/workspace",
+    keywords: ["workspace", "favorites", "recent", "dashboard", "saved tools"]
+  },
+  {
+    id: "creator-studio",
+    name: "Creator Studio",
+    subheading: "Campaign-ready creator system",
+    description: "Bundle captions, scripts, hashtags, and thumbnail planning into one creator control room.",
+    category: "ai",
+    icon: Sparkles,
+    path: "/creator-studio",
+    keywords: ["creator", "studio", "campaign", "caption", "reel", "thumbnail"]
+  },
+  {
+    id: "smart-pdf-hub",
+    name: "Smart PDF Hub",
+    subheading: "Unified PDF AI workspace",
+    description: "Upload once, review the document, and jump into summary, notes, quiz, translation, or chat workflows.",
+    category: "pdf",
+    icon: BookOpen,
+    path: "/tools/pdf-hub",
+    keywords: ["pdf hub", "study", "document ai", "summary", "quiz", "translation"]
+  },
+  {
+    id: "template-marketplace",
+    name: "Template Marketplace",
+    subheading: "Install ready-made packs",
+    description: "Browse curated workflow, creator, PDF, and comparison packs that you can install into your workspace.",
+    category: "generator",
+    icon: Archive,
+    path: "/marketplace/templates",
+    keywords: ["templates", "marketplace", "packs", "workflow templates", "playbooks"]
+  },
+  {
+    id: "battle-lab",
+    name: "Battle Lab",
+    subheading: "Shareable comparison engine",
+    description: "Explore trending battles, generate verdict-ready copy, and create reusable comparison ideas.",
+    category: "ai",
+    icon: TrendingUp,
+    path: "/tools/battle-lab",
+    keywords: ["battle", "versus", "comparison", "share card", "trending"]
+  },
 ];
 
-export const categories = allCategories;
+const hiddenCategories = new Set(["admin"]);
 
-export const tools = allTools;
+export const categories = allCategories.filter((category) => !hiddenCategories.has(category.id));
+
+export const tools = allTools.filter((tool) => !hiddenCategories.has(tool.category));

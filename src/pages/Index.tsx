@@ -18,7 +18,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain, ArrowRight,
   Shield, Cpu, CheckCircle2, Star
 } from "lucide-react";
-import { allTools, allCategories } from "@/data/tools";
+import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -52,22 +52,22 @@ const Index = () => {
   };
 
   const filteredTools = useMemo(() => {
-    let tools = allTools;
+    let filteredList = tools;
 
     if (activeCategory !== "all") {
-      tools = tools.filter((tool) => tool.category === activeCategory);
+      filteredList = filteredList.filter((tool) => tool.category === activeCategory);
     }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      tools = tools.filter(
+      filteredList = filteredList.filter(
         (tool) =>
           tool.name.toLowerCase().includes(query) ||
           tool.description.toLowerCase().includes(query)
       );
     }
 
-    return tools;
+    return filteredList;
   }, [searchQuery, activeCategory]);
 
   // If in mobile view mode, render the mobile-optimized interface
@@ -98,7 +98,7 @@ const Index = () => {
           content="Axevora offers a professional suite of free online tools for PDF conversion, image editing, developer utilities, and security. Secure, fast, and no installation required."
         />
         <meta name="keywords" content="pdf converter, online tools, image editor, developer tools, free utilities, axevora" />
-        <link rel="canonical" href="https://tittoos.online/" />
+        <link rel="canonical" href="https://axevora.com/" />
       </Helmet>
 
       {/* Toggle View Button (Desktop) */}
@@ -233,6 +233,76 @@ const Index = () => {
           </div>
         </section>
 
+        <section className="py-20 px-4 bg-background">
+          <div className="container mx-auto max-w-7xl">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+              <div>
+                <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary rounded-full">
+                  <Sparkles className="w-3 h-3 mr-2" />
+                  New Feature Layer
+                </Badge>
+                <h2 className="text-3xl font-bold mb-4">Go Beyond Single Tools</h2>
+                <p className="text-muted-foreground max-w-2xl">
+                  Axevora ab sirf isolated utilities nahi raha. Ab tum workflows, creator systems, PDF hubs, template packs, aur workspace memory ke saath faster execution build kar sakte ho.
+                </p>
+              </div>
+              <Button asChild size="lg" className="rounded-full px-8">
+                <Link to="/workspace">Open Workspace</Link>
+              </Button>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <Link to="/tools/ai-command-center" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Bot className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">AI Command Center</h3>
+                <p className="text-muted-foreground mt-2">Intent likho aur matching tools + workflows turant pao.</p>
+              </Link>
+
+              <Link to="/creator-studio" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Creator Studio</h3>
+                <p className="text-muted-foreground mt-2">Scripts, captions, hashtags, thumbnails, aur campaign plans ek hi place me.</p>
+              </Link>
+
+              <Link to="/tools/pdf-hub" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <FileText className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Smart PDF Hub</h3>
+                <p className="text-muted-foreground mt-2">Upload once, then jump into notes, summary, quiz, translation, or chat.</p>
+              </Link>
+
+              <Link to="/marketplace/templates" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Cpu className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Template Marketplace</h3>
+                <p className="text-muted-foreground mt-2">Install ready-made packs and keep reusable playbooks in your workspace.</p>
+              </Link>
+
+              <Link to="/tools/battle-lab" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Brain className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Battle Lab</h3>
+                <p className="text-muted-foreground mt-2">Trending comparisons, verdict drafts, aur share-ready battle content.</p>
+              </Link>
+
+              <Link to="/workspace" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Workspace Memory</h3>
+                <p className="text-muted-foreground mt-2">Favorites, recents, installed packs, aur PDF sessions ko track karo.</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* --- TOOL CATEGORIES & GRID --- */}
         <section id="tools" className="py-24 px-4 bg-background">
           <div className="container mx-auto max-w-7xl">
@@ -253,7 +323,7 @@ const Index = () => {
                 >
                   All Tools
                 </Button>
-                {allCategories.map((cat) => (
+                {categories.map((cat) => (
                   <Button
                     key={cat.id}
                     variant={activeCategory === cat.id ? "default" : "outline"}

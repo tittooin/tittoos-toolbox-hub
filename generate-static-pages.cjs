@@ -20,6 +20,7 @@ function extractRoutesFromApp() {
         while ((match = routeRegex.exec(content)) !== null) {
             const p = match[1];
             if (!p || p === "*" || p.includes(":")) continue;
+            if (p.startsWith("/admin")) continue;
             routes.push(p);
         }
         return routes;

@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy } from "react";
 import SimpleErrorBoundary from "./components/SimpleErrorBoundary";
+import AdminRouteGuard from "./components/AdminRouteGuard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdMobBanner from "./components/AdMobBanner";
@@ -17,6 +18,9 @@ const SocialScheduler = lazy(() => import("./pages/tools/SocialScheduler"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const AllTools = lazy(() => import("./pages/AllTools"));
+const WorkspaceDashboard = lazy(() => import("./pages/WorkspaceDashboard"));
+const CreatorStudio = lazy(() => import("./pages/CreatorStudio"));
+const TemplateMarketplace = lazy(() => import("./pages/TemplateMarketplace"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Attributions = lazy(() => import("./pages/Attributions"));
@@ -145,8 +149,13 @@ const TextToHandwriting = lazy(() => import("./pages/tools/TextToHandwriting"));
 const NumberFlow = lazy(() => import("./pages/tools/NumberFlow"));
 const AIRemixSuite = lazy(() => import("./pages/tools/AIRemixSuite"));
 const SmartPDF = lazy(() => import("./pages/tools/SmartPDF"));
+const SmartPDFHub = lazy(() => import("./pages/tools/SmartPDFHub"));
 const AxevoraCircle = lazy(() => import("./pages/tools/AxevoraCircle"));
+const AxevoraDedications = lazy(() => import("./pages/tools/AxevoraDedications"));
+const AxevoraLiveRooms = lazy(() => import("./pages/tools/AxevoraLiveRooms"));
 const AxevoraSpotlight = lazy(() => import("./pages/tools/AxevoraSpotlight"));
+const AICommandCenter = lazy(() => import("./pages/tools/AICommandCenter"));
+const BattleLab = lazy(() => import("./pages/tools/BattleLab"));
 
 // Games
 const TypingSpeedTest = lazy(() => import("./pages/tools/TypingSpeedTest"));
@@ -202,6 +211,9 @@ const App = () => (
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/tools" element={<AllTools />} />
+                <Route path="/workspace" element={<WorkspaceDashboard />} />
+                <Route path="/creator-studio" element={<CreatorStudio />} />
+                <Route path="/marketplace/templates" element={<TemplateMarketplace />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/attributions" element={<Attributions />} />
@@ -340,8 +352,13 @@ const App = () => (
                 <Route path="/tools/number-flow" element={<NumberFlow />} />
                 <Route path="/tools/ai-remix-suite" element={<AIRemixSuite />} />
                 <Route path="/tools/smart-pdf" element={<SmartPDF />} />
+                <Route path="/tools/pdf-hub" element={<SmartPDFHub />} />
                 <Route path="/tools/axevora-circle" element={<AxevoraCircle />} />
+                <Route path="/tools/axevora-dedications" element={<AxevoraDedications />} />
+                <Route path="/tools/axevora-live-rooms" element={<AxevoraLiveRooms />} />
                 <Route path="/tools/axevora-spotlight" element={<AxevoraSpotlight />} />
+                <Route path="/tools/ai-command-center" element={<AICommandCenter />} />
+                <Route path="/tools/battle-lab" element={<BattleLab />} />
 
                 {/* AI Social Media Tools */}
                 <Route path="/tools/ai-caption-generator" element={<AICaptionGenerator />} />
@@ -379,8 +396,8 @@ const App = () => (
                 <Route path="/sitemap" element={<Sitemap />} />
 
                 {/* Admin Routes */}
-                <Route path="/admin/blog" element={<BlogManager />} />
-                <Route path="/admin/battles" element={<BattleManager />} />
+                <Route path="/admin/blog" element={<AdminRouteGuard><BlogManager /></AdminRouteGuard>} />
+                <Route path="/admin/battles" element={<AdminRouteGuard><BattleManager /></AdminRouteGuard>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

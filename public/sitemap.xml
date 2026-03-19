@@ -41,6 +41,8 @@
 <url><loc>https://axevora.com/categories</loc></url>
 <url><loc>https://axevora.com/compress-pdf-online</loc></url>
 <url><loc>https://axevora.com/contact</loc></url>
+<url><loc>https://axevora.com/creator-studio</loc></url>
+<url><loc>https://axevora.com/marketplace/templates</loc></url>
 <url><loc>https://axevora.com/merge-pdf-online</loc></url>
 <url><loc>https://axevora.com/privacy</loc></url>
 <url><loc>https://axevora.com/promo</loc></url>
@@ -56,6 +58,7 @@
 <url><loc>https://axevora.com/tools/ai-bio-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-blog-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-caption-generator</loc></url>
+<url><loc>https://axevora.com/tools/ai-command-center</loc></url>
 <url><loc>https://axevora.com/tools/ai-hashtag-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-image-editor</loc></url>
 <url><loc>https://axevora.com/tools/ai-prompt-assistant</loc></url>
@@ -67,9 +70,12 @@
 <url><loc>https://axevora.com/tools/android-adb-gen</loc></url>
 <url><loc>https://axevora.com/tools/audio-converter</loc></url>
 <url><loc>https://axevora.com/tools/axevora-circle</loc></url>
+<url><loc>https://axevora.com/tools/axevora-dedications</loc></url>
+<url><loc>https://axevora.com/tools/axevora-live-rooms</loc></url>
 <url><loc>https://axevora.com/tools/axevora-spotlight</loc></url>
 <url><loc>https://axevora.com/tools/barcode-generator</loc></url>
 <url><loc>https://axevora.com/tools/base64-converter</loc></url>
+<url><loc>https://axevora.com/tools/battle-lab</loc></url>
 <url><loc>https://axevora.com/tools/bmi-calculator</loc></url>
 <url><loc>https://axevora.com/tools/calculator</loc></url>
 <url><loc>https://axevora.com/tools/chat-with-pdf</loc></url>
@@ -113,6 +119,7 @@
 <url><loc>https://axevora.com/tools/password-validator</loc></url>
 <url><loc>https://axevora.com/tools/pdf-converter</loc></url>
 <url><loc>https://axevora.com/tools/pdf-editor</loc></url>
+<url><loc>https://axevora.com/tools/pdf-hub</loc></url>
 <url><loc>https://axevora.com/tools/pdf-quiz-generator</loc></url>
 <url><loc>https://axevora.com/tools/pdf-study-notes</loc></url>
 <url><loc>https://axevora.com/tools/pdf-summarizer</loc></url>
@@ -163,4 +170,5 @@
 <url><loc>https://axevora.com/tools/word-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/xml-formatter</loc></url>
 <url><loc>https://axevora.com/tools/xml-validator</loc></url>
+<url><loc>https://axevora.com/workspace</loc></url>
 </urlset>

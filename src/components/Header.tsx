@@ -25,6 +25,12 @@ const Header = () => {
             <Link to="/tools" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               All Tools
             </Link>
+            <Link to="/workspace" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
+              Workspace
+            </Link>
+            <Link to="/creator-studio" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
+              Creator Studio
+            </Link>
             <Link to="/categories" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               Categories
             </Link>
@@ -86,6 +92,20 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 All Tools
+              </Link>
+              <Link
+                to="/workspace"
+                className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Workspace
+              </Link>
+              <Link
+                to="/creator-studio"
+                className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Creator Studio
               </Link>
               <Link
                 to="/categories"

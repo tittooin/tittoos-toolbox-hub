@@ -8,7 +8,7 @@ import {
     Search, Grid, Star, Settings, User,
     ChevronRight, Sparkles
 } from "lucide-react";
-import { allTools, allCategories } from "@/data/tools";
+import { tools, categories } from "@/data/tools";
 import { motion } from "framer-motion";
 
 const MobileIndex = () => {
@@ -17,19 +17,19 @@ const MobileIndex = () => {
     const [activeCategory, setActiveCategory] = useState("all");
 
     const filteredTools = useMemo(() => {
-        let tools = allTools;
+        let filteredList = tools;
         if (activeCategory !== "all") {
-            tools = tools.filter((tool) => tool.category === activeCategory);
+            filteredList = filteredList.filter((tool) => tool.category === activeCategory);
         }
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            tools = tools.filter(
+            filteredList = filteredList.filter(
                 (tool) =>
                     tool.name.toLowerCase().includes(query) ||
                     tool.description.toLowerCase().includes(query)
             );
         }
-        return tools;
+        return filteredList;
     }, [searchQuery, activeCategory]);
 
     return (
@@ -72,7 +72,7 @@ const MobileIndex = () => {
                         <div className="relative z-10">
                             <Badge className="bg-cyan-500/20 text-cyan-300 border-0 mb-2">New</Badge>
                             <h2 className="text-xl font-bold mb-2">Welcome Back</h2>
-                            <p className="text-white/70 text-sm mb-4">You have access to {allTools.length}+ premium tools for free.</p>
+                            <p className="text-white/70 text-sm mb-4">You have access to {tools.length}+ premium tools for free.</p>
                             <Button size="sm" className="bg-white text-black hover:bg-white/90 rounded-lg text-xs">
                                 Browse Popular
                             </Button>
@@ -94,7 +94,7 @@ const MobileIndex = () => {
                         >
                             All
                         </button>
-                        {allCategories.map(cat => (
+                        {categories.map(cat => (
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}

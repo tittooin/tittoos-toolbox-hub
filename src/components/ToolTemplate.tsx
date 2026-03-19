@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO, injectJsonLd } from "@/utils/seoUtils";
+import { useWorkspaceStore } from "@/hooks/useWorkspaceStore";
 
 import SocialShare from "@/components/SocialShare";
 import Comments from "@/components/Comments";
@@ -38,6 +39,7 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
   const location = useLocation();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const [copied, setCopied] = useState(false);
+  const { favoriteIds, toggleFavorite, addRecentItem } = useWorkspaceStore();
 
   useEffect(() => {
     // Generate an "attractive" description for social media
@@ -111,6 +113,19 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
   const currentToolPath = location.pathname;
   const currentTool = tools.find(t => t.path === currentToolPath);
 
+  useEffect(() => {
+    if (!currentTool) return;
+
+    addRecentItem({
+      id: `tool-visit-${currentTool.id}-${Date.now()}`,
+      title: currentTool.name,
+      subtitle: "Opened from tool page",
+      type: "tool",
+      path: currentTool.path,
+      timestamp: Date.now()
+    });
+  }, [addRecentItem, currentTool]);
+
   // Get 5 related tools from the same category, excluding current one
   const relatedTools = currentTool
     ? tools
@@ -159,6 +174,18 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                           {description}
                         </CardDescription>
                       </div>
+                      {currentTool && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="ml-auto"
+                          onClick={() => toggleFavorite(currentTool.id)}
+                        >
+                          <Star className={`h-4 w-4 mr-2 ${favoriteIds.has(currentTool.id) ? "fill-yellow-500 text-yellow-500" : ""}`} />
+                          {favoriteIds.has(currentTool.id) ? "Favorited" : "Favorite"}
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>

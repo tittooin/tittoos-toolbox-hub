@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Star } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,11 +10,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO } from "@/utils/seoUtils";
 import { AdMobService } from "@/services/AdMobService";
+import { useWorkspaceStore } from "@/hooks/useWorkspaceStore";
 
 const AllTools = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
+  const { favoriteIds, toggleFavorite, addRecentItem } = useWorkspaceStore();
 
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -44,6 +46,17 @@ const AllTools = () => {
     }
 
     // 2. Navigate to the tool
+    const clickedTool = tools.find((tool) => tool.path === path);
+    if (clickedTool) {
+      addRecentItem({
+        id: `all-tools-${clickedTool.id}-${Date.now()}`,
+        title: clickedTool.name,
+        subtitle: "Opened from All Tools",
+        type: "tool",
+        path: clickedTool.path,
+        timestamp: Date.now()
+      });
+    }
     navigate(path);
   };
 
@@ -59,6 +72,25 @@ const AllTools = () => {
           <p className="text-xl text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
             Browse our complete collection of {tools.length} productivity tools.
           </p>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 mb-12">
+            <Link to="/workspace" className="rounded-2xl border p-5 hover:border-primary/40 transition-colors">
+              <p className="font-semibold">Workspace Dashboard</p>
+              <p className="text-sm text-muted-foreground mt-2">Favorites, recents, saved packs, and PDF sessions.</p>
+            </Link>
+            <Link to="/creator-studio" className="rounded-2xl border p-5 hover:border-primary/40 transition-colors">
+              <p className="font-semibold">Creator Studio</p>
+              <p className="text-sm text-muted-foreground mt-2">Reel scripts, captions, hashtags, and campaign plans.</p>
+            </Link>
+            <Link to="/tools/ai-command-center" className="rounded-2xl border p-5 hover:border-primary/40 transition-colors">
+              <p className="font-semibold">AI Command Center</p>
+              <p className="text-sm text-muted-foreground mt-2">Intent-driven tool routing and workflow discovery.</p>
+            </Link>
+            <Link to="/marketplace/templates" className="rounded-2xl border p-5 hover:border-primary/40 transition-colors">
+              <p className="font-semibold">Template Marketplace</p>
+              <p className="text-sm text-muted-foreground mt-2">Install ready-made packs into your workspace.</p>
+            </Link>
+          </div>
 
           {/* Search and Filter */}
           <div className="max-w-4xl mx-auto mb-12">
@@ -114,6 +146,19 @@ const AllTools = () => {
                         <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                           {categories.find(c => c.id === tool.category)?.name}
                         </span>
+                      </div>
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            toggleFavorite(tool.id);
+                          }}
+                          className="rounded-full p-2 text-muted-foreground hover:bg-muted"
+                          aria-label={`Toggle favorite for ${tool.name}`}
+                        >
+                          <Star className={`h-4 w-4 ${favoriteIds.has(tool.id) ? "fill-yellow-500 text-yellow-500" : ""}`} />
+                        </button>
                       </div>
                       <CardTitle className="text-lg group-hover:text-primary transition-colors">
                         {tool.name}
