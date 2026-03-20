@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User as FirebaseUser } from "firebase/auth";
-import { collection, query, where, orderBy, limit, onSnapshot, addDoc, setDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
+import { collection, query, where, orderBy, limit, onSnapshot, addDoc, setDoc, doc, deleteDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
@@ -58,10 +58,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [activeTab, setActiveTab] = useState<"chats" | "fantasy" | "squads" | "settings">("chats");
   const [isMicMuted, setIsMicMuted] = useState(true);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
-  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 0, "VR Headset": 0, "Smartwatch": 0 });
-  const [userVoted, setUserVoted] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDMUser, setActiveDMUser] = useState<string | null>(null);
+  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 0, "VR Headset": 0, "Smartwatch": 0 });
+  const [userVoted, setUserVoted] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<string[]>([]);
   const [isSelectingPlayers, setIsSelectingPlayers] = useState(false);
   const [anonName, setAnonName] = useState("");
@@ -151,6 +152,72 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     return () => unsubscribe();
   }, [roomId]);
 
+  // Listen to Global Presence
+  useEffect(() => {
+    const presenceColl = collection(db, "global_rooms", roomId, "presence");
+    const unsubscribe = onSnapshot(presenceColl, (snapshot) => {
+        const users = snapshot.docs.map(doc => doc.data());
+        console.log("Online Users Synced:", users.length);
+        setOnlineUsers(users);
+    });
+    return () => unsubscribe();
+  }, [roomId]);
+
+  // Set initial anonymous name if not logged in
+  useEffect(() => {
+    if (!user && !anonName) {
+        const newName = `Explorer-${Math.floor(1000 + Math.random() * 9000)}`;
+        setAnonName(newName);
+    }
+  }, [user, anonName]);
+
+  // Presence System: Track and sync online users
+  useEffect(() => {
+    // We need either a logged in user or a display name for anons
+    const activeUser = user?.displayName || anonName;
+    if (!activeUser) return;
+    
+    // Use a more stable ID for persistent presence during session
+    const presenceUid = user?.uid || `anon-${activeUser.replace(/\s+/g, '-')}-${roomId}`;
+    const presenceRef = doc(db, "global_rooms", roomId, "presence", presenceUid);
+    
+    const setPresence = async () => {
+        try {
+            await setDoc(presenceRef, {
+                uid: presenceUid,
+                name: activeUser,
+                photoURL: user?.photoURL || "",
+                status: "online",
+                lastSeen: serverTimestamp()
+            }, { merge: true });
+            console.log("Presence updated for:", activeUser);
+        } catch (e) { 
+            console.error("Presence sync fail:", e); 
+        }
+    };
+
+    setPresence();
+    
+    // Heartbeat for persistence
+    const heartbeat = setInterval(setPresence, 30000);
+    
+    return () => {
+        clearInterval(heartbeat);
+        // Best effort cleanup - don't delete if we might have multiple sessions with same name
+        // but for now delete on exit is what we want for "live" list
+        deleteDoc(presenceRef).catch(() => {});
+    };
+  }, [roomId, user, anonName]);
+
+  useEffect(() => {
+    const presenceColl = collection(db, "global_rooms", roomId, "presence");
+    const unsubscribe = onSnapshot(presenceColl, (snapshot) => {
+        const users = snapshot.docs.map(doc => doc.data());
+        setOnlineUsers(users);
+    });
+    return () => unsubscribe();
+  }, [roomId]);
+
   // Check if user has already voted
   useEffect(() => {
     if (!user) return;
@@ -172,7 +239,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   }, [messages]);
 
   const detectVideoMeta = (text: string) => {
-    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    // Enhanced YouTube Regex to handle more variations and parameters
+    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})(?:[&?]\S*)?/;
     const twitterRegex = /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/status\/(\d+)/;
     const fbRegex = /(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch|fb\.com)\/(?:[a-zA-Z0-9._-]+\/videos\/|v\/|watch\?v=|)([a-zA-Z0-9._-]+)/;
 
@@ -624,16 +692,16 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                                     {msg.videoMeta && (
                                                                         <div className="mt-3 rounded-2xl overflow-hidden border border-white/20 bg-black/40">
                                                                             {msg.videoMeta.type === 'youtube' && msg.videoMeta.id && (
-                                                                                <div className="aspect-video w-full">
+                                                                                <div className="aspect-video w-full relative group/vid">
                                                                                     <iframe 
-                                                                                        className="w-full h-full"
-                                                                                        src={`https://www.youtube.com/embed/${msg.videoMeta.id}?modestbranding=1&rel=0`} 
+                                                                                        className="absolute inset-0 w-full h-full rounded-2xl"
+                                                                                        src={`https://www.youtube.com/embed/${msg.videoMeta.id}?rel=0&modestbranding=1&autoplay=0`} 
                                                                                         title="YouTube video player"
-                                                                                        frameBorder="0" 
                                                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                                                                        referrerPolicy="strict-origin-when-cross-origin"
+                                                                                        referrerPolicy="no-referrer-when-downgrade"
                                                                                         allowFullScreen
                                                                                     />
+                                                                                    <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-2xl group-hover/vid:border-blue-500/30 transition-colors" />
                                                                                 </div>
                                                                             )}
                                                                             {msg.videoMeta.type === 'twitter' && (
@@ -997,37 +1065,39 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </div>
 
                 <div className="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
-                    {[
-                        { name: "Sophia", status: "online" },
-                        { name: "Michael", status: "online" },
-                        { name: "Ethan", status: "gaming", label: "Gaming" },
-                        { name: "Olivia", status: "online" },
-                        { name: "Yuki", status: "online" },
-                        { name: "Arjun", status: "online" },
-                        { name: "Zara", status: "away" }
-                    ].filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).map((user, i) => (
-                        <div key={i} className="flex items-center gap-3 group cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-all">
-                            <div className="relative shrink-0">
-                                <Avatar className="h-9 w-9 border border-white/10 group-hover:scale-105 transition-transform">
-                                    <AvatarFallback className="bg-blue-900/50 text-[10px] font-black">{user.name.substring(0,2).toUpperCase()}</AvatarFallback>
-                                </Avatar>
-                                <div className={cn(
-                                    "absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#1e293b]",
-                                    user.status === 'online' ? 'bg-emerald-500' : user.status === 'gaming' ? 'bg-purple-500' : 'bg-amber-500'
-                                )} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <span className="text-xs font-bold truncate block text-white/80 group-hover:text-blue-300">{user.name}</span>
-                                <span className="text-[8px] text-white/30 font-black uppercase tracking-tighter">{user.status}</span>
-                            </div>
-                            <button 
-                                onClick={() => setActiveDMUser(user.name)}
-                                className="p-2 rounded-lg bg-blue-600/10 text-blue-400 opacity-0 group-hover:opacity-100 transition-all"
-                            >
-                                <MessageSquare className="w-3.5 h-3.5" />
-                            </button>
+                    {onlineUsers.length === 0 ? (
+                        <div className="py-10 text-center">
+                            <Loader2 className="w-5 h-5 animate-spin mx-auto text-blue-500/20 mb-2" />
+                            <p className="text-[8px] font-black text-white/10 uppercase tracking-widest">Scanning Grid...</p>
                         </div>
-                    ))}
+                    ) : (
+                        onlineUsers
+                            .filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                            .map((u, i) => (
+                                <div key={i} className="flex items-center gap-3 group cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-all">
+                                    <div className="relative shrink-0">
+                                        <Avatar className="h-9 w-9 border border-white/10 group-hover:scale-105 transition-transform shadow-lg">
+                                            <AvatarImage src={u.photoURL} />
+                                            <AvatarFallback className="bg-blue-900/50 text-[10px] font-black text-blue-100">{u.name?.substring(0,2).toUpperCase()}</AvatarFallback>
+                                        </Avatar>
+                                        <div className={cn(
+                                            "absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#1e293b] shadow-glow",
+                                            u.status === 'online' ? 'bg-emerald-500' : 'bg-amber-500'
+                                        )} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <span className="text-xs font-bold truncate block text-white/80 group-hover:text-blue-300">{u.name}</span>
+                                        <span className="text-[8px] text-white/30 font-black uppercase tracking-tighter">Verified Link</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => setActiveDMUser(u.name)}
+                                        className="p-2 rounded-lg bg-blue-600/10 text-blue-400 opacity-0 group-hover:opacity-100 transition-all border border-blue-500/20"
+                                    >
+                                        <MessageSquare className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            ))
+                    )}
                 </div>
             </div>
 
