@@ -44,6 +44,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
   // Fetch messages from Firestore
   useEffect(() => {
+    console.log("GlobalRoomView mounted for roomId:", roomId);
+    toast.success(`Connected to ${roomName} Grid`);
+  }, [roomId, roomName]);
+
+  useEffect(() => {
     const q = query(
       collection(db, "global_rooms", roomId, "messages"),
       orderBy("timestamp", "asc"),

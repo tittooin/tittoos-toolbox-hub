@@ -1488,7 +1488,11 @@ export default function AxevoraLiveRooms() {
           joiningRoom={joiningRoom} 
           onCreateRoom={createRoom} 
           onJoinRoom={joinRoom} 
-          onJoinGlobalRoom={(id, name) => setActiveGlobalRoom({ id, name })}
+          onJoinGlobalRoom={(id, name) => {
+            console.log("Joining Global Room:", id, name);
+            toast.info(`Entering ${name}...`);
+            setActiveGlobalRoom({ id, name });
+          }}
         />
       )}
 
