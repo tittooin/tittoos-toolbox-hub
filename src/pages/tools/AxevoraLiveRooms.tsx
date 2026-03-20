@@ -1476,7 +1476,7 @@ export default function AxevoraLiveRooms() {
         </Card>
       )}
 
-      {!profileLoading && !activeRoomCode && (
+      {!profileLoading && !activeRoomCode && !activeGlobalRoom && (
         <SocialLobbyView 
           user={user} 
           profile={profile} 
@@ -1492,7 +1492,7 @@ export default function AxevoraLiveRooms() {
         />
       )}
 
-      {!profileLoading && activeRoomCode && activeGlobalRoom && (
+      {!profileLoading && activeGlobalRoom && (
         <GlobalRoomView
           user={user}
           roomId={activeGlobalRoom.id}
