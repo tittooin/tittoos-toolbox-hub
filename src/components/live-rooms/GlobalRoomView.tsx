@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User as FirebaseUser } from "firebase/auth";
 import { collection, query, where, orderBy, limit, onSnapshot, addDoc, setDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+    DropdownMenu, 
+    DropdownMenuContent, 
+    DropdownMenuItem, 
+    DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { 
     ArrowLeft, Send, Users, Activity, Loader2, 
     MessageSquare, Contact, BookOpen, Settings, 
@@ -35,6 +42,8 @@ interface ChatMessage {
   senderUid: string;
   photoURL: string;
   timestamp: Date;
+  imageUrl?: string;
+  videoMeta?: { type: 'youtube' | 'twitter' | 'facebook'; id: string };
 }
 
 export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomViewProps) {
@@ -56,8 +65,13 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [selectedTeam, setSelectedTeam] = useState<string[]>([]);
   const [isSelectingPlayers, setIsSelectingPlayers] = useState(false);
   const [anonName, setAnonName] = useState("");
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+  const [videoLinkModal, setVideoLinkModal] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
   
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch messages from Firestore
   useEffect(() => {
@@ -107,6 +121,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
           senderUid: data.senderUid || "",
           photoURL: data.photoURL || "",
           timestamp: msgDate,
+          imageUrl: data.imageUrl,
+          videoMeta: data.videoMeta,
         });
       });
       setMessages(fetchedMessages);
@@ -155,10 +171,52 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     }
   }, [messages]);
 
+  const detectVideoMeta = (text: string) => {
+    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const twitterRegex = /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/status\/(\d+)/;
+    const fbRegex = /(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch|fb\.com)\/(?:[a-zA-Z0-9._-]+\/videos\/|v\/|watch\?v=|)([a-zA-Z0-9._-]+)/;
+
+    const ytMatch = text.match(ytRegex);
+    if (ytMatch && ytMatch[1]) return { type: 'youtube', id: ytMatch[1] };
+    
+    const xMatch = text.match(twitterRegex);
+    if (xMatch) return { type: 'twitter', id: xMatch[1] };
+
+    const fbMatch = text.match(fbRegex);
+    if (fbMatch) return { type: 'facebook', id: fbMatch[1] };
+
+    return null;
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image too large (Max 5MB)");
+        return;
+    }
+
+    setUploadLoading(true);
+    try {
+        const storageRef = ref(storage, `chat_uploads/${roomId}/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        setPendingImage(url);
+        toast.success("Image Ready for Transmission");
+    } catch (err) {
+        toast.error("Uplink failed");
+    } finally {
+        setUploadLoading(false);
+    }
+  };
+
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
     const messageText = inputText.trim();
-    if (!messageText) return;
+    if (!messageText && !pendingImage) return;
+    
+    const videoMeta = detectVideoMeta(messageText);
     
     // Support Anonymous Chat if not logged in
     const senderName = user?.displayName || anonName || "Space Traveler";
@@ -166,6 +224,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     const senderPhoto = user?.photoURL || "";
     
     setInputText("");
+    const imgUrl = pendingImage;
+    setPendingImage(null);
     setLoading(true);
 
     try {
@@ -175,6 +235,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
             senderUid: senderUid,
             photoURL: senderPhoto,
             timestamp: serverTimestamp(),
+            imageUrl: imgUrl,
+            videoMeta: videoMeta
         });
     } catch (error) {
         console.error("Error sending message:", error);
@@ -543,14 +605,46 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                                 </span>
                                                             </div>
-                                                            <div className={cn(
-                                                                "relative p-4 rounded-3xl text-sm font-semibold border backdrop-blur-xl shadow-2xl transition-all",
-                                                                isOwn 
-                                                                    ? "bg-blue-600/80 border-blue-400/30 text-white rounded-tr-none hover:bg-blue-600" 
-                                                                    : "bg-[#334155]/60 border-white/5 text-blue-50 rounded-tl-none hover:bg-[#334155]/80"
-                                                            )}>
-                                                                {msg.text}
-                                                            </div>
+                                                                <div className={cn(
+                                                                    "p-4 rounded-3xl text-sm font-medium shadow-lg max-w-sm break-words",
+                                                                    isOwn 
+                                                                        ? "bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-tr-none border border-white/10" 
+                                                                        : "bg-white/5 text-blue-100 rounded-tl-none border border-white/10 backdrop-blur-md"
+                                                                )}>
+                                                                    {msg.text}
+                                                                    
+                                                                    {/* Image Preview */}
+                                                                    {msg.imageUrl && (
+                                                                        <div className="mt-3 rounded-2xl overflow-hidden border border-white/20">
+                                                                            <img src={msg.imageUrl} alt="Uplink" className="w-full h-auto object-cover" />
+                                                                        </div>
+                                                                    )}
+
+                                                                    {/* Video Preview */}
+                                                                    {msg.videoMeta && (
+                                                                        <div className="mt-3 rounded-2xl overflow-hidden border border-white/20 bg-black/40">
+                                                                            {msg.videoMeta.type === 'youtube' && msg.videoMeta.id && (
+                                                                                <div className="aspect-video w-full">
+                                                                                    <iframe 
+                                                                                        className="w-full h-full"
+                                                                                        src={`https://www.youtube.com/embed/${msg.videoMeta.id}?modestbranding=1&rel=0`} 
+                                                                                        title="YouTube video player"
+                                                                                        frameBorder="0" 
+                                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                                                                        referrerPolicy="strict-origin-when-cross-origin"
+                                                                                        allowFullScreen
+                                                                                    />
+                                                                                </div>
+                                                                            )}
+                                                                            {msg.videoMeta.type === 'twitter' && (
+                                                                                <div className="p-4 text-center">
+                                                                                    <Badge className="bg-blue-400/20 text-blue-400 mb-2">X / Twitter Video</Badge>
+                                                                                    <a href={`https://twitter.com/i/status/${msg.videoMeta.id}`} target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 underline block">View on X</a>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                         </div>
                                                     </motion.div>
                                                 );
@@ -782,11 +876,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         <PopoverTrigger asChild>
                                            <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Smile className="w-5 h-5 group-hover:scale-110" /></button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-64 bg-[#1e293b] border-white/10 p-4 rounded-3xl backdrop-blur-3xl shadow-3xl">
-                                            <div className="grid grid-cols-4 gap-2">
-                                                {["🔥", "💯", "⚽", "🏏", "🚀", "💎", "💙", "⚡"].map(emoji => (
+                                        <PopoverContent className="w-72 bg-[#1e293b] border-white/10 p-4 rounded-3xl backdrop-blur-3xl shadow-3xl">
+                                            <div className="grid grid-cols-6 gap-2 h-48 overflow-y-auto custom-scrollbar p-1">
+                                                {["🔥", "💯", "⚽", "🏏", "🚀", "💎", "💙", "⚡", "✨", "🌟", "🎮", "🏏", "🎯", "🏆", "🇮🇳", "🌍", "💪", "🙌", "🔥", "🤩", "😎", "🫡", "🤝", "🎉", "🥳", "💻", "📱", "🔊", "🤖", "🏏"].map((emoji, idx) => (
                                                     <button 
-                                                        key={emoji} 
+                                                        key={`${emoji}-${idx}`} 
                                                         onClick={() => setInputText(prev => prev + emoji)}
                                                         className="h-10 text-xl hover:bg-white/5 rounded-xl transition-all"
                                                     >
@@ -796,9 +890,41 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                             </div>
                                         </PopoverContent>
                                     </Popover>
-                                    <button onClick={() => toast.info("Image Uplink System initialized. Select a file.")} className="text-white/40 hover:text-blue-400 transition-all p-1 group"><ImageIcon className="w-5 h-5 group-hover:scale-110" /></button>
+                                    
+                                    {/* Image Selector */}
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        className="hidden" 
+                                        accept="image/*" 
+                                        onChange={handleImageSelect}
+                                    />
+                                    <button 
+                                        onClick={() => fileInputRef.current?.click()} 
+                                        disabled={uploadLoading}
+                                        className={cn("transition-all p-1 group", pendingImage ? "text-emerald-400" : "text-white/40 hover:text-blue-400")}
+                                    >
+                                        {uploadLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5 group-hover:scale-110" />}
+                                    </button>
+
                                     <button onClick={() => setIsMicMuted(!isMicMuted)} className={cn("transition-all p-1 group", isMicMuted ? "text-white/40 hover:text-blue-400" : "text-emerald-400")}><Mic className="w-5 h-5 group-hover:scale-110" /></button>
-                                    <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Plus className="w-5 h-5 group-hover:scale-110" /></button>
+                                    
+                                    {/* Plus Menu */}
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Plus className="w-5 h-5 group-hover:scale-110" /></button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="bg-[#1e293b] border-white/10 rounded-2xl p-2 shadow-3xl">
+                                            <DropdownMenuItem onClick={() => setVideoLinkModal(true)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
+                                                <Tv className="w-4 h-4 text-blue-400" />
+                                                <span className="text-xs font-bold uppercase tracking-widest">Share Video Link</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => toast.info("Poll Creation System coming in next frequency update.")} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
+                                                <Zap className="w-4 h-4 text-amber-500" />
+                                                <span className="text-xs font-bold uppercase tracking-widest">Create Live Pulse</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </div>
                                 <div className="flex gap-4 border-l border-white/10 pl-6">
                                     <button 
@@ -810,6 +936,16 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 </div>
                             </div>
                             
+                            {/* Pending Image Preview in Input Area */}
+                            {pendingImage && (
+                                <div className="px-6 flex gap-2">
+                                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/20">
+                                        <img src={pendingImage} className="w-full h-full object-cover" />
+                                        <button onClick={() => setPendingImage(null)} className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5"><Plus className="w-3 h-3 rotate-45 text-red-400" /></button>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Input Form */}
                             <form onSubmit={handleSendMessage} className="flex gap-3 h-16 relative">
                                 <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-400 transition-colors">
@@ -996,7 +1132,50 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.05);
         }
       `}} />
-      </div>
+        </div>
+
+        {/* Video Link Modal */}
+        {videoLinkModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="w-full max-w-md bg-[#1e293b] border border-white/10 rounded-3xl p-8 shadow-3xl"
+                >
+                    <h3 className="text-xl font-black text-white mb-2 uppercase tracking-widest flex items-center gap-3">
+                        <Tv className="w-6 h-6 text-blue-400" /> Video Uplink
+                    </h3>
+                    <p className="text-xs text-white/40 mb-6 font-bold uppercase tracking-tighter">Enter a link from YouTube, X / Twitter, or Facebook</p>
+                    
+                    <div className="space-y-4">
+                        <Input 
+                            value={videoUrl}
+                            onChange={(e) => setVideoUrl(e.target.value)}
+                            placeholder="https://youtube.com/watch?v=..."
+                            className="bg-black/40 border-white/5 text-white rounded-xl h-12"
+                        />
+                        <div className="flex gap-3 pt-2">
+                            <Button variant="ghost" className="flex-1 h-12 rounded-xl border border-white/5 uppercase font-black text-[10px]" onClick={() => setVideoLinkModal(false)}>Cancel</Button>
+                            <Button 
+                                className="flex-1 h-12 rounded-xl bg-blue-600 hover:bg-blue-500 text-white uppercase font-black text-[10px]"
+                                onClick={() => {
+                                    if (videoUrl.trim()) {
+                                        setInputText(prev => prev + " " + videoUrl);
+                                        setVideoUrl("");
+                                        setVideoLinkModal(false);
+                                        toast.success("Frequency Tuned. Ready for transmission.");
+                                    }
+                                }}
+                            >
+                                Link Integrated
+                            </Button>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        )}
     </div>
   );
 }
+
+export default GlobalRoomView;
