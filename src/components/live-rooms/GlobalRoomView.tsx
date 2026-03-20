@@ -17,8 +17,9 @@ import {
     Share2, Zap, Globe, Plus, Smile, Image as ImageIcon,
     Video, MousePointer2, HelpCircle, User as UserIcon, Heart, TrendingUp
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { cricbuzzApi, CricketMatch } from "@/lib/cricbuzzApi";
 
 interface GlobalRoomViewProps {
   user: FirebaseUser | null;
@@ -40,13 +41,34 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [liveMatches, setLiveMatches] = useState<CricketMatch[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<CricketMatch[]>([]);
+  const [fetchingMatches, setFetchingMatches] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch messages from Firestore
   useEffect(() => {
     console.log("GlobalRoomView mounted for roomId:", roomId);
-    toast.success(`Connected to ${roomName} Grid`);
+    // Initial fetch
+    fetchMatchData();
+    // Poll every 2 minutes
+    const interval = setInterval(fetchMatchData, 120000);
+    return () => clearInterval(interval);
   }, [roomId, roomName]);
+
+  const fetchMatchData = async () => {
+    try {
+      const response = await cricbuzzApi.getAllMatches();
+      if (response.success) {
+        setLiveMatches(response.data.live);
+        setUpcomingMatches(response.data.upcoming);
+      }
+    } catch (error) {
+      console.error("Error in fetchMatchData:", error);
+    } finally {
+      setFetchingMatches(false);
+    }
+  };
 
   useEffect(() => {
     const q = query(
@@ -189,8 +211,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
             <div className="rounded-3xl bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-2 shadow-xl">
                 {[
                     { icon: MessageSquare, label: "Chats", active: true },
-                    { icon: Contact, label: "Contacts" },
-                    { icon: Users, label: "Groups" },
+                    { icon: Gamepad2, label: "Fantasy" },
+                    { icon: Users, label: "Squads" },
                     { icon: Settings, label: "Settings" }
                 ].map((item, idx) => (
                     <button key={idx} className={cn(
@@ -205,22 +227,66 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 ))}
             </div>
 
-            {/* Voice Channel Card */}
+            {/* Live Updates Ticker */}
+            <div className="rounded-3xl bg-blue-600/10 border border-blue-500/20 p-4 shadow-xl overflow-hidden relative group">
+                <div className="flex items-center gap-2 mb-3">
+                    <Activity className="w-4 h-4 text-rose-500 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Live Updates</span>
+                </div>
+                <div className="space-y-3 relative z-10">
+                    <div className="flex gap-2">
+                        <div className="w-1 bg-blue-500 rounded-full" />
+                        <p className="text-[10px] font-bold text-blue-100/80 leading-relaxed">
+                            {liveMatches[0]?.last_score ? `Current Score: ${liveMatches[0].last_score} - ${liveMatches[0].series_name}` : "Waiting for match data transmission..."}
+                        </p>
+                    </div>
+                </div>
+                <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 blur-2xl rounded-full" />
+            </div>
+
+            {/* Pinned Schedule Card */}
             <div className="rounded-3xl bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-6 shadow-xl space-y-4">
                 <h3 className="text-sm font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <Volume2 className="w-4 h-4" /> Voice Channel
+                    <BookOpen className="w-4 h-4" /> Pinned Schedule
                 </h3>
-                <div className="flex items-center gap-3 text-emerald-400 font-bold text-sm">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Connected
-                    <Mic className="w-4 h-4 ml-auto text-white/40" />
-                </div>
-                <div className="flex gap-2">
-                    {[Volume2, Mic, Users, Heart].map((Icon, i) => (
-                        <button key={i} className="flex-1 py-2 bg-white/5 hover:bg-blue-600/20 rounded-xl transition-all border border-white/5 hover:border-blue-500/30">
-                            <Icon className="w-4 h-4 mx-auto text-blue-400" />
-                        </button>
-                    ))}
+                <div className="space-y-3">
+                    {fetchingMatches ? (
+                        <div className="flex items-center gap-3 text-blue-400/50 text-xs font-bold">
+                            <Loader2 className="w-3 h-3 animate-spin" /> Syncing with Grid...
+                        </div>
+                    ) : upcomingMatches.length === 0 ? (
+                        <p className="text-xs text-white/20 italic">No upcoming matches found.</p>
+                    ) : (
+                        upcomingMatches.slice(0, 3).map((match) => (
+                            <div key={match.id} className="p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group">
+                                <div className="flex justify-between items-start mb-2">
+                                    <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">{match.series_name || "IPL 2026"}</span>
+                                    <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[8px] h-4">Upcoming</Badge>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-1.5 min-w-0">
+                                        <Avatar className="w-4 h-4 border border-white/10">
+                                            <AvatarImage src={match.team_a_img} />
+                                            <AvatarFallback className="text-[6px]">{match.team_a[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-[10px] font-bold truncate">{match.team_a}</span>
+                                    </div>
+                                    <span className="text-[8px] font-black text-white/20 italic">vs</span>
+                                    <div className="flex items-center gap-1.5 min-w-0 justify-end">
+                                        <span className="text-[10px] font-bold truncate">{match.team_b}</span>
+                                        <Avatar className="w-4 h-4 border border-white/10">
+                                            <AvatarImage src={match.team_b_img} />
+                                            <AvatarFallback className="text-[6px]">{match.team_b[0]}</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                </div>
+                                <div className="mt-2 flex items-center gap-1.5 text-[9px] font-bold text-white/40">
+                                    <Zap className="w-3 h-3 text-amber-500/60" />
+                                    {new Date(match.start_time * 1000).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
@@ -230,11 +296,32 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     <TrendingUp className="w-4 h-4" /> Trending Topics
                 </h3>
                 <div className="space-y-2">
-                    {["#TechTalk", "#Gaming", "#Marvel", "#Web3", "#AI"].map((tag, i) => (
+                    {["#IPL2026", "#CricketWorldCup", "#MIvsKKR", "#ViratKohli", "#Bazball"].map((tag, i) => (
                         <button key={i} className="w-full text-left px-4 py-3 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 hover:bg-blue-600/10 transition-all text-sm font-bold text-blue-100/70 hover:text-blue-300">
                             {tag}
                         </button>
                     ))}
+                </div>
+            </div>
+
+            {/* Fantasy League Card */}
+            <div className="rounded-3xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 p-6 shadow-xl space-y-4">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-black text-amber-500/60 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <Zap className="w-4 h-4" /> Fantasy League
+                    </h3>
+                    <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">Rank #42</Badge>
+                </div>
+                <div className="p-4 rounded-2xl bg-black/20 border border-white/5 space-y-3">
+                    <div className="flex justify-between items-center text-[10px] font-bold">
+                        <span className="text-white/40">TEAM NAME</span>
+                        <span className="text-white">Axevora Titans</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[10px] font-bold">
+                        <span className="text-white/40">POINTS</span>
+                        <span className="text-emerald-400">1,245 pts</span>
+                    </div>
+                    <Button size="sm" className="w-full h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black uppercase tracking-widest text-[9px]">My Dream Team</Button>
                 </div>
             </div>
         </div>
@@ -242,23 +329,77 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
         {/* Middle Chat Pane */}
         <div className="flex-1 flex flex-col gap-4 overflow-hidden">
             <div className="rounded-[40px] bg-[#1e293b]/30 backdrop-blur-2xl border border-white/10 shadow-3xl flex-1 flex flex-col overflow-hidden relative">
-                {/* Chat Header */}
-                <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between relative z-20 bg-gradient-to-b from-[#1e293b]/40 to-transparent">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-600/30 flex items-center justify-center border border-blue-500/20">
-                            <Globe className="w-6 h-6 text-blue-400" />
+                {/* MATCH SCOREBOARD (Middle Top) */}
+                <div className="relative px-8 py-6 bg-gradient-to-br from-blue-600/10 via-[#1e293b]/40 to-indigo-600/10 border-b border-white/5 z-20">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none" />
+                    
+                    {fetchingMatches ? (
+                        <div className="flex items-center justify-center py-4 gap-3">
+                            <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
+                            <span className="text-sm font-black text-blue-100/40 uppercase tracking-widest">Fetching Data...</span>
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-black tracking-tight">{roomName}</h2>
-                            <p className="text-sm text-blue-400 font-bold flex items-center gap-2 mt-0.5">
-                                <Activity className="w-3.5 h-3.5" /> 1.2K Online
-                            </p>
+                    ) : liveMatches.length > 0 ? (
+                        <div className="flex items-center justify-between gap-8">
+                            {/* Team A */}
+                            <div className="flex flex-col items-center gap-2 flex-1">
+                                <motion.div 
+                                    whileHover={{ scale: 1.1 }}
+                                    className="relative"
+                                >
+                                    <Avatar className="h-16 w-16 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                        <AvatarImage src={liveMatches[0].team_a_img} />
+                                        <AvatarFallback className="bg-blue-900 font-black text-xl">{liveMatches[0].team_a[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">MI</div>
+                                </motion.div>
+                                <span className="text-sm font-black text-white whitespace-nowrap">{liveMatches[0].team_a}</span>
+                            </div>
+
+                            {/* Score Display */}
+                            <div className="flex flex-col items-center gap-1 min-w-[120px]">
+                                <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-black mb-1 animate-pulse">LIVE UPDATES</Badge>
+                                <div className="text-4xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                                    {liveMatches[0].last_score || "0/0"}
+                                </div>
+                                <div className="text-xs font-bold text-blue-400/80 flex items-center gap-2">
+                                    <span>{liveMatches[0].last_over || "0.0"} OVERS</span>
+                                    <span className="w-1 h-1 rounded-full bg-white/20" />
+                                    <span className="text-white/60">CRR: 8.42</span>
+                                </div>
+                            </div>
+
+                            {/* Team B */}
+                            <div className="flex flex-col items-center gap-2 flex-1">
+                                <motion.div 
+                                    whileHover={{ scale: 1.1 }}
+                                    className="relative"
+                                >
+                                    <Avatar className="h-16 w-16 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                                        <AvatarImage src={liveMatches[0].team_b_img} />
+                                        <AvatarFallback className="bg-indigo-900 font-black text-xl">{liveMatches[0].team_b[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">KKR</div>
+                                </motion.div>
+                                <span className="text-sm font-black text-white whitespace-nowrap">{liveMatches[0].team_b}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex gap-3">
-                        <button className="p-3 bg-white/5 rounded-2xl border border-white/5 text-white/60 hover:text-white transition-all"><Settings className="w-5 h-5" /></button>
-                        <button className="p-3 bg-white/5 rounded-2xl border border-white/5 text-white/60 hover:text-white transition-all"><Share2 className="w-5 h-5" /></button>
-                    </div>
+                    ) : upcomingMatches.length > 0 ? (
+                        <div className="flex flex-col items-center gap-3 py-2">
+                             <div className="flex items-center gap-3">
+                                <span className="text-lg font-black text-white/80">{upcomingMatches[0].team_a}</span>
+                                <span className="text-xs font-black text-blue-400/40 italic">VS</span>
+                                <span className="text-lg font-black text-white/80">{upcomingMatches[0].team_b}</span>
+                             </div>
+                             <div className="flex items-center gap-2 text-xs font-bold text-blue-400">
+                                <Zap className="w-3.5 h-3.5" />
+                                <span>NEXT MATCH STARTS IN: 04h : 22m : 15s</span>
+                             </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-4">
+                            <span className="text-sm font-black text-white/20 uppercase tracking-[0.3em]">No Active Transmissions</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* GLOBE VISUALIZATION (Background of chat) */}
@@ -449,43 +590,46 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </Button>
             </div>
 
-            {/* Live Video Chat Card */}
+            {/* Quiz & Predictions Card */}
             <div className="rounded-[40px] bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-8 shadow-xl flex-1 space-y-6">
                 <div className="flex items-center justify-between">
                     <h3 className="text-sm font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Video className="w-4 h-4 shadow-sm" /> Live Video Chat
+                        <HelpCircle className="w-4 h-4 shadow-sm" /> Quiz & Predictions
                     </h3>
-                    <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 shadow-sm">4 Active</Badge>
-                </div>
-                <div className="grid gap-4">
-                    {[1, 2].map((_, i) => (
-                        <div key={i} className="relative aspect-video rounded-3xl overflow-hidden border border-white/10 group shadow-2xl">
-                             <img 
-                                src={`https://images.unsplash.com/photo-${i === 0 ? '1438761681033-6461ffad8d80' : '1500648767791-00dcc994a43e'}?auto=format&fit=crop&q=80&w=400`} 
-                                className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
-                                alt="Live Peer" 
-                             />
-                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                             <div className="absolute top-4 left-4 flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-white shadow-sm">Live {i === 0 ? '00:4:23' : '23:12:05'}</span>
-                             </div>
-                             <div className="absolute bottom-4 left-4">
-                                <span className="text-xs font-black text-white shadow-sm">{i === 0 ? 'Elena Moore' : 'Mark Wilson'}</span>
-                             </div>
-                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-[2px]">
-                                <div className="flex gap-2 scale-75 group-hover:scale-100 transition-transform">
-                                    <button className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-blue-600 transition-all"><Mic className="w-4 h-4" /></button>
-                                    <button className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-rose-600 transition-all"><HelpCircle className="w-4 h-4" /></button>
-                                </div>
-                             </div>
-                        </div>
-                    ))}
+                    <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 shadow-sm">+500 XP</Badge>
                 </div>
                 
-                <div className="flex gap-3">
-                   <Button className="flex-1 h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 font-black uppercase tracking-widest text-[10px] shadow-glow">Start Video</Button>
-                   <Button variant="ghost" className="h-14 w-14 rounded-2xl border border-white/5 hover:bg-white/5"><HelpCircle className="w-5 h-5" /></Button>
+                <div className="space-y-4">
+                    <div className="p-5 rounded-3xl bg-purple-500/5 border border-purple-500/20 space-y-4">
+                        <p className="text-xs font-black text-white leading-relaxed">Who will win the next wicket?</p>
+                        <div className="grid grid-cols-2 gap-2">
+                            {["Bowler", "Batsman", "LBW", "Other"].map((opt) => (
+                                <button key={opt} className="py-3 px-4 rounded-xl bg-white/5 border border-white/5 text-[10px] font-black hover:bg-purple-600/20 hover:border-purple-500/40 transition-all text-white/60 hover:text-white">
+                                    {opt}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div className="p-5 rounded-3xl bg-blue-500/5 border border-blue-500/20 space-y-4">
+                        <p className="text-xs font-black text-white leading-relaxed">Total runs in next over?</p>
+                        <div className="flex gap-2">
+                            {["0-4", "5-8", "9-12", "12+"].map((opt) => (
+                                <button key={opt} className="flex-1 py-3 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black hover:bg-blue-600/20 hover:border-blue-500/40 transition-all text-white/60 hover:text-white">
+                                    {opt}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="flex gap-3 pt-2">
+                   <Button className="flex-1 h-14 rounded-2xl bg-purple-600 hover:bg-purple-500 font-black uppercase tracking-widest text-[10px] shadow-glow gap-2">
+                       <Zap className="w-4 h-4" /> Live Prediction
+                   </Button>
+                   <Button variant="ghost" className="h-14 w-14 rounded-2xl border border-white/5 hover:bg-white/5 flex items-center justify-center">
+                       <TrendingUp className="w-5 h-5 text-purple-400" />
+                   </Button>
                 </div>
             </div>
         </div>
