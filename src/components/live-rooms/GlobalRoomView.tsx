@@ -22,11 +22,54 @@ import {
     MessageSquare, Contact, BookOpen, Settings, 
     Mic, Volume2, Hash, Vote, Tv, Gamepad2, 
     Share2, Zap, Globe, Plus, Smile, Image as ImageIcon,
-    Video, MousePointer2, HelpCircle, User as UserIcon, Heart, TrendingUp
+    Video, MousePointer2, HelpCircle, User as UserIcon, Heart, TrendingUp, Palette, Monitor, Laptop
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { cricbuzzApi, CricketMatch } from "@/lib/cricbuzzApi";
+
+const CHAT_THEMES = {
+  cyberpunk: { 
+    name: "Cyberpunk Night", 
+    bg: "bg-[#0a0014]", 
+    accent: "text-blue-400", 
+    border: "border-blue-500/30",
+    glow: "shadow-[0_0_20px_rgba(59,130,246,0.3)]",
+    bgImage: "url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=1600&q=80')"
+  },
+  stadium: { 
+    name: "Lush Stadium (Realistic)", 
+    bg: "bg-[#064e3b]", 
+    accent: "text-emerald-400", 
+    border: "border-emerald-500/30",
+    glow: "shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+    bgImage: "url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1600&q=80')" 
+  },
+  nebula: { 
+    name: "Deep Nebula", 
+    bg: "bg-[#1e1b4b]", 
+    accent: "text-indigo-400", 
+    border: "border-indigo-500/30",
+    glow: "shadow-[0_0_20px_rgba(99,102,241,0.3)]",
+    bgImage: "url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1600&q=80')"
+  },
+  lounge: { 
+    name: "Cozy Lounge (Realistic)", 
+    bg: "bg-[#451a03]", 
+    accent: "text-amber-400", 
+    border: "border-amber-500/30",
+    glow: "shadow-[0_0_20px_rgba(245,158,11,0.3)]",
+    bgImage: "url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1600&q=80')"
+  },
+  street: { 
+    name: "Tokyo Street (Realistic)", 
+    bg: "bg-[#09090b]", 
+    accent: "text-rose-400", 
+    border: "border-rose-500/30",
+    glow: "shadow-[0_0_20px_rgba(225,29,72,0.3)]",
+    bgImage: "url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1600&q=80')"
+  }
+};
 
 interface GlobalRoomViewProps {
   user: FirebaseUser | null;
@@ -79,6 +122,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [pendingImage, setPendingImage] = useState<string | null>(null);
   const [videoLinkModal, setVideoLinkModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
+  const [currentTheme, setCurrentTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
+  const [currentDMTheme, setCurrentDMTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
+  const [dmInputText, setDmInputText] = useState("");
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -248,19 +294,18 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   }, [messages]);
 
   const detectVideoMeta = (text: string) => {
-    // Enhanced YouTube Regex to handle more variations and parameters
-    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|m\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})(?:[&?]\S*)?/;
-    const twitterRegex = /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/status\/(\d+)/;
-    const fbRegex = /(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch|fb\.com)\/(?:[a-zA-Z0-9._-]+\/videos\/|v\/|watch\?v=|)([a-zA-Z0-9._-]+)/;
+    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|m\.youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const twitterRegex = /(?:twitter\.com|x\.com)\/.*?\/(?:status|reels)\/(\d+)/;
+    const fbRegex = /(?:facebook\.com|fb\.watch|fb\.com)\/.*?(?:videos\/|v\/|watch\?v=|reel\/|share\/[vr]\/|story\.php\?story_fbid=)(\d+)/;
 
     const ytMatch = text.match(ytRegex);
-    if (ytMatch && ytMatch[1]) return { type: 'youtube', id: ytMatch[1] };
-    
+    if (ytMatch) return { type: 'youtube', id: ytMatch[1] };
+
     const xMatch = text.match(twitterRegex);
-    if (xMatch && xMatch[1]) return { type: 'twitter', id: xMatch[1] };
+    if (xMatch) return { type: 'twitter', id: xMatch[1] };
 
     const fbMatch = text.match(fbRegex);
-    if (fbMatch && fbMatch[1]) return { type: 'facebook', id: fbMatch[1] };
+    if (fbMatch) return { type: 'facebook', id: fbMatch[1] };
 
     return null;
   };
@@ -398,7 +443,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   };
 
   return (
-    <div className="fixed inset-0 z-[50] bg-[#020617] text-white overflow-hidden flex flex-col font-sans">
+    <div className={cn("fixed inset-0 z-[50] text-white overflow-hidden flex flex-col font-sans transition-all duration-1000", CHAT_THEMES[currentTheme].bg)} style={{ backgroundImage: CHAT_THEMES[currentTheme].bgImage, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Dynamic Overlay for theme depth */}
+      <div className="absolute inset-0 bg-[#0f172a]/60 backdrop-blur-[2px] z-0" />
       {/* Background Star Fields */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40 overflow-hidden">
         <div className="stars-container absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
@@ -956,6 +1003,29 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         </div>
                                     </div>
                                 ))}
+
+                                <div className="mt-8 space-y-6">
+                                    <h3 className="text-sm font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <Palette className="w-4 h-4" /> Environment Toning
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {Object.entries(CHAT_THEMES).map(([id, theme]) => (
+                                            <button 
+                                                key={id}
+                                                onClick={() => setCurrentTheme(id as any)}
+                                                className={cn(
+                                                    "p-4 rounded-2xl border transition-all text-left group relative overflow-hidden h-24",
+                                                    currentTheme === id 
+                                                        ? "border-blue-500 bg-blue-500/10" 
+                                                        : "border-white/5 bg-white/5 hover:bg-white/10"
+                                                )}
+                                            >
+                                                <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity bg-cover bg-center" style={{ backgroundImage: theme.bgImage }} />
+                                                <span className="relative text-[10px] font-black uppercase tracking-widest text-white leading-tight block">{theme.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -1217,16 +1287,20 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="fixed bottom-24 right-8 w-80 h-96 bg-[#1e293b] border border-blue-500/30 rounded-3xl backdrop-blur-3xl shadow-[0_0_50px_rgba(59,130,246,0.3)] z-[200] flex flex-col overflow-hidden"
+                    className={cn(
+                        "fixed bottom-24 right-8 w-80 h-96 border rounded-3xl backdrop-blur-3xl shadow-3xl z-[200] flex flex-col overflow-hidden",
+                        CHAT_THEMES[currentDMTheme].bg,
+                        CHAT_THEMES[currentDMTheme].border
+                    )}
                 >
-                    <div className="p-4 bg-blue-600/20 border-b border-white/10 flex items-center justify-between">
+                    <div className="p-4 bg-white/10 border-b border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8 ring-2 ring-emerald-500 ring-offset-2 ring-offset-[#1e293b]">
+                            <Avatar className="h-8 w-8 ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900">
                                 <AvatarFallback className="bg-blue-900 text-[10px] font-black text-white">{activeDMUser.substring(0,2).toUpperCase()}</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
-                                <span className="text-xs font-black text-white">{activeDMUser}</span>
-                                <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">Active Link</span>
+                                <span className={cn("text-xs font-black", CHAT_THEMES[currentDMTheme].accent.replace('text-', 'text-'))}>{activeDMUser}</span>
+                                <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest">Active Link</span>
                             </div>
                         </div>
                         <button onClick={() => setActiveDMUser(null)} className="p-1 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all">
@@ -1234,13 +1308,56 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         </button>
                     </div>
                     <div className="flex-1 p-4 flex flex-col items-center justify-center text-center space-y-4">
-                        <div className="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center animate-pulse">
-                            <MessageSquare className="w-6 h-6 text-blue-400" />
+                        <div className={cn("w-12 h-12 rounded-full bg-white/5 flex items-center justify-center animate-pulse", CHAT_THEMES[currentDMTheme].accent)}>
+                            <MessageSquare className="w-6 h-6" />
                         </div>
-                        <p className="text-[10px] font-bold text-white/40 px-4 italic">Establishing secure peer-to-peer connection with {activeDMUser}...</p>
+                        <p className="text-[10px] font-bold text-white/40 px-4 italic">Establishing secure peer-to-peer connection...</p>
                     </div>
-                    <div className="p-4 bg-black/20">
-                        <Input className="h-10 rounded-xl bg-white/5 border-white/10 text-xs placeholder:text-white/20" placeholder="Type private message..." />
+                    
+                    <div className="p-4 bg-black/20 flex gap-2">
+                        <Input 
+                            value={dmInputText}
+                            onChange={(e) => setDmInputText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && dmInputText.trim()) {
+                                    toast.success(`Message sent to ${activeDMUser}`);
+                                    setDmInputText("");
+                                }
+                            }}
+                            className="h-10 rounded-xl bg-white/5 border-white/10 text-xs placeholder:text-white/20 flex-1" 
+                            placeholder="Type private message..." 
+                        />
+                        <Button 
+                            onClick={() => {
+                                if (dmInputText.trim()) {
+                                    toast.success(`Message sent to ${activeDMUser}`);
+                                    setDmInputText("");
+                                }
+                            }}
+                            className={cn("h-10 w-10 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-glow", CHAT_THEMES[currentDMTheme].accent.includes('blue') ? 'bg-blue-600' : 'bg-white/10')}
+                            size="icon"
+                        >
+                            <Send className="w-4 h-4" />
+                        </Button>
+                    </div>
+
+                    {/* DM Theme Selector */}
+                    <div className="px-4 pb-4 flex items-center justify-between">
+                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">DM Hue</span>
+                        <div className="flex gap-1.5">
+                            {Object.entries(CHAT_THEMES).slice(0, 5).map(([id, theme]) => (
+                                <button 
+                                    key={id}
+                                    onClick={() => setCurrentDMTheme(id as any)}
+                                    className={cn(
+                                        "w-4 h-4 rounded-full border border-white/10 transition-transform hover:scale-125",
+                                        currentDMTheme === id && "ring-2 ring-white ring-offset-1"
+                                    )}
+                                    style={{ background: theme.accent.includes('blue') ? '#3b82f6' : theme.accent.includes('emerald') ? '#10b981' : theme.accent.includes('indigo') ? '#6366f1' : theme.accent.includes('amber') ? '#f59e0b' : '#e11d48' }}
+                                    title={theme.name}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </motion.div>
             )}
