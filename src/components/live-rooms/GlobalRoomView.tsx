@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { User as FirebaseUser } from "firebase/auth";
-import { collection, query, where, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+import { collection, query, where, orderBy, limit, onSnapshot, addDoc, setDoc, doc, serverTimestamp, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -53,6 +53,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [userVoted, setUserVoted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDMUser, setActiveDMUser] = useState<string | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<string[]>([]);
+  const [isSelectingPlayers, setIsSelectingPlayers] = useState(false);
+  const [anonName, setAnonName] = useState("");
   
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -154,22 +157,23 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!inputText.trim()) return;
-    if (!user) {
-        toast.error("Please sign in to send messages.");
-        return;
-    }
-    
     const messageText = inputText.trim();
+    if (!messageText) return;
+    
+    // Support Anonymous Chat if not logged in
+    const senderName = user?.displayName || anonName || "Space Traveler";
+    const senderUid = user?.uid || `anon-${Math.random().toString(36).substr(2, 9)}`;
+    const senderPhoto = user?.photoURL || "";
+    
     setInputText("");
     setLoading(true);
 
     try {
         await addDoc(collection(db, "global_rooms", roomId, "messages"), {
             text: messageText,
-            sender: user.displayName || "Anonymous",
-            senderUid: user.uid,
-            photoURL: user.photoURL || "",
+            sender: senderName,
+            senderUid: senderUid,
+            photoURL: senderPhoto,
             timestamp: serverTimestamp(),
         });
     } catch (error) {
@@ -182,19 +186,18 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   };
 
   const handleVote = async (option: string) => {
-    if (userVoted) {
-        toast.info("You have already transmitted your pulse.");
-        return;
+    if (!user && !anonName) {
+        // Generate a persistent anon ID for this session if not exists
+        const newAnonId = `anon-${Math.random().toString(36).substr(2, 9)}`;
+        // We'll use senderUid from handleSendMessage logic or state
     }
-    if (!user) {
-        toast.error("Sign in to transmit your pulse.");
-        return;
-    }
-
+    
+    const voterId = user?.uid || `anon-session-${roomId}`; // Simple session-based limit for anons
+    
     try {
         await addDoc(collection(db, "global_rooms", roomId, "pulse"), {
             option,
-            uid: user.uid,
+            uid: voterId,
             timestamp: serverTimestamp()
         });
         setUserVoted(true);
@@ -215,7 +218,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#020617] text-white overflow-hidden flex flex-col font-sans">
+    <div className="fixed inset-0 z-[50] bg-[#020617] text-white overflow-hidden flex flex-col font-sans">
       {/* Background Star Fields */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40 overflow-hidden">
         <div className="stars-container absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
@@ -281,7 +284,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
         {/* Left Sidebar */}
         <div className="hidden lg:flex w-64 flex-col gap-4 overflow-y-auto custom-scrollbar">
             {/* Nav Card */}
-            <div className="rounded-3xl bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-2 shadow-xl">
+            <div className="relative z-[60] rounded-3xl bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-2 shadow-xl">
                 {[
                     { id: "chats", icon: MessageSquare, label: "Chats" },
                     { id: "fantasy", icon: Gamepad2, label: "Fantasy" },
@@ -335,7 +338,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     </div>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative z-[60]">
                     <Button 
                         onClick={toggleVoice}
                         size="sm" 
@@ -573,17 +576,97 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                     <h2 className="text-2xl font-black text-white uppercase tracking-widest mb-2">Fantasy Command Center</h2>
                                     <p className="text-sm text-white/40 mb-8">Strategize your squad for the upcoming transmission. High-stakes gaming imminent.</p>
                                     
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
-                                            <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Global Rank</span>
-                                            <span className="text-2xl font-black text-amber-500">#42</span>
+                                    {!isSelectingPlayers ? (
+                                        <>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
+                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Global Rank</span>
+                                                    <span className="text-2xl font-black text-amber-500">#42</span>
+                                                </div>
+                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
+                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Squad Strength</span>
+                                                    <span className="text-2xl font-black text-emerald-400">{selectedTeam.length}/11</span>
+                                                </div>
+                                            </div>
+                                            <Button 
+                                                onClick={() => setIsSelectingPlayers(true)}
+                                                className="w-full mt-8 h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-black uppercase tracking-widest"
+                                            >
+                                                {selectedTeam.length > 0 ? "Edit My Squad" : "Build Your Dream Team"}
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <div className="space-y-6">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-xs font-black text-amber-500 uppercase tracking-widest">Select 11 Players</span>
+                                                <Badge className="bg-amber-500/10 text-amber-500">{selectedTeam.length}/11</Badge>
+                                            </div>
+                                            <ScrollArea className="h-64 rounded-2xl border border-white/5 bg-black/20 p-4">
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {[
+                                                        "Rohit Sharma", "Ishan Kishan", "Suryakumar Yadav", "Hardik Pandya", "Jasprit Bumrah",
+                                                        "Shreyas Iyer", "Sunil Narine", "Andre Russell", "Rinku Singh", "Mitchell Starc",
+                                                        "Tilak Varma", "Tim David", "Gerald Coetzee", "Piyush Chawla", "Phil Salt", "Venkatesh Iyer"
+                                                    ].sort().map((player) => {
+                                                        const isSelected = selectedTeam.includes(player);
+                                                        return (
+                                                            <button 
+                                                                key={player}
+                                                                onClick={() => {
+                                                                    if (isSelected) {
+                                                                        setSelectedTeam(prev => prev.filter(p => p !== player));
+                                                                    } else if (selectedTeam.length < 11) {
+                                                                        setSelectedTeam(prev => [...prev, player]);
+                                                                    } else {
+                                                                        toast.error("Squad limit reached (Max 11)");
+                                                                    }
+                                                                }}
+                                                                className={cn(
+                                                                    "flex items-center justify-between p-3 rounded-xl border transition-all",
+                                                                    isSelected 
+                                                                        ? "bg-amber-500/20 border-amber-500 text-white" 
+                                                                        : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
+                                                                )}
+                                                            >
+                                                                <span className="text-xs font-bold">{player}</span>
+                                                                {isSelected ? <Zap className="w-3 h-3 text-amber-500" /> : <Plus className="w-3 h-3" />}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </ScrollArea>
+                                            <div className="flex gap-3">
+                                                <Button 
+                                                    variant="ghost" 
+                                                    onClick={() => setIsSelectingPlayers(false)}
+                                                    className="flex-1 rounded-xl border border-white/10 uppercase font-black text-[10px]"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button 
+                                                    disabled={selectedTeam.length !== 11}
+                                                    onClick={async () => {
+                                                        const deploymentId = user?.uid || `anon-team-${roomId}`;
+                                                        try {
+                                                            await setDoc(doc(db, "global_rooms", roomId, "teams", deploymentId), {
+                                                                team: selectedTeam,
+                                                                updatedAt: serverTimestamp(),
+                                                                senderName: user?.displayName || "Anonymous Strategist"
+                                                            });
+                                                            toast.success("Dream Team Deployment Successful");
+                                                            setIsSelectingPlayers(false);
+                                                        } catch (e) {
+                                                            console.error("Deployment error:", e);
+                                                            toast.error("Deployment failed. Check connection.");
+                                                        }
+                                                    }}
+                                                    className="flex-1 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black uppercase font-black text-[10px]"
+                                                >
+                                                    Deploy Squad
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
-                                            <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Total Points</span>
-                                            <span className="text-2xl font-black text-emerald-400">1,245</span>
-                                        </div>
-                                    </div>
-                                    <Button className="w-full mt-8 h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-black uppercase tracking-widest">Rebuild Squad</Button>
+                                    )}
                                 </div>
                             </motion.div>
                         )}
@@ -653,9 +736,12 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
                 {/* Bottom Interaction Panels */}
                 <div className="p-6 pt-0 relative z-20">
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-4">
-                        {/* Vote/Poll Section (Current Pulse) */}
-                        <div className="hidden md:block rounded-3xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-md p-5 shadow-inner">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-4 items-end">
+                        {/* Vote/Poll Section (Current Pulse) - Hidden when building team to avoid overlap */}
+                        <div className={cn(
+                            "hidden md:block rounded-3xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-md p-5 shadow-inner transition-opacity",
+                            activeTab === "fantasy" && isSelectingPlayers ? "opacity-20 pointer-events-none" : "opacity-100"
+                        )}>
                             <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-4">Current Pulse: Gaming</h4>
                             <div className="space-y-3">
                                 <p className="text-sm font-bold text-white shadow-sm">What's your favorite tech gadget?</p>
@@ -688,7 +774,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         </div>
 
                         {/* Control Bar & Input Area */}
-                        <div className={cn("flex flex-col gap-4", activeTab !== "chats" && "opacity-50 pointer-events-none")}>
+                        <div className={cn("flex flex-col gap-4 relative z-[60]", activeTab !== "chats" && "opacity-50 pointer-events-none")}>
                             {/* Toolbar */}
                             <div className="flex items-center justify-between px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
                                 <div className="flex gap-4">
