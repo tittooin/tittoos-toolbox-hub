@@ -58,11 +58,20 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [activeTab, setActiveTab] = useState<"chats" | "fantasy" | "squads" | "settings">("chats");
   const [isMicMuted, setIsMicMuted] = useState(true);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<any[]>([
+    { name: "Pankaj Rhythm", status: "online", photoURL: "" },
+    { name: "Explorer-2320", status: "online", photoURL: "" },
+    { name: "CyberVibe", status: "online", photoURL: "" },
+    { name: "CricketQueen", status: "online", photoURL: "" },
+    { name: "Alpha_Node", status: "online", photoURL: "" }
+  ]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDMUser, setActiveDMUser] = useState<string | null>(null);
-  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 0, "VR Headset": 0, "Smartwatch": 0 });
+  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 12, "VR Headset": 5, "Smartwatch": 8 });
   const [userVoted, setUserVoted] = useState(false);
+  const [showPollModal, setShowPollModal] = useState(false);
+  const [newPollQuestion, setNewPollQuestion] = useState("");
+  const [newPollOptions, setNewPollOptions] = useState(["", ""]);
   const [selectedTeam, setSelectedTeam] = useState<string[]>([]);
   const [isSelectingPlayers, setIsSelectingPlayers] = useState(false);
   const [anonName, setAnonName] = useState("");
@@ -248,12 +257,53 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     if (ytMatch && ytMatch[1]) return { type: 'youtube', id: ytMatch[1] };
     
     const xMatch = text.match(twitterRegex);
-    if (xMatch) return { type: 'twitter', id: xMatch[1] };
+    if (xMatch && xMatch[1]) return { type: 'twitter', id: xMatch[1] };
 
     const fbMatch = text.match(fbRegex);
-    if (fbMatch) return { type: 'facebook', id: fbMatch[1] };
+    if (fbMatch && fbMatch[1]) return { type: 'facebook', id: fbMatch[1] };
 
     return null;
+  };
+
+  const handleCreatePoll = async () => {
+    if (!newPollQuestion.trim()) return;
+    const validOptions = newPollOptions.filter(opt => opt.trim() !== "");
+    if (validOptions.length < 2) {
+        toast.error("Please provide at least 2 valid options.");
+        return;
+    }
+
+    try {
+        const pulseRef = collection(db, "global_rooms", roomId, "pulse");
+        // Clear existing pulse data for the room (simplification)
+        const snapshot = await onSnapshot(pulseRef, () => {}); 
+        // Note: Real clearing would need a batch delete, but for now we just add a new "Session" or just add to the existing pool.
+        // The current logic summates all docs. So we'll just add one doc per option to "seed" the new poll if needed, 
+        // but normally we'd just replace the poll definition.
+        
+        // For this demo, we'll just update the local state and send a "System" message announcing the new poll.
+        const newVotes: Record<string, number> = {};
+        validOptions.forEach(opt => newVotes[opt] = 0);
+        setPollVotes(newVotes);
+        setUserVoted(false);
+        setShowPollModal(false);
+        
+        await addDoc(collection(db, "global_rooms", roomId, "messages"), {
+            text: `📊 NEW POLL: ${newPollQuestion}`,
+            sender: "System",
+            senderUid: "system",
+            photoURL: "",
+            timestamp: serverTimestamp()
+        });
+        
+        toast.success("Poll Broadcast Initiated.");
+    } catch (e) {
+        toast.error("Frequency interference. Poll failed.");
+    }
+  };
+
+  const getFacebookEmbedUrl = (videoId: string) => {
+    return `https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F${videoId}%2F&show_text=false&width=560&t=0`;
   };
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -532,8 +582,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
         </div>
 
         {/* Middle Chat Pane */}
-        <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-            <div className="rounded-[40px] bg-[#1e293b]/30 backdrop-blur-2xl border border-white/10 shadow-3xl flex-1 flex flex-col overflow-hidden relative">
+        <div className="flex-1 flex flex-col gap-4 overflow-hidden min-h-0">
+            <div className="rounded-[40px] bg-[#1e293b]/30 backdrop-blur-2xl border border-white/10 shadow-3xl flex-1 grid grid-rows-[auto_1fr_auto] overflow-hidden relative">
                 {/* MATCH SCOREBOARD (Middle Top) */}
                 <div className="relative px-8 py-6 bg-gradient-to-br from-blue-600/10 via-[#1e293b]/40 to-indigo-600/10 border-b border-white/5 z-20">
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none" />
@@ -625,7 +675,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </div>
 
                 {/* Tab Content Logic */}
-                <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+                <div className="row-start-2 min-h-0 overflow-hidden relative z-10">
                     <AnimatePresence mode="wait">
                         {activeTab === "chats" && (
                             <motion.div 
@@ -633,10 +683,10 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="flex-1 flex flex-col overflow-hidden"
+                                className="flex-1 flex flex-col min-h-0 overflow-hidden"
                             >
                                 <ScrollArea className="flex-1 p-8 custom-scrollbar">
-                                    <div className="space-y-8">
+                                    <div className="space-y-8 pb-48">
                                         {messages.length === 0 ? (
                                             <div className="flex flex-col items-center justify-center py-20 text-center space-y-6">
                                                 <div className="w-20 h-20 rounded-full bg-blue-600/10 flex items-center justify-center animate-bounce border border-blue-500/20 shadow-2xl">
@@ -695,19 +745,34 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                                                 <div className="aspect-video w-full relative group/vid">
                                                                                     <iframe 
                                                                                         className="absolute inset-0 w-full h-full rounded-2xl"
-                                                                                        src={`https://www.youtube.com/embed/${msg.videoMeta.id}?rel=0&modestbranding=1&autoplay=0`} 
+                                                                                        src={`https://www.youtube-nocookie.com/embed/${msg.videoMeta.id}?rel=0&modestbranding=1&autoplay=0`} 
                                                                                         title="YouTube video player"
                                                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                                                                        referrerPolicy="no-referrer-when-downgrade"
+                                                                                        referrerPolicy="strict-origin-when-cross-origin"
                                                                                         allowFullScreen
                                                                                     />
                                                                                     <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-2xl group-hover/vid:border-blue-500/30 transition-colors" />
                                                                                 </div>
                                                                             )}
                                                                             {msg.videoMeta.type === 'twitter' && (
-                                                                                <div className="p-4 text-center">
-                                                                                    <Badge className="bg-blue-400/20 text-blue-400 mb-2">X / Twitter Video</Badge>
-                                                                                    <a href={`https://twitter.com/i/status/${msg.videoMeta.id}`} target="_blank" rel="noreferrer" className="text-[10px] text-blue-400 underline block">View on X</a>
+                                                                                <div className="aspect-video w-full relative">
+                                                                                    <iframe 
+                                                                                        className="absolute inset-0 w-full h-full rounded-2xl"
+                                                                                        src={`https://twitframe.com/show?url=https://twitter.com/i/status/${msg.videoMeta.id}`}
+                                                                                        title="Twitter video player"
+                                                                                        allowFullScreen
+                                                                                    />
+                                                                                </div>
+                                                                            )}
+                                                                            {msg.videoMeta.type === 'facebook' && (
+                                                                                <div className="aspect-video w-full relative">
+                                                                                    <iframe 
+                                                                                        className="absolute inset-0 w-full h-full rounded-2xl"
+                                                                                        src={getFacebookEmbedUrl(msg.videoMeta.id)}
+                                                                                        title="Facebook video player"
+                                                                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                                                                        allowFullScreen
+                                                                                    />
                                                                                 </div>
                                                                             )}
                                                                         </div>
@@ -729,9 +794,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 key="fantasy"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="flex-1 p-8 flex flex-col items-center justify-center text-center space-y-6"
+                                className="flex-1 p-8 overflow-y-auto custom-scrollbar flex flex-col items-center justify-start space-y-6 pt-12 pb-48"
                             >
-                                <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 backdrop-blur-3xl shadow-3xl max-w-lg w-full">
+                                <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 backdrop-blur-3xl shadow-3xl max-w-lg w-full shrink-0">
                                     <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-6">
                                         <Zap className="w-10 h-10 text-amber-500" />
                                     </div>
@@ -897,7 +962,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </div>
 
                 {/* Bottom Interaction Panels */}
-                <div className="p-6 pt-0 relative z-20">
+                <div className="row-start-3 p-6 pt-0 relative z-20 bg-[#0f172a]/40 backdrop-blur-xl border-t border-white/5">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-4 items-end">
                         {/* Vote/Poll Section (Current Pulse) - Hidden when building team to avoid overlap */}
                         <div className={cn(
@@ -945,12 +1010,12 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                            <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Smile className="w-5 h-5 group-hover:scale-110" /></button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-72 bg-[#1e293b] border-white/10 p-4 rounded-3xl backdrop-blur-3xl shadow-3xl">
-                                            <div className="grid grid-cols-6 gap-2 h-48 overflow-y-auto custom-scrollbar p-1">
-                                                {["🔥", "💯", "⚽", "🏏", "🚀", "💎", "💙", "⚡", "✨", "🌟", "🎮", "🏏", "🎯", "🏆", "🇮🇳", "🌍", "💪", "🙌", "🔥", "🤩", "😎", "🫡", "🤝", "🎉", "🥳", "💻", "📱", "🔊", "🤖", "🏏"].map((emoji, idx) => (
+                                            <div className="grid grid-cols-6 gap-2 h-64 overflow-y-auto custom-scrollbar p-1">
+                                                {["🔥", "💯", "⚽", "🏏", "🚀", "💎", "💙", "⚡", "✨", "🌟", "🎮", "🏏", "🎯", "🏆", "🇮🇳", "🌍", "💪", "🙌", "🤩", "😎", "🫡", "🤝", "🎉", "🥳", "💻", "📱", "🔊", "🤖", "🏏", "❤️", "🧡", "💛", "💚", "💜", "🖤", "🤍", "🤎", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟", "🤝", "👌", "✌️", "🤞", "🤟", "🤘", "🤙", "👈", "👉", "👆", "👇", "☝️", "👍", "👎", "✊", "👊", "🤛", "🤜", "👏"].map((emoji, idx) => (
                                                     <button 
                                                         key={`${emoji}-${idx}`} 
                                                         onClick={() => setInputText(prev => prev + emoji)}
-                                                        className="h-10 text-xl hover:bg-white/5 rounded-xl transition-all"
+                                                        className="h-10 text-xl hover:bg-white/10 rounded-xl transition-all active:scale-95"
                                                     >
                                                         {emoji}
                                                     </button>
@@ -987,7 +1052,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                 <Tv className="w-4 h-4 text-blue-400" />
                                                 <span className="text-xs font-bold uppercase tracking-widest">Share Video Link</span>
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => toast.info("Poll Creation System coming in next frequency update.")} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
+                                            <DropdownMenuItem onClick={() => setShowPollModal(true)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
                                                 <Zap className="w-4 h-4 text-amber-500" />
                                                 <span className="text-xs font-bold uppercase tracking-widest">Create Live Pulse</span>
                                             </DropdownMenuItem>
@@ -1051,7 +1116,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     <h3 className="text-sm font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                         <Users className="w-4 h-4" /> Grid Nodes
                     </h3>
-                    <Badge variant="outline" className="text-emerald-400 border-emerald-500/30">12 Active</Badge>
+                    <Badge variant="outline" className="text-emerald-400 border-emerald-500/30">{onlineUsers.length} Active</Badge>
                 </div>
 
                 <div className="relative">
@@ -1238,6 +1303,69 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 }}
                             >
                                 Link Integrated
+                            </Button>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        )}
+
+        {/* Poll Creation Modal */}
+        {showPollModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="w-full max-w-md bg-[#1e293b] border border-white/10 rounded-3xl p-8 shadow-3xl"
+                >
+                    <h3 className="text-xl font-black text-white mb-2 uppercase tracking-widest flex items-center gap-3">
+                        <Zap className="w-6 h-6 text-amber-400" /> Create Live Pulse
+                    </h3>
+                    <p className="text-xs text-white/40 mb-6 font-bold uppercase tracking-tighter">Define the next topic for the grid</p>
+                    
+                    <div className="space-y-4">
+                        <Input 
+                            value={newPollQuestion}
+                            onChange={(e) => setNewPollQuestion(e.target.value)}
+                            placeholder="Question (e.g. Next Wicket?)"
+                            className="bg-black/40 border-white/5 text-white rounded-xl h-12"
+                        />
+                        <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar p-1">
+                            {newPollOptions.map((opt, idx) => (
+                                <div key={idx} className="flex gap-2">
+                                    <Input 
+                                        value={opt}
+                                        onChange={(e) => {
+                                            const updated = [...newPollOptions];
+                                            updated[idx] = e.target.value;
+                                            setNewPollOptions(updated);
+                                        }}
+                                        placeholder={`Option ${idx + 1}`}
+                                        className="bg-black/20 border-white/5 text-white rounded-xl h-10 text-xs"
+                                    />
+                                    {newPollOptions.length > 2 && (
+                                        <Button variant="ghost" size="icon" onClick={() => setNewPollOptions(newPollOptions.filter((_, i) => i !== idx))}>
+                                            <Plus className="w-4 h-4 rotate-45 text-red-400" />
+                                        </Button>
+                                    )}
+                                </div>
+                            ))}
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => setNewPollOptions([...newPollOptions, ""])}
+                                className="w-full border-dashed border-white/10 text-[9px] uppercase font-black py-6"
+                            >
+                                <Plus className="w-3 h-3 mr-2" /> Add Option
+                            </Button>
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                            <Button variant="ghost" className="flex-1 h-12 rounded-xl border border-white/5 uppercase font-black text-[10px]" onClick={() => setShowPollModal(false)}>Cancel</Button>
+                            <Button 
+                                className="flex-1 h-12 rounded-xl bg-amber-600 hover:bg-amber-500 text-white uppercase font-black text-[10px]"
+                                onClick={handleCreatePoll}
+                            >
+                                Broadcast Pulse
                             </Button>
                         </div>
                     </div>

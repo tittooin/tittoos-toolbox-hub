@@ -16,7 +16,7 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, ArrowRight,
-  Shield, Cpu, CheckCircle2, Star, Radio
+  Shield, Cpu, CheckCircle2, Star, Radio, Gamepad2, Target
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";
@@ -177,6 +177,118 @@ const Index = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         </section>
 
+        {/* --- FEATURED APPS SECTION --- */}
+        <section className="py-12 relative overflow-hidden">
+          <div className="container mx-auto max-w-7xl px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              {/* Axevora Live Rooms */}
+              <motion.div
+                whileHover={{ y: -10, scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group cursor-pointer"
+                onClick={() => navigate("/tools/axevora-live-rooms")}
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[2rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                <div className="relative p-8 rounded-[2rem] bg-slate-900 border border-white/10 flex flex-col h-full">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                      <Radio className="w-8 h-8 text-blue-400" />
+                    </div>
+                    <Badge className="bg-blue-500 text-white animate-pulse border-none">LIVE ROOMS</Badge>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-blue-400 transition-colors">Axevora Chat</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6">Real-time private lounges with mic control, mood themes, and group vibes.</p>
+                  <div className="mt-auto flex items-center text-blue-400 font-bold text-sm">
+                    Enter Lounge <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Creator Studio */}
+              <motion.div
+                whileHover={{ y: -10, scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="relative group cursor-pointer"
+                onClick={() => navigate("/creator-studio")}
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-500 rounded-[2rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative p-8 rounded-[2rem] bg-slate-900 border border-white/10 flex flex-col h-full">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                      <Sparkles className="w-8 h-8 text-purple-400" />
+                    </div>
+                    <Badge variant="outline" className="border-purple-500/50 text-purple-400">PREMIUM</Badge>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-purple-400 transition-colors">Creator Studio</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6">Scripts, captions, and campaign plans. Your AI-powered content engine.</p>
+                  <div className="mt-auto flex items-center text-purple-400 font-bold text-sm">
+                    Start Creating <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* 2048 Game */}
+              <motion.div
+                whileHover={{ y: -10, scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="relative group cursor-pointer"
+                onClick={() => navigate("/tools/2048-game")}
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-600 to-orange-500 rounded-[2rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative p-8 rounded-[2rem] bg-slate-900 border border-white/10 flex flex-col h-full text-left">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                      <Gamepad2 className="w-8 h-8 text-amber-400" />
+                    </div>
+                    <Badge variant="secondary" className="bg-amber-500/20 text-amber-400 border-none">ARCADE</Badge>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-amber-400 transition-colors">2048 Saga</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6">Merge the numbers and reach the peak. A classic brain-teasing experience.</p>
+                  <div className="mt-auto flex items-center text-amber-400 font-bold text-sm">
+                    Play Now <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Pool Shooter */}
+              <motion.div
+                whileHover={{ y: -10, scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="relative group cursor-pointer"
+                onClick={() => navigate("/tools/pool-shooter")}
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-[2rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative p-8 rounded-[2rem] bg-slate-900 border border-white/10 flex flex-col h-full">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                      <Target className="w-8 h-8 text-emerald-400" />
+                    </div>
+                    <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-none">RELAX</Badge>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-3 group-hover:text-emerald-400 transition-colors">Pool Bubbles</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6">Aim, shoot, and clear the board. The ultimate stress-buster game.</p>
+                  <div className="mt-auto flex items-center text-emerald-400 font-bold text-sm">
+                    Jump In <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
+        </section>
+
         {/* --- MAIN CONTENT & VALUE PROP --- */}
         <section className="py-20 bg-card/30">
           <div className="container mx-auto max-w-5xl px-4">
@@ -252,16 +364,6 @@ const Index = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <Link to="/tools/axevora-live-rooms" className="group rounded-3xl border border-primary/30 bg-primary/5 p-6 hover:border-primary/60 transition-all relative overflow-hidden">
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-primary text-primary-foreground animate-pulse">Live Now</Badge>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                  <Radio className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Axevora Live Rooms</h3>
-                <p className="text-muted-foreground mt-2">Private live room hangouts with mood themes, mic control, and real-time vibes.</p>
-              </Link>
 
               <Link to="/tools/ai-command-center" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
@@ -271,13 +373,6 @@ const Index = () => {
                 <p className="text-muted-foreground mt-2">Intent likho aur matching tools + workflows turant pao.</p>
               </Link>
 
-              <Link to="/creator-studio" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">Creator Studio</h3>
-                <p className="text-muted-foreground mt-2">Scripts, captions, hashtags, thumbnails, aur campaign plans ek hi place me.</p>
-              </Link>
 
               <Link to="/tools/pdf-hub" className="group rounded-3xl border border-primary/10 bg-card/40 p-6 hover:border-primary/40 transition-all">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
