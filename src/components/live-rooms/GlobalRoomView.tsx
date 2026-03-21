@@ -1146,9 +1146,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         <h3 className="text-lg font-black text-white leading-tight">Logitech G502 LIGHTSPEED</h3>
                                         <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Ultra-fast wireless gaming mouse with HERO 25K Sensor</p>
                                         <div className="flex items-center gap-3 pt-1">
-                                            <span className="text-blue-400 font-black text-sm">₹9,995.00</span>
-                                            <span className="text-white/20 line-through text-[10px] font-bold">₹14,995.00</span>
-                                            <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-33%</Badge>
+                                            <span className="text-blue-400 font-black text-sm">₹7,295.00</span>
+                                            <span className="text-white/20 line-through text-[10px] font-bold">₹12,895.00</span>
+                                            <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-43%</Badge>
                                         </div>
                                     </div>
                                 </div>
@@ -1156,7 +1156,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 <div className="flex gap-3">
                                     <Button 
                                         className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[10px] font-black uppercase tracking-widest h-11 shadow-glow group/btn overflow-hidden"
-                                        onClick={() => window.open(getAffiliateLink('https://www.amazon.in/dp/B07G5X6N6H'), '_blank')}
+                                        onClick={() => window.open(getAffiliateLink('https://www.amazon.in/dp/B07S4JRHNJ'), '_blank')}
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
                                             Check on Amazon <ArrowLeft className="w-3 h-3 rotate-180" />
