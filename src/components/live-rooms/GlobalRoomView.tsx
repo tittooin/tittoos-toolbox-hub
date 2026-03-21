@@ -109,7 +109,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     { name: "Alpha_Node", status: "online", photoURL: "" }
   ]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeDMUser, setActiveDMUser] = useState<string | null>(null);
+  const [activeDMRecipient, setActiveDMRecipient] = useState<any | null>(null);
+  const [dmMessages, setDmMessages] = useState<any[]>([]);
   const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 12, "VR Headset": 5, "Smartwatch": 8 });
   const [userVoted, setUserVoted] = useState(false);
   const [showPollModal, setShowPollModal] = useState(false);
@@ -125,6 +126,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [currentTheme, setCurrentTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
   const [currentDMTheme, setCurrentDMTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
   const [dmInputText, setDmInputText] = useState("");
+  const [dmLoading, setDmLoading] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -285,6 +287,70 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     });
     return () => unsubscribe();
   }, [roomId, user]);
+
+  // Handle DM Message Fetching
+  useEffect(() => {
+    if (!activeDMRecipient) {
+        setDmMessages([]);
+        return;
+    }
+
+    const currentUserId = user?.uid || `anon-${(user?.displayName || anonName).replace(/\s+/g, '-')}-${roomId}`;
+    const targetUserId = activeDMRecipient.uid;
+    const dmId = [currentUserId, targetUserId].sort().join('_');
+
+    console.log("Fetching DMs for channel:", dmId);
+
+    const q = query(
+        collection(db, "direct_messages", dmId, "messages"),
+        orderBy("timestamp", "asc"),
+        limit(50)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+        const msgs: any[] = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            msgs.push({
+                id: doc.id,
+                ...data,
+                timestamp: data.timestamp?.toDate() || new Date()
+            });
+        });
+        setDmMessages(msgs);
+    }, (err) => {
+        console.error("DM Fetch Error:", err);
+    });
+
+    return () => unsubscribe();
+  }, [activeDMRecipient, user, anonName, roomId]);
+
+  // DM Send Handler
+  const handleSendDM = async () => {
+    if (!dmInputText.trim() || !activeDMRecipient) return;
+
+    const activeUser = user?.displayName || anonName;
+    const currentUserId = user?.uid || `anon-${activeUser.replace(/\s+/g, '-')}-${roomId}`;
+    const targetUserId = activeDMRecipient.uid;
+    const dmId = [currentUserId, targetUserId].sort().join('_');
+
+    setDmLoading(true);
+    try {
+        await addDoc(collection(db, "direct_messages", dmId, "messages"), {
+            text: dmInputText,
+            sender: activeUser,
+            senderUid: currentUserId,
+            timestamp: serverTimestamp()
+        });
+        setDmInputText("");
+        toast.success(`Encrypted transmission sent to ${activeDMRecipient.name}`);
+    } catch (e) {
+        console.error("DM Send error:", e);
+        toast.error("Transmission failed.");
+    } finally {
+        setDmLoading(false);
+    }
+  };
 
   // Auto-scroll to bottom on new message
   useEffect(() => {
@@ -1225,7 +1291,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         <span className="text-[8px] text-white/30 font-black uppercase tracking-tighter">Verified Link</span>
                                     </div>
                                     <button 
-                                        onClick={() => setActiveDMUser(u.name)}
+                                        onClick={() => setActiveDMRecipient(u)}
                                         className="p-2 rounded-lg bg-blue-600/10 text-blue-400 opacity-0 group-hover:opacity-100 transition-all border border-blue-500/20"
                                     >
                                         <MessageSquare className="w-3.5 h-3.5" />
@@ -1282,7 +1348,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
         {/* DM OVERLAY MODAL */}
         <AnimatePresence>
-            {activeDMUser && (
+            {activeDMRecipient && (
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1297,53 +1363,74 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         <div className="flex items-center gap-3">
                             <div className="relative">
                                 <Avatar className="h-8 w-8 ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900">
-                                    <AvatarFallback className="bg-blue-900 text-[10px] font-black text-white">{activeDMUser.substring(0,2).toUpperCase()}</AvatarFallback>
+                                    <AvatarFallback className="bg-blue-900 text-[10px] font-black text-white">{activeDMRecipient.name.substring(0,2).toUpperCase()}</AvatarFallback>
                                 </Avatar>
                                 <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-900 animate-pulse" />
                             </div>
                             <div className="flex flex-col">
                                 <div className="flex items-center gap-1.5">
-                                    <span className={cn("text-xs font-black", CHAT_THEMES[currentDMTheme].accent.replace('text-', 'text-'))}>{activeDMUser}</span>
+                                    <span className={cn("text-xs font-black", CHAT_THEMES[currentDMTheme].accent.replace('text-', 'text-'))}>{activeDMRecipient.name}</span>
                                     <Badge variant="outline" className="text-[6px] px-1 py-0 h-3 border-emerald-500/20 text-emerald-400 bg-emerald-500/5">v2.0</Badge>
                                 </div>
                                 <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest">Secure Uplink Alpha</span>
                             </div>
                         </div>
-                        <button onClick={() => setActiveDMUser(null)} className="p-1.5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all bg-white/5 border border-white/5">
+                        <button onClick={() => setActiveDMRecipient(null)} className="p-1.5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all bg-white/5 border border-white/5">
                             <ArrowLeft className="w-4 h-4 rotate-90" />
                         </button>
                     </div>
-                    <div className="flex-1 p-4 flex flex-col items-center justify-center text-center space-y-4">
-                        <div className={cn("w-12 h-12 rounded-full bg-white/5 flex items-center justify-center animate-pulse", CHAT_THEMES[currentDMTheme].accent)}>
-                            <MessageSquare className="w-6 h-6" />
+                    
+                    <ScrollArea className="flex-1 p-4 custom-scrollbar">
+                        <div className="space-y-4">
+                            {dmMessages.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center text-center space-y-4 pt-12">
+                                    <div className={cn("w-12 h-12 rounded-full bg-white/5 flex items-center justify-center animate-pulse", CHAT_THEMES[currentDMTheme].accent)}>
+                                        <MessageSquare className="w-6 h-6" />
+                                    </div>
+                                    <p className="text-[10px] font-bold text-white/40 px-4 italic">Establishing secure peer-to-peer connection...</p>
+                                </div>
+                            ) : (
+                                dmMessages.map((msg, idx) => {
+                                    const isOwn = msg.senderUid === (user?.uid || `anon-${(user?.displayName || anonName).replace(/\s+/g, '-')}-${roomId}`);
+                                    return (
+                                        <div key={msg.id || idx} className={cn("flex flex-col gap-1", isOwn ? "items-end" : "items-start")}>
+                                            <div className={cn(
+                                                "px-3 py-2 rounded-2xl text-[11px] font-medium max-w-[85%] break-words",
+                                                isOwn 
+                                                    ? "bg-blue-600 text-white rounded-tr-none" 
+                                                    : "bg-white/10 text-blue-100 rounded-tl-none border border-white/5"
+                                            )}>
+                                                {msg.text}
+                                            </div>
+                                            <span className="text-[6px] font-black uppercase text-white/20 px-1">
+                                                {msg.timestamp?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
-                        <p className="text-[10px] font-bold text-white/40 px-4 italic">Establishing secure peer-to-peer connection...</p>
-                    </div>
+                    </ScrollArea>
                     
                     <div className="p-4 bg-black/40 border-t border-white/5 flex gap-2 shrink-0">
                         <Input 
                             value={dmInputText}
                             onChange={(e) => setDmInputText(e.target.value)}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter' && dmInputText.trim()) {
-                                    toast.success(`Encrypted transmission sent to ${activeDMUser}`);
-                                    setDmInputText("");
+                                if (e.key === 'Enter' && dmInputText.trim() && !dmLoading) {
+                                    handleSendDM();
                                 }
                             }}
                             className="h-11 rounded-xl bg-white/5 border-white/10 text-xs placeholder:text-white/20 flex-1 focus:bg-white/10 transition-all" 
                             placeholder="Type secure message..." 
                         />
                         <Button 
-                            onClick={() => {
-                                if (dmInputText.trim()) {
-                                    toast.success(`Encrypted transmission sent to ${activeDMUser}`);
-                                    setDmInputText("");
-                                }
-                            }}
+                            disabled={dmLoading || !dmInputText.trim()}
+                            onClick={handleSendDM}
                             className={cn("h-11 w-11 rounded-xl shadow-glow transition-all active:scale-95", CHAT_THEMES[currentDMTheme].accent.includes('blue') ? 'bg-blue-600 hover:bg-blue-500' : 'bg-emerald-600 hover:bg-emerald-500')}
                             size="icon"
                         >
-                            <Send className="w-4 h-4 text-white" />
+                            {dmLoading ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Send className="w-4 h-4 text-white" />}
                         </Button>
                     </div>
 
