@@ -788,18 +788,18 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </div>
 
                 {/* Tab Content Logic */}
-                <div className="row-start-2 min-h-0 overflow-hidden relative z-10">
+                <div className="row-start-2 min-h-0 h-full overflow-hidden relative z-10 flex flex-col">
                     <AnimatePresence mode="wait">
                         {activeTab === "chats" && (
-                            <motion.div 
-                                key="chats"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                className="flex-1 flex flex-col min-h-0 overflow-hidden"
-                            >
-                                <ScrollArea className="flex-1 p-8 custom-scrollbar">
-                                    <div className="space-y-8 pb-48">
+                                <motion.div 
+                                    key="chats"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="flex-1 flex flex-col h-full min-h-0 overflow-hidden"
+                                >
+                                    <ScrollArea className="flex-1 h-full w-full custom-scrollbar">
+                                        <div className="p-8 space-y-8 pb-12">
                                         {messages.length === 0 ? (
                                             <div className="flex flex-col items-center justify-center py-20 text-center space-y-6">
                                                 <div className="w-20 h-20 rounded-full bg-blue-600/10 flex items-center justify-center animate-bounce border border-blue-500/20 shadow-2xl">
