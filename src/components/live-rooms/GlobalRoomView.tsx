@@ -1100,40 +1100,69 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 {/* Bottom Interaction Panels */}
                 <div className="row-start-3 p-8 pt-0 relative z-20 bg-[#0f172a]/40 backdrop-blur-xl border-t border-white/5">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_400px] gap-6 items-end">
-                        {/* Vote/Poll Section (Current Pulse) - Hidden when building team to avoid overlap */}
+                        {/* Affiliate Pulse / Gear Spotlight - Monetization Engine */}
                         <div className={cn(
-                            "hidden md:block rounded-[32px] bg-blue-500/10 border border-blue-500/20 backdrop-blur-md p-8 shadow-inner transition-opacity min-h-[220px] flex flex-col justify-center",
+                            "hidden md:block rounded-[32px] bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 border border-white/10 backdrop-blur-md p-8 shadow-inner transition-all min-h-[260px] flex flex-col justify-center relative overflow-hidden group",
                             activeTab === "fantasy" && isSelectingPlayers ? "opacity-20 pointer-events-none" : "opacity-100"
                         )}>
-                            <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-6">Current Pulse: Gaming</h4>
-                            <div className="space-y-4">
-                                <p className="text-base font-bold text-white shadow-sm mb-2">What's your favorite tech gadget?</p>
-                                {Object.entries(pollVotes).map(([label, count]) => {
-                                    const total = Object.values(pollVotes).reduce((a, b) => a + b, 0);
-                                    const percent = Math.round((count / total) * 100);
-                                    return (
-                                        <div key={label} onClick={() => handleVote(label)} className="space-y-1 cursor-pointer group">
-                                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-tighter">
-                                                <span className="text-white/60 group-hover:text-blue-400 transition-colors">{label}</span>
-                                                <span className="text-blue-400">{percent}%</span>
-                                            </div>
-                                            <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/5">
-                                                <motion.div 
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${percent}%` }}
-                                                    className="h-full bg-blue-500 shadow-glow"
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                                <Button 
-                                    disabled={userVoted}
-                                    className="w-full mt-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black uppercase tracking-widest py-4 shadow-glow"
-                                >
-                                    {userVoted ? "Frequency Locked" : "Submit Pulse"}
-                                </Button>
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Monitor className="w-20 h-20 text-blue-400" />
                             </div>
+                            
+                            <div className="relative z-10 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                                        <Zap className="w-3 h-3 animate-pulse" /> Trending Gear spotlight
+                                    </h4>
+                                    <Badge className="bg-blue-600/20 text-blue-400 border-none text-[8px] px-2 py-0">Partner Deal</Badge>
+                                </div>
+
+                                <div className="flex gap-6 items-center">
+                                    <div className="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 group-hover:border-blue-500/40 transition-all overflow-hidden relative">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80" 
+                                            alt="Gaming Gear" 
+                                            className="w-full h-full object-contain mix-blend-screen group-hover:scale-110 transition-transform"
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-2">
+                                        <h3 className="text-lg font-black text-white leading-tight">Logitech G502 LIGHTSPEED</h3>
+                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Ultra-fast wireless gaming mouse with HERO 25K Sensor</p>
+                                        <div className="flex items-center gap-3 pt-1">
+                                            <span className="text-blue-400 font-black text-sm">₹9,995.00</span>
+                                            <span className="text-white/20 line-through text-[10px] font-bold">₹14,995.00</span>
+                                            <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-33%</Badge>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <Button 
+                                        className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[10px] font-black uppercase tracking-widest h-11 shadow-glow group/btn overflow-hidden"
+                                        onClick={() => window.open('https://amzn.to/3vXYYyy', '_blank')}
+                                    >
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            Check on Amazon <ArrowLeft className="w-3 h-3 rotate-180" />
+                                        </span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_2s_infinite]" />
+                                    </Button>
+                                    <Button 
+                                        variant="ghost" 
+                                        className="rounded-xl border border-white/10 hover:bg-white/5 h-11 px-4 text-white/40 hover:text-white"
+                                        onClick={() => toast.success("Notification set for price drop!")}
+                                    >
+                                        <Activity className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Shimmer Animation Keyframe */}
+                            <style dangerouslySetInnerHTML={{ __html: `
+                                @keyframes shimmer {
+                                    100% { transform: translateX(100%); }
+                                }
+                            `}} />
                         </div>
 
                         {/* Control Bar & Input Area */}
