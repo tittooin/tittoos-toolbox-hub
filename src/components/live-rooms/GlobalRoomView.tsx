@@ -71,6 +71,22 @@ const CHAT_THEMES = {
   }
 };
 
+const AMAZON_TRACKING_ID = "axevora-21";
+
+const getAffiliateLink = (url: string) => {
+  try {
+    const urlObj = new URL(url);
+    urlObj.searchParams.set("tag", AMAZON_TRACKING_ID);
+    return urlObj.toString();
+  } catch (e) {
+    // Fallback for short URLs like amzn.to
+    if (url.includes("amzn.to")) {
+        return url; // Amzn.to links usually already have the tag or are redirected
+    }
+    return `${url}${url.includes('?') ? '&' : '?'}tag=${AMAZON_TRACKING_ID}`;
+  }
+};
+
 interface GlobalRoomViewProps {
   user: FirebaseUser | null;
   roomId: string;
@@ -1140,7 +1156,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 <div className="flex gap-3">
                                     <Button 
                                         className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[10px] font-black uppercase tracking-widest h-11 shadow-glow group/btn overflow-hidden"
-                                        onClick={() => window.open('https://amzn.to/3vXYYyy', '_blank')}
+                                        onClick={() => window.open(getAffiliateLink('https://www.amazon.in/dp/B07G5X6N6H'), '_blank')}
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
                                             Check on Amazon <ArrowLeft className="w-3 h-3 rotate-180" />
