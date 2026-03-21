@@ -629,8 +629,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
         </div>
 
         {/* Middle Chat Pane */}
-        <div className="flex-1 flex flex-col gap-4 overflow-hidden min-h-0">
-            <div className="rounded-[40px] bg-[#1e293b]/30 backdrop-blur-2xl border border-white/10 shadow-3xl flex-1 grid grid-rows-[auto_1fr_auto] overflow-hidden relative">
+        <div className="flex-1 flex flex-col gap-4 overflow-hidden min-h-0 h-full">
+            <div className="rounded-[40px] bg-[#1e293b]/30 backdrop-blur-2xl border border-white/10 shadow-3xl flex-1 grid grid-rows-[auto_1fr_auto] overflow-hidden relative h-full">
                 {/* MATCH SCOREBOARD (Middle Top) */}
                 <div className="relative px-8 py-6 bg-gradient-to-br from-blue-600/10 via-[#1e293b]/40 to-indigo-600/10 border-b border-white/5 z-20">
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none" />
@@ -1032,16 +1032,16 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                 </div>
 
                 {/* Bottom Interaction Panels */}
-                <div className="row-start-3 p-6 pt-0 relative z-20 bg-[#0f172a]/40 backdrop-blur-xl border-t border-white/5">
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-4 items-end">
+                <div className="row-start-3 p-8 pt-0 relative z-20 bg-[#0f172a]/40 backdrop-blur-xl border-t border-white/5">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_400px] gap-6 items-end">
                         {/* Vote/Poll Section (Current Pulse) - Hidden when building team to avoid overlap */}
                         <div className={cn(
-                            "hidden md:block rounded-3xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-md p-5 shadow-inner transition-opacity",
+                            "hidden md:block rounded-[32px] bg-blue-500/10 border border-blue-500/20 backdrop-blur-md p-8 shadow-inner transition-opacity min-h-[220px] flex flex-col justify-center",
                             activeTab === "fantasy" && isSelectingPlayers ? "opacity-20 pointer-events-none" : "opacity-100"
                         )}>
-                            <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-4">Current Pulse: Gaming</h4>
-                            <div className="space-y-3">
-                                <p className="text-sm font-bold text-white shadow-sm">What's your favorite tech gadget?</p>
+                            <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest mb-6">Current Pulse: Gaming</h4>
+                            <div className="space-y-4">
+                                <p className="text-base font-bold text-white shadow-sm mb-2">What's your favorite tech gadget?</p>
                                 {Object.entries(pollVotes).map(([label, count]) => {
                                     const total = Object.values(pollVotes).reduce((a, b) => a + b, 0);
                                     const percent = Math.round((count / total) * 100);
@@ -1071,13 +1071,13 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         </div>
 
                         {/* Control Bar & Input Area */}
-                        <div className={cn("flex flex-col gap-4 relative z-[60]", activeTab !== "chats" && "opacity-50 pointer-events-none")}>
+                        <div className={cn("flex flex-col gap-6 relative z-[60]", activeTab !== "chats" && "opacity-50 pointer-events-none")}>
                             {/* Toolbar */}
-                            <div className="flex items-center justify-between px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
-                                <div className="flex gap-4">
+                            <div className="flex items-center justify-between px-8 py-5 rounded-3xl bg-white/5 border border-white/10">
+                                <div className="flex gap-6">
                                     <Popover>
                                         <PopoverTrigger asChild>
-                                           <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Smile className="w-5 h-5 group-hover:scale-110" /></button>
+                                           <button className="text-white/40 hover:text-blue-400 transition-all p-1.5 group"><Smile className="w-6 h-6 group-hover:scale-110" /></button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-72 bg-[#1e293b] border-white/10 p-4 rounded-3xl backdrop-blur-3xl shadow-3xl">
                                             <div className="grid grid-cols-6 gap-2 h-64 overflow-y-auto custom-scrollbar p-1">
@@ -1110,31 +1110,31 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         {uploadLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5 group-hover:scale-110" />}
                                     </button>
 
-                                    <button onClick={() => setIsMicMuted(!isMicMuted)} className={cn("transition-all p-1 group", isMicMuted ? "text-white/40 hover:text-blue-400" : "text-emerald-400")}><Mic className="w-5 h-5 group-hover:scale-110" /></button>
+                                    <button onClick={() => setIsMicMuted(!isMicMuted)} className={cn("transition-all p-1.5 group", isMicMuted ? "text-white/40 hover:text-blue-400" : "text-emerald-400")}><Mic className="w-6 h-6 group-hover:scale-110" /></button>
                                     
                                     {/* Plus Menu */}
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <button className="text-white/40 hover:text-blue-400 transition-all p-1 group"><Plus className="w-5 h-5 group-hover:scale-110" /></button>
+                                            <button className="text-white/40 hover:text-blue-400 transition-all p-1.5 group"><Plus className="w-6 h-6 group-hover:scale-110" /></button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="bg-[#1e293b] border-white/10 rounded-2xl p-2 shadow-3xl">
                                             <DropdownMenuItem onClick={() => setVideoLinkModal(true)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
-                                                <Tv className="w-4 h-4 text-blue-400" />
+                                                <Tv className="w-5 h-5 text-blue-400" />
                                                 <span className="text-xs font-bold uppercase tracking-widest">Share Video Link</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => setShowPollModal(true)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 cursor-pointer text-white/80">
-                                                <Zap className="w-4 h-4 text-amber-500" />
+                                                <Zap className="w-5 h-5 text-amber-500" />
                                                 <span className="text-xs font-bold uppercase tracking-widest">Create Live Pulse</span>
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
-                                <div className="flex gap-4 border-l border-white/10 pl-6">
+                                <div className="flex gap-6 border-l border-white/10 pl-8">
                                     <button 
                                         onClick={() => toast.success("Screen Share protocol initiated. Detecting frequency...")}
-                                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-emerald-400 transition-all"
+                                        className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-emerald-400 transition-all"
                                     >
-                                        <Tv className="w-4 h-4" /> Screen Share
+                                        <Tv className="w-5 h-5" /> Screen Share
                                     </button>
                                 </div>
                             </div>
@@ -1150,25 +1150,25 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                             )}
 
                             {/* Input Form */}
-                            <form onSubmit={handleSendMessage} className="flex gap-3 h-16 relative">
-                                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-400 transition-colors">
-                                    <MousePointer2 className="w-5 h-5" />
+                            <form onSubmit={handleSendMessage} className="flex gap-4 h-20 relative">
+                                <div className="absolute left-8 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-400 transition-colors">
+                                    <MousePointer2 className="w-6 h-6" />
                                 </div>
                                 <Input 
                                     value={inputText}
                                     onChange={(e) => setInputText(e.target.value)}
                                     placeholder={activeTab === "chats" ? "Type a message to the grid..." : "Navigation locked to chats..."}
                                     disabled={activeTab !== "chats"}
-                                    className="flex-1 rounded-3xl h-full pl-14 pr-32 bg-[#1e293b]/60 border-white/10 text-white font-bold placeholder:text-white/20 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/40 shadow-2xl"
+                                    className="flex-1 rounded-[32px] h-full pl-16 pr-40 bg-[#1e293b]/60 border-white/10 text-base font-bold placeholder:text-white/20 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/40 shadow-2xl"
                                 />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-4">
+                                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex gap-4">
                                     <button type="submit" disabled={!inputText.trim() || loading || activeTab !== "chats"} className={cn(
-                                        "w-24 h-10 rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-wider text-[10px] transition-all",
+                                        "w-32 h-12 rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-wider text-[11px] transition-all",
                                         inputText.trim() && !loading && activeTab === "chats"
                                             ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-glow hover:scale-105" 
                                             : "bg-white/5 text-white/20 border border-white/5"
                                     )}>
-                                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-3.5 h-3.5" /> Send</>}
+                                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4" /> Send</>}
                                     </button>
                                 </div>
                             </form>
@@ -1293,17 +1293,23 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         CHAT_THEMES[currentDMTheme].border
                     )}
                 >
-                    <div className="p-4 bg-white/10 border-b border-white/10 flex items-center justify-between">
+                    <div className="p-4 bg-white/10 border-b border-white/10 flex items-center justify-between shrink-0">
                         <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8 ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900">
-                                <AvatarFallback className="bg-blue-900 text-[10px] font-black text-white">{activeDMUser.substring(0,2).toUpperCase()}</AvatarFallback>
-                            </Avatar>
+                            <div className="relative">
+                                <Avatar className="h-8 w-8 ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900">
+                                    <AvatarFallback className="bg-blue-900 text-[10px] font-black text-white">{activeDMUser.substring(0,2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-900 animate-pulse" />
+                            </div>
                             <div className="flex flex-col">
-                                <span className={cn("text-xs font-black", CHAT_THEMES[currentDMTheme].accent.replace('text-', 'text-'))}>{activeDMUser}</span>
-                                <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest">Active Link</span>
+                                <div className="flex items-center gap-1.5">
+                                    <span className={cn("text-xs font-black", CHAT_THEMES[currentDMTheme].accent.replace('text-', 'text-'))}>{activeDMUser}</span>
+                                    <Badge variant="outline" className="text-[6px] px-1 py-0 h-3 border-emerald-500/20 text-emerald-400 bg-emerald-500/5">v2.0</Badge>
+                                </div>
+                                <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest">Secure Uplink Alpha</span>
                             </div>
                         </div>
-                        <button onClick={() => setActiveDMUser(null)} className="p-1 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all">
+                        <button onClick={() => setActiveDMUser(null)} className="p-1.5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all bg-white/5 border border-white/5">
                             <ArrowLeft className="w-4 h-4 rotate-90" />
                         </button>
                     </div>
@@ -1314,30 +1320,30 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         <p className="text-[10px] font-bold text-white/40 px-4 italic">Establishing secure peer-to-peer connection...</p>
                     </div>
                     
-                    <div className="p-4 bg-black/20 flex gap-2">
+                    <div className="p-4 bg-black/40 border-t border-white/5 flex gap-2 shrink-0">
                         <Input 
                             value={dmInputText}
                             onChange={(e) => setDmInputText(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && dmInputText.trim()) {
-                                    toast.success(`Message sent to ${activeDMUser}`);
+                                    toast.success(`Encrypted transmission sent to ${activeDMUser}`);
                                     setDmInputText("");
                                 }
                             }}
-                            className="h-10 rounded-xl bg-white/5 border-white/10 text-xs placeholder:text-white/20 flex-1" 
-                            placeholder="Type private message..." 
+                            className="h-11 rounded-xl bg-white/5 border-white/10 text-xs placeholder:text-white/20 flex-1 focus:bg-white/10 transition-all" 
+                            placeholder="Type secure message..." 
                         />
                         <Button 
                             onClick={() => {
                                 if (dmInputText.trim()) {
-                                    toast.success(`Message sent to ${activeDMUser}`);
+                                    toast.success(`Encrypted transmission sent to ${activeDMUser}`);
                                     setDmInputText("");
                                 }
                             }}
-                            className={cn("h-10 w-10 rounded-xl bg-blue-600 hover:bg-blue-500 shadow-glow", CHAT_THEMES[currentDMTheme].accent.includes('blue') ? 'bg-blue-600' : 'bg-white/10')}
+                            className={cn("h-11 w-11 rounded-xl shadow-glow transition-all active:scale-95", CHAT_THEMES[currentDMTheme].accent.includes('blue') ? 'bg-blue-600 hover:bg-blue-500' : 'bg-emerald-600 hover:bg-emerald-500')}
                             size="icon"
                         >
-                            <Send className="w-4 h-4" />
+                            <Send className="w-4 h-4 text-white" />
                         </Button>
                     </div>
 

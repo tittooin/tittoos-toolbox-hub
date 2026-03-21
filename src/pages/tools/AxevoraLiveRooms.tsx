@@ -798,6 +798,7 @@ export default function AxevoraLiveRooms() {
 
       setActiveRoomCode(roomCode);
       setRoomCodeInput(roomCode);
+      setActiveGlobalRoom(null); // Clear global room when creating private
       setSearchParams({ room: roomCode });
       toast.success("Live room created.");
     } catch (error) {
@@ -839,6 +840,7 @@ export default function AxevoraLiveRooms() {
 
       setActiveRoomCode(normalized);
       setRoomCodeInput(normalized);
+      setActiveGlobalRoom(null); // Clear global room when joining private
       setSearchParams({ room: normalized });
       toast.success("Joined live room.");
     } catch (error) {
@@ -1492,6 +1494,7 @@ export default function AxevoraLiveRooms() {
             console.log("Joining Global Room:", id, name);
             toast.info(`Entering ${name}...`);
             setActiveGlobalRoom({ id, name });
+            setActiveRoomCode(""); // Clear private room when joining global
           }}
         />
       )}
@@ -1972,6 +1975,14 @@ export default function AxevoraLiveRooms() {
                             <Textarea
                               value={messageText}
                               onChange={(event) => setMessageText(event.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  if (messageText.trim() && !sending) {
+                                    sendChat();
+                                  }
+                                }
+                              }}
                               placeholder={room ? `Share the moment in ${room.roomName}...` : "Join a room first"}
                               className={cn("min-h-[110px]", isDarkRoom ? "border-white/10 bg-white/10 text-white placeholder:text-white/40" : "bg-white")}
                               disabled={!room}
@@ -2162,7 +2173,12 @@ export default function AxevoraLiveRooms() {
                                 </div>
                               </DialogContent>
                             </Dialog>
-                            <Button type="button" className="min-h-[110px] rounded-2xl px-8" onClick={sendChat} disabled={!room || !messageText.trim() || sending}>
+                            <Button 
+                              type="button" 
+                              className="min-h-[110px] rounded-2xl px-8 bg-blue-600 hover:bg-blue-500 text-white shadow-glow" 
+                              onClick={sendChat} 
+                              disabled={!room || !messageText.trim() || sending}
+                            >
                               {sending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
                               Send live message
                             </Button>

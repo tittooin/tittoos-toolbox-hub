@@ -11,7 +11,10 @@ export type LiveRoomThemeId =
   | "neon"
   | "csk-yellow"
   | "mi-blue"
-  | "rcb-red";
+  | "rcb-red"
+  | "stadium-realistic"
+  | "cozy-lounge"
+  | "tokyo-night";
 
 export type LiveMoodId =
   | "soft"
@@ -222,6 +225,27 @@ export const ROOM_THEMES: Array<{
     shellClass:
       "bg-[radial-gradient(circle_at_top_right,_rgba(225,29,72,0.25),_transparent_40%),linear-gradient(135deg,_#030712,_#7f1d1d_60%,_#000000)] text-white",
     panelClass: "border-red-500/20 bg-black/40 backdrop-blur",
+  },
+  {
+    id: "stadium-realistic",
+    name: "Lush Stadium",
+    description: "Ultra-realistic cricket ground with floodlight bloom.",
+    shellClass: "bg-[url('https://images.unsplash.com/photo-1540747913346-19e3adbb47c1?q=80&w=2000')] bg-cover bg-center bg-fixed",
+    panelClass: "border-emerald-500/30 bg-emerald-950/40 backdrop-blur-xl text-white",
+  },
+  {
+    id: "cozy-lounge",
+    name: "Cozy Lounge",
+    description: "Warm fireplace, wooden textures, and soft jazz vibes.",
+    shellClass: "bg-[url('https://images.unsplash.com/photo-1544013583-4a7ec5271822?q=80&w=2000')] bg-cover bg-center bg-fixed",
+    panelClass: "border-orange-500/20 bg-orange-950/40 backdrop-blur-xl text-white",
+  },
+  {
+    id: "tokyo-night",
+    name: "Tokyo Street",
+    description: "Rainy neon streets of Shinjuku with deep reflections.",
+    shellClass: "bg-[url('https://images.unsplash.com/photo-1540959733332-e94e7bf9baf9?q=80&w=2000')] bg-cover bg-center bg-fixed",
+    panelClass: "border-purple-500/20 bg-indigo-950/40 backdrop-blur-xl text-white",
   },
 ];
 
