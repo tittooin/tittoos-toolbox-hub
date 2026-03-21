@@ -71,7 +71,38 @@ const CHAT_THEMES = {
   }
 };
 
-const AMAZON_TRACKING_ID = "axevora-21";
+const SPOTLIGHT_PRODUCTS = [
+  {
+    name: "Logitech G502 LIGHTSPEED",
+    description: "Ultra-fast wireless gaming mouse with HERO 25K Sensor",
+    asin: "B07S4JRHNJ",
+    price: "7,295",
+    mrp: "12,895",
+    discount: "43",
+    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80",
+    icon: Monitor
+  },
+  {
+    name: "Razer BlackShark V2 X",
+    description: "Wired Gaming Headset with 7.1 Surround Sound",
+    asin: "B09QFYNJMB",
+    price: "3,899",
+    mrp: "7,999",
+    discount: "51",
+    image: "https://m.media-amazon.com/images/P/B09QFYNJMB.01._SCLZZZZZZZ_AC_SY400_.jpg",
+    icon: Laptop
+  },
+  {
+    name: "Ant Esports MK1200 Mini",
+    description: "Mini 60% Mechanical Keyboard with RGB Backlit",
+    asin: "B0FBRKD1BK",
+    price: "1,149",
+    mrp: "4,295",
+    discount: "73",
+    image: "https://m.media-amazon.com/images/P/B0FBRKD1BK.01._SCLZZZZZZZ_AC_SY400_.jpg",
+    icon: Gamepad2
+  }
+];
 
 const getAffiliateLink = (url: string) => {
   try {
@@ -143,6 +174,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [currentDMTheme, setCurrentDMTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
   const [dmInputText, setDmInputText] = useState("");
   const [dmLoading, setDmLoading] = useState(false);
+  const [activeProductIndex, setActiveProductIndex] = useState(0);
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -152,9 +184,18 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     console.log("GlobalRoomView mounted for roomId:", roomId);
     // Initial fetch
     fetchMatchData();
-    // Poll every 2 minutes
+    // Poll every 2 minutes for match data
     const interval = setInterval(fetchMatchData, 120000);
-    return () => clearInterval(interval);
+
+    // Rotate products every 10 minutes
+    const rotationInterval = setInterval(() => {
+      setActiveProductIndex((prev) => (prev + 1) % SPOTLIGHT_PRODUCTS.length);
+    }, 600000); // 10 minutes
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(rotationInterval);
+    };
   }, [roomId, roomName]);
 
   const fetchMatchData = async () => {
@@ -1122,7 +1163,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                             activeTab === "fantasy" && isSelectingPlayers ? "opacity-20 pointer-events-none" : "opacity-100"
                         )}>
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Monitor className="w-20 h-20 text-blue-400" />
+                                {React.createElement(SPOTLIGHT_PRODUCTS[activeProductIndex].icon, { className: "w-20 h-20 text-blue-400" })}
                             </div>
                             
                             <div className="relative z-10 space-y-6">
@@ -1133,30 +1174,38 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                     <Badge className="bg-blue-600/20 text-blue-400 border-none text-[8px] px-2 py-0">Partner Deal</Badge>
                                 </div>
 
-                                <div className="flex gap-6 items-center">
-                                    <div className="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 group-hover:border-blue-500/40 transition-all overflow-hidden relative">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <img 
-                                            src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80" 
-                                            alt="Gaming Gear" 
-                                            className="w-full h-full object-contain mix-blend-screen group-hover:scale-110 transition-transform"
-                                        />
-                                    </div>
-                                    <div className="flex-1 space-y-2">
-                                        <h3 className="text-lg font-black text-white leading-tight">Logitech G502 LIGHTSPEED</h3>
-                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Ultra-fast wireless gaming mouse with HERO 25K Sensor</p>
-                                        <div className="flex items-center gap-3 pt-1">
-                                            <span className="text-blue-400 font-black text-sm">₹7,295.00</span>
-                                            <span className="text-white/20 line-through text-[10px] font-bold">₹12,895.00</span>
-                                            <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-43%</Badge>
+                                <AnimatePresence mode="wait">
+                                    <motion.div 
+                                        key={activeProductIndex}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        className="flex gap-6 items-center"
+                                    >
+                                        <div className="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 group-hover:border-blue-500/40 transition-all overflow-hidden relative">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <img 
+                                                src={SPOTLIGHT_PRODUCTS[activeProductIndex].image} 
+                                                alt="Gaming Gear" 
+                                                className="w-full h-full object-contain mix-blend-screen group-hover:scale-110 transition-transform"
+                                            />
                                         </div>
-                                    </div>
-                                </div>
+                                        <div className="flex-1 space-y-2">
+                                            <h3 className="text-lg font-black text-white leading-tight">{SPOTLIGHT_PRODUCTS[activeProductIndex].name}</h3>
+                                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">{SPOTLIGHT_PRODUCTS[activeProductIndex].description}</p>
+                                            <div className="flex items-center gap-3 pt-1">
+                                                <span className="text-blue-400 font-black text-sm">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].price}.00</span>
+                                                <span className="text-white/20 line-through text-[10px] font-bold">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].mrp}.00</span>
+                                                <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-{SPOTLIGHT_PRODUCTS[activeProductIndex].discount}%</Badge>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
 
                                 <div className="flex gap-3">
                                     <Button 
                                         className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[10px] font-black uppercase tracking-widest h-11 shadow-glow group/btn overflow-hidden"
-                                        onClick={() => window.open(getAffiliateLink('https://www.amazon.in/dp/B07S4JRHNJ'), '_blank')}
+                                        onClick={() => window.open(getAffiliateLink(`https://www.amazon.in/dp/${SPOTLIGHT_PRODUCTS[activeProductIndex].asin}`), '_blank')}
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
                                             Check on Amazon <ArrowLeft className="w-3 h-3 rotate-180" />
