@@ -28,6 +28,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { cricbuzzApi, CricketMatch } from "@/lib/cricbuzzApi";
 
+export const AMAZON_TRACKING_ID = "axevora-21";
+
 const CHAT_THEMES = {
   cyberpunk: { 
     name: "Cyberpunk Night", 
@@ -103,8 +105,6 @@ const SPOTLIGHT_PRODUCTS = [
     icon: Gamepad2
   }
 ];
-
-const AMAZON_TRACKING_ID = "axevora-21";
 
 const getAffiliateLink = (url: string) => {
   try {
