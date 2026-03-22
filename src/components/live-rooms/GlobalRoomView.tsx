@@ -104,6 +104,8 @@ const SPOTLIGHT_PRODUCTS = [
   }
 ];
 
+const AMAZON_TRACKING_ID = "axevora-21";
+
 const getAffiliateLink = (url: string) => {
   try {
     const urlObj = new URL(url);

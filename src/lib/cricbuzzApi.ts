@@ -30,8 +30,9 @@ export const cricbuzzApi = {
       const response = await fetch(`${BASE_URL}/api/v1/matches`, {
         headers: { 'x-api-key': API_KEY }
       });
-      if (!response.ok || (await response.clone().json()).success === false) throw new Error('API Key Invalid');
-      return await response.json();
+      const data = await response.json();
+      if (!response.ok || data.success === false) throw new Error('API Key Invalid');
+      return data;
     } catch (error) {
       console.error('API Error, using mock fallback:', error);
       return { 
