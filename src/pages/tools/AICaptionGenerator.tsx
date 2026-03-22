@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { useUsageLimit } from "@/hooks/useUsageLimit";
+import { Link } from "react-router-dom";
 
 const AICaptionGenerator = () => {
     useEffect(() => {
@@ -22,8 +24,14 @@ const AICaptionGenerator = () => {
     const [tone, setTone] = useState("engaging");
     const [generatedCaption, setGeneratedCaption] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const { isLimitReached, incrementUsage } = useUsageLimit("ai-caption-generator", 3);
 
     const generateCaption = async () => {
+        if (isLimitReached) {
+            toast.error("Daily free limit reached! Upgrade to the Digital Income Kit for unlimited access.");
+            return;
+        }
+
         if (!description.trim()) {
             toast.error("Please enter a description for your content");
             return;
@@ -42,6 +50,7 @@ const AICaptionGenerator = () => {
 
             const text = await response.text();
             setGeneratedCaption(text);
+            incrementUsage();
             toast.success("Caption generated successfully!");
         } catch (error) {
             console.error("Error generating caption:", error);
@@ -132,10 +141,19 @@ const AICaptionGenerator = () => {
                             </div>
                         </div>
 
+                        {isLimitReached && (
+                            <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg text-center mt-4">
+                                <p className="text-sm font-medium mb-2">You've reached your free limit for today!</p>
+                                <Button asChild variant="link" className="text-primary font-bold">
+                                    <Link to="/earn">Get Unlimited Access with the Digital Income Kit →</Link>
+                                </Button>
+                            </div>
+                        )}
+
                         <Button
                             onClick={generateCaption}
                             className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-600 hover:to-violet-700 text-white shadow-lg transition-all"
-                            disabled={isGenerating}
+                            disabled={isGenerating || isLimitReached}
                         >
                             {isGenerating ? (
                                 <>

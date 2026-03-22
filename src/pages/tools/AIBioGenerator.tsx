@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { useUsageLimit } from "@/hooks/useUsageLimit";
+import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 
 const AIBioGenerator = () => {
     useEffect(() => {
@@ -22,6 +25,7 @@ const AIBioGenerator = () => {
     const [vibe, setVibe] = useState("professional");
     const [bio, setBio] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const { isLimitReached, incrementUsage } = useUsageLimit("ai-bio-generator", 3);
 
     const generateBio = async () => {
         if (!about.trim()) {
@@ -160,6 +164,19 @@ const AIBioGenerator = () => {
                         <CardContent>
                             <div className="p-4 bg-background rounded-lg border whitespace-pre-wrap font-medium text-lg leading-relaxed">
                                 {bio}
+                            </div>
+
+                            <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-dashed border-primary/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="text-center md:text-left">
+                                    <p className="font-bold text-sm">Want 50+ Viral Prompts & Templates?</p>
+                                    <p className="text-xs text-muted-foreground">Unlock the full Axevora Digital Income Kit</p>
+                                </div>
+                                <Button asChild size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-full">
+                                    <Link to="/earn" className="flex items-center gap-2">
+                                        <MessageCircle className="w-4 h-4" />
+                                        Get Kit on WhatsApp
+                                    </Link>
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

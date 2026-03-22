@@ -2,7 +2,8 @@ import { ReactNode, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getToolContent } from "@/data/toolContent";
 import { tools } from "@/data/tools";
-import { ArrowLeft, Star, Code, Copy, Check } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Star, Code, Copy, Check, Sparkles, Zap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -265,6 +266,31 @@ const ToolTemplate = ({ title, description, icon: Icon, children, content, featu
                         </>
                       );
                     })()}
+
+                    {/* Axevora Digital Income Kit Upsell */}
+                    <div className="mt-12 p-8 rounded-[2rem] bg-gradient-to-br from-primary/10 via-background to-primary/5 border border-primary/20 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                        <Sparkles className="w-24 h-24 text-primary" />
+                      </div>
+                      <div className="relative z-10">
+                        <Badge className="mb-4 bg-primary text-black hover:bg-primary/90">Premium Add-on</Badge>
+                        <h3 className="text-2xl md:text-3xl font-bold mb-4">Master Your Digital Presence</h3>
+                        <p className="text-muted-foreground mb-6 max-w-lg">
+                          Get the <strong>Axevora Digital Income Kit</strong>: 50+ AI Prompts, Viral Canva Templates, and WhatsApp Sales Scripts for just <strong>₹499</strong>.
+                        </p>
+                        <div className="flex flex-wrap gap-4">
+                          <Button asChild className="rounded-full bg-primary hover:bg-primary/90 text-black px-6 h-12 font-bold group">
+                            <Link to="/earn">
+                              Get the Kit Now
+                              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                          </Button>
+                          <Button variant="outline" asChild className="rounded-full px-6 h-12 border-primary/20 hover:bg-primary/5">
+                            <Link to="/earn">Learn More</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
 
                     <Comments />
 

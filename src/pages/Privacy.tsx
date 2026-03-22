@@ -47,6 +47,21 @@ const Privacy = () => {
           If you believe a child has provided us with personal information, please contact us and we will promptly delete it.
         </p>
 
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Google AdSense and DoubleClick DART cookie</h2>
+        <p className="mb-6">
+          Google, as a third-party vendor, uses cookies to serve ads on Axevora. Google's use of the DART cookie enables it to serve ads to our users based on their visit to Axevora and other sites on the Internet. Users may opt out of the use of the DART cookie by visiting the Google Ad and Content Network privacy policy.
+        </p>
+
+        <h2 className="text-2xl font-semibold text-foreground mb-4">California Online Privacy Protection Act (CalOPPA)</h2>
+        <p className="mb-6">
+          Following CalOPPA, we agree to the following: Users can visit our site anonymously. Once this privacy policy is created, we will add a link to it on our home page or as a minimum, on the first significant page after entering our website. Our Privacy Policy link includes the word 'Privacy' and can easily be found on the page specified above.
+        </p>
+
+        <h2 className="text-2xl font-semibold text-foreground mb-4">GDPR Compliance</h2>
+        <p className="mb-6">
+          For users in the European Economic Area (EEA), we comply with the General Data Protection Regulation (GDPR). You have the right to access, rectify, or erase your personal data, and to object to or restrict its processing.
+        </p>
+
         <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Us</h2>
         <p className="mb-6">
           If you have any questions about this Privacy Policy, please contact us at{" "}

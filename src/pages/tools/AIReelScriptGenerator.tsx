@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { useUsageLimit } from "@/hooks/useUsageLimit";
+import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 
 const AIReelScriptGenerator = () => {
     useEffect(() => {
@@ -22,8 +25,14 @@ const AIReelScriptGenerator = () => {
     const [duration, setDuration] = useState("30");
     const [script, setScript] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const { isLimitReached, incrementUsage } = useUsageLimit("ai-reel-script-generator", 3);
 
     const generateScript = async () => {
+        if (isLimitReached) {
+            toast.error("Daily free limit reached! Upgrade to the Digital Income Kit for unlimited access.");
+            return;
+        }
+
         if (!topic.trim()) {
             toast.error("Please enter a video topic");
             return;
@@ -41,6 +50,7 @@ const AIReelScriptGenerator = () => {
 
             const text = await response.text();
             setScript(text);
+            incrementUsage();
             toast.success("Script generated successfully!");
         } catch (error) {
             console.error("Error generating script:", error);
@@ -127,10 +137,19 @@ const AIReelScriptGenerator = () => {
                             </div>
                         </div>
 
+                        {isLimitReached && (
+                            <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg text-center mt-4">
+                                <p className="text-sm font-medium mb-2">You've reached your free limit for today!</p>
+                                <Button asChild variant="link" className="text-primary font-bold">
+                                    <Link to="/earn">Get Unlimited Access with the Digital Income Kit →</Link>
+                                </Button>
+                            </div>
+                        )}
+
                         <Button
                             onClick={generateScript}
                             className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white shadow-lg transition-all"
-                            disabled={isGenerating}
+                            disabled={isGenerating || isLimitReached}
                         >
                             {isGenerating ? (
                                 <>
@@ -158,6 +177,19 @@ const AIReelScriptGenerator = () => {
                         <CardContent>
                             <div className="p-4 bg-background rounded-lg border whitespace-pre-wrap font-mono text-sm leading-relaxed">
                                 {script}
+                            </div>
+
+                            <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-dashed border-primary/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="text-center md:text-left">
+                                    <p className="font-bold text-sm">Want 50+ Viral Prompts & Templates?</p>
+                                    <p className="text-xs text-muted-foreground">Unlock the full Axevora Digital Income Kit</p>
+                                </div>
+                                <Button asChild size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-full">
+                                    <Link to="/earn" className="flex items-center gap-2">
+                                        <MessageCircle className="w-4 h-4" />
+                                        Get Kit on WhatsApp
+                                    </Link>
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wand2, Copy, Download, FileText } from 'lucide-react';
+import { Wand2, Copy, Download, FileText, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import ToolTemplate from '@/components/ToolTemplate';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { Link } from 'react-router-dom';
 
 const AIBlogGeneratorPage = () => {
     const [isGenerating, setIsGenerating] = useState(false);
@@ -20,6 +22,7 @@ const AIBlogGeneratorPage = () => {
         keywords: '',
         author: ''
     });
+    const { isLimitReached, incrementUsage } = useUsageLimit("ai-blog-generator", 3);
 
     const categories = [
         'Technology', 'Business', 'Marketing', 'Health', 'Education',
@@ -36,6 +39,10 @@ const AIBlogGeneratorPage = () => {
     ];
 
     const generateSEOBlog = async () => {
+        if (isLimitReached) {
+            toast.error('Daily free limit reached! Upgrade to the Digital Income Kit for unlimited access.');
+            return;
+        }
         if (!formData.topic || !formData.category || !formData.author) {
             toast.error('Please fill in all required fields');
             return;
@@ -67,6 +74,7 @@ const AIBlogGeneratorPage = () => {
             };
 
             setGeneratedBlog(newBlog);
+            incrementUsage();
             toast.success('Blog post generated successfully!');
 
         } catch (error) {
@@ -294,9 +302,18 @@ const AIBlogGeneratorPage = () => {
                                     />
                                 </div>
 
+                                {isLimitReached && (
+                                    <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg text-center mb-4">
+                                        <p className="text-sm font-medium mb-2">You've reached your free limit for today!</p>
+                                        <Button asChild variant="link" className="text-primary font-bold">
+                                            <Link to="/earn">Get Unlimited Access with the Digital Income Kit →</Link>
+                                        </Button>
+                                    </div>
+                                )}
+
                                 <Button
                                     onClick={generateSEOBlog}
-                                    disabled={isGenerating}
+                                    disabled={isGenerating || isLimitReached}
                                     className="w-full"
                                 >
                                     <Wand2 className="h-4 w-4 mr-2" />
@@ -331,6 +348,19 @@ const AIBlogGeneratorPage = () => {
                                     <h1>{generatedBlog.title}</h1>
                                     <p className="text-gray-600">By {generatedBlog.author} • {generatedBlog.readTime}</p>
                                     <div dangerouslySetInnerHTML={{ __html: generatedBlog.content }} />
+                                </div>
+
+                                <div className="mt-6 p-6 rounded-[2rem] bg-gradient-to-br from-primary/10 via-background to-primary/5 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="text-center md:text-left">
+                                        <h4 className="font-black text-lg mb-1 italic uppercase tracking-tighter">Scale Your Income</h4>
+                                        <p className="text-sm text-muted-foreground">Unlock 50+ Premium AI Prompts & WhatsApp Scripts</p>
+                                    </div>
+                                    <Button asChild className="bg-green-600 hover:bg-green-700 text-white rounded-full px-8 h-12 shadow-lg shadow-green-500/20 font-bold">
+                                        <Link to="/earn" className="flex items-center gap-2">
+                                            <MessageCircle className="w-5 h-5" />
+                                            Get Kit on WhatsApp
+                                        </Link>
+                                    </Button>
                                 </div>
 
                                 <div className="flex justify-end gap-4">

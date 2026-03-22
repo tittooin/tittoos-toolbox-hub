@@ -24,6 +24,7 @@ const TemplateMarketplace = lazy(() => import("./pages/TemplateMarketplace"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Attributions = lazy(() => import("./pages/Attributions"));
+const DigitalIncomeKit = lazy(() => import("./pages/DigitalIncomeKit"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Author = lazy(() => import("./pages/Author"));
 const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
@@ -222,6 +223,7 @@ const App = () => (
                 <Route path="/blog/:slug" element={<Blog />} />
                 <Route path="/author/:slug" element={<Author />} />
                 <Route path="/submit-blog" element={<SubmitBlog />} />
+                <Route path="/earn" element={<DigitalIncomeKit />} />
 
                 {/* Blog Category Pages */}
                 <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />

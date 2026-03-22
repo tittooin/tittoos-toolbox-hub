@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 import ToolTemplate from "@/components/ToolTemplate";
+import { useUsageLimit } from "@/hooks/useUsageLimit";
+import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 
 const AIHashtagGenerator = () => {
     useEffect(() => {
@@ -19,8 +22,14 @@ const AIHashtagGenerator = () => {
     const [topic, setTopic] = useState("");
     const [hashtags, setHashtags] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const { isLimitReached, incrementUsage } = useUsageLimit("ai-hashtag-generator", 3);
 
     const generateHashtags = async () => {
+        if (isLimitReached) {
+            toast.error("Daily free limit reached! Upgrade to the Digital Income Kit for unlimited access.");
+            return;
+        }
+
         if (!topic.trim()) {
             toast.error("Please enter a topic or caption");
             return;
@@ -38,6 +47,7 @@ const AIHashtagGenerator = () => {
 
             const text = await response.text();
             setHashtags(text);
+            incrementUsage();
             toast.success("Hashtags generated successfully!");
         } catch (error) {
             console.error("Error generating hashtags:", error);
@@ -91,10 +101,19 @@ const AIHashtagGenerator = () => {
                             />
                         </div>
 
+                        {isLimitReached && (
+                            <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg text-center mt-4">
+                                <p className="text-sm font-medium mb-2">You've reached your free limit for today!</p>
+                                <Button asChild variant="link" className="text-primary font-bold">
+                                    <Link to="/earn">Get Unlimited Access with the Digital Income Kit →</Link>
+                                </Button>
+                            </div>
+                        )}
+
                         <Button
                             onClick={generateHashtags}
                             className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white shadow-lg transition-all"
-                            disabled={isGenerating}
+                            disabled={isGenerating || isLimitReached}
                         >
                             {isGenerating ? (
                                 <>
@@ -122,6 +141,19 @@ const AIHashtagGenerator = () => {
                         <CardContent>
                             <div className="p-4 bg-background rounded-lg border font-medium text-lg leading-relaxed text-blue-600 dark:text-blue-400">
                                 {hashtags}
+                            </div>
+                            
+                            <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-dashed border-primary/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="text-center md:text-left">
+                                    <p className="font-bold text-sm">Want 50+ Premium Viral Prompts?</p>
+                                    <p className="text-xs text-muted-foreground">Unlock the full Axevora Digital Income Kit</p>
+                                </div>
+                                <Button asChild size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-full">
+                                    <Link to="/earn" className="flex items-center gap-2">
+                                        <MessageCircle className="w-4 h-4" />
+                                        Get Kit on WhatsApp
+                                    </Link>
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
