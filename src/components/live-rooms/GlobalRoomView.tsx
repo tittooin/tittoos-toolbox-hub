@@ -146,6 +146,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [liveMatches, setLiveMatches] = useState<CricketMatch[]>([]);
   const [upcomingMatches, setUpcomingMatches] = useState<CricketMatch[]>([]);
   const [fetchingMatches, setFetchingMatches] = useState(true);
+  const [matchInfo, setMatchInfo] = useState<CricketMatch | null>(null);
+  const [matchSquads, setMatchSquads] = useState<{ team_a: Squad, team_b: Squad } | null>(null);
+  const [matchScorecard, setMatchScorecard] = useState<ScorecardInning[] | null>(null);
+  const [isCricketRoom, setIsCricketRoom] = useState(false);
+  const [activeProductIndex, setActiveProductIndex] = useState(0);
   
   // New Functional States
   const [activeTab, setActiveTab] = useState<"chats" | "fantasy" | "squads" | "settings" | "scorecard">("chats");
@@ -179,13 +184,6 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [videoLinkModal, setVideoLinkModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [currentTheme, setCurrentTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
-  const [activeProductIndex, setActiveProductIndex] = useState(0);
-  
-  // Cricket Match Specific State
-  const [matchInfo, setMatchInfo] = useState<CricketMatch | null>(null);
-  const [matchSquads, setMatchSquads] = useState<{ team_a: Squad, team_b: Squad } | null>(null);
-  const [matchScorecard, setMatchScorecard] = useState<ScorecardInning[] | null>(null);
-  const [isCricketRoom, setIsCricketRoom] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -210,10 +208,10 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
         if (cricketId) fetchCricketDetails(cricketId);
     }, 120000);
 
-    // Rotate products every 10 minutes
+    // Rotate products every 20 seconds
     const rotationInterval = setInterval(() => {
       setActiveProductIndex((prev) => (prev + 1) % SPOTLIGHT_PRODUCTS.length);
-    }, 600000);
+    }, 20000);
 
     return () => {
       clearInterval(interval);
@@ -250,6 +248,14 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
       setFetchingMatches(false);
     }
   };
+
+  // Product Rotation Effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveProductIndex(prev => (prev + 1) % SPOTLIGHT_PRODUCTS.length);
+    }, 20000); // Rotate every 20 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const q = query(
@@ -803,16 +809,27 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                             <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
                             <span className="text-sm font-black text-blue-100/40 uppercase tracking-widest">Fetching Data...</span>
                         </div>
-                    ) : isCricketRoom && matchInfo ? (
-                        matchInfo.status === 'upcoming' ? (
+                    ) : isCricketRoom ? (() => {
+                        const currentMatchId = roomId.replace("cricket_", "");
+                        const fallbackMatch = [...liveMatches, ...upcomingMatches].find(m => String(m.id) === currentMatchId);
+                        const match = matchInfo || fallbackMatch;
+
+                        if (!match) return (
+                            <div className="text-center py-8">
+                                <h2 className="text-xl font-black text-white/60 mb-1">{roomName}</h2>
+                                <span className="text-xs font-black text-white/20 uppercase tracking-[0.3em]">Transmission Hub Initializing...</span>
+                            </div>
+                        );
+
+                        return match.status === 'upcoming' ? (
                             <div className="flex flex-col items-center gap-3 py-4">
                                 <div className="flex items-center gap-8">
                                     <div className="flex flex-col items-center gap-2">
                                         <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
-                                            <AvatarImage src={matchInfo.team_a_img} />
-                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{matchInfo.team_a[0]}</AvatarFallback>
+                                            <AvatarImage src={match.team_a_img} />
+                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{match.team_a[0]}</AvatarFallback>
                                         </Avatar>
-                                        <span className="text-sm font-black text-white">{matchInfo.team_a}</span>
+                                        <span className="text-sm font-black text-white">{match.team_a}</span>
                                     </div>
                                     <div className="flex flex-col items-center">
                                         <Badge variant="outline" className="text-blue-400 border-blue-400/20 mb-2 font-black uppercase tracking-widest text-[10px]">UPCOMING</Badge>
@@ -820,58 +837,53 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
-                                            <AvatarImage src={matchInfo.team_b_img} />
-                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{matchInfo.team_b[0]}</AvatarFallback>
+                                            <AvatarImage src={match.team_b_img} />
+                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{match.team_b[0]}</AvatarFallback>
                                         </Avatar>
-                                        <span className="text-sm font-black text-white">{matchInfo.team_b}</span>
+                                        <span className="text-sm font-black text-white">{match.team_b}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm font-bold text-white/60 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mt-2">
                                     <Trophy className="w-4 h-4 text-amber-400" />
-                                    <span>STARTS: {new Date(matchInfo.start_time).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                                    <span>STARTS: {new Date(match.start_time).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex items-center justify-between gap-8">
-                                {/* Team A */}
+                            <div className="flex items-center justify-between gap-8 w-full">
                                 <div className="flex flex-col items-center gap-2 flex-1">
                                     <motion.div whileHover={{ scale: 1.1 }} className="relative">
                                         <Avatar className="h-16 w-16 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                                            <AvatarImage src={matchInfo.team_a_img} />
-                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{matchInfo.team_a[0]}</AvatarFallback>
+                                            <AvatarImage src={match.team_a_img} />
+                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{match.team_a[0]}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{matchInfo.team_a_short || matchInfo.team_a.slice(0, 3).toUpperCase()}</div>
+                                        <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_a_short || match.team_a.slice(0, 3).toUpperCase()}</div>
                                     </motion.div>
-                                    <span className="text-sm font-black text-white whitespace-nowrap">{matchInfo.team_a}</span>
+                                    <span className="text-sm font-black text-white whitespace-nowrap">{match.team_a}</span>
                                 </div>
-
-                                {/* Score Display */}
                                 <div className="flex flex-col items-center gap-1 min-w-[120px]">
                                     <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-black mb-1 animate-pulse">LIVE UPDATES</Badge>
                                     <div className="text-4xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                                        {matchInfo.last_score || "0/0"}
+                                        {match.last_score || "0/0"}
                                     </div>
                                     <div className="text-xs font-bold text-blue-400/80 flex items-center gap-2">
-                                        <span>{matchInfo.last_over || "0.0"} OVERS</span>
+                                        <span>{match.last_over || "0.0"} OVERS</span>
                                         <span className="w-1 h-1 rounded-full bg-white/20" />
-                                        <span className="text-white/60">LIVE</span>
+                                        <span className="text-white/60 uppercase">{match.status}</span>
                                     </div>
                                 </div>
-
-                                {/* Team B */}
                                 <div className="flex flex-col items-center gap-2 flex-1">
                                     <motion.div whileHover={{ scale: 1.1 }} className="relative">
                                         <Avatar className="h-16 w-16 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-                                            <AvatarImage src={matchInfo.team_b_img} />
-                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{matchInfo.team_b[0]}</AvatarFallback>
+                                            <AvatarImage src={match.team_b_img} />
+                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{match.team_b[0]}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{matchInfo.team_b_short || matchInfo.team_b.slice(0, 3).toUpperCase()}</div>
+                                        <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_b_short || match.team_b.slice(0, 3).toUpperCase()}</div>
                                     </motion.div>
-                                    <span className="text-sm font-black text-white whitespace-nowrap">{matchInfo.team_b}</span>
+                                    <span className="text-sm font-black text-white whitespace-nowrap">{match.team_b}</span>
                                 </div>
                             </div>
-                        )
-                    ) : (
+                        );
+                    })() : (
                         <div className="text-center py-8">
                             <span className="text-sm font-black text-white/20 uppercase tracking-[0.3em]">No Active Transmissions</span>
                         </div>
