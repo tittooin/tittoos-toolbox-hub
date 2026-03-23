@@ -3,7 +3,7 @@ const API_KEY = 'ceecf60c-3651-44fc-bd27-bfcce55c531b.463baa776a11ddecdd41507a58
 const BASE_URL = 'https://cricbuzz-api-v2.moremagical4.workers.dev';
 
 export interface CricketMatch {
-  id: number;
+  id: string | number;
   title: string;
   status: 'live' | 'upcoming' | 'completed';
   start_time: number;
@@ -97,7 +97,7 @@ export const cricbuzzApi = {
     }
   },
 
-  async getMatchInfo(id: number): Promise<ApiResponse<CricketMatch>> {
+  async getMatchInfo(id: string | number): Promise<ApiResponse<CricketMatch>> {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/matches/get-info?id=${id}`, {
         headers: { 'x-api-key': API_KEY }
@@ -109,7 +109,7 @@ export const cricbuzzApi = {
     }
   },
 
-  async getMatchSquads(id: number): Promise<ApiResponse<{ team_a: Squad, team_b: Squad }>> {
+  async getMatchSquads(id: string | number): Promise<ApiResponse<{ team_a: Squad, team_b: Squad }>> {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/matches/get-squads?id=${id}`, {
         headers: { 'x-api-key': API_KEY }
@@ -130,7 +130,7 @@ export const cricbuzzApi = {
     }
   },
 
-  async getMatchScorecard(id: number): Promise<ApiResponse<ScorecardInning[]>> {
+  async getMatchScorecard(id: string | number): Promise<ApiResponse<ScorecardInning[]>> {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/matches/get-scorecard?id=${id}`, {
         headers: { 'x-api-key': API_KEY }

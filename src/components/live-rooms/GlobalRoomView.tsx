@@ -194,7 +194,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   useEffect(() => {
     console.log("GlobalRoomView mounted for roomId:", roomId);
     
-    const cricketId = roomId.startsWith("cricket_") ? parseInt(roomId.replace("cricket_", "")) : null;
+    const cricketId = roomId.startsWith("cricket_") ? roomId.replace("cricket_", "") : null;
     setIsCricketRoom(!!cricketId);
 
     // Initial fetch
@@ -221,7 +221,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     };
   }, [roomId, roomName]);
 
-  const fetchCricketDetails = async (id: number) => {
+  const fetchCricketDetails = async (id: string | number) => {
     try {
         const [infoRes, squadsRes, scoreRes] = await Promise.all([
             cricbuzzApi.getMatchInfo(id),
