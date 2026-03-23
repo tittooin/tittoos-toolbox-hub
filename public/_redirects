@@ -2,4 +2,6 @@
 /sitemap.xml /sitemap.xml 200
 /ads.txt /ads.txt 200
 /.well-known/ads.txt /ads.txt 200
+/app-ads.txt /app-ads.txt 200
+/.well-known/app-ads.txt /app-ads.txt 200
 /* /index.html 200
