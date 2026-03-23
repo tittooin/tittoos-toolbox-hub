@@ -96,6 +96,7 @@ import {
 } from "@/lib/liveRooms";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { cricbuzzApi, type CricketMatch } from "@/lib/cricbuzzApi";
 
 const DEFAULT_DEDICATION: LiveRoomDedication = {
   kind: "song",
@@ -175,6 +176,9 @@ export default function AxevoraLiveRooms() {
   
   // Phase B State: Gift Animations
   const [giftAnimationEvent, setGiftAnimationEvent] = useState<LiveRoomEvent | null>(null);
+  const [cricketMatches, setCricketMatches] = useState<{ live: CricketMatch[], upcoming: CricketMatch[] }>({ live: [], upcoming: [] });
+  const [loadingMatches, setLoadingMatches] = useState(false);
+  
   const lastProcessedGiftIdRef = useRef<string | null>(null);
 
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -294,6 +298,16 @@ export default function AxevoraLiveRooms() {
         }
       })();
     });
+
+    // Fetch matches for lobby
+    void (async () => {
+        setLoadingMatches(true);
+        const res = await cricbuzzApi.getAllMatches();
+        if (res.success) {
+            setCricketMatches({ live: res.data.live, upcoming: res.data.upcoming });
+        }
+        setLoadingMatches(false);
+    })();
 
     return () => {
       unsubscribe();
@@ -1479,24 +1493,90 @@ export default function AxevoraLiveRooms() {
       )}
 
       {!profileLoading && !activeRoomCode && !activeGlobalRoom && (
-        <SocialLobbyView 
-          user={user} 
-          profile={profile} 
-          roomName={roomName} 
-          setRoomName={setRoomName} 
-          roomCodeInput={roomCodeInput} 
-          setRoomCodeInput={setRoomCodeInput} 
-          creatingRoom={creatingRoom} 
-          joiningRoom={joiningRoom} 
-          onCreateRoom={createRoom} 
-          onJoinRoom={joinRoom} 
-          onJoinGlobalRoom={(id, name) => {
-            console.log("Joining Global Room:", id, name);
-            toast.info(`Entering ${name}...`);
-            setActiveGlobalRoom({ id, name });
-            setActiveRoomCode(""); // Clear private room when joining global
-          }}
-        />
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          {/* Featured Matches Arena */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-2">
+                  <Trophy className="w-6 h-6 text-amber-400" />
+                  Live Cricket Arenas
+                </h2>
+                <p className="text-white/40 text-sm">Join a match-specific lounge for real-time scores and squads.</p>
+              </div>
+              {loadingMatches && <Loader2 className="w-5 h-5 animate-spin text-blue-500" />}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl mx-auto">
+                {/* Live Matches */}
+                {cricketMatches.live.map(match => (
+                    <Card key={match.id} className="bg-[#1e293b]/40 border-emerald-500/20 backdrop-blur-xl overflow-hidden group hover:border-emerald-500/40 transition-all">
+                        <CardHeader className="pb-2">
+                            <Badge className="w-fit bg-emerald-500 text-white mb-2 animate-pulse">LIVE NOW</Badge>
+                            <CardTitle className="text-white text-lg">{match.team_a} vs {match.team_b}</CardTitle>
+                            <CardDescription className="text-white/40 font-bold uppercase text-[10px] tracking-widest">{match.series_name}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black text-emerald-400 mb-4">{match.last_score || "0/0"}</div>
+                            <Button 
+                                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black"
+                                onClick={() => setActiveGlobalRoom({ id: `cricket_${match.id}`, name: `${match.team_a} vs ${match.team_b} Lounge` })}
+                            >
+                                Join Live Arena
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ))}
+
+                {/* Upcoming Matches */}
+                {cricketMatches.upcoming.slice(0, 6).map(match => (
+                    <Card key={match.id} className="bg-[#1e293b]/40 border-white/10 backdrop-blur-xl overflow-hidden hover:border-blue-500/40 transition-all">
+                        <CardHeader className="pb-2">
+                            <Badge variant="outline" className="w-fit text-blue-400 border-blue-400/20 mb-2">UPCOMING</Badge>
+                            <CardTitle className="text-white text-lg">{match.team_a} vs {match.team_b}</CardTitle>
+                            <CardDescription className="text-white/40 font-bold uppercase text-[10px] tracking-widest">{match.series_name}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-xs text-white/60 mb-4">{new Date(match.start_time).toLocaleString()}</div>
+                            <Button 
+                                variant="outline"
+                                className="w-full border-blue-500/20 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 font-black"
+                                onClick={() => setActiveGlobalRoom({ id: `cricket_${match.id}`, name: `${match.team_a} vs ${match.team_b} Lounge` })}
+                            >
+                                Register Pre-Match
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+          </div>
+
+          <div className="relative py-8">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-[#0f172a] px-3 text-white/20 text-xs font-bold uppercase tracking-widest">Or create a private room</span>
+            </div>
+          </div>
+
+          <SocialLobbyView 
+            user={user} 
+            profile={profile} 
+            roomName={roomName} 
+            setRoomName={setRoomName} 
+            roomCodeInput={roomCodeInput} 
+            setRoomCodeInput={setRoomCodeInput} 
+            creatingRoom={creatingRoom} 
+            joiningRoom={joiningRoom} 
+            onCreateRoom={createRoom} 
+            onJoinRoom={joinRoom} 
+            onJoinGlobalRoom={(id, name) => {
+              setActiveGlobalRoom({ id, name });
+              setActiveRoomCode("");
+            }}
+          />
+        </div>
       )}
 
       {!profileLoading && activeGlobalRoom && (
@@ -2520,7 +2600,7 @@ export default function AxevoraLiveRooms() {
                   <div className="space-y-2">
                     <Label className={cn(isDarkRoom ? "text-white/80" : "text-slate-700")}>Team pulse</Label>
                     <div className="flex flex-wrap gap-2">
-                      {CRICKET_TEAMS.map((team) => (
+                      {["INDIA", "AUSTRALIA", "PAKISTAN", "ENGLAND", "SOUTH AFRICA"].map((team) => (
                         <Button key={team} type="button" size="sm" variant="outline"
                           onClick={() => sendCricketReaction(`Backing ${team}`, "🏏", "from-yellow-400 to-orange-500")}
                           disabled={!room || !room.cricketMode}

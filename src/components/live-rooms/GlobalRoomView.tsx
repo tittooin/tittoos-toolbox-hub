@@ -20,13 +20,14 @@ import {
 import { 
     ArrowLeft, Send, Users, Activity, Loader2, 
     MessageSquare, Contact, BookOpen, Settings, 
-    Mic, Volume2, Hash, Vote, Tv, Gamepad2, 
-    Share2, Zap, Globe, Plus, Smile, Image as ImageIcon,
+    Mic, Volume2, Hash, Vote, Gamepad2, Star, Trophy, Plus,
+    Trash2, Edit2, CheckCircle2, Globe, Smile, Tv, Zap,
+    Image as ImageIcon,
     Video, MousePointer2, HelpCircle, User as UserIcon, Heart, TrendingUp, Palette, Monitor, Laptop
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { cricbuzzApi, CricketMatch } from "@/lib/cricbuzzApi";
+import { cricbuzzApi, CricketMatch, Squad, ScorecardInning, Player } from "@/lib/cricbuzzApi";
 
 export const AMAZON_TRACKING_ID = "axevora-21";
 
@@ -147,7 +148,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [fetchingMatches, setFetchingMatches] = useState(true);
   
   // New Functional States
-  const [activeTab, setActiveTab] = useState<"chats" | "fantasy" | "squads" | "settings">("chats");
+  const [activeTab, setActiveTab] = useState<"chats" | "fantasy" | "squads" | "settings" | "scorecard">("chats");
   const [isMicMuted, setIsMicMuted] = useState(true);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<any[]>([
@@ -157,9 +158,14 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     { name: "CricketQueen", status: "online", photoURL: "" },
     { name: "Alpha_Node", status: "online", photoURL: "" }
   ]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeDMRecipient, setActiveDMRecipient] = useState<any | null>(null);
+  const [activeDMRecipient, setActiveDMRecipient] = useState<any>(null);
   const [dmMessages, setDmMessages] = useState<any[]>([]);
+  const [dmInputText, setDmInputText] = useState("");
+  const [dmLoading, setDmLoading] = useState(false);
+  const [currentDMTheme, setCurrentDMTheme] = useState<keyof typeof CHAT_THEMES>("stadium");
+  const [searchQuery, setSearchQuery] = useState("");
+
+
   const [pollVotes, setPollVotes] = useState<Record<string, number>>({ "Smartphone": 12, "VR Headset": 5, "Smartwatch": 8 });
   const [userVoted, setUserVoted] = useState(false);
   const [showPollModal, setShowPollModal] = useState(false);
@@ -173,10 +179,13 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   const [videoLinkModal, setVideoLinkModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [currentTheme, setCurrentTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
-  const [currentDMTheme, setCurrentDMTheme] = useState<keyof typeof CHAT_THEMES>("cyberpunk");
-  const [dmInputText, setDmInputText] = useState("");
-  const [dmLoading, setDmLoading] = useState(false);
   const [activeProductIndex, setActiveProductIndex] = useState(0);
+  
+  // Cricket Match Specific State
+  const [matchInfo, setMatchInfo] = useState<CricketMatch | null>(null);
+  const [matchSquads, setMatchSquads] = useState<{ team_a: Squad, team_b: Squad } | null>(null);
+  const [matchScorecard, setMatchScorecard] = useState<ScorecardInning[] | null>(null);
+  const [isCricketRoom, setIsCricketRoom] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -184,21 +193,49 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
   // Fetch messages from Firestore
   useEffect(() => {
     console.log("GlobalRoomView mounted for roomId:", roomId);
+    
+    const cricketId = roomId.startsWith("cricket_") ? parseInt(roomId.replace("cricket_", "")) : null;
+    setIsCricketRoom(!!cricketId);
+
     // Initial fetch
     fetchMatchData();
+    if (cricketId) {
+        fetchCricketDetails(cricketId);
+        setActiveTab("chats"); // Start with chat but allow switching to squads/fantasy
+    }
+
     // Poll every 2 minutes for match data
-    const interval = setInterval(fetchMatchData, 120000);
+    const interval = setInterval(() => {
+        fetchMatchData();
+        if (cricketId) fetchCricketDetails(cricketId);
+    }, 120000);
 
     // Rotate products every 10 minutes
     const rotationInterval = setInterval(() => {
       setActiveProductIndex((prev) => (prev + 1) % SPOTLIGHT_PRODUCTS.length);
-    }, 600000); // 10 minutes
+    }, 600000);
 
     return () => {
       clearInterval(interval);
       clearInterval(rotationInterval);
     };
   }, [roomId, roomName]);
+
+  const fetchCricketDetails = async (id: number) => {
+    try {
+        const [infoRes, squadsRes, scoreRes] = await Promise.all([
+            cricbuzzApi.getMatchInfo(id),
+            cricbuzzApi.getMatchSquads(id),
+            cricbuzzApi.getMatchScorecard(id)
+        ]);
+
+        if (infoRes.success) setMatchInfo(infoRes.data);
+        if (squadsRes.success) setMatchSquads(squadsRes.data);
+        if (scoreRes.success) setMatchScorecard(scoreRes.data);
+    } catch (e) {
+        console.error("Error fetching cricket details:", e);
+    }
+  };
 
   const fetchMatchData = async () => {
     try {
@@ -639,6 +676,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
             <div className="relative z-[60] rounded-3xl bg-[#1e293b]/40 backdrop-blur-xl border border-white/10 p-2 shadow-xl">
                 {[
                     { id: "chats", icon: MessageSquare, label: "Chats" },
+                    ...(isCricketRoom ? [{ id: "scorecard", icon: Activity, label: "Scorecard" }] : []),
                     { id: "fantasy", icon: Gamepad2, label: "Fantasy" },
                     { id: "squads", icon: Users, label: "Squads" },
                     { id: "settings", icon: Settings, label: "Settings" }
@@ -848,6 +886,20 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
                 {/* Tab Content Logic */}
                 <div className="row-start-2 min-h-0 h-full overflow-hidden relative z-10 flex flex-col">
+                    {isCricketRoom && matchInfo && (
+                        <div className="mx-8 mb-4 p-4 rounded-3xl bg-blue-600/10 border border-blue-500/20 backdrop-blur-md flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-500">
+                            <div className="flex items-center gap-4">
+                                <Badge className="bg-rose-500 text-white font-black animate-pulse">LIVE</Badge>
+                                <div className="text-white font-black text-base md:text-lg uppercase tracking-widest">
+                                    {matchInfo.team_a} <span className="text-blue-400 mx-1">vs</span> {matchInfo.team_b}
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-xl md:text-2xl font-black text-white">{matchInfo.last_score || "Match In Progress"}</div>
+                                <div className="text-[9px] text-white/40 uppercase font-black tracking-widest">{matchInfo.series_name}</div>
+                            </div>
+                        </div>
+                    )}
                     <AnimatePresence mode="wait">
                         {activeTab === "chats" && (
                                 <motion.div 
@@ -975,96 +1027,64 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                     <h2 className="text-2xl font-black text-white uppercase tracking-widest mb-2">Fantasy Command Center</h2>
                                     <p className="text-sm text-white/40 mb-8">Strategize your squad for the upcoming transmission. High-stakes gaming imminent.</p>
                                     
-                                    {!isSelectingPlayers ? (
-                                        <>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
-                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Global Rank</span>
-                                                    <span className="text-2xl font-black text-amber-500">#42</span>
-                                                </div>
-                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5">
-                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Squad Strength</span>
-                                                    <span className="text-2xl font-black text-emerald-400">{selectedTeam.length}/11</span>
-                                                </div>
-                                            </div>
-                                            <Button 
-                                                onClick={() => setIsSelectingPlayers(true)}
-                                                className="w-full mt-8 h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-black uppercase tracking-widest"
-                                            >
-                                                {selectedTeam.length > 0 ? "Edit My Squad" : "Build Your Dream Team"}
-                                            </Button>
-                                        </>
-                                    ) : (
+                                    {selectedTeam.length === 11 ? (
                                         <div className="space-y-6">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-xs font-black text-amber-500 uppercase tracking-widest">Select 11 Players</span>
-                                                <Badge className="bg-amber-500/10 text-amber-500">{selectedTeam.length}/11</Badge>
+                                            <div className="p-6 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                                                <Trophy className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+                                                <p className="text-white font-black uppercase tracking-widest text-sm">Squad Locked & Loaded</p>
+                                                <p className="text-[10px] text-white/40 mt-1">Ready for match-day transmission.</p>
                                             </div>
-                                            <ScrollArea className="h-64 rounded-2xl border border-white/5 bg-black/20 p-4">
-                                                <div className="grid grid-cols-1 gap-2">
-                                                    {[
-                                                        "Rohit Sharma", "Ishan Kishan", "Suryakumar Yadav", "Hardik Pandya", "Jasprit Bumrah",
-                                                        "Shreyas Iyer", "Sunil Narine", "Andre Russell", "Rinku Singh", "Mitchell Starc",
-                                                        "Tilak Varma", "Tim David", "Gerald Coetzee", "Piyush Chawla", "Phil Salt", "Venkatesh Iyer"
-                                                    ].sort().map((player) => {
-                                                        const isSelected = selectedTeam.includes(player);
-                                                        return (
-                                                            <button 
-                                                                key={player}
-                                                                onClick={() => {
-                                                                    if (isSelected) {
-                                                                        setSelectedTeam(prev => prev.filter(p => p !== player));
-                                                                    } else if (selectedTeam.length < 11) {
-                                                                        setSelectedTeam(prev => [...prev, player]);
-                                                                    } else {
-                                                                        toast.error("Squad limit reached (Max 11)");
-                                                                    }
-                                                                }}
-                                                                className={cn(
-                                                                    "flex items-center justify-between p-3 rounded-xl border transition-all",
-                                                                    isSelected 
-                                                                        ? "bg-amber-500/20 border-amber-500 text-white" 
-                                                                        : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
-                                                                )}
-                                                            >
-                                                                <span className="text-xs font-bold">{player}</span>
-                                                                {isSelected ? <Zap className="w-3 h-3 text-amber-500" /> : <Plus className="w-3 h-3" />}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </ScrollArea>
-                                            <div className="flex gap-3">
+                                            
+                                            <div className="space-y-2">
+                                                {selectedTeam.map((p, i) => (
+                                                    <div key={p} className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                                                        <span className="text-white/40 font-black text-[10px]">{i+1}</span>
+                                                        <span className="text-sm font-bold text-white flex-1 ml-4">{p}</span>
+                                                        <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4 pt-4">
                                                 <Button 
-                                                    variant="ghost" 
-                                                    onClick={() => setIsSelectingPlayers(false)}
-                                                    className="flex-1 rounded-xl border border-white/10 uppercase font-black text-[10px]"
+                                                    variant="outline"
+                                                    onClick={() => setSelectedTeam([])}
+                                                    className="h-12 rounded-2xl border-rose-500/20 bg-rose-500/5 text-rose-500 hover:bg-rose-500/10 font-black uppercase tracking-widest text-[10px]"
                                                 >
-                                                    Cancel
+                                                    Reset
                                                 </Button>
                                                 <Button 
-                                                    disabled={selectedTeam.length !== 11}
-                                                    onClick={async () => {
-                                                        const deploymentId = user?.uid || `anon-team-${roomId}`;
-                                                        try {
-                                                            await setDoc(doc(db, "global_rooms", roomId, "teams", deploymentId), {
-                                                                team: selectedTeam,
-                                                                updatedAt: serverTimestamp(),
-                                                                senderName: user?.displayName || "Anonymous Strategist"
-                                                            });
-                                                            toast.success("Dream Team Deployment Successful");
-                                                            setIsSelectingPlayers(false);
-                                                        } catch (e) {
-                                                            console.error("Deployment error:", e);
-                                                            toast.error("Deployment failed. Check connection.");
-                                                        }
+                                                    onClick={() => {
+                                                        const teamText = `🏆 My Fantasy XI:\n${selectedTeam.map((p, i) => `${i+1}. ${p}`).join('\n')}`;
+                                                        setInputText(teamText);
+                                                        setActiveTab("chats");
+                                                        toast.success("Squad copied to uplink!");
                                                     }}
-                                                    className="flex-1 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black uppercase font-black text-[10px]"
+                                                    className="h-12 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-[10px]"
                                                 >
-                                                    Deploy Squad
+                                                    Share to Chat
                                                 </Button>
                                             </div>
                                         </div>
+                                    ) : (
+                                        <>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5 text-center">
+                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Squad Status</span>
+                                                    <span className="text-2xl font-black text-amber-500">{selectedTeam.length}/11</span>
+                                                </div>
+                                                <div className="p-4 rounded-3xl bg-black/40 border border-white/5 text-center">
+                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest block mb-1">Needed</span>
+                                                    <span className="text-2xl font-black text-blue-400">{11 - selectedTeam.length}</span>
+                                                </div>
+                                            </div>
+                                            <Button 
+                                                onClick={() => setActiveTab("squads")}
+                                                className="w-full mt-8 h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest"
+                                            >
+                                                Go to Squads to Select
+                                            </Button>
+                                        </>
                                     )}
                                 </div>
                             </motion.div>
@@ -1075,26 +1095,116 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                 key="squads"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="flex-1 p-8"
+                                className="flex-1 p-8 overflow-y-auto custom-scrollbar"
                             >
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {["Alpha Squad", "Nebula IX", "Grid Hunters"].map((squad) => (
-                                        <div key={squad} className="p-6 rounded-[32px] bg-white/5 border border-white/10 hover:border-blue-500/40 transition-all cursor-pointer group">
-                                            <div className="flex justify-between items-start mb-4">
-                                               <h4 className="text-lg font-black text-white group-hover:text-blue-400">{squad}</h4>
-                                               <Badge className="bg-blue-600/20 text-blue-400">8 Members</Badge>
+                                {matchSquads ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {[
+                                            { name: matchSquads.team_a.team_name, players: matchSquads.team_a.players },
+                                            { name: matchSquads.team_b.team_name, players: matchSquads.team_b.players }
+                                        ].map((team) => (
+                                            <div key={team.name} className="space-y-4">
+                                                <h3 className="text-xl font-black text-blue-400 uppercase tracking-widest">{team.name}</h3>
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {team.players.map((player) => (
+                                                        <div 
+                                                            key={player.id} 
+                                                            onClick={() => {
+                                                                if (selectedTeam.includes(player.name)) {
+                                                                    setSelectedTeam(prev => prev.filter(n => n !== player.name));
+                                                                } else if (selectedTeam.length < 11) {
+                                                                    setSelectedTeam(prev => [...prev, player.name]);
+                                                                    toast.success(`${player.name} added to Fantasy XI`);
+                                                                } else {
+                                                                    toast.warning("Fantasy XI is full (11 players)");
+                                                                }
+                                                            }}
+                                                            className={cn(
+                                                                "p-4 rounded-2xl border transition-all cursor-pointer flex justify-between items-center group",
+                                                                selectedTeam.includes(player.name)
+                                                                    ? "bg-blue-600/20 border-blue-500/50 text-white"
+                                                                    : "bg-white/5 border-white/10 hover:border-white/30 text-white/70"
+                                                            )}
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className={cn("w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black", selectedTeam.includes(player.name) ? "bg-blue-500 text-white" : "bg-white/10 text-white/40")}>
+                                                                    {player.role?.[0] || 'P'}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-sm">{player.name}</p>
+                                                                    <p className="text-[10px] opacity-40 uppercase font-black">{player.role || "Player"}</p>
+                                                                </div>
+                                                            </div>
+                                                            {selectedTeam.includes(player.name) && <Star className="w-4 h-4 text-amber-400 fill-amber-400" />}
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
-                                            <div className="flex -space-x-3 mb-6">
-                                                {[1,2,3,4].map(i => (
-                                                    <Avatar key={i} className="h-10 w-10 border-2 border-[#1e293b]">
-                                                        <AvatarFallback className="bg-slate-800 text-[10px]">U{i}</AvatarFallback>
-                                                    </Avatar>
-                                                ))}
-                                                <div className="h-10 w-10 rounded-full bg-blue-600/20 border-2 border-[#1e293b] flex items-center justify-center text-[10px] font-black">+4</div>
-                                            </div>
-                                            <Button variant="ghost" className="w-full h-12 rounded-2xl border border-white/5 hover:bg-white/10 text-xs font-black uppercase tracking-widest">Connect to Frequency</Button>
-                                        </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                                        <Loader2 className="w-12 h-12 animate-spin text-blue-500/20" />
+                                        <p className="text-white/40 font-black uppercase tracking-widest text-xs">Waiting for Squad Transmission...</p>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {activeTab === "scorecard" && (
+                            <motion.div 
+                                key="scorecard"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="flex-1 p-8 overflow-y-auto custom-scrollbar"
+                            >
+                                <div className="space-y-8">
+                                    {matchScorecard?.map((inning, idx) => (
+                                        <Card key={idx} className="bg-[#1e293b]/40 border-white/10 backdrop-blur-xl overflow-hidden">
+                                            <CardHeader className="bg-blue-600/10 border-b border-white/5">
+                                                <div className="flex justify-between items-center">
+                                                    <CardTitle className="text-blue-400 uppercase tracking-widest text-sm">{inning.team} Inning</CardTitle>
+                                                    <div className="text-2xl font-black text-white">{inning.score}/{inning.wickets} <span className="text-xs text-white/40 ml-2">({inning.overs} ov)</span></div>
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="p-0">
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full text-left text-sm">
+                                                        <thead>
+                                                            <tr className="border-b border-white/5 bg-white/5 text-[10px] uppercase font-black tracking-widest text-white/40">
+                                                                <th className="px-6 py-3">Batter</th>
+                                                                <th className="px-4 py-3">R</th>
+                                                                <th className="px-4 py-3">B</th>
+                                                                <th className="px-4 py-3">4s</th>
+                                                                <th className="px-4 py-3">6s</th>
+                                                                <th className="px-4 py-3">SR</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-white/5">
+                                                            {inning.batsmen.map((b, i) => (
+                                                                <tr key={i} className="hover:bg-white/5 transition-colors">
+                                                                    <td className="px-6 py-4">
+                                                                        <p className="font-bold text-white">{b.name}</p>
+                                                                    </td>
+                                                                    <td className="px-4 py-4 font-black text-blue-400">{b.runs}</td>
+                                                                    <td className="px-4 py-4 text-white/60">{b.balls}</td>
+                                                                    <td className="px-4 py-4 text-white/60">{b.fours}</td>
+                                                                    <td className="px-4 py-4 text-white/60">{b.sixes}</td>
+                                                                    <td className="px-4 py-4 text-[10px] font-black text-emerald-400">{b.sr}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
                                     ))}
+                                    {!matchScorecard && (
+                                        <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                                            <Activity className="w-12 h-12 text-white/10 animate-pulse" />
+                                            <p className="text-white/40 font-black uppercase tracking-widest text-xs">Scorecard data stream pending...</p>
+                                        </div>
+                                    )}
                                 </div>
                             </motion.div>
                         )}
