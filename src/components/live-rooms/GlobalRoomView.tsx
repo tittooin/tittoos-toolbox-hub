@@ -803,65 +803,76 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                             <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
                             <span className="text-sm font-black text-blue-100/40 uppercase tracking-widest">Fetching Data...</span>
                         </div>
-                    ) : liveMatches.length > 0 ? (
-                        <div className="flex items-center justify-between gap-8">
-                            {/* Team A */}
-                            <div className="flex flex-col items-center gap-2 flex-1">
-                                <motion.div 
-                                    whileHover={{ scale: 1.1 }}
-                                    className="relative"
-                                >
-                                    <Avatar className="h-16 w-16 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                                        <AvatarImage src={liveMatches[0].team_a_img} />
-                                        <AvatarFallback className="bg-blue-900 font-black text-xl">{liveMatches[0].team_a[0]}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">MI</div>
-                                </motion.div>
-                                <span className="text-sm font-black text-white whitespace-nowrap">{liveMatches[0].team_a}</span>
-                            </div>
-
-                            {/* Score Display */}
-                            <div className="flex flex-col items-center gap-1 min-w-[120px]">
-                                <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-black mb-1 animate-pulse">LIVE UPDATES</Badge>
-                                <div className="text-4xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                                    {liveMatches[0].last_score || "0/0"}
+                    ) : isCricketRoom && matchInfo ? (
+                        matchInfo.status === 'upcoming' ? (
+                            <div className="flex flex-col items-center gap-3 py-4">
+                                <div className="flex items-center gap-8">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
+                                            <AvatarImage src={matchInfo.team_a_img} />
+                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{matchInfo.team_a[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-sm font-black text-white">{matchInfo.team_a}</span>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <Badge variant="outline" className="text-blue-400 border-blue-400/20 mb-2 font-black uppercase tracking-widest text-[10px]">UPCOMING</Badge>
+                                        <span className="text-3xl font-black text-blue-400/40 italic">VS</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
+                                            <AvatarImage src={matchInfo.team_b_img} />
+                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{matchInfo.team_b[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-sm font-black text-white">{matchInfo.team_b}</span>
+                                    </div>
                                 </div>
-                                <div className="text-xs font-bold text-blue-400/80 flex items-center gap-2">
-                                    <span>{liveMatches[0].last_over || "0.0"} OVERS</span>
-                                    <span className="w-1 h-1 rounded-full bg-white/20" />
-                                    <span className="text-white/60">CRR: 8.42</span>
+                                <div className="flex items-center gap-2 text-sm font-bold text-white/60 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mt-2">
+                                    <Trophy className="w-4 h-4 text-amber-400" />
+                                    <span>STARTS: {new Date(matchInfo.start_time).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
                                 </div>
                             </div>
+                        ) : (
+                            <div className="flex items-center justify-between gap-8">
+                                {/* Team A */}
+                                <div className="flex flex-col items-center gap-2 flex-1">
+                                    <motion.div whileHover={{ scale: 1.1 }} className="relative">
+                                        <Avatar className="h-16 w-16 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                            <AvatarImage src={matchInfo.team_a_img} />
+                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{matchInfo.team_a[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{matchInfo.team_a_short || matchInfo.team_a.slice(0, 3).toUpperCase()}</div>
+                                    </motion.div>
+                                    <span className="text-sm font-black text-white whitespace-nowrap">{matchInfo.team_a}</span>
+                                </div>
 
-                            {/* Team B */}
-                            <div className="flex flex-col items-center gap-2 flex-1">
-                                <motion.div 
-                                    whileHover={{ scale: 1.1 }}
-                                    className="relative"
-                                >
-                                    <Avatar className="h-16 w-16 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-                                        <AvatarImage src={liveMatches[0].team_b_img} />
-                                        <AvatarFallback className="bg-indigo-900 font-black text-xl">{liveMatches[0].team_b[0]}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">KKR</div>
-                                </motion.div>
-                                <span className="text-sm font-black text-white whitespace-nowrap">{liveMatches[0].team_b}</span>
+                                {/* Score Display */}
+                                <div className="flex flex-col items-center gap-1 min-w-[120px]">
+                                    <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-black mb-1 animate-pulse">LIVE UPDATES</Badge>
+                                    <div className="text-4xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                                        {matchInfo.last_score || "0/0"}
+                                    </div>
+                                    <div className="text-xs font-bold text-blue-400/80 flex items-center gap-2">
+                                        <span>{matchInfo.last_over || "0.0"} OVERS</span>
+                                        <span className="w-1 h-1 rounded-full bg-white/20" />
+                                        <span className="text-white/60">LIVE</span>
+                                    </div>
+                                </div>
+
+                                {/* Team B */}
+                                <div className="flex flex-col items-center gap-2 flex-1">
+                                    <motion.div whileHover={{ scale: 1.1 }} className="relative">
+                                        <Avatar className="h-16 w-16 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                                            <AvatarImage src={matchInfo.team_b_img} />
+                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{matchInfo.team_b[0]}</AvatarFallback>
+                                        </Avatar>
+                                        <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{matchInfo.team_b_short || matchInfo.team_b.slice(0, 3).toUpperCase()}</div>
+                                    </motion.div>
+                                    <span className="text-sm font-black text-white whitespace-nowrap">{matchInfo.team_b}</span>
+                                </div>
                             </div>
-                        </div>
-                    ) : upcomingMatches.length > 0 ? (
-                        <div className="flex flex-col items-center gap-3 py-2">
-                             <div className="flex items-center gap-3">
-                                <span className="text-lg font-black text-white/80">{upcomingMatches[0].team_a}</span>
-                                <span className="text-xs font-black text-blue-400/40 italic">VS</span>
-                                <span className="text-lg font-black text-white/80">{upcomingMatches[0].team_b}</span>
-                             </div>
-                             <div className="flex items-center gap-2 text-xs font-bold text-blue-400">
-                                <Zap className="w-3.5 h-3.5" />
-                                <span>NEXT MATCH STARTS IN: 04h : 22m : 15s</span>
-                             </div>
-                        </div>
+                        )
                     ) : (
-                        <div className="text-center py-4">
+                        <div className="text-center py-8">
                             <span className="text-sm font-black text-white/20 uppercase tracking-[0.3em]">No Active Transmissions</span>
                         </div>
                     )}
