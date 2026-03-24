@@ -1,0 +1,19 @@
+name = "axevora-chat"
+main = "workers/chat-server.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[durable_objects]
+bindings = [
+  { name = "CHAT_ROOM", class_name = "ChatRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ChatRoom"]
+
+[env.production]
+name = "axevora-chat-prod"
+routes = [
+  { pattern = "chat.axevora.workers.dev/*", zone_name = "axevora.workers.dev" }
+]

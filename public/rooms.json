@@ -1,0 +1,92 @@
+[
+  {
+    "id": "global_lounge",
+    "name": "Global Lounge",
+    "description": "The main hangout — everyone welcome!",
+    "category": "Social",
+    "icon": "🌐",
+    "color": "#3b82f6",
+    "vip": false,
+    "maxUsers": 500,
+    "tags": ["trending", "social"]
+  },
+  {
+    "id": "cricket_hub",
+    "name": "Cricket Hub 🔥",
+    "description": "Live match discussions, fantasy picks, and score updates.",
+    "category": "Cricket",
+    "icon": "🏏",
+    "color": "#f59e0b",
+    "vip": false,
+    "maxUsers": 1000,
+    "tags": ["cricket", "live", "trending"],
+    "cricketRoom": true
+  },
+  {
+    "id": "gaming_den",
+    "name": "Gaming Den",
+    "description": "Gamers unite — talk strategy, flex wins, and play mini-games.",
+    "category": "Gaming",
+    "icon": "🎮",
+    "color": "#8b5cf6",
+    "vip": false,
+    "maxUsers": 300,
+    "tags": ["gaming", "games"]
+  },
+  {
+    "id": "bollywood_hits",
+    "name": "Bollywood Hits",
+    "description": "Vibe to the latest tracks and meet music lovers.",
+    "category": "Music",
+    "icon": "🎵",
+    "color": "#ec4899",
+    "vip": false,
+    "maxUsers": 300,
+    "tags": ["music", "bollywood"]
+  },
+  {
+    "id": "midnight_chill",
+    "name": "Midnight Chill",
+    "description": "Late night talks, lo-fi beats, and good vibes.",
+    "category": "Chill",
+    "icon": "🌙",
+    "color": "#6366f1",
+    "vip": false,
+    "maxUsers": 200,
+    "tags": ["chill", "night"]
+  },
+  {
+    "id": "tech_talk",
+    "name": "Tech Talk",
+    "description": "Developers, designers, and creators — discuss the future of tech.",
+    "category": "Tech",
+    "icon": "💻",
+    "color": "#10b981",
+    "vip": false,
+    "maxUsers": 300,
+    "tags": ["tech", "dev"]
+  },
+  {
+    "id": "vip_lounge",
+    "name": "VIP Lounge 👑",
+    "description": "Exclusive space for top contributors and VIP members.",
+    "category": "VIP",
+    "icon": "👑",
+    "color": "#f59e0b",
+    "vip": true,
+    "vipCoinCost": 500,
+    "maxUsers": 50,
+    "tags": ["vip", "exclusive"]
+  },
+  {
+    "id": "desi_vibes",
+    "name": "Desi Vibes",
+    "description": "Hinglish banter, memes, and desi culture.",
+    "category": "Social",
+    "icon": "🇮🇳",
+    "color": "#f97316",
+    "vip": false,
+    "maxUsers": 500,
+    "tags": ["desi", "hindi", "social"]
+  }
+]

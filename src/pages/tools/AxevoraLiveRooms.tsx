@@ -68,6 +68,7 @@ import { SocialLobbyView } from "@/components/live-rooms/SocialLobbyView";
 import { GlobalRoomView } from "@/components/live-rooms/GlobalRoomView";
 import { GiftPanel } from "@/components/live-rooms/GiftPanel";
 import { CoinStoreModal } from "@/components/live-rooms/CoinStoreModal";
+import { LiveChatShell } from "@/components/live-rooms/LiveChatShell";
 import {
   CRICKET_REACTIONS,
   LIVE_MOODS,
@@ -163,6 +164,8 @@ export default function AxevoraLiveRooms() {
   const [signalingState, setSignalingState] = useState("Idle");
   const [transportEvents, setTransportEvents] = useState<LiveRoomEvent[]>([]);
   const [connectionStates, setConnectionStates] = useState<Record<string, string>>({});
+  // Platform mode: "platform" = new WebSocket Yahoo-style, "classic" = original Firebase private rooms
+  const [viewMode, setViewMode] = useState<"platform" | "classic">("platform");
   // Phase 5 state
   const [typingUsers, setTypingUsers] = useState<TypingState[]>([]);
   const [burstItems, setBurstItems] = useState<Array<{ id: string; emoji: string; x: number; y: number; color: string }>>([]);
@@ -1432,6 +1435,52 @@ export default function AxevoraLiveRooms() {
         "Host-controlled mic invitations and speaker access flow",
       ]}
     >
+      {/* ────────────── MODE SWITCHER ────────────── */}
+      <div className="flex items-center gap-2 mb-6 p-1 rounded-2xl bg-white/5 border border-white/10 w-fit">
+        <button
+          onClick={() => setViewMode("platform")}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+            viewMode === "platform"
+              ? "bg-blue-600 text-white shadow-lg"
+              : "text-white/40 hover:text-white/70"
+          )}
+        >
+          <Radio className="w-3.5 h-3.5" />
+          Live Platform
+        </button>
+        <button
+          onClick={() => setViewMode("classic")}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
+            viewMode === "classic"
+              ? "bg-blue-600 text-white shadow-lg"
+              : "text-white/40 hover:text-white/70"
+          )}
+        >
+          <Crown className="w-3.5 h-3.5" />
+          Private Stages
+        </button>
+      </div>
+
+      {/* ────────────── PLATFORM MODE — Yahoo-style WebSocket Chat ────────────── */}
+      {viewMode === "platform" && (
+        <LiveChatShell
+          user={user}
+          userCoins={profile?.walletBalance || 0}
+          onAddCoins={(amount) => {
+            if (profile) setProfile({ ...profile, walletBalance: (profile.walletBalance || 0) + amount });
+          }}
+          onJoinCricketRoom={() => {
+            // Switch to classic mode and auto-join cricket room
+            setViewMode("classic");
+          }}
+        />
+      )}
+
+      {/* ────────────── CLASSIC MODE — Original Firebase Rooms ────────────── */}
+      {viewMode === "classic" && (
+        <>
       {/* Burst animation overlay */}
       <div className="pointer-events-none fixed inset-0 z-[999] overflow-hidden">
         {burstItems.map((burst) => (
