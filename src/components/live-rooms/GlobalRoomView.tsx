@@ -221,6 +221,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
 
   const fetchCricketDetails = async (id: string | number) => {
     try {
+        // Clear previous state to avoid showing wrong data while loading
+        setMatchInfo(null);
+        setMatchSquads(null);
+        setMatchScorecard(null);
+
         const [infoRes, squadsRes, scoreRes] = await Promise.all([
             cricbuzzApi.getMatchInfo(id),
             cricbuzzApi.getMatchSquads(id),
@@ -249,13 +254,24 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
     }
   };
 
-  // Product Rotation Effect
+  // Product Rotation Effect - Random Shuffle
   useEffect(() => {
+    // Initial shuffle based on roomId for immediate variety
+    if (typeof roomId === 'string') {
+        const seed = roomId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        setActiveProductIndex(seed % SPOTLIGHT_PRODUCTS.length);
+    }
+
     const interval = setInterval(() => {
-      setActiveProductIndex(prev => (prev + 1) % SPOTLIGHT_PRODUCTS.length);
+      // Pick a random index that is different from current one
+      setActiveProductIndex(prev => {
+        let next = Math.floor(Math.random() * SPOTLIGHT_PRODUCTS.length);
+        if (next === prev) next = (next + 1) % SPOTLIGHT_PRODUCTS.length;
+        return next;
+      });
     }, 20000); // Rotate every 20 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     const q = query(
@@ -822,67 +838,67 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                         );
 
                         return match.status === 'upcoming' ? (
-                            <div className="flex flex-col items-center gap-3 py-4">
-                                <div className="flex items-center gap-8">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
+                            <div className="flex flex-col items-center gap-1 py-2">
+                                <div className="flex items-center gap-6">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <Avatar className="h-12 w-12 border-2 border-white/10 shadow-lg">
                                             <AvatarImage src={match.team_a_img} />
-                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{match.team_a[0]}</AvatarFallback>
+                                            <AvatarFallback className="bg-blue-900 font-black text-lg">{match.team_a[0]}</AvatarFallback>
                                         </Avatar>
-                                        <span className="text-sm font-black text-white">{match.team_a}</span>
+                                        <span className="text-[10px] font-black text-white">{match.team_a}</span>
                                     </div>
                                     <div className="flex flex-col items-center">
-                                        <Badge variant="outline" className="text-blue-400 border-blue-400/20 mb-2 font-black uppercase tracking-widest text-[10px]">UPCOMING</Badge>
-                                        <span className="text-3xl font-black text-blue-400/40 italic">VS</span>
+                                        <Badge variant="outline" className="text-blue-400 border-blue-400/20 mb-1 font-black uppercase tracking-widest text-[8px]">UPCOMING</Badge>
+                                        <span className="text-xl font-black text-blue-400/40 italic">VS</span>
                                     </div>
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Avatar className="h-16 w-16 border-2 border-white/10 shadow-lg">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <Avatar className="h-12 w-12 border-2 border-white/10 shadow-lg">
                                             <AvatarImage src={match.team_b_img} />
-                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{match.team_b[0]}</AvatarFallback>
+                                            <AvatarFallback className="bg-indigo-900 font-black text-lg">{match.team_b[0]}</AvatarFallback>
                                         </Avatar>
-                                        <span className="text-sm font-black text-white">{match.team_b}</span>
+                                        <span className="text-[10px] font-black text-white">{match.team_b}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm font-bold text-white/60 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 mt-2">
-                                    <Trophy className="w-4 h-4 text-amber-400" />
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-white/60 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                                    <Trophy className="w-3 h-3 text-amber-400" />
                                     <span>STARTS: {new Date(match.start_time).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex items-center justify-between gap-8 w-full">
-                                <div className="flex flex-col items-center gap-2 flex-1">
+                            <div className="flex items-center justify-between gap-6 w-full py-1">
+                                <div className="flex flex-col items-center gap-1 flex-1">
                                     <motion.div whileHover={{ scale: 1.1 }} className="relative">
-                                        <Avatar className="h-16 w-16 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                        <Avatar className="h-10 w-10 border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                                             <AvatarImage src={match.team_a_img} />
-                                            <AvatarFallback className="bg-blue-900 font-black text-xl">{match.team_a[0]}</AvatarFallback>
+                                            <AvatarFallback className="bg-blue-900 font-black text-lg">{match.team_a[0]}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_a_short || match.team_a.slice(0, 3).toUpperCase()}</div>
+                                        <div className="absolute -bottom-1 -right-1 bg-blue-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_a_short || match.team_a.slice(0, 3).toUpperCase()}</div>
                                     </motion.div>
-                                    <span className="text-sm font-black text-white whitespace-nowrap">{match.team_a}</span>
+                                    <span className="text-[10px] font-black text-white whitespace-nowrap">{match.team_a}</span>
                                 </div>
-                                <div className="flex flex-col items-center gap-1 min-w-[120px]">
-                                    <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-black mb-1 animate-pulse">LIVE UPDATES</Badge>
-                                    <div className="text-4xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                                <div className="flex flex-col items-center gap-0.5 min-w-[100px]">
+                                    <Badge className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[8px] font-black mb-0.5 animate-pulse">LIVE</Badge>
+                                    <div className="text-2xl font-black bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                                         {match.last_score || "0/0"}
                                     </div>
-                                    <div className="text-xs font-bold text-blue-400/80 flex items-center gap-2">
+                                    <div className="text-[8px] font-bold text-blue-400/80 flex items-center gap-1.5">
                                         <span>{match.last_over || "0.0"} OVERS</span>
                                         <span className="w-1 h-1 rounded-full bg-white/20" />
-                                        <span className="text-white/60 uppercase">{match.status}</span>
+                                        <span className="text-white/40 uppercase">{match.status}</span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-center gap-2 flex-1">
+                                <div className="flex flex-col items-center gap-1 flex-1">
                                     <motion.div whileHover={{ scale: 1.1 }} className="relative">
-                                        <Avatar className="h-16 w-16 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                                        <Avatar className="h-10 w-10 border-2 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
                                             <AvatarImage src={match.team_b_img} />
-                                            <AvatarFallback className="bg-indigo-900 font-black text-xl">{match.team_b[0]}</AvatarFallback>
+                                            <AvatarFallback className="bg-indigo-900 font-black text-lg">{match.team_b[0]}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_b_short || match.team_b.slice(0, 3).toUpperCase()}</div>
+                                        <div className="absolute -bottom-1 -left-1 bg-indigo-600 text-[8px] font-black px-1.5 py-0.5 rounded-full border border-white/20 shadow-lg">{match.team_b_short || match.team_b.slice(0, 3).toUpperCase()}</div>
                                     </motion.div>
-                                    <span className="text-sm font-black text-white whitespace-nowrap">{match.team_b}</span>
+                                    <span className="text-[10px] font-black text-white whitespace-nowrap">{match.team_b}</span>
                                 </div>
                             </div>
-                        );
+                        )
                     })() : (
                         <div className="text-center py-8">
                             <span className="text-sm font-black text-white/20 uppercase tracking-[0.3em]">No Active Transmissions</span>
@@ -907,22 +923,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     </div>
                 </div>
 
-                {/* Tab Content Logic */}
-                <div className="row-start-2 min-h-0 h-full overflow-hidden relative z-10 flex flex-col">
-                    {isCricketRoom && matchInfo && (
-                        <div className="mx-8 mb-4 p-4 rounded-3xl bg-blue-600/10 border border-blue-500/20 backdrop-blur-md flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-500">
-                            <div className="flex items-center gap-4">
-                                <Badge className="bg-rose-500 text-white font-black animate-pulse">LIVE</Badge>
-                                <div className="text-white font-black text-base md:text-lg uppercase tracking-widest">
-                                    {matchInfo.team_a} <span className="text-blue-400 mx-1">vs</span> {matchInfo.team_b}
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-xl md:text-2xl font-black text-white">{matchInfo.last_score || "Match In Progress"}</div>
-                                <div className="text-[9px] text-white/40 uppercase font-black tracking-widest">{matchInfo.series_name}</div>
-                            </div>
-                        </div>
-                    )}
+                    {/* Tab Content Logic */}
+                    <div className="row-start-2 min-h-0 h-full overflow-hidden relative z-10 flex flex-col">
                     <AnimatePresence mode="wait">
                         {activeTab === "chats" && (
                                 <motion.div 
@@ -1126,8 +1128,8 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                             { name: matchSquads.team_a.team_name, players: matchSquads.team_a.players },
                                             { name: matchSquads.team_b.team_name, players: matchSquads.team_b.players }
                                         ].map((team) => (
-                                            <div key={team.name} className="space-y-4">
-                                                <h3 className="text-xl font-black text-blue-400 uppercase tracking-widest">{team.name}</h3>
+                                            <div key={team.name} className="space-y-3">
+                                                <h3 className="text-base font-black text-blue-400 uppercase tracking-widest">{team.name}</h3>
                                                 <div className="grid grid-cols-1 gap-2">
                                                     {team.players.map((player) => (
                                                         <div 
@@ -1143,7 +1145,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                                 }
                                                             }}
                                                             className={cn(
-                                                                "p-4 rounded-2xl border transition-all cursor-pointer flex justify-between items-center group",
+                                                                "p-2.5 rounded-xl border transition-all cursor-pointer flex justify-between items-center group",
                                                                 selectedTeam.includes(player.name)
                                                                     ? "bg-blue-600/20 border-blue-500/50 text-white"
                                                                     : "bg-white/5 border-white/10 hover:border-white/30 text-white/70"
@@ -1294,11 +1296,11 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_400px] gap-6 items-end">
                         {/* Affiliate Pulse / Gear Spotlight - Monetization Engine */}
                         <div className={cn(
-                            "hidden md:block rounded-[32px] bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 border border-white/10 backdrop-blur-md p-8 shadow-inner transition-all min-h-[260px] flex flex-col justify-center relative overflow-hidden group",
+                            "hidden md:block rounded-[32px] bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 border border-white/10 backdrop-blur-md p-4 shadow-inner transition-all min-h-[160px] flex flex-col justify-center relative overflow-hidden group",
                             activeTab === "fantasy" && isSelectingPlayers ? "opacity-20 pointer-events-none" : "opacity-100"
                         )}>
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                {React.createElement(SPOTLIGHT_PRODUCTS[activeProductIndex].icon, { className: "w-20 h-20 text-blue-400" })}
+                                {React.createElement(SPOTLIGHT_PRODUCTS[activeProductIndex].icon, { className: "w-12 h-12 text-blue-400" })}
                             </div>
                             
                             <div className="relative z-10 space-y-6">
@@ -1315,9 +1317,9 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: -20 }}
-                                        className="flex gap-6 items-center"
+                                        className="flex gap-4 items-center"
                                     >
-                                        <div className="w-24 h-24 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 group-hover:border-blue-500/40 transition-all overflow-hidden relative">
+                                        <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 group-hover:border-blue-500/40 transition-all overflow-hidden relative">
                                             <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <img 
                                                 src={SPOTLIGHT_PRODUCTS[activeProductIndex].image} 
@@ -1325,21 +1327,21 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                                 className="w-full h-full object-contain mix-blend-screen group-hover:scale-110 transition-transform"
                                             />
                                         </div>
-                                        <div className="flex-1 space-y-2">
-                                            <h3 className="text-lg font-black text-white leading-tight">{SPOTLIGHT_PRODUCTS[activeProductIndex].name}</h3>
-                                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">{SPOTLIGHT_PRODUCTS[activeProductIndex].description}</p>
-                                            <div className="flex items-center gap-3 pt-1">
-                                                <span className="text-blue-400 font-black text-sm">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].price}.00</span>
-                                                <span className="text-white/20 line-through text-[10px] font-bold">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].mrp}.00</span>
+                                        <div className="flex-1 space-y-1">
+                                            <h3 className="text-sm font-black text-white leading-tight">{SPOTLIGHT_PRODUCTS[activeProductIndex].name}</h3>
+                                            <p className="text-[8px] font-bold text-white/40 uppercase tracking-tighter">{SPOTLIGHT_PRODUCTS[activeProductIndex].description}</p>
+                                            <div className="flex items-center gap-2 pt-1">
+                                                <span className="text-blue-400 font-black text-xs">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].price}.00</span>
+                                                <span className="text-white/20 line-through text-[8px] font-bold">₹{SPOTLIGHT_PRODUCTS[activeProductIndex].mrp}.00</span>
                                                 <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[8px]">-{SPOTLIGHT_PRODUCTS[activeProductIndex].discount}%</Badge>
                                             </div>
                                         </div>
                                     </motion.div>
                                 </AnimatePresence>
 
-                                <div className="flex gap-3">
+                                <div className="flex gap-2">
                                     <Button 
-                                        className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[10px] font-black uppercase tracking-widest h-11 shadow-glow group/btn overflow-hidden"
+                                        className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-[9px] font-black uppercase tracking-widest h-9 shadow-glow group/btn overflow-hidden"
                                         onClick={() => window.open(getAffiliateLink(`https://www.amazon.in/dp/${SPOTLIGHT_PRODUCTS[activeProductIndex].asin}`), '_blank')}
                                     >
                                         <span className="relative z-10 flex items-center gap-2">
@@ -1349,7 +1351,7 @@ export function GlobalRoomView({ user, roomId, roomName, onLeave }: GlobalRoomVi
                                     </Button>
                                     <Button 
                                         variant="ghost" 
-                                        className="rounded-xl border border-white/10 hover:bg-white/5 h-11 px-4 text-white/40 hover:text-white"
+                                        className="rounded-xl border border-white/10 hover:bg-white/5 h-9 px-3 text-white/40 hover:text-white"
                                         onClick={() => toast.success("Notification set for price drop!")}
                                     >
                                         <Activity className="w-4 h-4" />
