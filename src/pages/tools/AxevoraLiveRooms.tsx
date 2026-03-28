@@ -1435,7 +1435,8 @@ export default function AxevoraLiveRooms() {
         "Host-controlled mic invitations and speaker access flow",
       ]}
     >
-      {/* ────────────── MODE SWITCHER ────────────── */}
+      <div className="w-full h-full flex flex-col min-h-[500px]">
+        {/* ────────────── MODE SWITCHER ────────────── */}
       <div className="flex items-center gap-2 mb-6 p-1 rounded-2xl bg-white/5 border border-white/10 w-fit">
         <button
           onClick={() => setViewMode("platform")}
@@ -2703,6 +2704,9 @@ export default function AxevoraLiveRooms() {
         </div>
         </>
       )}
+        </>
+      )}
+      </div>
     </ToolTemplate>
   );
 }

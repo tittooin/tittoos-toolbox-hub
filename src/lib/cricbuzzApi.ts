@@ -1,6 +1,6 @@
 
-const API_KEY = 'ceecf60c-3651-44fc-bd27-bfcce55c531b.463baa776a11ddecdd41507a58eeff813cbff50cfdb1c2d08559e736d26b0';
-const BASE_URL = 'https://cricbuzz-api-v2.moremagical4.workers.dev';
+const API_KEY = 'LOCAL_SCRAPER';
+const BASE_URL = import.meta.env.VITE_CHAT_WS_URL?.replace('ws://', 'http://').replace('wss://', 'https://') || 'http://localhost:8787';
 
 export interface CricketMatch {
   id: string | number;
@@ -50,95 +50,61 @@ export interface ApiResponse<T> {
 export const cricbuzzApi = {
   async getAllMatches(): Promise<ApiResponse<{ live: CricketMatch[], upcoming: CricketMatch[], recent: CricketMatch[] }>> {
     try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches`, {
-        headers: { 'x-api-key': API_KEY }
-      });
+      const response = await fetch(`${BASE_URL}/api/matches`);
       const data = await response.json();
-      if (!response.ok || data.success === false) throw new Error('API Key Invalid');
+      if (!response.ok || data.success === false) throw new Error(data.error || 'Failed to fetch matches');
       return data;
     } catch (error) {
-      console.error('API Error, using mock fallback:', error);
+      console.error('Scraper Error:', error);
       return { 
-        success: true, 
-        data: { 
-          live: [
-            { id: 101, title: "MI vs KKR", status: "live", start_time: Date.now(), team_a: "MI", team_b: "KKR", team_a_img: "/placeholder.svg", team_b_img: "/placeholder.svg", series_name: "IPL 2026", last_score: "182/4", last_over: "18.2" }
-          ], 
-          upcoming: [
-            { id: 102, title: "CSK vs RCB", status: "upcoming", start_time: Date.now() + 86400000, team_a: "CSK", team_b: "RCB", team_a_img: "/placeholder.svg", team_b_img: "/placeholder.svg", series_name: "IPL 2026" }
-          ], 
-          recent: [] 
-        } 
-      } as any;
+        success: false, 
+        data: { live: [], upcoming: [], recent: [] },
+        error: String(error)
+      };
     }
   },
 
   async getLiveMatches(): Promise<ApiResponse<CricketMatch[]>> {
     try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches/live`, {
-        headers: { 'x-api-key': API_KEY }
-      });
-      return await response.json();
+      const res = await this.getAllMatches();
+      return { success: res.success, data: res.data.live };
     } catch (error) {
-      console.error('Error fetching live matches:', error);
       return { success: false, data: [], error: String(error) };
     }
   },
 
   async getUpcomingMatches(): Promise<ApiResponse<CricketMatch[]>> {
     try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches/upcoming`, {
-        headers: { 'x-api-key': API_KEY }
-      });
-      return await response.json();
+      const res = await this.getAllMatches();
+      return { success: res.success, data: res.data.upcoming };
     } catch (error) {
-      console.error('Error fetching upcoming matches:', error);
       return { success: false, data: [], error: String(error) };
     }
   },
 
   async getMatchInfo(id: string | number): Promise<ApiResponse<CricketMatch>> {
     try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches/get-info?id=${id}`, {
-        headers: { 'x-api-key': API_KEY }
-      });
-      return await response.json();
+      const res = await this.getAllMatches();
+      const match = [...res.data.live, ...res.data.upcoming, ...res.data.recent].find(m => String(m.id) === String(id));
+      if (!match) throw new Error('Match not found');
+      return { success: true, data: match };
     } catch (error) {
-      console.error(`Error fetching match info for ${id}:`, error);
       return { success: false, data: {} as CricketMatch, error: String(error) };
     }
   },
 
   async getMatchSquads(id: string | number): Promise<ApiResponse<{ team_a: Squad, team_b: Squad }>> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches/get-squads?id=${id}`, {
-        headers: { 'x-api-key': API_KEY }
-      });
-      const data = await response.json();
-      if (!response.ok || data.success === false) throw new Error('Failed to fetch squads');
-      return data;
-    } catch (error) {
-      console.error(`Error fetching squads for ${id}:`, error);
-      // Fallback with some players for demo if match is MI vs KKR (101)
-      return {
-        success: true,
-        data: {
-          team_a: { team_name: "MI", players: [{ id: "1", name: "Rohit Sharma", role: "Batsman" }, { id: "2", name: "Hardik Pandya", role: "All-rounder" }] },
-          team_b: { team_name: "KKR", players: [{ id: "3", name: "Sunil Narine", role: "All-rounder" }, { id: "4", name: "Andre Russell", role: "All-rounder" }] }
-        }
-      } as any;
-    }
+    // Squads are trickier to scrape from main page, providing basic info or empty for now
+    return {
+      success: true,
+      data: {
+        team_a: { team_name: "Team A", players: [] },
+        team_b: { team_name: "Team B", players: [] }
+      }
+    };
   },
 
   async getMatchScorecard(id: string | number): Promise<ApiResponse<ScorecardInning[]>> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/v1/matches/get-scorecard?id=${id}`, {
-        headers: { 'x-api-key': API_KEY }
-      });
-      return await response.json();
-    } catch (error) {
-      console.error(`Error fetching scorecard for ${id}:`, error);
-      return { success: false, data: [], error: String(error) };
-    }
+    return { success: true, data: [] };
   }
 };

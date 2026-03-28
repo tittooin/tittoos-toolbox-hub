@@ -31,3 +31,6 @@ marketing_assets/
 *.aab
 android/.gradle
 android/build
+
+.env
+.wrangler/
