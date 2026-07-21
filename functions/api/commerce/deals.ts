@@ -1,19 +1,18 @@
 export const onRequestGet = async (context: any) => {
   const env = context?.env || {};
 
-  // Fuzzy API key extraction across environment variations
+  // Direct property access for Cloudflare Worker getter bindings
   const getApiKey = (envObj: any) => {
-    if (!envObj || typeof envObj !== 'object') return undefined;
-    if (envObj.CUELINKS_API_KEY) return envObj.CUELINKS_API_KEY;
-    for (const key of Object.keys(envObj)) {
-      if (key.toUpperCase().includes('CUELINK')) {
-        const val = envObj[key];
-        if (typeof val === 'string' && val.trim().length > 0) {
-          return val.trim();
-        }
-      }
-    }
-    return typeof process !== 'undefined' ? process.env?.CUELINKS_API_KEY : undefined;
+    if (!envObj) return undefined;
+    return (
+      envObj.CUELINKS_API_KEY ||
+      envObj.CUELINK_API_KEY ||
+      envObj.CUELINKS_KEY ||
+      envObj.CUELINKS_TOKEN ||
+      envObj.cuelinks_api_key ||
+      envObj.CUELINKS_SECRET ||
+      (typeof process !== 'undefined' ? process.env?.CUELINKS_API_KEY : undefined)
+    );
   };
 
   const apiKey = getApiKey(env);
