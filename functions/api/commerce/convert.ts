@@ -10,7 +10,22 @@ export const onRequestPost = async ({ request, env }: any) => {
       );
     }
 
-    const apiKey = env?.CUELINKS_API_KEY;
+    // Fuzzy API key extraction
+    const getApiKey = (envObj: any) => {
+      if (!envObj || typeof envObj !== 'object') return undefined;
+      if (envObj.CUELINKS_API_KEY) return envObj.CUELINKS_API_KEY;
+      for (const key of Object.keys(envObj)) {
+        if (key.toUpperCase().includes('CUELINK')) {
+          const val = envObj[key];
+          if (typeof val === 'string' && val.trim().length > 0) {
+            return val.trim();
+          }
+        }
+      }
+      return typeof process !== 'undefined' ? process.env?.CUELINKS_API_KEY : undefined;
+    };
+
+    const apiKey = getApiKey(env);
 
     if (!apiKey) {
       // Direct Amazon tag fallback if URL is Amazon India
@@ -29,7 +44,6 @@ export const onRequestPost = async ({ request, env }: any) => {
         );
       }
 
-      // Default safe fallback without fake monetization
       return new Response(
         JSON.stringify({
           ok: true,
@@ -43,18 +57,30 @@ export const onRequestPost = async ({ request, env }: any) => {
 
     // Call official Cuelinks V3 link convert endpoint with Token scheme
     const authHeader = apiKey.startsWith('Token ') ? apiKey : `Token ${apiKey}`;
-    const response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert.json', {
-      method: 'POST',
-      headers: {
-        Authorization: authHeader,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url,
-        subid: subid || 'homepage',
-        subid2: subid2 || 'commerce_card',
-      }),
+    const headers = {
+      Authorization: authHeader,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    const body = JSON.stringify({
+      url,
+      subid: subid || 'homepage',
+      subid2: subid2 || 'commerce_card',
     });
+
+    let response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert', {
+      method: 'POST',
+      headers,
+      body,
+    });
+
+    if (!response.ok) {
+      response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert.json', {
+        method: 'POST',
+        headers,
+        body,
+      });
+    }
 
     if (!response.ok) {
       return new Response(
