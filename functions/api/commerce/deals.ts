@@ -24,6 +24,7 @@ export const onRequestGet = async (context: any) => {
   };
 
   if (!apiKey) {
+    const keysCount = env && typeof env === 'object' ? Object.keys(env).length : 0;
     return new Response(
       JSON.stringify({
         ok: true,
@@ -31,6 +32,7 @@ export const onRequestGet = async (context: any) => {
         source: 'none',
         total: 0,
         message: 'CUELINKS_API_KEY is not configured in environment bindings',
+        envKeysCount: keysCount,
         updatedAt: new Date().toISOString(),
       }),
       { status: 200, headers: jsonHeaders }
