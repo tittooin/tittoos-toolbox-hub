@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tag, Copy, Check, ExternalLink, ShieldCheck, ShoppingBag, Clock, Store, Search, Sparkles, Flame } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tag, Copy, Check, ExternalLink, ShieldCheck, ShoppingBag, Clock, Store, Search, Sparkles, Flame, Share2, Send, MessageCircle, Twitter, Facebook, Linkedin, Link as LinkIcon, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
@@ -40,7 +41,12 @@ export const CommerceSection = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Social Share Modal State
+  const [shareItem, setShareItem] = useState<CommerceDiscoveryItem | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -87,6 +93,67 @@ export const CommerceSection = () => {
     } catch (err) {
       window.open(rawUrl, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  // Open Share Dialog for a deal item
+  const handleOpenShare = (item: CommerceDiscoveryItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShareItem(item);
+    setShareModalOpen(true);
+    setCopiedLink(false);
+  };
+
+  // Social Platform Share Actions
+  const getShareText = (item: CommerceDiscoveryItem) => {
+    let text = `🔥 ${item.merchantName} Deal on Axevora!\n`;
+    text += `👉 ${item.title}\n`;
+    if (item.discountText) text += `🏷️ Discount: ${item.discountText}\n`;
+    if (item.couponCode) text += `✂️ Coupon Code: ${item.couponCode}\n`;
+    text += `\nClaim this offer before it expires!`;
+    return text;
+  };
+
+  const getShareUrl = (item: CommerceDiscoveryItem) => {
+    return item.trackingUrl || item.destinationUrl || window.location.href;
+  };
+
+  const handleSharePlatform = (platform: 'whatsapp' | 'telegram' | 'twitter' | 'facebook' | 'linkedin') => {
+    if (!shareItem) return;
+    const text = getShareText(shareItem);
+    const url = getShareUrl(shareItem);
+
+    let shareEndpoint = '';
+    switch (platform) {
+      case 'whatsapp':
+        shareEndpoint = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n\n' + url)}`;
+        break;
+      case 'telegram':
+        shareEndpoint = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        break;
+      case 'twitter':
+        shareEndpoint = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=Deals,Discounts,Axevora`;
+        break;
+      case 'facebook':
+        shareEndpoint = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'linkedin':
+        shareEndpoint = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+    }
+
+    window.open(shareEndpoint, '_blank', 'noopener,noreferrer,width=600,height=500');
+  };
+
+  const handleCopyShareLink = () => {
+    if (!shareItem) return;
+    const shareableUrl = getShareUrl(shareItem);
+    navigator.clipboard.writeText(shareableUrl);
+    setCopiedLink(true);
+    toast.success("Deal affiliate link copied to clipboard!", {
+      description: "You can now paste and share it anywhere.",
+      duration: 3000,
+    });
+    setTimeout(() => setCopiedLink(false), 2500);
   };
 
   // Dynamically group items into unique store cards for Popular Stores tab
@@ -412,17 +479,30 @@ export const CommerceSection = () => {
                           </div>
                         )}
 
-                        {/* CTA Grab Deal Button */}
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDealClick(item);
-                          }}
-                          className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group-hover:bg-indigo-700"
-                        >
-                          <span>Get Deal & Shop</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </Button>
+                        {/* CTA Buttons Row: Get Deal + Share Button */}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDealClick(item);
+                            }}
+                            className="flex-grow rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group-hover:bg-indigo-700"
+                          >
+                            <span>Get Deal & Shop</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Button>
+
+                          {/* Social Share Button */}
+                          <Button
+                            onClick={(e) => handleOpenShare(item, e)}
+                            variant="outline"
+                            size="icon"
+                            className="h-10 w-10 rounded-xl border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-indigo-600 shrink-0 shadow-sm transition-colors"
+                            title="Share this deal"
+                          >
+                            <Share2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -450,6 +530,139 @@ export const CommerceSection = () => {
             </Button>
           </div>
         )}
+
+        {/* Multi-Platform Social Share Dialog */}
+        <Dialog open={shareModalOpen} onOpenChange={setShareModalOpen}>
+          <DialogContent className="sm:max-w-md bg-white border border-slate-200 shadow-2xl rounded-3xl p-6">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-xl font-extrabold text-slate-900">
+                <Share2 className="w-5 h-5 text-indigo-600" />
+                <span>Share Deal with Friends</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-slate-500">
+                Share this deal on WhatsApp, Telegram, Social Media, or copy the direct link!
+              </DialogDescription>
+            </DialogHeader>
+
+            {shareItem && (
+              <div className="space-y-5 py-2">
+                {/* Share Item Preview Card */}
+                <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1.5 shrink-0 flex items-center justify-center shadow-sm">
+                    <img
+                      src={getMerchantImage(shareItem.merchantName, shareItem.merchantLogo)}
+                      alt={shareItem.merchantName}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-grow">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-bold text-slate-900">{shareItem.merchantName}</span>
+                      {shareItem.discountText && (
+                        <Badge className="bg-indigo-100 text-indigo-800 text-[10px] px-2 py-0 font-bold border-none">
+                          {shareItem.discountText}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs font-semibold text-slate-700 truncate">{shareItem.title}</p>
+                    {shareItem.couponCode && (
+                      <p className="text-[11px] font-mono text-indigo-600 font-bold">Code: {shareItem.couponCode}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* 1-Click Social Media Platforms Grid */}
+                <div className="grid grid-cols-5 gap-2.5 text-center">
+                  {/* WhatsApp */}
+                  <button
+                    onClick={() => handleSharePlatform('whatsapp')}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-700 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <MessageCircle className="w-5 h-5 fill-current" />
+                    </div>
+                    <span className="text-[10px] font-bold">WhatsApp</span>
+                  </button>
+
+                  {/* Telegram */}
+                  <button
+                    onClick={() => handleSharePlatform('telegram')}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-sky-50 hover:bg-sky-100/80 border border-sky-200 text-sky-700 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <Send className="w-5 h-5 fill-current ml-0.5" />
+                    </div>
+                    <span className="text-[10px] font-bold">Telegram</span>
+                  </button>
+
+                  {/* Twitter / X */}
+                  <button
+                    onClick={() => handleSharePlatform('twitter')}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-900 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <Twitter className="w-5 h-5 fill-current" />
+                    </div>
+                    <span className="text-[10px] font-bold">Twitter</span>
+                  </button>
+
+                  {/* Facebook */}
+                  <button
+                    onClick={() => handleSharePlatform('facebook')}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-blue-50 hover:bg-blue-100/80 border border-blue-200 text-blue-700 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <Facebook className="w-5 h-5 fill-current" />
+                    </div>
+                    <span className="text-[10px] font-bold">Facebook</span>
+                  </button>
+
+                  {/* LinkedIn */}
+                  <button
+                    onClick={() => handleSharePlatform('linkedin')}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200 text-indigo-700 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <Linkedin className="w-5 h-5 fill-current" />
+                    </div>
+                    <span className="text-[10px] font-bold">LinkedIn</span>
+                  </button>
+                </div>
+
+                {/* Direct Link Copy Input Box */}
+                <div className="space-y-1.5 pt-2">
+                  <label className="text-[11px] font-bold text-slate-600">Direct Shareable Link</label>
+                  <div className="flex items-center gap-2 p-1.5 pl-3 rounded-xl bg-slate-100 border border-slate-200">
+                    <LinkIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                    <input
+                      type="text"
+                      readOnly
+                      value={getShareUrl(shareItem)}
+                      className="bg-transparent text-xs text-slate-700 font-mono flex-grow outline-none truncate"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={handleCopyShareLink}
+                      className="h-8 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shrink-0"
+                    >
+                      {copiedLink ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5 mr-1" />
+                          Copy Link
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Affiliate Disclosure */}
         <div className="mt-14 text-center text-xs text-slate-500 flex items-center justify-center gap-2 max-w-2xl mx-auto border-t border-slate-200 pt-6 font-normal">
