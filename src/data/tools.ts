@@ -9,7 +9,7 @@ import {
   Bot, Video, Wand2, Sparkles, Brain,
   Facebook, Twitter, Linkedin, Scissors, Gauge, Edit, Command, Smartphone, Terminal,
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
-  AppWindow, Utensils, Apple, Target, Users, Heart, Radio
+  AppWindow, Utensils, Apple, Target, Users, Heart, Radio, ShoppingBag
 } from "lucide-react";
 
 export const allCategories = [
