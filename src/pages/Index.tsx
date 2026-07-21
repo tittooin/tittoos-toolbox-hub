@@ -22,6 +22,8 @@ import {
 import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CommerceSection } from "@/components/commerce/CommerceSection";
+import { ProductAnalyzerBanner } from "@/components/commerce/ProductAnalyzerBanner";
 
 // Lazy load the mobile index
 const MobileIndex = lazy(() => import("./MobileIndex"));
@@ -177,6 +179,12 @@ const Index = () => {
           {/* Decorative Background Elements */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         </section>
+
+        {/* --- LIVE COMMERCE DEALS SECTION --- */}
+        <CommerceSection />
+
+        {/* --- ONE-LINK PRODUCT ANALYZER BANNER --- */}
+        <ProductAnalyzerBanner />
 
         {/* --- FEATURED APPS SECTION --- */}
         <section className="py-12 relative overflow-hidden">

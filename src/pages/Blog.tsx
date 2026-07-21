@@ -13,6 +13,7 @@ import { setSEO, injectJsonLd } from "@/utils/seoUtils";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { DEFAULT_BLOG_POSTS } from "@/data/blogs";
 import GENERATED_BLOGS from "@/data/generated_blogs.json";
+import { resolveCommerceData, CommerceProductCard } from "@/modules/commerce";
 
 const Blog = () => {
   const defaultImages = [
@@ -366,6 +367,11 @@ const Blog = () => {
     ? allBlogPosts.find(post => post.slug === slug)
     : (selectedPost ? allBlogPosts.find(post => post.id === selectedPost) : null);
 
+  // Resolve commerce data for article-product join mapping
+  const productIdRef = selectedPostData?.customFields?.productIdRef;
+  const listingIdRef = selectedPostData?.customFields?.listingIdRef;
+  const commerceData = productIdRef ? resolveCommerceData(productIdRef, listingIdRef) : null;
+
 
 
   // Smart SEO Generation (Moved to Render)
@@ -543,10 +549,15 @@ const Blog = () => {
 
               <div
                 className="prose prose-lg max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: selectedPostData.content }}
+                dangerouslySetInnerHTML={{ __html: selectedPostData.content || selectedPostData.customFields?.contentHtml || "" }}
               />
 
-
+              {commerceData && (
+                <div className="mt-8 border-t pt-6">
+                  <h4 className="text-lg font-bold mb-4 text-foreground">Featured Product</h4>
+                  <CommerceProductCard data={commerceData} />
+                </div>
+              )}
             </article>
 
             {/* Social Sharing & Discussion */}

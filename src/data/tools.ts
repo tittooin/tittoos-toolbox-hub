@@ -3003,6 +3003,16 @@ export const allTools = [
     path: "/tools/battle-lab",
     keywords: ["battle", "versus", "comparison", "share card", "trending"]
   },
+  {
+    id: "product-analysis",
+    name: "Product Analysis Engine",
+    subheading: "E-commerce product intelligence & deal check",
+    description: "Analyze any product URL, extract technical specifications, check price history, and detect deal authenticity.",
+    category: "analyzer",
+    icon: ShoppingBag,
+    path: "/tools/product-analysis",
+    keywords: ["product analysis", "amazon", "deals", "specs", "price check", "e-commerce", "one link"]
+  },
 ];
 
 const hiddenCategories = new Set(["admin"]);

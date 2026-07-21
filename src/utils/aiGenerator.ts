@@ -253,7 +253,7 @@ ${selectedTools}
       **AFFILIATE LINKING Guidelines:**
       - **Scope:** include Tech gadgets, Beauty (skincare, makeup), Fashion (clothes, shoes), Home & Kitchen, Grocery, and Books.
       - **Placement:** Only link when a specific product is naturally discussed as a solution.
-      - **Format:** 'https://www.amazon.in/s?k=[Product+Name]&tag=axevora-21'
+      - **Format:** 'https://www.amazon.in/s?k=[Product+Name]&tag=axevora06-21'
       - **Style:** <a href="..." target="_blank" rel="noopener noreferrer" class="text-orange-600 font-bold hover:underline">Check Price on Amazon</a>
       - **Anti-Spam:** Max 2 affiliate links per section. Don't force it. If it doesn't fit, don't add it.
     `;

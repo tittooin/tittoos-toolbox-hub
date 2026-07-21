@@ -37,6 +37,9 @@ const Header = () => {
             <Link to="/blog" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               Blog
             </Link>
+            <Link to="/deals" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
+              Deals
+            </Link>
             <Link to="/submit-blog" className="no-underline text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform">
               Submit Your Blog
             </Link>
@@ -120,6 +123,13 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Blog
+              </Link>
+              <Link
+                to="/deals"
+                className="text-muted-foreground hover:text-primary transition-colors hover:scale-105 transform"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Deals
               </Link>
               <Link
                 to="/submit-blog"

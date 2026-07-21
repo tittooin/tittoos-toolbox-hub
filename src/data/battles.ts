@@ -75,7 +75,7 @@ export const trendingBattles: TrendingBattle[] = [
         "winner": "Tie"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Cosori%20Pro%20II%205-Quart%20Air%20Fryer%20CP158-AF%20II&tag=axevora-21",
+    "affiliateLink": "https://www.amazon.in/s?k=Cosori%20Pro%20II%205-Quart%20Air%20Fryer%20CP158-AF%20II&tag=axevora06-21",
     "affiliateText": "Check Cosori Price"
   },
   {
@@ -131,7 +131,7 @@ export const trendingBattles: TrendingBattle[] = [
         "winner": "A"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Breville%20Barista%20Express%20(BES870XL)%20Espresso%20Machine&tag=axevora-21",
+    "affiliateLink": "https://www.amazon.in/s?k=Breville%20Barista%20Express%20(BES870XL)%20Espresso%20Machine&tag=axevora06-21",
     "affiliateText": "Check Breville Price"
   },
   {
@@ -187,7 +187,7 @@ export const trendingBattles: TrendingBattle[] = [
         "winner": "Tie"
       }
     ],
-    "affiliateLink": "https://www.amazon.in/s?k=Samsung%20Galaxy%20Watch6&tag=axevora-21",
+    "affiliateLink": "https://www.amazon.in/s?k=Samsung%20Galaxy%20Watch6&tag=axevora06-21",
     "affiliateText": "Check Samsung Price"
   }
 ];

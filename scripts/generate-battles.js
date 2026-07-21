@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 // Configuration
 const OUTPUT_FILE = path.join(__dirname, '../src/data/battles.ts');
-const AFFILIATE_TAG = 'axevora-21'; // User's Amazon Tag
+const AFFILIATE_TAG = 'axevora06-21'; // User's Amazon Tag
 
 // Topics to rotate through
 const CATEGORIES = [

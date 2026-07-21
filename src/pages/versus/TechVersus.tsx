@@ -23,7 +23,7 @@ const TechVersus = () => {
                 icon={Smartphone}
                 placeholderA="iPhone 15 Pro Max"
                 placeholderB="Samsung Galaxy S24 Ultra"
-                affiliateTag="axevora-21" // Verified Store ID
+                affiliateTag="axevora06-21" // Verified Store ID
             >
                 <div className="mt-16">
                     <TrendingBattles />

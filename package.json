@@ -15,7 +15,8 @@
     "fetch-trends": "node fetch-trends.cjs",
     "refresh-battles": "node scripts/generate-battles.js",
     "check-plagiarism": "node check-plagiarism.cjs",
-    "release:indus": "node scripts/upload-to-indus.js"
+    "release:indus": "node scripts/upload-to-indus.js",
+    "test:resolver": "npx tsx src/modules/commerce/resolver/__tests__/resolverCore.test.ts"
   },
   "dependencies": {
     "@capacitor-community/admob": "^8.0.0",

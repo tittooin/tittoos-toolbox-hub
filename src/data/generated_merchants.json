@@ -1,0 +1,47 @@
+[
+  {
+    "id": "amazon_in",
+    "name": "Amazon India",
+    "integrationType": "manual",
+    "status": "active",
+    "createdDate": "2026-07-15T00:00:00Z",
+    "updatedDate": "2026-07-15T00:00:00Z",
+    "metadata": {}
+  },
+  {
+    "id": "flipkart",
+    "name": "Flipkart",
+    "integrationType": "manual",
+    "status": "active",
+    "createdDate": "2026-07-15T00:00:00Z",
+    "updatedDate": "2026-07-15T00:00:00Z",
+    "metadata": {}
+  },
+  {
+    "id": "myntra",
+    "name": "Myntra",
+    "integrationType": "manual",
+    "status": "active",
+    "createdDate": "2026-07-15T00:00:00Z",
+    "updatedDate": "2026-07-15T00:00:00Z",
+    "metadata": {}
+  },
+  {
+    "id": "ajio",
+    "name": "Ajio",
+    "integrationType": "manual",
+    "status": "active",
+    "createdDate": "2026-07-15T00:00:00Z",
+    "updatedDate": "2026-07-15T00:00:00Z",
+    "metadata": {}
+  },
+  {
+    "id": "meesho",
+    "name": "Meesho",
+    "integrationType": "manual",
+    "status": "active",
+    "createdDate": "2026-07-15T00:00:00Z",
+    "updatedDate": "2026-07-15T00:00:00Z",
+    "metadata": {}
+  }
+]

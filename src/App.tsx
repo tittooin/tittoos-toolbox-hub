@@ -179,6 +179,7 @@ const NutritionVersus = lazy(() => import("./pages/versus/NutritionVersus"));
 const AIThumbnailTextGenerator = lazy(() => import("./pages/tools/AIThumbnailTextGenerator"));
 const AIBioGenerator = lazy(() => import("./pages/tools/AIBioGenerator"));
 const AIBlogGeneratorPage = lazy(() => import("./pages/tools/AIBlogGeneratorPage"));
+const ProductAnalysis = lazy(() => import("./pages/tools/ProductAnalysis"));
 
 // Dev Tools
 const WindowsCommandGenerator = lazy(() => import("./pages/tools/WindowsCommandGenerator"));
@@ -189,6 +190,28 @@ const AndroidCommandGenerator = lazy(() => import("./pages/tools/AndroidCommandG
 // Admin
 const BlogManager = lazy(() => import("./pages/admin/BlogManager"));
 const BattleManager = lazy(() => import("./pages/admin/BattleManager"));
+
+// Deals Module
+const DealsHome = lazy(() => import("./modules/deals/pages/DealsHome"));
+const TrendingDeals = lazy(() => import("./modules/deals/pages/TrendingDeals"));
+const DealsCategories = lazy(() => import("./modules/deals/pages/DealsCategories"));
+const ProductDetails = lazy(() => import("./modules/deals/pages/ProductDetails"));
+const ArticleDetails = lazy(() => import("./modules/deals/pages/ArticleDetails"));
+
+// CMS Module
+const CMSDashboard = lazy(() => import("./modules/cms/pages/CMSDashboard"));
+const ContentManager = lazy(() => import("./modules/cms/pages/ContentManager"));
+const ContentEditor = lazy(() => import("./modules/cms/pages/ContentEditor"));
+
+// Taxonomy Module
+const TaxonomyDashboard = lazy(() => import("./modules/taxonomy/pages/TaxonomyDashboard"));
+
+// Product Module
+const ProductDashboard = lazy(() => import("./modules/products/pages/ProductDashboard"));
+
+// Commerce Module
+const CommerceDashboard = lazy(() => import("./modules/commerce/pages/CommerceDashboard"));
+const CommercePublisher = lazy(() => import("./modules/commerce/pages/CommercePublisher"));
 
 // App Support
 const NeonBlockPuzzlePrivacy = lazy(() => import("./pages/apps/NeonBlockPuzzlePrivacy"));
@@ -290,6 +313,7 @@ const App = () => (
                 <Route path="/tools/text-analyzer" element={<TextAnalyzer />} />
                 <Route path="/tools/color-analyzer" element={<ColorAnalyzer />} />
                 <Route path="/tools/image-analyzer" element={<ImageAnalyzer />} />
+                <Route path="/tools/product-analysis" element={<ProductAnalysis />} />
 
                 {/* Editor Tools */}
                 <Route path="/tools/color-picker" element={<ColorPicker />} />
@@ -397,9 +421,32 @@ const App = () => (
 
                 <Route path="/sitemap" element={<Sitemap />} />
 
+                {/* Deals Module Routes */}
+                <Route path="/deals" element={<DealsHome />} />
+                <Route path="/deals/trending" element={<TrendingDeals />} />
+                <Route path="/deals/categories" element={<DealsCategories />} />
+                <Route path="/deals/product/:id" element={<ProductDetails />} />
+                <Route path="/deals/article/:id" element={<ArticleDetails />} />
+
                 {/* Admin Routes */}
                 <Route path="/admin/blog" element={<AdminRouteGuard><BlogManager /></AdminRouteGuard>} />
                 <Route path="/admin/battles" element={<AdminRouteGuard><BattleManager /></AdminRouteGuard>} />
+
+                {/* Universal CMS Engine Admin Routes */}
+                <Route path="/admin/cms" element={<AdminRouteGuard><CMSDashboard /></AdminRouteGuard>} />
+                <Route path="/admin/cms/content/:contentType" element={<AdminRouteGuard><ContentManager /></AdminRouteGuard>} />
+                <Route path="/admin/cms/content/:contentType/new" element={<AdminRouteGuard><ContentEditor /></AdminRouteGuard>} />
+                <Route path="/admin/cms/content/:contentType/edit/:id" element={<AdminRouteGuard><ContentEditor /></AdminRouteGuard>} />
+
+                {/* Universal Taxonomy Engine Admin Routes */}
+                <Route path="/admin/taxonomy" element={<AdminRouteGuard><TaxonomyDashboard /></AdminRouteGuard>} />
+
+                {/* Canonical Product Engine Admin Routes */}
+                <Route path="/admin/products" element={<AdminRouteGuard><ProductDashboard /></AdminRouteGuard>} />
+
+                {/* Commerce Engine Admin Routes */}
+                <Route path="/admin/commerce" element={<AdminRouteGuard><CommerceDashboard /></AdminRouteGuard>} />
+                <Route path="/admin/commerce/publish" element={<AdminRouteGuard><CommercePublisher /></AdminRouteGuard>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

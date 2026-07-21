@@ -29,7 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { cricbuzzApi, CricketMatch, Squad, ScorecardInning, Player } from "@/lib/cricbuzzApi";
 
-export const AMAZON_TRACKING_ID = "axevora-21";
+export const AMAZON_TRACKING_ID = "axevora06-21";
 
 const CHAT_THEMES = {
   cyberpunk: { 

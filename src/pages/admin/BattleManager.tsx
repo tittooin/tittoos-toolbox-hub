@@ -8,7 +8,7 @@ import { Loader2, Save, RefreshCw, Github, Zap, ShieldCheck } from "lucide-react
 import { TrendingBattle } from "@/data/battles";
 
 // Define the Affiliate Tag here or load from env/storage if needed
-const AFFILIATE_TAG = "axevora-21";
+const AFFILIATE_TAG = "axevora06-21";
 import { Helmet } from 'react-helmet-async';
 
 const BattleManager = () => {
