@@ -41,11 +41,12 @@ export const onRequestPost = async ({ request, env }: any) => {
       );
     }
 
-    // Call official Cuelinks V3 link convert endpoint
+    // Call official Cuelinks V3 link convert endpoint with Token scheme
+    const authHeader = apiKey.startsWith('Token ') ? apiKey : `Token ${apiKey}`;
     const response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert.json', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: authHeader,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

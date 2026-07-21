@@ -18,13 +18,24 @@ export const onRequestGet = async ({ env }: any) => {
   }
 
   try {
-    // Fetch live Cuelinks V3 Offers
-    const response = await fetch('https://developers.cuelinks.com/pub_api/v3/offers.json?per_page=30', {
+    // Fetch live Cuelinks V3 Offers with correct Token header scheme
+    const authHeader = apiKey.startsWith('Token ') ? apiKey : `Token ${apiKey}`;
+    let response = await fetch('https://developers.cuelinks.com/pub_api/v3/offers.json?per_page=30', {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: authHeader,
         'Content-Type': 'application/json',
       },
     });
+
+    // Fallback: If offers returns error or 404, try campaigns endpoint
+    if (!response.ok) {
+      response = await fetch('https://developers.cuelinks.com/pub_api/v3/campaigns.json?per_page=30', {
+        headers: {
+          Authorization: authHeader,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
 
     if (!response.ok) {
       console.warn(`Cuelinks API returned status ${response.status}`);
@@ -34,7 +45,7 @@ export const onRequestGet = async ({ env }: any) => {
           items: [],
           source: 'none',
           total: 0,
-          message: 'Upstream deals service temporarily unavailable',
+          message: `Upstream service returned HTTP ${response.status}`,
           updatedAt: new Date().toISOString(),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -42,7 +53,7 @@ export const onRequestGet = async ({ env }: any) => {
     }
 
     const data: any = await response.json();
-    const rawOffers = data?.offers || data?.data || [];
+    const rawOffers = data?.offers || data?.campaigns || data?.data || [];
 
     if (!Array.isArray(rawOffers) || rawOffers.length === 0) {
       return new Response(
