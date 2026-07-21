@@ -7,6 +7,7 @@ export interface CommerceDiscoveryItem {
   description?: string;
   merchantName: string;
   merchantLogo?: string;
+  bannerImage?: string;
   couponCode?: string;
   discountText?: string;
   destinationUrl: string;
