@@ -1,9 +1,11 @@
 export const onRequestGet = async (context: any) => {
   const env = context?.env || {};
 
-  // Direct property access for Cloudflare Worker getter bindings
+  const SERVER_KEY = 'tPFFoWBEddGm86fTZFAJxwT1-HColHB7kTvCuwEVRzI';
+
+  // Direct property access for Cloudflare Worker getter bindings with server key fallback
   const getApiKey = (envObj: any) => {
-    if (!envObj) return undefined;
+    if (!envObj) return SERVER_KEY;
     return (
       envObj.CUELINKS_API_KEY ||
       envObj.CUELINK_API_KEY ||
@@ -11,7 +13,8 @@ export const onRequestGet = async (context: any) => {
       envObj.CUELINKS_TOKEN ||
       envObj.cuelinks_api_key ||
       envObj.CUELINKS_SECRET ||
-      (typeof process !== 'undefined' ? process.env?.CUELINKS_API_KEY : undefined)
+      (typeof process !== 'undefined' ? process.env?.CUELINKS_API_KEY : undefined) ||
+      SERVER_KEY
     );
   };
 
