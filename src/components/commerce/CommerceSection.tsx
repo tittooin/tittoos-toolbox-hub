@@ -10,28 +10,28 @@ import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
 
 const getMerchantImage = (merchantName: string, existingLogo?: string): string => {
-  if (existingLogo && existingLogo.startsWith('http') && !existingLogo.includes('favicons')) {
+  if (existingLogo && existingLogo.startsWith('http') && !existingLogo.includes('clearbit') && !existingLogo.includes('favicons')) {
     return existingLogo;
   }
   const name = merchantName.toLowerCase().replace(/[^a-z0-9]/g, '');
   const storeLogos: Record<string, string> = {
-    klook: 'https://logo.clearbit.com/klook.com',
-    croma: 'https://logo.clearbit.com/croma.com',
-    levis: 'https://logo.clearbit.com/levi.com',
-    kapiva: 'https://logo.clearbit.com/kapiva.in',
-    perfora: 'https://logo.clearbit.com/perfora.co',
-    godrejinterio: 'https://logo.clearbit.com/godrejinterio.com',
-    appsumo: 'https://logo.clearbit.com/appsumo.com',
-    wellbeingnutrition: 'https://logo.clearbit.com/wellbeingnutrition.com',
-    plumgoodness: 'https://logo.clearbit.com/plumgoodness.com',
-    mivi: 'https://logo.clearbit.com/mivi.in',
-    dhoodhvalefarms: 'https://logo.clearbit.com/dhoodhvale.com',
-    quench: 'https://logo.clearbit.com/quenchbotanics.com',
-    digihaat: 'https://logo.clearbit.com/digihaat.in',
-    fuelone: 'https://logo.clearbit.com/fuelone.in',
-    hkvitals: 'https://logo.clearbit.com/hkvitals.com',
+    klook: 'https://www.google.com/s2/favicons?domain=klook.com&sz=128',
+    croma: 'https://www.google.com/s2/favicons?domain=croma.com&sz=128',
+    levis: 'https://www.google.com/s2/favicons?domain=levi.in&sz=128',
+    kapiva: 'https://www.google.com/s2/favicons?domain=kapiva.in&sz=128',
+    perfora: 'https://www.google.com/s2/favicons?domain=perfora.co&sz=128',
+    godrejinterio: 'https://www.google.com/s2/favicons?domain=godrejinterio.com&sz=128',
+    appsumo: 'https://www.google.com/s2/favicons?domain=appsumo.com&sz=128',
+    wellbeingnutrition: 'https://www.google.com/s2/favicons?domain=wellbeingnutrition.com&sz=128',
+    plumgoodness: 'https://www.google.com/s2/favicons?domain=plumgoodness.com&sz=128',
+    mivi: 'https://www.google.com/s2/favicons?domain=mivi.in&sz=128',
+    dhoodhvalefarms: 'https://www.google.com/s2/favicons?domain=dhoodhvale.com&sz=128',
+    quench: 'https://www.google.com/s2/favicons?domain=quenchbotanics.com&sz=128',
+    digihaat: 'https://www.google.com/s2/favicons?domain=digihaat.in&sz=128',
+    fuelone: 'https://www.google.com/s2/favicons?domain=fuelone.in&sz=128',
+    hkvitals: 'https://www.google.com/s2/favicons?domain=hkvitals.com&sz=128',
   };
-  return storeLogos[name] || existingLogo || `https://www.google.com/s2/favicons?domain=${name}.com&sz=128`;
+  return storeLogos[name] || `https://www.google.com/s2/favicons?domain=${name}.com&sz=128`;
 };
 
 export const CommerceSection = () => {
@@ -78,8 +78,7 @@ export const CommerceSection = () => {
       return;
     }
 
-    const rawUrl = item.destinationUrl;
-    if (!rawUrl) return;
+    const rawUrl = item.destinationUrl || `https://www.google.com/search?q=${encodeURIComponent(item.merchantName + ' official store')}`;
 
     try {
       const converted = await CuelinksService.convertLink(rawUrl, 'homepage', 'deal_card');
@@ -268,7 +267,7 @@ export const CommerceSection = () => {
                     setSelectedStore(store.name);
                     setActiveTab('all');
                   }}
-                  className="h-full cursor-pointer bg-white border border-slate-200/90 hover:border-indigo-400 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 group p-5 flex flex-col items-center text-center justify-between rounded-2xl shadow-sm"
+                  className="h-full cursor-pointer bg-white border border-slate-200/90 hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 group p-5 flex flex-col items-center text-center justify-between rounded-2xl shadow-sm"
                 >
                   <div className="w-16 h-16 rounded-2xl bg-slate-50 p-2.5 flex items-center justify-center shadow-inner border border-slate-100 group-hover:scale-105 transition-transform duration-300 mb-3">
                     <img
@@ -276,7 +275,7 @@ export const CommerceSection = () => {
                       alt={store.name}
                       className="w-full h-full object-contain"
                       onError={(e) => {
-                        (e.target as HTMLElement).src = `https://www.google.com/s2/favicons?domain=${store.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com&sz=128`;
+                        (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
                   </div>
@@ -314,7 +313,10 @@ export const CommerceSection = () => {
                   transition={{ duration: 0.3, delay: idx * 0.04 }}
                   className="h-full"
                 >
-                  <Card className="h-full flex flex-col justify-between bg-white border border-slate-200/90 hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm group">
+                  <Card
+                    onClick={() => handleDealClick(item)}
+                    className="h-full flex flex-col justify-between bg-white border border-slate-200/90 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm group cursor-pointer"
+                  >
                     {/* Card Top Image Banner */}
                     <div className="relative h-44 w-full overflow-hidden bg-slate-100">
                       <img
@@ -334,7 +336,7 @@ export const CommerceSection = () => {
                           alt={item.merchantName}
                           className="w-4 h-4 rounded-full object-contain"
                           onError={(e) => {
-                            (e.target as HTMLElement).src = `https://www.google.com/s2/favicons?domain=${item.merchantName.toLowerCase().replace(/[^a-z0-9]/g, '')}.com&sz=64`;
+                            (e.target as HTMLElement).style.display = 'none';
                           }}
                         />
                         <span className="text-[11px] font-bold text-slate-900 tracking-tight">
@@ -377,7 +379,10 @@ export const CommerceSection = () => {
                               variant="ghost"
                               size="sm"
                               className="h-7 px-3 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-100/80 rounded-lg transition-colors"
-                              onClick={() => handleCopyCode(item.couponCode!, item.merchantName)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyCode(item.couponCode!, item.merchantName);
+                              }}
                             >
                               {copiedCode === item.couponCode ? (
                                 <>
@@ -409,8 +414,11 @@ export const CommerceSection = () => {
 
                         {/* CTA Grab Deal Button */}
                         <Button
-                          onClick={() => handleDealClick(item)}
-                          className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDealClick(item);
+                          }}
+                          className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group-hover:bg-indigo-700"
                         >
                           <span>Get Deal & Shop</span>
                           <ExternalLink className="w-3.5 h-3.5" />

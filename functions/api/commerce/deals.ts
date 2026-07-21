@@ -152,12 +152,44 @@ export const onRequestGet = async (context: any) => {
       return 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80';
     };
 
+    const getMerchantUrl = (merchantName: string, domain?: string, rawItem?: any): string => {
+      const direct = rawItem?.url || rawItem?.affiliate_url || rawItem?.landing_page || rawItem?.link || rawItem?.store_url || rawItem?.campaign_url || rawItem?.target_url;
+      if (direct && typeof direct === 'string' && direct.trim().length > 0) {
+        return direct.trim();
+      }
+
+      if (domain && domain.includes('.')) {
+        return domain.startsWith('http') ? domain : `https://${domain}`;
+      }
+
+      const name = merchantName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const knownUrls: Record<string, string> = {
+        klook: 'https://www.klook.com',
+        croma: 'https://www.croma.com',
+        levis: 'https://www.levi.in',
+        kapiva: 'https://www.kapiva.in',
+        perfora: 'https://perfora.co',
+        godrejinterio: 'https://www.godrejinterio.com',
+        appsumo: 'https://appsumo.com',
+        wellbeingnutrition: 'https://wellbeingnutrition.com',
+        plumgoodness: 'https://plumgoodness.com',
+        mivi: 'https://www.mivi.in',
+        dhoodhvalefarms: 'https://dhoodhvale.com',
+        quench: 'https://www.quenchbotanics.com',
+        digihaat: 'https://digihaat.in',
+        fuelone: 'https://fuelone.in',
+        hkvitals: 'https://www.hkvitals.com',
+      };
+      return knownUrls[name] || `https://www.google.com/search?q=${encodeURIComponent(merchantName + ' official store')}`;
+    };
+
     const normalizedItems = validRecords.map((item: any, index: number) => {
       const isOffer = Boolean(item.title || item.code || item.coupon_code || item.discount);
       const merchant = item.campaign_name || item.merchant || item.name || item.domain || 'Partner Store';
       const title = item.title || item.name || item.campaign_name || 'Featured Deal';
       const category = item.category || item.category_name || 'Deals';
       const domain = item.domain || merchant.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+      const targetUrl = getMerchantUrl(merchant, item.domain, item);
 
       return {
         id: String(item.id || item.campaign_id || `cuelinks-${index}`),
@@ -169,8 +201,8 @@ export const onRequestGet = async (context: any) => {
         bannerImage: item.image_url || item.banner_url || getDealBannerImage(category, title, merchant),
         couponCode: item.code || item.coupon_code || item.promo_code || undefined,
         discountText: item.discount || item.discount_percentage || item.payout || item.commission || (isOffer ? 'Special Offer' : 'Featured Store'),
-        destinationUrl: item.url || item.affiliate_url || item.landing_page || item.link || '',
-        trackingUrl: item.affiliate_url || item.url || item.link || '',
+        destinationUrl: targetUrl,
+        trackingUrl: item.affiliate_url || targetUrl,
         affiliated: true,
         validUntil: item.end_date || item.valid_till || undefined,
         category,
