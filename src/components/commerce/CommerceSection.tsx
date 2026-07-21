@@ -142,19 +142,19 @@ export const CommerceSection = () => {
   }, [items, activeTab, searchQuery, selectedStore]);
 
   return (
-    <section id="commerce-deals" className="py-24 px-4 bg-gradient-to-b from-background via-amber-950/5 to-background border-y border-amber-500/10 relative overflow-hidden">
-      {/* Background Decorative Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+    <section id="commerce-deals" className="py-24 px-4 bg-gradient-to-b from-background via-slate-900/40 to-background border-y border-border/60 relative overflow-hidden">
+      {/* Background Subtle Radial Ambient Backdrop */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
           <div>
-            <Badge variant="outline" className="mb-4 border-amber-500/40 bg-amber-500/10 text-amber-400 rounded-full px-4 py-1 flex items-center gap-2 w-fit text-xs font-semibold backdrop-blur-md shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            <Badge variant="outline" className="mb-4 border-indigo-500/30 bg-indigo-500/10 text-indigo-400 rounded-full px-4 py-1 flex items-center gap-2 w-fit text-xs font-semibold backdrop-blur-md shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
               Live Commerce & Verified Offers
             </Badge>
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-100 to-amber-400">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
               Featured Deals & Partner Offers
             </h2>
             <p className="text-muted-foreground mt-2 max-w-xl text-sm md:text-base">
@@ -166,28 +166,28 @@ export const CommerceSection = () => {
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-stretch sm:items-center">
             {/* Search Input */}
             <div className="relative min-w-[220px]">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search deals or store..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 h-10 rounded-full bg-secondary/40 border-amber-500/20 text-xs focus:border-amber-500/60 focus:ring-amber-500/20"
+                className="pl-9 pr-4 h-10 rounded-full bg-secondary/60 border-border/80 text-xs focus:border-indigo-500/60 focus:ring-indigo-500/20"
               />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-1.5 p-1 bg-secondary/50 backdrop-blur-md rounded-full border border-amber-500/20">
+            <div className="flex flex-wrap gap-1.5 p-1 bg-secondary/60 backdrop-blur-md rounded-full border border-border/80">
               <Button
                 variant={activeTab === 'all' && !selectedStore ? 'default' : 'ghost'}
                 onClick={() => {
                   setActiveTab('all');
                   setSelectedStore(null);
                 }}
-                className={`rounded-full text-xs h-8 px-3.5 font-semibold transition-all ${
+                className={`rounded-full text-xs h-8 px-4 font-semibold transition-all ${
                   activeTab === 'all' && !selectedStore
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/80'
                 }`}
                 size="sm"
               >
@@ -199,14 +199,14 @@ export const CommerceSection = () => {
                   setActiveTab('deals');
                   setSelectedStore(null);
                 }}
-                className={`rounded-full text-xs h-8 px-3.5 font-semibold transition-all ${
+                className={`rounded-full text-xs h-8 px-4 font-semibold transition-all ${
                   activeTab === 'deals'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/80'
                 }`}
                 size="sm"
               >
-                <Flame className="w-3.5 h-3.5 mr-1 text-amber-300" />
+                <Flame className="w-3.5 h-3.5 mr-1.5 text-indigo-300" />
                 Featured Offers
               </Button>
               <Button
@@ -215,14 +215,14 @@ export const CommerceSection = () => {
                   setActiveTab('stores');
                   setSelectedStore(null);
                 }}
-                className={`rounded-full text-xs h-8 px-3.5 font-semibold transition-all ${
+                className={`rounded-full text-xs h-8 px-4 font-semibold transition-all ${
                   activeTab === 'stores'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/80'
                 }`}
                 size="sm"
               >
-                <Store className="w-3.5 h-3.5 mr-1" />
+                <Store className="w-3.5 h-3.5 mr-1.5" />
                 Popular Stores ({popularStores.length})
               </Button>
             </div>
@@ -233,7 +233,7 @@ export const CommerceSection = () => {
         {selectedStore && (
           <div className="mb-6 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Filtered by Store:</span>
-            <Badge className="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-3 py-1 rounded-full flex items-center gap-2 text-xs">
+            <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-3 py-1 rounded-full flex items-center gap-2 text-xs">
               <span>{selectedStore}</span>
               <button
                 onClick={() => setSelectedStore(null)}
@@ -268,9 +268,9 @@ export const CommerceSection = () => {
                     setSelectedStore(store.name);
                     setActiveTab('all');
                   }}
-                  className="h-full cursor-pointer bg-card/50 backdrop-blur-xl border border-amber-500/20 hover:border-amber-500/60 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 group p-5 flex flex-col items-center text-center justify-between rounded-2xl"
+                  className="h-full cursor-pointer bg-card/60 backdrop-blur-xl border border-border/80 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 group p-5 flex flex-col items-center text-center justify-between rounded-2xl"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-white/90 p-2.5 flex items-center justify-center shadow-md border border-amber-500/20 group-hover:scale-110 transition-transform duration-300 mb-3">
+                  <div className="w-16 h-16 rounded-2xl bg-white/95 p-2.5 flex items-center justify-center shadow-md border border-border/60 group-hover:scale-105 transition-transform duration-300 mb-3">
                     <img
                       src={store.logo}
                       alt={store.name}
@@ -282,10 +282,10 @@ export const CommerceSection = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-sm text-foreground group-hover:text-amber-400 transition-colors line-clamp-1">
+                    <h3 className="font-bold text-sm text-foreground group-hover:text-indigo-400 transition-colors line-clamp-1">
                       {store.name}
                     </h3>
-                    <Badge className="mt-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-semibold">
+                    <Badge className="mt-1.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-[10px] px-2.5 py-0.5 rounded-full font-semibold">
                       {store.dealCount} Active {store.dealCount === 1 ? 'Offer' : 'Offers'}
                     </Badge>
                   </div>
@@ -293,7 +293,7 @@ export const CommerceSection = () => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="mt-4 text-[11px] h-7 px-3 text-amber-400 group-hover:bg-amber-500/10 rounded-full w-full"
+                    className="mt-4 text-[11px] h-7 px-3 text-indigo-400 group-hover:bg-indigo-500/10 rounded-full w-full font-medium"
                   >
                     View Deals →
                   </Button>
@@ -314,9 +314,9 @@ export const CommerceSection = () => {
                   transition={{ duration: 0.3, delay: idx * 0.04 }}
                   className="h-full"
                 >
-                  <Card className="h-full flex flex-col justify-between bg-card/60 backdrop-blur-xl border border-amber-500/20 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                  <Card className="h-full flex flex-col justify-between bg-card/70 backdrop-blur-xl border border-border/80 hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
                     {/* Card Top Image Banner */}
-                    <div className="relative h-40 w-full overflow-hidden bg-secondary/40">
+                    <div className="relative h-44 w-full overflow-hidden bg-secondary/40">
                       <img
                         src={item.bannerImage || 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80'}
                         alt={item.title}
@@ -325,10 +325,10 @@ export const CommerceSection = () => {
                           (e.target as HTMLElement).src = 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80';
                         }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
 
                       {/* Brand Logo Floating Badge */}
-                      <div className="absolute top-3 left-3 flex items-center gap-2 bg-background/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-500/30 shadow-lg">
+                      <div className="absolute top-3 left-3 flex items-center gap-2 bg-card/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-border/80 shadow-md">
                         <img
                           src={getMerchantImage(item.merchantName, item.merchantLogo)}
                           alt={item.merchantName}
@@ -344,7 +344,7 @@ export const CommerceSection = () => {
 
                       {/* Discount Tag Top Right */}
                       {item.discountText && (
-                        <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-extrabold text-[11px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+                        <div className="absolute top-3 right-3 bg-indigo-600/90 backdrop-blur-md text-white font-extrabold text-[11px] px-3 py-1 rounded-full shadow-md flex items-center gap-1 border border-indigo-400/30">
                           <Tag className="w-3 h-3" />
                           <span>{item.discountText}</span>
                         </div>
@@ -354,7 +354,7 @@ export const CommerceSection = () => {
                     {/* Card Body Content */}
                     <CardContent className="p-5 flex flex-col justify-between flex-grow space-y-4">
                       <div>
-                        <h3 className="text-base font-bold text-foreground line-clamp-2 leading-snug group-hover:text-amber-400 transition-colors">
+                        <h3 className="text-base font-bold text-foreground line-clamp-2 leading-snug group-hover:text-indigo-400 transition-colors">
                           {item.title}
                         </h3>
 
@@ -368,15 +368,15 @@ export const CommerceSection = () => {
                       <div className="space-y-3 pt-2">
                         {/* Coupon Code Box */}
                         {item.couponCode ? (
-                          <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-500/10 border border-dashed border-amber-500/40 font-mono text-xs">
-                            <div className="flex items-center gap-2 text-amber-300 font-bold tracking-wide">
-                              <Tag className="w-3.5 h-3.5 text-amber-400" />
+                          <div className="flex items-center justify-between p-2.5 rounded-xl bg-indigo-950/20 border border-dashed border-indigo-500/30 font-mono text-xs">
+                            <div className="flex items-center gap-2 text-indigo-300 font-bold tracking-wide">
+                              <Tag className="w-3.5 h-3.5 text-indigo-400" />
                               <span>{item.couponCode}</span>
                             </div>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-7 px-3 text-[11px] font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 rounded-lg transition-colors"
+                              className="h-7 px-3 text-[11px] font-bold text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/20 rounded-lg transition-colors"
                               onClick={() => handleCopyCode(item.couponCode!, item.merchantName)}
                             >
                               {copiedCode === item.couponCode ? (
@@ -393,8 +393,8 @@ export const CommerceSection = () => {
                             </Button>
                           </div>
                         ) : (
-                          <div className="p-2.5 rounded-xl bg-secondary/30 border border-border/40 text-[11px] text-muted-foreground flex items-center gap-2">
-                            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <div className="p-2.5 rounded-xl bg-secondary/40 border border-border/50 text-[11px] text-muted-foreground flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                             <span>No Code Required — Direct Instant Discount</span>
                           </div>
                         )}
@@ -402,7 +402,7 @@ export const CommerceSection = () => {
                         {/* Expiry Date */}
                         {item.validUntil && (
                           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                            <Clock className="w-3 h-3 text-amber-400" />
+                            <Clock className="w-3 h-3 text-indigo-400" />
                             <span>Expires {item.validUntil}</span>
                           </div>
                         )}
@@ -410,7 +410,7 @@ export const CommerceSection = () => {
                         {/* CTA Grab Deal Button */}
                         <Button
                           onClick={() => handleDealClick(item)}
-                          className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs h-10 shadow-lg shadow-amber-500/15 group-hover:shadow-amber-500/30 transition-all flex items-center justify-center gap-2"
+                          className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs h-10 shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2"
                         >
                           <span>Get Deal & Shop</span>
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -424,8 +424,8 @@ export const CommerceSection = () => {
           </div>
         ) : (
           /* EMPTY STATE */
-          <div className="text-center py-16 px-6 bg-card/30 rounded-3xl border border-dashed border-amber-500/20 max-w-2xl mx-auto backdrop-blur-md">
-            <ShoppingBag className="w-12 h-12 text-amber-500/40 mx-auto mb-4" />
+          <div className="text-center py-16 px-6 bg-card/40 rounded-3xl border border-dashed border-border/60 max-w-2xl mx-auto backdrop-blur-md">
+            <ShoppingBag className="w-12 h-12 text-indigo-400/40 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-foreground mb-2">No Matching Deals Found</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
               Try resetting your search query or switching store filters.
@@ -436,7 +436,7 @@ export const CommerceSection = () => {
                 setSelectedStore(null);
                 setActiveTab('all');
               }}
-              className="rounded-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/40 text-xs"
+              className="rounded-full bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 border border-indigo-500/40 text-xs"
             >
               Reset Filters
             </Button>
@@ -444,8 +444,8 @@ export const CommerceSection = () => {
         )}
 
         {/* Affiliate Disclosure */}
-        <div className="mt-14 text-center text-xs text-muted-foreground/70 flex items-center justify-center gap-2 max-w-2xl mx-auto border-t border-border/30 pt-6">
-          <ShieldCheck className="w-4 h-4 text-green-500 shrink-0" />
+        <div className="mt-14 text-center text-xs text-muted-foreground/70 flex items-center justify-center gap-2 max-w-2xl mx-auto border-t border-border/40 pt-6">
+          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
           <p>
             <strong>Affiliate Disclosure:</strong> Axevora participates in verified affiliate marketing programs (including Cuelinks & direct merchant partnerships). We may earn a small commission on qualifying purchases at zero extra cost to you.
           </p>
