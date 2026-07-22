@@ -79,15 +79,17 @@ export const CommerceSection = () => {
   };
 
   const handleDealClick = async (item: CommerceDiscoveryItem) => {
-    if (item.trackingUrl && item.trackingUrl.startsWith('http')) {
+    // 1. Double conversion check: if trackingUrl is already an affiliate link
+    if (item.trackingUrl && (item.trackingUrl.includes('clnk.in') || item.trackingUrl.includes('cuelinks.com') || item.trackingUrl.includes('linksredirect.com'))) {
       window.open(item.trackingUrl, '_blank', 'noopener,noreferrer');
       return;
     }
 
-    const rawUrl = item.destinationUrl || `https://www.google.com/search?q=${encodeURIComponent(item.merchantName + ' official store')}`;
+    const rawUrl = item.destinationUrl || item.trackingUrl;
+    if (!rawUrl || !rawUrl.startsWith('http')) return;
 
     try {
-      const converted = await CuelinksService.convertLink(rawUrl, 'homepage', 'deal_card');
+      const converted = await CuelinksService.convertLink(rawUrl, 'axevora_homepage', 'commerce_card');
       const target = converted.trackingUrl || rawUrl;
       window.open(target, '_blank', 'noopener,noreferrer');
     } catch (err) {
@@ -95,10 +97,45 @@ export const CommerceSection = () => {
     }
   };
 
-  // Open Share Dialog for a deal item
-  const handleOpenShare = (item: CommerceDiscoveryItem, e: React.MouseEvent) => {
+  // Helper to resolve verified Cuelinks tracking URL for share actions
+  const getMonetizedShareUrl = async (item: CommerceDiscoveryItem): Promise<string> => {
+    if (item.trackingUrl && (item.trackingUrl.includes('clnk.in') || item.trackingUrl.includes('cuelinks.com') || item.trackingUrl.includes('linksredirect.com'))) {
+      return item.trackingUrl;
+    }
+
+    const rawUrl = item.destinationUrl || item.trackingUrl;
+    if (!rawUrl || !rawUrl.startsWith('http')) return window.location.href;
+
+    try {
+      const converted = await CuelinksService.convertLink(rawUrl, 'axevora_share', 'commerce_card');
+      return converted.trackingUrl || rawUrl;
+    } catch (err) {
+      return rawUrl;
+    }
+  };
+
+  // Open Share Dialog or Native Web Share API for a deal item
+  const handleOpenShare = async (item: CommerceDiscoveryItem, e: React.MouseEvent) => {
     e.stopPropagation();
-    setShareItem(item);
+    const monetizedUrl = await getMonetizedShareUrl(item);
+    const text = `🔥 ${item.merchantName} Deal on Axevora: ${item.title}`;
+
+    // Web Share API if supported on mobile
+    if (navigator.share && typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: item.title,
+          text: text,
+          url: monetizedUrl,
+        });
+        toast.success("Deal shared successfully!");
+        return;
+      } catch (err) {
+        // User cancelled or fallback to modal
+      }
+    }
+
+    setShareItem({ ...item, trackingUrl: monetizedUrl });
     setShareModalOpen(true);
     setCopiedLink(false);
   };
@@ -149,7 +186,7 @@ export const CommerceSection = () => {
     const shareableUrl = getShareUrl(shareItem);
     navigator.clipboard.writeText(shareableUrl);
     setCopiedLink(true);
-    toast.success("Deal affiliate link copied to clipboard!", {
+    toast.success("Deal Cuelinks affiliate link copied to clipboard!", {
       description: "You can now paste and share it anywhere.",
       duration: 3000,
     });
@@ -185,6 +222,10 @@ export const CommerceSection = () => {
     return Array.from(storeMap.values()).sort((a, b) => b.dealCount - a.dealCount);
   }, [items]);
 
+  const offersCount = useMemo(() => {
+    return items.filter((item) => item.type === 'offer' || item.type === 'deal').length;
+  }, [items]);
+
   // Filtered Deals based on activeTab, search query, and store filter
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -202,7 +243,7 @@ export const CommerceSection = () => {
         if (!matchesTitle && !matchesMerchant && !matchesDesc && !matchesCode) return false;
       }
       // Tab filter
-      if (activeTab === 'deals') return Boolean(item.couponCode);
+      if (activeTab === 'deals') return item.type === 'offer' || item.type === 'deal';
       return true;
     });
   }, [items, activeTab, searchQuery, selectedStore]);
@@ -273,7 +314,7 @@ export const CommerceSection = () => {
                 size="sm"
               >
                 <Flame className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
-                Featured Offers
+                Featured Offers ({offersCount})
               </Button>
               <Button
                 variant={activeTab === 'stores' ? 'default' : 'ghost'}

@@ -1,7 +1,7 @@
-export const onRequestPost = async ({ request, env }: any) => {
+export const onRequestPost = async ({ request, env }: { request: Request; env: Record<string, unknown> }) => {
   try {
-    const data = await request.json();
-    const { url, subid, subid2 } = data || {};
+    const data = (await request.json()) as Record<string, unknown>;
+    const { url, subid, subid2 } = (data || {}) as { url?: string; subid?: string; subid2?: string };
 
     if (!url || typeof url !== 'string') {
       return new Response(
@@ -12,7 +12,7 @@ export const onRequestPost = async ({ request, env }: any) => {
 
     const SERVER_KEY = 'tPFFoWBEddGm86fTZFAJxwT1-HColHB7kTvCuwEVRzI';
 
-    const getApiKey = (envObj: any) => {
+    const getApiKey = (envObj: Record<string, unknown>) => {
       const candidates = [
         envObj?.CUELINKS_API_KEY,
         envObj?.CUELINK_API_KEY,
@@ -30,6 +30,20 @@ export const onRequestPost = async ({ request, env }: any) => {
       }
       return SERVER_KEY;
     };
+
+    // Double conversion protection: if URL is already a Cuelinks tracking URL
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes('clnk.in') || lowerUrl.includes('cuelinks.com') || lowerUrl.includes('linksredirect.com')) {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          trackingUrl: url,
+          affiliated: true,
+          originalUrl: url,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     const apiKey = getApiKey(env);
 
@@ -70,7 +84,7 @@ export const onRequestPost = async ({ request, env }: any) => {
     };
     const body = JSON.stringify({
       url,
-      subid: subid || 'homepage',
+      subid: subid || 'axevora_homepage',
       subid2: subid2 || 'commerce_card',
     });
 
@@ -100,9 +114,11 @@ export const onRequestPost = async ({ request, env }: any) => {
       );
     }
 
-    const result: any = await response.json();
-    const trackingUrl = result.tracking_url || result.affiliate_url || url;
-    const affiliated = Boolean(result.affiliated);
+    const result = (await response.json()) as Record<string, unknown>;
+    const payload = (result.data || result) as Record<string, unknown>;
+    const trackingUrl = (payload.tracking_url || payload.affiliate_url || url) as string;
+    const affiliated = payload.affiliated !== undefined ? Boolean(payload.affiliated) : true;
+    const campaign = payload.campaign as Record<string, unknown> | undefined;
 
     return new Response(
       JSON.stringify({
@@ -110,12 +126,13 @@ export const onRequestPost = async ({ request, env }: any) => {
         trackingUrl,
         affiliated,
         originalUrl: url,
-        campaignName: result.campaign?.name || undefined,
+        campaignName: campaign?.name || undefined,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
-  } catch (err: any) {
-    console.error('convert-link error:', err?.message || err);
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error('convert-link error:', errorMsg);
     return new Response(
       JSON.stringify({
         ok: false,
