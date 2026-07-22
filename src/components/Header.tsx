@@ -14,8 +14,10 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 shrink-0">
-            <img src="/logo.png" alt="Axevora Logo" className="w-8 h-8 rounded-lg hover:scale-110 transition-transform" />
-            <span className="text-xl font-bold text-primary">Axevora</span>
+            <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-md shrink-0">
+              <span className="font-bold text-primary-foreground text-base leading-none">A</span>
+            </div>
+            <span className="text-xl font-extrabold tracking-tight text-primary">Axevora</span>
           </Link>
 
           {/* Desktop Navigation */}

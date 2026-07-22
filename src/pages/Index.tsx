@@ -18,7 +18,7 @@ import {
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, ArrowRight,
   Shield, Cpu, CheckCircle2, Star, Radio, Gamepad2, Target,
-  Users, ShoppingBag, Tag, UserCheck, MessageSquare, Share2
+  Users, ShoppingBag, Tag, UserCheck, MessageSquare, Share2, Youtube
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";

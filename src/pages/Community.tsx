@@ -245,7 +245,7 @@ export default function Community() {
               <Badge className="bg-violet-600 text-white font-bold px-3 py-1 rounded-full border-none">
                 <Users className="w-3.5 h-3.5 mr-1.5" /> AXEVORA COMMUNITY
               </Badge>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-gradient-to-r from-primary via-violet-500 to-indigo-500 bg-clip-text text-transparent">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-gradient-to-r from-primary via-violet-500 to-indigo-500 bg-clip-text text-transparent leading-tight pb-1">
                 Connect, Share & Grow Together
               </h1>
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
@@ -347,11 +347,11 @@ export default function Community() {
               <div className="lg:col-span-6">
                 <Card className="border-border/60 shadow-xl backdrop-blur-sm bg-card">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-xl font-bold text-center mb-2">Join Axevora Community</CardTitle>
+                    <CardTitle className="text-lg md:text-xl font-bold text-center mb-2">Join Axevora Community</CardTitle>
                     <Tabs value={authMode} onValueChange={(val: any) => setAuthMode(val)} className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="login" className="font-semibold">Sign In</TabsTrigger>
-                        <TabsTrigger value="signup" className="font-semibold">Register</TabsTrigger>
+                      <TabsList className="grid w-full grid-cols-2 p-0 h-14 bg-muted/50 rounded-none border-b border-border/50">
+                        <TabsTrigger value="login" className="rounded-none h-full data-[state=active]:bg-card data-[state=active]:border-b-2 data-[state=active]:border-primary font-bold text-xs sm:text-sm">Login</TabsTrigger>
+                        <TabsTrigger value="signup" className="rounded-none h-full data-[state=active]:bg-card data-[state=active]:border-b-2 data-[state=active]:border-primary font-bold text-xs sm:text-sm">Create Account</TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </CardHeader>
