@@ -8,6 +8,11 @@ bindings = [
   { name = "CHAT_ROOM", class_name = "ChatRoom" }
 ]
 
+[[d1_databases]]
+binding = "COMMUNITY_DB"
+database_name = "axevora-community"
+database_id = "75234cc3-483e-4a85-b293-41feef73ed43"
+
 [[migrations]]
 tag = "v1"
 new_classes = ["ChatRoom"]
@@ -17,3 +22,4 @@ name = "axevora-chat-prod"
 routes = [
   { pattern = "chat.axevora.workers.dev/*", zone_name = "axevora.workers.dev" }
 ]
+
