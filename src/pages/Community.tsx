@@ -237,127 +237,226 @@ export default function Community() {
     <div className="min-h-screen bg-background flex flex-col justify-between">
       <Header />
 
-      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center justify-center">
+      <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         {!user ? (
-          <div className="w-full max-w-md my-8">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-extrabold tracking-tight text-foreground mb-3 bg-gradient-to-r from-primary to-violet-500 bg-clip-text text-transparent">
-                Axevora Community
+          <div className="w-full max-w-6xl mx-auto space-y-12 animate-fade-in">
+            {/* Community Hero & Value Proposition */}
+            <div className="text-center space-y-4 max-w-3xl mx-auto">
+              <Badge className="bg-violet-600 text-white font-bold px-3 py-1 rounded-full border-none">
+                <Users className="w-3.5 h-3.5 mr-1.5" /> AXEVORA COMMUNITY
+              </Badge>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-gradient-to-r from-primary via-violet-500 to-indigo-500 bg-clip-text text-transparent">
+                Connect, Share & Grow Together
               </h1>
-              <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-                Promote your creations, discuss technologies, and join creators hub.
+              <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                Axevora Community is a spam-free platform for creators, developers, businesses, and users. Share your YouTube channels, social media profiles, tech innovations, and promotional deals in moderated official boards.
               </p>
+              
+              <div className="flex flex-wrap justify-center gap-3 pt-2 text-xs font-semibold">
+                <Badge variant="outline" className="px-3 py-1 bg-card border-border/80 text-foreground flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Bot Protected
+                </Badge>
+                <Badge variant="outline" className="px-3 py-1 bg-card border-border/80 text-foreground flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-violet-500" /> Creator Portfolios
+                </Badge>
+                <Badge variant="outline" className="px-3 py-1 bg-card border-border/80 text-foreground flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-orange-500" /> Trust Level System
+                </Badge>
+              </div>
             </div>
 
-            <Card className="border-border/60 shadow-xl backdrop-blur-sm bg-card/95">
-              <CardHeader className="pb-4">
-                <Tabs value={authMode} onValueChange={(val: any) => setAuthMode(val)} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="login" className="font-semibold">Login</TabsTrigger>
-                    <TabsTrigger value="signup" className="font-semibold">Sign Up</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </CardHeader>
-              
-              <CardContent className="pt-2">
-                {authMode === 'login' ? (
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="login-email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Username or Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="login-email"
-                          placeholder="enter username or email"
-                          type="text"
-                          className="pl-10"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="login-pass" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="login-pass"
-                          placeholder="••••••••"
-                          type="password"
-                          className="pl-10"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
-                    </div>
+            {/* Official Boards Showcase */}
+            <div className="space-y-6">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-border/40 pb-4">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Official Community Boards</h2>
+                  <p className="text-muted-foreground text-sm">Explore our 9 specialized discussion and promotion categories.</p>
+                </div>
+                <Badge variant="secondary" className="w-fit text-xs font-semibold bg-primary/10 text-primary border-none">
+                  9 Active Boards
+                </Badge>
+              </div>
 
-                    <Button type="submit" disabled={submitting} className="w-full mt-2 font-semibold">
-                      {submitting ? 'Authenticating...' : 'Sign In'}
-                    </Button>
-                  </form>
-                ) : (
-                  <form onSubmit={handleSignup} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="sign-user" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Username</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="sign-user"
-                          placeholder="e.g. CreatorMax"
-                          type="text"
-                          className="pl-10"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                        />
-                      </div>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {OFFICIAL_BOARDS.map((board) => {
+                  const IconComp = board.icon;
+                  return (
+                    <Card key={board.id} className="border-border/50 hover:border-primary/50 transition-all duration-300 bg-card/70 backdrop-blur hover:shadow-lg group">
+                      <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                        <div className={`p-2.5 rounded-xl ${board.color} group-hover:scale-105 transition-transform`}>
+                          <IconComp className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-sm font-bold flex items-center group-hover:text-primary transition-colors">
+                            {board.name}
+                          </CardTitle>
+                          <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4 mt-0.5">
+                            Official
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="px-4 pb-4 pt-1">
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {board.desc}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="sign-email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="sign-email"
-                          placeholder="e.g. max@creator.com"
-                          type="email"
-                          className="pl-10"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
+            {/* Auth Panel & Guidelines */}
+            <div id="join-section" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
+              {/* Guidelines */}
+              <div className="lg:col-span-6 space-y-6">
+                <div>
+                  <Badge variant="outline" className="text-xs font-semibold text-violet-500 border-violet-500/30 mb-2">COMMUNITY TRUST</Badge>
+                  <h3 className="text-2xl font-bold text-foreground">Why Create an Account?</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Join thousands of verified members building their online presence.</p>
+                </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="sign-pass" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="sign-pass"
-                          placeholder="minimum 8 characters"
-                          type="password"
-                          className="pl-10"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3 p-4 rounded-xl bg-card border border-border/40">
+                    <ShieldCheck className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Spam & Bot Free Environment</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">Cloudflare Turnstile and D1 rate-limiting protect all discussion boards from automated spam.</p>
                     </div>
+                  </div>
 
-                    {/* Turnstile Container */}
-                    <div className="flex flex-col items-center justify-center pt-2">
-                      <div id="turnstile-widget"></div>
+                  <div className="flex items-start space-x-3 p-4 rounded-xl bg-card border border-border/40">
+                    <Flame className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Earn Trust Levels</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">Active participation unlocks higher trust levels, custom badges, and featured link privileges.</p>
                     </div>
+                  </div>
 
-                    <Button type="submit" disabled={submitting} className="w-full mt-2 font-semibold">
-                      {submitting ? 'Registering...' : 'Register'}
-                    </Button>
-                  </form>
-                )}
-              </CardContent>
-            </Card>
+                  <div className="flex items-start space-x-3 p-4 rounded-xl bg-card border border-border/40">
+                    <UserCheck className="h-5 w-5 text-violet-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Creator Promotion Freedom</h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">Share YouTube Shorts, blog articles, SaaS launches, and deals without shadow-banning.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Login / Sign Up Card */}
+              <div className="lg:col-span-6">
+                <Card className="border-border/60 shadow-xl backdrop-blur-sm bg-card">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-xl font-bold text-center mb-2">Join Axevora Community</CardTitle>
+                    <Tabs value={authMode} onValueChange={(val: any) => setAuthMode(val)} className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="login" className="font-semibold">Sign In</TabsTrigger>
+                        <TabsTrigger value="signup" className="font-semibold">Register</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-2">
+                    {authMode === 'login' ? (
+                      <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="login-email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Username or Email</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="login-email"
+                              placeholder="enter username or email"
+                              type="text"
+                              className="pl-10"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="login-pass" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</Label>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="login-pass"
+                              placeholder="••••••••"
+                              type="password"
+                              className="pl-10"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <Button type="submit" disabled={submitting} className="w-full mt-2 font-semibold">
+                          {submitting ? 'Authenticating...' : 'Sign In'}
+                        </Button>
+                      </form>
+                    ) : (
+                      <form onSubmit={handleSignup} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="sign-user" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Username</Label>
+                          <div className="relative">
+                            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="sign-user"
+                              placeholder="e.g. CreatorMax"
+                              type="text"
+                              className="pl-10"
+                              value={username}
+                              onChange={(e) => setUsername(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="sign-email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="sign-email"
+                              placeholder="e.g. max@creator.com"
+                              type="email"
+                              className="pl-10"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="sign-pass" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</Label>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="sign-pass"
+                              placeholder="minimum 8 characters"
+                              type="password"
+                              className="pl-10"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Turnstile Container */}
+                        <div className="flex flex-col items-center justify-center pt-2">
+                          <div id="turnstile-widget"></div>
+                        </div>
+
+                        <Button type="submit" disabled={submitting} className="w-full mt-2 font-semibold">
+                          {submitting ? 'Registering...' : 'Register'}
+                        </Button>
+                      </form>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="w-full max-w-5xl my-8 space-y-8 animate-fade-in">
+          <div className="w-full max-w-5xl mx-auto my-4 space-y-8 animate-fade-in">
             {/* User Profile Card */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <Card className="md:col-span-1 border-border/60 shadow-lg bg-card/90">

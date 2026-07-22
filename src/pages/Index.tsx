@@ -17,7 +17,8 @@ import {
   Ruler, Thermometer, DollarSign, Percent, Scale,
   Binary, FileImage, FileVideo, Music, Archive,
   Bot, Video, Wand2, Sparkles, Brain, ArrowRight,
-  Shield, Cpu, CheckCircle2, Star, Radio, Gamepad2, Target
+  Shield, Cpu, CheckCircle2, Star, Radio, Gamepad2, Target,
+  Users, ShoppingBag, Tag, UserCheck, MessageSquare, Share2
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +35,20 @@ const Index = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/community/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.authenticated) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch(() => setIsAuthenticated(false));
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -117,26 +132,39 @@ const Index = () => {
 
       <main className="flex-grow">
         {/* --- HERO SECTION --- */}
-        <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-b from-background via-accent/5 to-background">
+        <section className="relative py-16 md:py-24 px-4 overflow-hidden bg-gradient-to-b from-background via-accent/5 to-background">
           <div className="container mx-auto max-w-6xl text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Badge variant="outline" className="mb-6 px-4 py-1 text-sm border-primary/20 bg-primary/5 text-primary rounded-full">
-                <Star className="w-3 h-3 mr-2 fill-primary" />
-                Trusted by 50,000+ Users
+              <Badge variant="outline" className="mb-6 px-4 py-1 text-xs md:text-sm border-primary/30 bg-primary/10 text-primary rounded-full font-semibold">
+                <Sparkles className="w-3.5 h-3.5 mr-2 text-primary" />
+                Enterprise Multi-Platform Ecosystem
               </Badge>
 
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                Your Ultimate <span className="text-primary">Digital Workspace</span>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-foreground/70">
+                Discover. Create. Connect. <span className="text-primary">Compare.</span>
               </h1>
 
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-                Empower your workflow with our suite of premium, secure, and completely free online tools.
-                From PDF management to developer utilities, we simplify complexity.
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+                Axevora brings together <strong>120+ free online tools</strong>, verified <strong>partner deals</strong>, an interactive <strong>creator community</strong>, and <strong>web games</strong> into one privacy-first digital workspace.
               </p>
+
+              {/* Primary Hero CTAs */}
+              <div className="flex flex-wrap justify-center gap-4 mb-10">
+                <Link to="/tools">
+                  <Button size="lg" className="rounded-full px-8 font-bold gap-2 shadow-lg shadow-primary/20">
+                    Explore Tools <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <Link to="/community">
+                  <Button size="lg" variant="outline" className="rounded-full px-8 font-bold border-violet-500/40 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 gap-2">
+                    <Users className="w-4 h-4 text-violet-500" /> Join Community
+                  </Button>
+                </Link>
+              </div>
 
               {/* Search Bar */}
               <div className="max-w-2xl mx-auto relative mb-12">
@@ -147,11 +175,11 @@ const Index = () => {
                     <Input
                       type="text"
                       placeholder="Search for tools (e.g., 'PDF to Word', 'Compress Image')..."
-                      className="border-none shadow-none focus-visible:ring-0 text-lg h-12 bg-transparent"
+                      className="border-none shadow-none focus-visible:ring-0 text-base md:text-lg h-12 bg-transparent"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <Button size="lg" className="rounded-lg px-8">
+                    <Button size="lg" className="rounded-lg px-6 md:px-8 font-semibold shrink-0">
                       Find Tool
                     </Button>
                   </div>
@@ -159,7 +187,7 @@ const Index = () => {
               </div>
 
               {/* Feature Pills */}
-              <div className="flex flex-wrap justify-center gap-4 text-sm font-medium text-muted-foreground/80">
+              <div className="flex flex-wrap justify-center gap-4 text-xs md:text-sm font-medium text-muted-foreground/80">
                 <div className="flex items-center px-4 py-2 bg-secondary/5 rounded-full border border-border/50">
                   <Shield className="w-4 h-4 mr-2 text-green-500" />
                   Client-Side Privacy
@@ -178,6 +206,251 @@ const Index = () => {
 
           {/* Decorative Background Elements */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        </section>
+
+        {/* --- PLATFORM PILLARS SECTION --- */}
+        <section className="py-12 px-4 bg-card/30 border-y border-border/40">
+          <div className="container mx-auto max-w-7xl">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
+                Four Pillars of the Axevora Ecosystem
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2 max-w-xl mx-auto">
+                Discover productivity, commerce, community, and entertainment built for modern creators and users.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Pillar 1: TOOLS */}
+              <Link to="/tools" className="group">
+                <Card className="h-full border-border/60 hover:border-primary/50 transition-all duration-300 hover:shadow-xl bg-card/70 backdrop-blur group-hover:-translate-y-1">
+                  <CardHeader className="pb-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                      <Wand2 className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">TOOLS</CardTitle>
+                    <Badge variant="outline" className="w-fit text-[10px] uppercase font-bold tracking-wider text-primary border-primary/30">120+ Utilities</Badge>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs text-muted-foreground leading-relaxed mb-4">
+                      Free browser-based productivity, PDF converters, image editors, and developer utilities.
+                    </CardDescription>
+                    <div className="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Explore Tools <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Pillar 2: COMMUNITY */}
+              <Link to="/community" className="group">
+                <Card className="h-full border-border/60 hover:border-violet-500/50 transition-all duration-300 hover:shadow-xl bg-card/70 backdrop-blur group-hover:-translate-y-1">
+                  <CardHeader className="pb-3">
+                    <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center mb-3 text-violet-500 group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl font-bold group-hover:text-violet-500 transition-colors">COMMUNITY</CardTitle>
+                    <Badge variant="outline" className="w-fit text-[10px] uppercase font-bold tracking-wider text-violet-500 border-violet-500/30">Official Boards</Badge>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs text-muted-foreground leading-relaxed mb-4">
+                      Creators, businesses aur users ke saath discover, discuss aur apna content share karo.
+                    </CardDescription>
+                    <div className="text-xs font-bold text-violet-500 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Join Community <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Pillar 3: DEALS */}
+              <Link to="/deals" className="group">
+                <Card className="h-full border-border/60 hover:border-rose-500/50 transition-all duration-300 hover:shadow-xl bg-card/70 backdrop-blur group-hover:-translate-y-1">
+                  <CardHeader className="pb-3">
+                    <div className="w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center mb-3 text-rose-500 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+                      <ShoppingBag className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl font-bold group-hover:text-rose-500 transition-colors">DEALS</CardTitle>
+                    <Badge variant="outline" className="w-fit text-[10px] uppercase font-bold tracking-wider text-rose-500 border-rose-500/30">Verified Partner Offers</Badge>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs text-muted-foreground leading-relaxed mb-4">
+                      Verified partner offers, coupons, tech deals, aur shopping opportunities discover karo.
+                    </CardDescription>
+                    <div className="text-xs font-bold text-rose-500 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Explore Deals <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Pillar 4: GAMES */}
+              <Link to="/tools/2048-game" className="group">
+                <Card className="h-full border-border/60 hover:border-amber-500/50 transition-all duration-300 hover:shadow-xl bg-card/70 backdrop-blur group-hover:-translate-y-1">
+                  <CardHeader className="pb-3">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-3 text-amber-500 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                      <Gamepad2 className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl font-bold group-hover:text-amber-500 transition-colors">GAMES</CardTitle>
+                    <Badge variant="outline" className="w-fit text-[10px] uppercase font-bold tracking-wider text-amber-500 border-amber-500/30">Free Arcade</Badge>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-xs text-muted-foreground leading-relaxed mb-4">
+                      Free browser games, 2048 saga, pool shooter, aur reaction speed challenges explore aur play karo.
+                    </CardDescription>
+                    <div className="text-xs font-bold text-amber-500 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Play Games <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* --- COMMUNITY HOMEPAGE SPOTLIGHT --- */}
+        <section className="py-16 px-4 bg-gradient-to-b from-violet-950/20 via-background to-background border-b border-border/40 relative overflow-hidden">
+          <div className="container mx-auto max-w-7xl relative z-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+              <div>
+                <Badge className="bg-violet-600 text-white font-bold mb-3 border-none">
+                  <Users className="w-3.5 h-3.5 mr-1" />
+                  AXEVORA COMMUNITY HUB
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+                  Join the Axevora Community
+                </h2>
+                <p className="text-muted-foreground text-sm md:text-base mt-2 max-w-2xl">
+                  Apna content share karo, discussions join karo, creators discover karo aur apni community grow karo.
+                </p>
+              </div>
+
+              <div className="shrink-0">
+                <Link to="/community">
+                  <Button size="lg" className="bg-violet-600 hover:bg-violet-700 text-white rounded-full font-bold px-8 shadow-lg shadow-violet-600/20">
+                    {isAuthenticated ? 'Open Community Dashboard' : 'Join Community Hub'} <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Official Boards Preview Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-emerald-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-emerald-500 bg-emerald-500/10 group-hover:scale-105 transition-transform">
+                      <UserCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-emerald-500 transition-colors">Creator Promotion</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Share your creator profile, channel updates, and portfolios with the community.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-red-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-red-500 bg-red-500/10 group-hover:scale-105 transition-transform">
+                      <Youtube className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-red-500 transition-colors">YouTube Promotion</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Promote your latest YouTube videos, Shorts, and channel growth milestones.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-violet-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-violet-500 bg-violet-500/10 group-hover:scale-105 transition-transform">
+                      <Cpu className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-violet-500 transition-colors">AI & Technology</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Discuss AI models, software tools, developer stacks, and technology trends.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-pink-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-pink-500 bg-pink-500/10 group-hover:scale-105 transition-transform">
+                      <Share2 className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-pink-500 transition-colors">Social Media Promotion</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Share Instagram Reels, TikToks, X posts, and social platform updates.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-indigo-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-indigo-500 bg-indigo-500/10 group-hover:scale-105 transition-transform">
+                      <Gamepad2 className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-indigo-500 transition-colors">Gaming</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Gaming clips, gameplay reviews, esports talk, and gaming strategies.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/community" className="group">
+                <Card className="border-border/50 hover:border-rose-500/50 bg-card/60 backdrop-blur transition-all duration-300 hover:shadow-lg">
+                  <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                    <div className="p-2.5 rounded-xl text-rose-500 bg-rose-500/10 group-hover:scale-105 transition-transform">
+                      <Tag className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-bold group-hover:text-rose-500 transition-colors">Deals & Offers</CardTitle>
+                      <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4">Official Board</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-4 pb-4 pt-1">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Share shopping deals, promotional coupons, discounts, and partner offers.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* --- LIVE COMMERCE DEALS SECTION --- */}

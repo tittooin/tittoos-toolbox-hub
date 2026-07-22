@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Search, Grid, Star, Settings, User,
+  Search, Grid, Star, Settings, User, Users,
   ChevronRight, Sparkles, Radio, ArrowRight, ShoppingBag, Flame
 } from "lucide-react";
 import { tools, categories } from "@/data/tools";
@@ -50,6 +50,15 @@ const MobileIndex = () => {
             <span className="font-extrabold text-lg tracking-tight text-slate-900">Axevora</span>
           </Link>
           <div className="flex items-center gap-2">
+            <Link to="/community">
+              <Button
+                size="sm"
+                className="h-8 px-3 rounded-full bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200 text-xs font-bold flex items-center gap-1.5"
+              >
+                <Users className="w-3.5 h-3.5 text-violet-600" />
+                Community
+              </Button>
+            </Link>
             <Button
               size="sm"
               onClick={scrollToCommerce}
