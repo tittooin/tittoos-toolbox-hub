@@ -43,6 +43,39 @@ interface CurrentUser {
   trustLevel: number;
 }
 
+const getYoutubeVideoId = (url: string | null): string | null => {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.toLowerCase();
+    
+    if (hostname === 'youtu.be') {
+      const path = parsed.pathname.substring(1);
+      const cleanPath = path ? path.split('/')[0].split('?')[0] : null;
+      if (cleanPath && cleanPath.length === 11) return cleanPath;
+    }
+    
+    if (hostname.includes('youtube.com')) {
+      if (parsed.pathname.startsWith('/shorts/')) {
+        const parts = parsed.pathname.split('/');
+        const cleanShort = parts[2] ? parts[2].split('?')[0] : null;
+        if (cleanShort && cleanShort.length === 11) return cleanShort;
+      }
+      const v = parsed.searchParams.get('v');
+      if (v && v.length === 11) return v;
+      
+      if (parsed.pathname.startsWith('/embed/')) {
+        const parts = parsed.pathname.split('/');
+        const cleanEmbed = parts[2] ? parts[2].split('?')[0] : null;
+        if (cleanEmbed && cleanEmbed.length === 11) return cleanEmbed;
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+  return null;
+};
+
 export default function CommunityPost() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
   const navigate = useNavigate();
@@ -240,6 +273,7 @@ export default function CommunityPost() {
 
   const isAuthor = post.user_id === user?.id;
   const isPrivileged = user?.platformRole === 'platform_admin' || user?.platformRole === 'platform_moderator';
+  const youtubeId = getYoutubeVideoId(post.external_url);
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between">
@@ -295,6 +329,20 @@ export default function CommunityPost() {
           </CardHeader>
           
           <CardContent className="py-6 space-y-6">
+            {/* Embedded YouTube video player */}
+            {youtubeId && (
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-border/40 bg-black">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute top-0 left-0 w-full h-full"
+                />
+              </div>
+            )}
+
             {/* Main post text content */}
             <p className="text-sm md:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed">
               {post.content}
