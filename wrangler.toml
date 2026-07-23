@@ -11,7 +11,7 @@ bindings = [
 [[d1_databases]]
 binding = "COMMUNITY_DB"
 database_name = "axevora-community"
-database_id = "75234cc3-483e-4a85-b293-41feef73ed43"
+database_id = "7db70cc1-be6e-44fe-b523-1bf35f3f0ca0"
 
 [[migrations]]
 tag = "v1"
