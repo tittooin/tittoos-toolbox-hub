@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO } from "@/utils/seoUtils";
@@ -281,26 +282,28 @@ export default function Community() {
                 {OFFICIAL_BOARDS.map((board) => {
                   const IconComp = board.icon;
                   return (
-                    <Card key={board.id} className="border-border/50 hover:border-primary/50 transition-all duration-300 bg-card/70 backdrop-blur hover:shadow-lg group">
-                      <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
-                        <div className={`p-2.5 rounded-xl ${board.color} group-hover:scale-105 transition-transform`}>
-                          <IconComp className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-sm font-bold flex items-center group-hover:text-primary transition-colors">
-                            {board.name}
-                          </CardTitle>
-                          <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4 mt-0.5">
-                            Official
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="px-4 pb-4 pt-1">
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          {board.desc}
-                        </p>
-                      </CardContent>
-                    </Card>
+                    <Link key={board.id} to={`/community/boards/${board.slug}`} className="block group">
+                      <Card className="border-border/50 hover:border-primary/50 transition-all duration-300 bg-card/70 backdrop-blur hover:shadow-lg cursor-pointer h-full">
+                        <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                          <div className={`p-2.5 rounded-xl ${board.color} group-hover:scale-105 transition-transform`}>
+                            <IconComp className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-sm font-bold flex items-center group-hover:text-primary transition-colors">
+                              {board.name}
+                            </CardTitle>
+                            <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4 mt-0.5">
+                              Official
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4 pt-1">
+                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                            {board.desc}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   );
                 })}
               </div>
@@ -515,32 +518,33 @@ export default function Community() {
                   <h2 className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">Official Axevora Boards</h2>
                   <p className="text-muted-foreground text-sm">These boards are officially owned and moderated by Axevora Platform Admins.</p>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {OFFICIAL_BOARDS.map((board) => {
                     const IconComp = board.icon;
                     return (
-                      <Card key={board.id} className="border-border/40 hover:border-primary/40 hover:shadow-md transition-all duration-300 bg-card/65 group">
-                        <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
-                          <div className={`p-2 rounded-lg ${board.color} group-hover:scale-105 transition-transform`}>
-                            <IconComp className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-sm font-bold flex items-center">
-                              {board.name}
-                              <ExternalLink className="h-3 w-3 ml-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </CardTitle>
-                            <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4 mt-0.5">
-                              official
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="px-4 pb-4 pt-1">
-                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                            {board.desc}
-                          </p>
-                        </CardContent>
-                      </Card>
+                      <Link key={board.id} to={`/community/boards/${board.slug}`} className="block group">
+                        <Card className="border-border/40 hover:border-primary/40 hover:shadow-md transition-all duration-300 bg-card/65 cursor-pointer h-full">
+                          <CardHeader className="p-4 flex flex-row items-center space-x-3 pb-2">
+                            <div className={`p-2 rounded-lg ${board.color} group-hover:scale-105 transition-transform`}>
+                              <IconComp className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <CardTitle className="text-sm font-bold flex items-center group-hover:text-primary transition-colors">
+                                {board.name}
+                                <ExternalLink className="h-3 w-3 ml-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </CardTitle>
+                              <Badge variant="outline" className="text-[10px] font-semibold text-muted-foreground px-1 h-4 mt-0.5">
+                                official
+                              </Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="px-4 pb-4 pt-1">
+                            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                              {board.desc}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </Link>
                     );
                   })}
                 </div>

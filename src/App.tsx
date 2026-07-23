@@ -29,6 +29,8 @@ const Blog = lazy(() => import("./pages/Blog"));
 const Author = lazy(() => import("./pages/Author"));
 const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
 const Community = lazy(() => import("./pages/Community"));
+const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
+const CommunityPost = lazy(() => import("./pages/CommunityPost"));
 
 // Blog Categories
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -266,6 +268,8 @@ const App = () => (
                 <Route path="/submit-blog" element={<SubmitBlog />} />
                 <Route path="/earn" element={<DigitalIncomeKit />} />
                 <Route path="/community" element={<Community />} />
+                <Route path="/community/boards/:slug" element={<CommunityBoard />} />
+                <Route path="/community/boards/:slug/posts/:postId" element={<CommunityPost />} />
 
                 {/* Blog Category Pages */}
                 <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />
