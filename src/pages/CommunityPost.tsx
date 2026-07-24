@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { BotBadge } from "@/components/community/BotBadge";
 import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
+import { RichMediaEngine } from "@/components/community/RichMediaEngine";
+import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 
 interface PostDetails {
   id: string;
@@ -355,42 +357,15 @@ export default function CommunityPost() {
               <RichCommerceCard offer={offerSnapshot} />
             ) : (
               <>
-                {/* Embedded YouTube video player */}
-                {youtubeId && (
-                  <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-border/40 bg-black">
-                    <iframe
-                      src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      className="absolute top-0 left-0 w-full h-full"
-                    />
-                  </div>
-                )}
-
                 {/* Main post text content */}
-                <p className="text-sm md:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                <p className="text-sm md:text-base text-slate-800 whitespace-pre-wrap leading-relaxed">
                   {post.content}
                 </p>
 
-                {/* External link promotion card */}
+                {/* Universal Rich Media Engine */}
                 {post.external_url && (
-                  <div className="mt-8 p-4 rounded-xl border border-primary/25 bg-primary/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Shared External Resource</span>
-                      <h4 className="text-sm font-extrabold text-foreground font-mono truncate max-w-md">{post.url_domain}</h4>
-                    </div>
-                    <a 
-                      href={post.external_url} 
-                      target="_blank" 
-                      rel="nofollow noopener noreferrer"
-                      className="shrink-0"
-                    >
-                      <Button className="font-semibold text-xs flex items-center gap-1.5">
-                        Visit External Link <ExternalLink className="h-3.5 w-3.5" />
-                      </Button>
-                    </a>
+                  <div className="pt-2">
+                    <RichMediaEngine url={post.external_url} />
                   </div>
                 )}
               </>

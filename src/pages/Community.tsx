@@ -15,6 +15,8 @@ import {
   MessageSquare, UserCheck, Flame, ExternalLink, Cpu, Gamepad2, 
   Tag, Globe, Share2, Youtube, Briefcase, ArrowRight, Sparkles 
 } from "lucide-react";
+import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
+import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 
 interface CommunityUser {
   id: string;
@@ -349,6 +351,9 @@ export default function Community() {
                   <span>Trust Level System</span>
                 </div>
               </div>
+
+              {/* LIVE D1 COMMUNITY STATS BAR */}
+              <CommunityStatsBar />
             </div>
 
             {/* SUBTLE VISUAL DIVIDER */}

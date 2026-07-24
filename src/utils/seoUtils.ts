@@ -119,6 +119,38 @@ export const injectJsonLd = (data: Record<string, any>, id = 'jsonld-primary') =
   document.head.appendChild(script);
 };
 
+export const setCommunityPostSEO = (post: { title: string; content?: string; username?: string; created_at?: string; board_name?: string; url?: string; image?: string }) => {
+  const desc = post.content ? post.content.substring(0, 160).replace(/\n/g, ' ') : `Discussion thread in ${post.board_name || 'Axevora Community'}.`;
+  
+  setSEO({
+    title: `${post.title} - Axevora Community`,
+    description: desc,
+    image: post.image || 'https://axevora.com/og-image.png',
+    url: post.url || window.location.href,
+    type: 'article'
+  });
+
+  injectJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'DiscussionForumPosting',
+    'headline': post.title,
+    'articleBody': post.content || desc,
+    'author': {
+      '@type': 'Person',
+      'name': post.username || 'Community Member'
+    },
+    'datePublished': post.created_at || new Date().toISOString(),
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'Axevora',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://axevora.com/logo.png'
+      }
+    }
+  }, 'jsonld-community-post');
+};
+
 // Backward compatibility if needed
 export const setToolSEO = (title: string, description: string) => {
   setSEO({ title, description });

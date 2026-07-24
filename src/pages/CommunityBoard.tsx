@@ -18,6 +18,8 @@ import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
 import { BotBadge } from "@/components/community/BotBadge";
 import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
+import { RichMediaEngine } from "@/components/community/RichMediaEngine";
+import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 
 
 interface BoardDetails {
@@ -641,29 +643,10 @@ export default function CommunityBoard() {
                           </div>
                         ) : (
                           <>
-                            {youtubeId && (
-                              <Link to={`/community/boards/${board.slug}/posts/${post.id}`} className="block relative aspect-video w-full overflow-hidden bg-black/10 group cursor-pointer">
-                                <img 
-                                  src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`} 
-                                  onError={(e) => {
-                                    e.currentTarget.onerror = null;
-                                    e.currentTarget.src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-                                  }}
-                                  alt="YouTube video thumbnail"
-                                  loading="lazy"
-                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                  <div className="p-3 bg-red-600 rounded-full text-white shadow-lg transform group-hover:scale-110 transition-transform">
-                                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                      <path d="M8 5v14l11-7z" />
-                                    </svg>
-                                  </div>
-                                </div>
-                                <Badge className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white border-none font-bold text-[9px]">
-                                  YOUTUBE
-                                </Badge>
-                              </Link>
+                            {post.external_url && (
+                              <div className="px-4 pt-3">
+                                <RichMediaEngine url={post.external_url} />
+                              </div>
                             )}
                             <CardHeader className="p-4 pb-2">
                               <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground mb-1.5 font-medium">

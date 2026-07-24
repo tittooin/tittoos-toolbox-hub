@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CommerceSection } from "@/components/commerce/CommerceSection";
 import { ProductAnalyzerBanner } from "@/components/commerce/ProductAnalyzerBanner";
+import { HomepageCommunityFeed } from "@/components/community/HomepageCommunityFeed";
 
 // Lazy load the mobile index
 const MobileIndex = lazy(() => import("./MobileIndex"));
@@ -768,6 +769,9 @@ const Index = () => {
             )}
           </div>
         </section>
+
+        {/* --- LIVE HOMEPAGE COMMUNITY FEED --- */}
+        <HomepageCommunityFeed />
 
         {/* --- DETAILED CONTENT BLOCKS (SEO BOOSTER) --- */}
         <section className="py-20 bg-secondary/5 border-y border-border/50">

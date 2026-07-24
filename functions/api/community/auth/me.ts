@@ -18,6 +18,13 @@ export const onRequestGet = async ({ request, env }: any) => {
       return new Response(JSON.stringify({ authenticated: false, error: 'Unauthorized' }), { status: 401, headers: jsonHeaders });
     }
 
+    // Asynchronously update last_active_at presence timestamp
+    try {
+      db.prepare("UPDATE community_users SET last_active_at = datetime('now') WHERE id = ?").bind(user.id).run();
+    } catch {
+      // non-blocking
+    }
+
     return new Response(
       JSON.stringify({ authenticated: true, user }),
       { status: 200, headers: jsonHeaders }
