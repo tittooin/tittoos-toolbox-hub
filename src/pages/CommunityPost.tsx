@@ -13,6 +13,8 @@ import {
   ArrowLeft, MessageSquare, Flame, ShieldCheck, ExternalLink, 
   Calendar, Edit, Trash2, AlertTriangle, AlertCircle
 } from "lucide-react";
+import { BotBadge } from "@/components/community/BotBadge";
+import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
 
 interface PostDetails {
   id: string;
@@ -33,6 +35,7 @@ interface PostDetails {
   trust_level: number;
   board_name: string;
   board_slug: string;
+  is_automated?: number;
 }
 
 interface CurrentUser {
@@ -275,6 +278,21 @@ export default function CommunityPost() {
   const isPrivileged = user?.platformRole === 'platform_admin' || user?.platformRole === 'platform_moderator';
   const youtubeId = getYoutubeVideoId(post.external_url);
 
+  const isBotPost = post.is_automated === 1 || post.embed_type === 'cuelinks_offer';
+  let offerSnapshot: CommerceOfferPayload | null = null;
+  if (isBotPost && post.content) {
+    try {
+      offerSnapshot = JSON.parse(post.content);
+    } catch {
+      offerSnapshot = {
+        title: post.title,
+        merchant: post.url_domain || 'Partner Store',
+        description: post.content,
+        tracking_url: post.external_url || '',
+      };
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between">
       <Header />
@@ -311,9 +329,13 @@ export default function CommunityPost() {
           <CardHeader className="border-b border-border/40 pb-4">
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-medium mb-2">
               <span className="font-bold text-foreground">@{post.username || 'Anonymous'}</span>
-              <Badge variant="outline" className="text-[9px] font-bold px-1 py-0 h-4 flex items-center">
-                <Flame className="h-2.5 w-2.5 mr-0.5 text-orange-500 fill-orange-500/20" /> Level {post.trust_level || 1}
-              </Badge>
+              {isBotPost ? (
+                <BotBadge />
+              ) : (
+                <Badge variant="outline" className="text-[9px] font-bold px-1 py-0 h-4 flex items-center">
+                  <Flame className="h-2.5 w-2.5 mr-0.5 text-orange-500 fill-orange-500/20" /> Level {post.trust_level || 1}
+                </Badge>
+              )}
               <span>•</span>
               <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(post.created_at + ' Z').toLocaleString()}</span>
               <span>•</span>
@@ -329,43 +351,49 @@ export default function CommunityPost() {
           </CardHeader>
           
           <CardContent className="py-6 space-y-6">
-            {/* Embedded YouTube video player */}
-            {youtubeId && (
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-border/40 bg-black">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="absolute top-0 left-0 w-full h-full"
-                />
-              </div>
-            )}
+            {isBotPost && offerSnapshot ? (
+              <RichCommerceCard offer={offerSnapshot} />
+            ) : (
+              <>
+                {/* Embedded YouTube video player */}
+                {youtubeId && (
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-border/40 bg-black">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                )}
 
-            {/* Main post text content */}
-            <p className="text-sm md:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed">
-              {post.content}
-            </p>
+                {/* Main post text content */}
+                <p className="text-sm md:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                  {post.content}
+                </p>
 
-            {/* External link promotion card */}
-            {post.external_url && (
-              <div className="mt-8 p-4 rounded-xl border border-primary/25 bg-primary/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Shared External Resource</span>
-                  <h4 className="text-sm font-extrabold text-foreground font-mono truncate max-w-md">{post.url_domain}</h4>
-                </div>
-                <a 
-                  href={post.external_url} 
-                  target="_blank" 
-                  rel="nofollow noopener noreferrer"
-                  className="shrink-0"
-                >
-                  <Button className="font-semibold text-xs flex items-center gap-1.5">
-                    Visit External Link <ExternalLink className="h-3.5 w-3.5" />
-                  </Button>
-                </a>
-              </div>
+                {/* External link promotion card */}
+                {post.external_url && (
+                  <div className="mt-8 p-4 rounded-xl border border-primary/25 bg-primary/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Shared External Resource</span>
+                      <h4 className="text-sm font-extrabold text-foreground font-mono truncate max-w-md">{post.url_domain}</h4>
+                    </div>
+                    <a 
+                      href={post.external_url} 
+                      target="_blank" 
+                      rel="nofollow noopener noreferrer"
+                      className="shrink-0"
+                    >
+                      <Button className="font-semibold text-xs flex items-center gap-1.5">
+                        Visit External Link <ExternalLink className="h-3.5 w-3.5" />
+                      </Button>
+                    </a>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
           <CardFooter className="py-4 border-t border-border/40 bg-muted/10 text-xs text-muted-foreground flex gap-4 font-semibold">

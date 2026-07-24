@@ -9,6 +9,7 @@ import { Tag, Copy, Check, ExternalLink, ShieldCheck, ShoppingBag, Clock, Store,
 import { toast } from "sonner";
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
+import { RichCommerceCard } from "@/components/community/RichCommerceCard";
 
 const getMerchantImage = (merchantName: string, existingLogo?: string): string => {
   if (existingLogo && existingLogo.startsWith('http') && !existingLogo.includes('clearbit') && !existingLogo.includes('favicons')) {
@@ -421,132 +422,7 @@ export const CommerceSection = () => {
                   transition={{ duration: 0.3, delay: idx * 0.04 }}
                   className="h-full"
                 >
-                  <Card
-                    onClick={() => handleDealClick(item)}
-                    className="h-full flex flex-col justify-between bg-white border border-slate-200/90 hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm group cursor-pointer"
-                  >
-                    {/* Card Top Image Banner */}
-                    <div className="relative h-44 w-full overflow-hidden bg-slate-100">
-                      <img
-                        src={item.bannerImage || 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80'}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => {
-                          (e.target as HTMLElement).src = 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
-
-                      {/* Brand Logo Floating Badge */}
-                      <div className="absolute top-3 left-3 flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 shadow-md">
-                        <img
-                          src={getMerchantImage(item.merchantName, item.merchantLogo)}
-                          alt={item.merchantName}
-                          className="w-4 h-4 rounded-full object-contain"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                          }}
-                        />
-                        <span className="text-[11px] font-bold text-slate-900 tracking-tight">
-                          {item.merchantName}
-                        </span>
-                      </div>
-
-                      {/* Discount Tag Top Right */}
-                      {item.discountText && (
-                        <div className="absolute top-3 right-3 bg-indigo-600 text-white font-extrabold text-[11px] px-3 py-1 rounded-full shadow-md flex items-center gap-1">
-                          <Tag className="w-3 h-3" />
-                          <span>{item.discountText}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Card Body Content */}
-                    <CardContent className="p-5 flex flex-col justify-between flex-grow space-y-4">
-                      <div>
-                        <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-indigo-600 transition-colors">
-                          {item.title}
-                        </h3>
-
-                        {item.description && (
-                          <p className="line-clamp-2 text-xs text-slate-600 mt-2 leading-relaxed font-normal">
-                            {item.description}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="space-y-3 pt-2">
-                        {/* Coupon Code Box */}
-                        {item.couponCode ? (
-                          <div className="flex items-center justify-between p-2.5 rounded-xl bg-indigo-50/80 border border-dashed border-indigo-300 font-mono text-xs">
-                            <div className="flex items-center gap-2 text-indigo-900 font-bold tracking-wide">
-                              <Tag className="w-3.5 h-3.5 text-indigo-600" />
-                              <span>{item.couponCode}</span>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 px-3 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-100/80 rounded-lg transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCopyCode(item.couponCode!, item.merchantName);
-                              }}
-                            >
-                              {copiedCode === item.couponCode ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 mr-1 text-emerald-600" />
-                                  Copied!
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="w-3.5 h-3.5 mr-1" />
-                                  Copy Code
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="p-2.5 rounded-xl bg-slate-100/80 border border-slate-200 text-[11px] text-slate-600 font-medium flex items-center gap-2">
-                            <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                            <span>No Code Required — Direct Instant Discount</span>
-                          </div>
-                        )}
-
-                        {/* Expiry Date */}
-                        {item.validUntil && (
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                            <Clock className="w-3 h-3 text-indigo-600" />
-                            <span>Expires {item.validUntil}</span>
-                          </div>
-                        )}
-
-                        {/* CTA Buttons Row: Get Deal + Share Button */}
-                        <div className="flex items-center gap-2">
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDealClick(item);
-                            }}
-                            className="flex-grow rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs h-10 shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group-hover:bg-indigo-700"
-                          >
-                            <span>Get Deal & Shop</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </Button>
-
-                          {/* Social Share Button */}
-                          <Button
-                            onClick={(e) => handleOpenShare(item, e)}
-                            variant="outline"
-                            size="icon"
-                            className="h-10 w-10 rounded-xl border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-indigo-600 shrink-0 shadow-sm transition-colors"
-                            title="Share this deal"
-                          >
-                            <Share2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <RichCommerceCard offer={item} />
                 </motion.div>
               ))}
             </AnimatePresence>

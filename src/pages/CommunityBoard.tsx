@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
+import { BotBadge } from "@/components/community/BotBadge";
+import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
 
 
 interface BoardDetails {
@@ -48,6 +50,7 @@ interface PostItem {
   updated_at: string;
   username: string;
   trust_level: number;
+  is_automated?: number;
 }
 
 interface CurrentUser {
@@ -603,53 +606,80 @@ export default function CommunityBoard() {
               <div className="space-y-4">
                 {posts.map((post, idx) => {
                   const youtubeId = getYoutubeVideoId(post.external_url);
-                  const feedDeal = deals && deals.length > 0 ? deals[0] : null;
+                  const isBotPost = post.is_automated === 1 || post.embed_type === 'cuelinks_offer';
+                  let offerSnapshot: CommerceOfferPayload | null = null;
+
+                  if (isBotPost && post.content) {
+                    try {
+                      offerSnapshot = JSON.parse(post.content);
+                    } catch {
+                      offerSnapshot = {
+                        title: post.title,
+                        merchant: post.url_domain || 'Partner Store',
+                        description: post.content,
+                        tracking_url: post.external_url || '',
+                      };
+                    }
+                  }
 
                   return (
                     <React.Fragment key={post.id}>
                       <Card className="border-border/50 hover:border-border/80 shadow-sm transition-all bg-card hover:shadow-md overflow-hidden">
-                        {youtubeId && (
-                          <Link to={`/community/boards/${board.slug}/posts/${post.id}`} className="block relative aspect-video w-full overflow-hidden bg-black/10 group cursor-pointer">
-                            <img 
-                              src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`} 
-                              onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-                              }}
-                              alt="YouTube video thumbnail"
-                              loading="lazy"
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                              <div className="p-3 bg-red-600 rounded-full text-white shadow-lg transform group-hover:scale-110 transition-transform">
-                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                  <path d="M8 5v14l11-7z" />
-                                </svg>
+                        {isBotPost && offerSnapshot ? (
+                          <div className="p-4 space-y-3">
+                            <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-border/40">
+                              <div className="flex items-center gap-2">
+                                <span className="font-extrabold text-sm text-foreground">@{post.username || 'Axevora Bot'}</span>
+                                <BotBadge />
                               </div>
+                              <span className="text-[10px] text-muted-foreground">{new Date(post.created_at + ' Z').toLocaleString()}</span>
                             </div>
-                            <Badge className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white border-none font-bold text-[9px]">
-                              YOUTUBE
-                            </Badge>
-                          </Link>
-                        )}
-                        <CardHeader className="p-4 pb-2">
-                          <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground mb-1.5 font-medium">
-                            <span className="font-bold text-foreground">@{post.username || 'Anonymous'}</span>
-                            <Badge variant="outline" className="text-[8px] font-bold px-1 py-0 h-3.5 flex items-center">
-                              <Flame className="h-2 w-2 mr-0.5 text-orange-500 fill-orange-500/20" /> Level {post.trust_level || 1}
-                            </Badge>
-                            <span>•</span>
-                            <span>{new Date(post.created_at + ' Z').toLocaleString()}</span>
+                            <RichCommerceCard offer={offerSnapshot} />
                           </div>
-                          
-                          <Link to={`/community/boards/${board.slug}/posts/${post.id}`}>
-                            <CardTitle className="text-base font-extrabold text-foreground hover:text-primary transition-colors line-clamp-1 cursor-pointer">
-                              {post.title}
-                            </CardTitle>
-                          </Link>
-                        </CardHeader>
-                        
-                        <CardContent className="px-4 pb-3 pt-0">
+                        ) : (
+                          <>
+                            {youtubeId && (
+                              <Link to={`/community/boards/${board.slug}/posts/${post.id}`} className="block relative aspect-video w-full overflow-hidden bg-black/10 group cursor-pointer">
+                                <img 
+                                  src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`} 
+                                  onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+                                  }}
+                                  alt="YouTube video thumbnail"
+                                  loading="lazy"
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                  <div className="p-3 bg-red-600 rounded-full text-white shadow-lg transform group-hover:scale-110 transition-transform">
+                                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                      <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                                <Badge className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white border-none font-bold text-[9px]">
+                                  YOUTUBE
+                                </Badge>
+                              </Link>
+                            )}
+                            <CardHeader className="p-4 pb-2">
+                              <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground mb-1.5 font-medium">
+                                <span className="font-bold text-foreground">@{post.username || 'Anonymous'}</span>
+                                <Badge variant="outline" className="text-[8px] font-bold px-1 py-0 h-3.5 flex items-center">
+                                  <Flame className="h-2 w-2 mr-0.5 text-orange-500 fill-orange-500/20" /> Level {post.trust_level || 1}
+                                </Badge>
+                                <span>•</span>
+                                <span>{new Date(post.created_at + ' Z').toLocaleString()}</span>
+                              </div>
+                              
+                              <Link to={`/community/boards/${board.slug}/posts/${post.id}`}>
+                                <CardTitle className="text-base font-extrabold text-foreground hover:text-primary transition-colors line-clamp-1 cursor-pointer">
+                                  {post.title}
+                                </CardTitle>
+                              </Link>
+                            </CardHeader>
+                            
+                            <CardContent className="px-4 pb-3 pt-0">
                           <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                             {post.content}
                           </p>
@@ -707,7 +737,9 @@ export default function CommunityBoard() {
                           <div className="flex items-center gap-1"><ThumbsUp className="h-3.5 w-3.5" /> {post.upvotes_count} upvotes</div>
                           <div className="flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> {post.comments_count} comments</div>
                         </CardFooter>
-                      </Card>
+                      </>
+                    )}
+                  </Card>
 
                       {idx === 4 && feedDeal && (
                         <Card key={`feed-affiliate-deal`} className="border-violet-500/20 bg-violet-500/5 hover:border-violet-500/35 transition-all shadow-sm">
