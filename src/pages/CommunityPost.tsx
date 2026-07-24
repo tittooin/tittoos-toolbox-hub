@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { setSEO } from "@/utils/seoUtils";
+import { setCommunityPostSEO } from "@/utils/seoUtils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -103,6 +103,19 @@ export default function CommunityPost() {
   const [reportDetails, setReportDetails] = useState('');
   const [reporting, setReporting] = useState(false);
 
+  // Guest join modal
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [joinActionName, setJoinActionName] = useState('');
+
+  const requireAuth = (action: string, callback: () => void) => {
+    if (!user) {
+      setJoinActionName(action);
+      setShowJoinModal(true);
+    } else {
+      callback();
+    }
+  };
+
   useEffect(() => {
     checkUser();
     if (postId) {
@@ -140,11 +153,13 @@ export default function CommunityPost() {
         setEditContent(data.post.content);
         setEditUrl(data.post.external_url || '');
         
-        setSEO({
-          title: `${data.post.title} - ${data.post.board_name}`,
-          description: data.post.content.substring(0, 160),
-          url: window.location.href,
-          type: 'article'
+        setCommunityPostSEO({
+          title: data.post.title,
+          content: data.post.content,
+          username: data.post.username,
+          created_at: data.post.created_at,
+          board_name: data.post.board_name,
+          url: window.location.href
         });
       } else {
         toast.error("Failed to load post details");
@@ -318,11 +333,13 @@ export default function CommunityPost() {
               </>
             )}
             
-            {user && !isAuthor && (
-              <Button variant="outline" size="sm" onClick={() => setShowReportModal(true)} className="text-xs font-semibold text-red-600 border-red-200 hover:bg-red-50 flex items-center gap-1 rounded-xl">
-                <AlertTriangle className="h-3.5 w-3.5 text-red-600" /> Report
-              </Button>
-            )}
+            <Button
+              variant="outline" size="sm"
+              onClick={() => requireAuth('report this post', () => setShowReportModal(true))}
+              className="text-xs font-semibold text-red-600 border-red-200 hover:bg-red-50 flex items-center gap-1 rounded-xl"
+            >
+              <AlertTriangle className="h-3.5 w-3.5 text-red-600" /> Report
+            </Button>
           </div>
         </div>
 
@@ -373,10 +390,23 @@ export default function CommunityPost() {
           </CardContent>
           <CardFooter className="py-4 border-t border-border/40 bg-muted/10 text-xs text-muted-foreground flex gap-4 font-semibold">
             <div>Views: <span className="text-foreground">{post.views_count}</span></div>
-            <div>Upvotes: <span className="text-foreground">{post.upvotes_count}</span></div>
+            <button
+              onClick={() => requireAuth('upvote this post', () => {})}
+              className="flex items-center gap-1 hover:text-indigo-600 transition-colors cursor-pointer"
+            >
+              <Flame className="h-3.5 w-3.5" />
+              <span>Upvotes: <span className="text-foreground">{post.upvotes_count}</span></span>
+            </button>
           </CardFooter>
         </Card>
       </main>
+
+      {/* Guest Join Modal */}
+      <JoinCommunityModal
+        isOpen={showJoinModal}
+        onClose={() => setShowJoinModal(false)}
+        actionName={joinActionName}
+      />
 
       {/* Edit Post Modal */}
       {showEditModal && (

@@ -187,6 +187,19 @@ export default function CommunityBoard() {
   const [rulesAgreed, setRulesAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Guest join modal
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [joinActionName, setJoinActionName] = useState('');
+
+  const requireAuth = (action: string, callback: () => void) => {
+    if (!user) {
+      setJoinActionName(action);
+      setShowJoinModal(true);
+    } else {
+      callback();
+    }
+  };
+
   // Commerce/Monetization states
   const [deals, setDeals] = useState<CommerceDiscoveryItem[]>([]);
   const [dealsLoading, setDealsLoading] = useState(true);
@@ -436,17 +449,12 @@ export default function CommunityBoard() {
             </div>
             
             <div className="mt-4 md:mt-0 flex gap-2 shrink-0">
-              {user ? (
-                <Button onClick={() => setShowCreateModal(true)} className="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5">
-                  <PlusCircle className="h-4 w-4" /> Create Post
-                </Button>
-              ) : (
-                <Link to="/community#join-section">
-                  <Button className="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5">
-                    <PlusCircle className="h-4 w-4" /> Sign In to Post
-                  </Button>
-                </Link>
-              )}
+              <Button
+                onClick={() => requireAuth('create a post', () => setShowCreateModal(true))}
+                className="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5"
+              >
+                <PlusCircle className="h-4 w-4" /> {user ? 'Create Post' : 'Sign In to Post'}
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="border-t border-slate-100 p-6 py-3 flex flex-wrap gap-6 text-xs text-slate-500 font-medium bg-slate-50/50">
@@ -600,11 +608,13 @@ export default function CommunityBoard() {
                   <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                     Be the first to share your content in the {board.name} board!
                   </p>
-                  {user && (
-                    <Button onClick={() => setShowCreateModal(true)} size="sm" className="mt-2 font-semibold">
-                      Create First Post
-                    </Button>
-                  )}
+                  {/* Show Create First Post for all visitors */}
+                  <Button
+                    onClick={() => requireAuth('create the first post', () => setShowCreateModal(true))}
+                    size="sm" className="mt-2 font-semibold"
+                  >
+                    {user ? 'Create First Post' : 'Join to Post'}
+                  </Button>
                 </CardContent>
               </Card>
             ) : (
@@ -891,6 +901,13 @@ export default function CommunityBoard() {
           </Card>
         </div>
       )}
+
+      {/* Guest Join Modal */}
+      <JoinCommunityModal
+        isOpen={showJoinModal}
+        onClose={() => setShowJoinModal(false)}
+        actionName={joinActionName}
+      />
 
       <Footer />
     </div>
