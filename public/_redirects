@@ -5,5 +5,4 @@
 /app-ads.txt /app-ads.txt 200
 /.well-known/app-ads.txt /app-ads.txt 200
 /assets/* 404
-/api/* 404
 /* /index.html 200
