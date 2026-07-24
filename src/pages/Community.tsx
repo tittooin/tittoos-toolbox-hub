@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO } from "@/utils/seoUtils";
@@ -114,9 +114,21 @@ const OFFICIAL_BOARDS = [
 ];
 
 export default function Community() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get('redirect');
+  const modeParam = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
+
   const [user, setUser] = useState<CommunityUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>(modeParam);
+
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'signup' || mode === 'login') {
+      setAuthMode(mode);
+    }
+  }, [searchParams]);
   
   // Form states
   const [username, setUsername] = useState('');
@@ -160,6 +172,19 @@ export default function Community() {
 
     checkAuth();
   }, []);
+
+  // Smooth scroll to hash anchor after loading finishes
+  useEffect(() => {
+    if (!loading && window.location.hash) {
+      const id = window.location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      }
+    }
+  }, [loading]);
 
   // Load and render Turnstile widget
   useEffect(() => {
@@ -254,6 +279,9 @@ export default function Community() {
         setEmail('');
         setPassword('');
         setTurnstileToken('');
+        if (redirectParam) {
+          navigate(redirectParam);
+        }
       } else {
         toast.error(data.error || "Signup failed. Please try again.");
         // @ts-ignore
@@ -289,6 +317,9 @@ export default function Community() {
         setEmail('');
         setPassword('');
         setTurnstileToken('');
+        if (redirectParam) {
+          navigate(redirectParam);
+        }
       } else {
         toast.error(data.error || "Authentication failed.");
         // @ts-ignore

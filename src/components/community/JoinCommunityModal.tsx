@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, Flame, UserCheck, Sparkles, ArrowRight, Loader2, Mail, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 interface JoinCommunityModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export function JoinCommunityModal({
   userEmail
 }: JoinCommunityModalProps) {
   const [resending, setResending] = useState(false);
+  const navigate = useNavigate();
 
   const trackConversion = (mode: 'login' | 'signup') => {
     try {
@@ -34,8 +36,12 @@ export function JoinCommunityModal({
     } catch {
       // ignore
     }
-    if (onSelectAuth) {
+    
+    if (onSelectAuth && typeof onSelectAuth === 'function') {
       onSelectAuth(mode);
+    } else {
+      // Navigates visitor to Community Home Auth Section with active tab selection and current path redirect
+      navigate(`/community?mode=${mode}&redirect=${encodeURIComponent(window.location.pathname)}#join-section`);
     }
     onClose();
   };
