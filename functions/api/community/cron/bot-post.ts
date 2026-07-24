@@ -211,6 +211,12 @@ const handleCron = async (context: { request: Request; env?: Record<string, unkn
         )
         .run();
 
+      // Increment board post count in `community_boards`
+      await db
+        .prepare(`UPDATE community_boards SET post_count = post_count + 1 WHERE id = ?`)
+        .bind(boardId)
+        .run();
+
       // 7. Record History Entry for 24h & 7-day checks
       await db
         .prepare(
