@@ -11,13 +11,7 @@ export interface CommunityStatsData {
 }
 
 export function CommunityStatsBar() {
-  const [stats, setStats] = useState<CommunityStatsData>({
-    official_boards: 9,
-    registered_members: 0,
-    published_posts: 0,
-    posts_today: 0,
-    members_online: 1
-  });
+  const [stats, setStats] = useState<CommunityStatsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,23 +25,28 @@ export function CommunityStatsBar() {
       const res = await fetch('/api/community/stats');
       if (res.ok) {
         const data = await res.json();
-        if (data.ok && data.stats) {
+        if (data.success && data.stats) {
           setStats(data.stats);
+        } else {
+          setStats(null);
         }
+      } else {
+        setStats(null);
       }
-    } catch {
-      // fallback
+    } catch (err) {
+      console.error('Failed to fetch community stats:', err);
+      setStats(null);
     } finally {
       setLoading(false);
     }
   };
 
   const statItems = [
-    { label: 'Official Boards', value: stats.official_boards, icon: LayoutGrid, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
-    { label: 'Registered Members', value: stats.registered_members, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
-    { label: 'Published Posts', value: stats.published_posts, icon: FileText, color: 'text-sky-600', bg: 'bg-sky-50 border-sky-100' },
-    { label: 'Posts Today', value: stats.posts_today, icon: CalendarCheck, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-100' },
-    { label: 'Members Online', value: stats.members_online, icon: Activity, color: 'text-violet-600', bg: 'bg-violet-50 border-violet-100', isLive: true },
+    { label: 'Official Boards', value: stats?.official_boards, icon: LayoutGrid, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
+    { label: 'Registered Members', value: stats?.registered_members, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
+    { label: 'Published Posts', value: stats?.published_posts, icon: FileText, color: 'text-sky-600', bg: 'bg-sky-50 border-sky-100' },
+    { label: 'Posts Today', value: stats?.posts_today, icon: CalendarCheck, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-100' },
+    { label: 'Active (5 min)', value: stats?.members_online, icon: Activity, color: 'text-violet-600', bg: 'bg-violet-50 border-violet-100', isLive: true },
   ];
 
   return (
@@ -55,6 +54,10 @@ export function CommunityStatsBar() {
       <CardContent className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {statItems.map((item, idx) => {
           const IconComp = item.icon;
+          const displayVal = loading 
+            ? '...' 
+            : (item.value !== undefined && item.value !== null ? item.value.toLocaleString() : '—');
+          
           return (
             <div key={idx} className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl ${item.bg} border flex items-center justify-center shrink-0`}>
@@ -63,9 +66,9 @@ export function CommunityStatsBar() {
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-base sm:text-lg font-black text-slate-900 leading-none">
-                    {loading ? '...' : item.value.toLocaleString()}
+                    {displayVal}
                   </span>
-                  {item.isLive && (
+                  {item.isLive && item.value !== undefined && item.value !== null && (
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -83,3 +86,4 @@ export function CommunityStatsBar() {
     </Card>
   );
 }
+

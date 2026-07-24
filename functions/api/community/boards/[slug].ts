@@ -100,6 +100,10 @@ export const onRequestPost = async ({ request, env, params }: any) => {
       return new Response(JSON.stringify({ error: 'Authentication required to post' }), { status: 401, headers: jsonHeaders });
     }
 
+    if (user.emailVerified !== true) {
+      return new Response(JSON.stringify({ error: 'Email verification required', code: 'EMAIL_UNVERIFIED' }), { status: 403, headers: jsonHeaders });
+    }
+
     // 2. Fetch Board
     const { slug } = params;
     const board = await db.prepare(`

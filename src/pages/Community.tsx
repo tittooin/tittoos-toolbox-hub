@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { 
   Users, Shield, ShieldCheck, Mail, User, Lock, Key, LogOut, 
   MessageSquare, UserCheck, Flame, ExternalLink, Cpu, Gamepad2, 
-  Tag, Globe, Share2, Youtube, Briefcase, ArrowRight, Sparkles 
+  Tag, Globe, Share2, Youtube, Briefcase, ArrowRight, Sparkles, Loader2, RefreshCw 
 } from "lucide-react";
 import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
@@ -124,6 +124,27 @@ export default function Community() {
   const [password, setPassword] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
+
+  const handleResendVerification = async () => {
+    setResendingEmail(true);
+    try {
+      const res = await fetch('/api/community/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success(data.message || "Verification email sent. Please check your inbox.");
+      } else {
+        toast.error(data.error || "Failed to resend verification email.");
+      }
+    } catch (err) {
+      toast.error("Network error. Please try again later.");
+    } finally {
+      setResendingEmail(false);
+    }
+  };
 
   // Turnstile Widget Reference
   const siteKey = import.meta.env.VITE_TURNSTILE_SITEKEY || '1x00000000000000000000AA';
@@ -309,6 +330,42 @@ export default function Community() {
   return (
     <div className="min-h-screen bg-slate-50/40 flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-900">
       <Header />
+
+      {user && user.emailVerified === false && (
+        <div className="bg-amber-50 border-b border-amber-200/80 px-4 py-3 flex items-center justify-between text-xs sm:text-sm text-amber-800 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="container mx-auto max-w-6xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full bg-amber-100/80 flex items-center justify-center text-amber-600 shrink-0">
+                <Mail className="w-3 h-3" />
+              </div>
+              <p className="font-medium text-amber-800">
+                Your email address <strong className="text-slate-800">{user.email}</strong> is unverified. Please check your inbox for the verification link.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <Button 
+                onClick={handleResendVerification}
+                disabled={resendingEmail}
+                size="sm"
+                variant="outline"
+                className="h-8 rounded-lg bg-white border-amber-200 text-amber-900 hover:bg-amber-100/50 hover:text-amber-950 font-bold text-[11px] flex items-center gap-1.5 transition-all"
+              >
+                {resendingEmail ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
+                    Resending...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3 h-3 text-amber-600" />
+                    Resend Verification Email
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-6xl">
         {!user ? (

@@ -18,6 +18,10 @@ export const onRequestPost = async ({ request, env, params }: any) => {
       return new Response(JSON.stringify({ error: 'Authentication required to report posts' }), { status: 401, headers: jsonHeaders });
     }
 
+    if (user.emailVerified !== true) {
+      return new Response(JSON.stringify({ error: 'Email verification required to report posts', code: 'EMAIL_UNVERIFIED' }), { status: 403, headers: jsonHeaders });
+    }
+
     // 2. Validate Post
     const { postId } = params;
     const post = await db.prepare(`

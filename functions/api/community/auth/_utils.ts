@@ -256,3 +256,108 @@ export async function getAuthenticatedUser(request: Request, db: any): Promise<a
     return null;
   }
 }
+
+// 7. EMAIL VERIFICATION TOKEN GENERATION
+export async function generateVerificationToken(): Promise<{ rawToken: string; tokenHash: string; expiresAt: string }> {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const rawToken = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  const enc = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', enc.encode(rawToken));
+  const tokenHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  return { rawToken, tokenHash, expiresAt };
+}
+
+// 8. DISPOSABLE EMAIL DOMAIN CHECK
+export async function checkDisposableEmail(db: any, email: string): Promise<boolean> {
+  try {
+    const domain = email.split('@')[1]?.toLowerCase();
+    if (!domain) return false;
+    const result = await db.prepare(
+      'SELECT domain FROM community_blocked_email_domains WHERE domain = ?'
+    ).bind(domain).first();
+    return !!result;
+  } catch {
+    return false; // Fail-open: if blocklist unavailable, allow registration
+  }
+}
+
+// 9. SEND VERIFICATION EMAIL VIA RESEND
+export async function sendVerificationEmail(
+  env: any,
+  to: string,
+  username: string,
+  rawToken: string
+): Promise<boolean> {
+  const resendApiKey = env?.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn('RESEND_API_KEY not configured — skipping email send');
+    return false;
+  }
+
+  const verifyUrl = `https://axevora.com/community/verify-email?token=${rawToken}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify your Axevora email</title>
+</head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.08);overflow:hidden;">
+        <tr><td style="background:linear-gradient(135deg,#6366f1,#4f46e5);padding:32px 40px;text-align:center;">
+          <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:-0.5px;">Axevora</h1>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Community Platform</p>
+        </td></tr>
+        <tr><td style="padding:40px;">
+          <h2 style="margin:0 0 8px;color:#0f172a;font-size:22px;font-weight:800;">Welcome to Axevora Community!</h2>
+          <p style="margin:0 0 24px;color:#64748b;font-size:15px;line-height:1.6;">Hey <strong style="color:#0f172a;">@${username}</strong> 👋<br>You're one step away. Please verify your email address to unlock full community participation.</p>
+          <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:8px 0 32px;">
+            <a href="${verifyUrl}" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:16px 40px;border-radius:12px;box-shadow:0 4px 12px rgba(99,102,241,0.4);">✓ Verify My Email Address</a>
+          </td></tr></table>
+          <div style="background:#f8fafc;border-radius:10px;padding:16px 20px;margin-bottom:24px;">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Link not working?</p>
+            <p style="margin:0;font-size:12px;color:#64748b;word-break:break-all;">${verifyUrl}</p>
+          </div>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:0 0 24px;">
+          <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;">This link expires in <strong>24 hours</strong>.</p>
+          <p style="margin:0;font-size:13px;color:#94a3b8;">Didn't create an Axevora account? You can safely ignore this email.</p>
+        </td></tr>
+        <tr><td style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0;">
+          <p style="margin:0;font-size:12px;color:#94a3b8;">© 2026 Axevora • <a href="mailto:security@axevora.com" style="color:#6366f1;">security@axevora.com</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'Axevora <noreply@axevora.com>',
+        to: [to],
+        subject: 'Verify your Axevora email address',
+        html
+      })
+    });
+    const result: any = await res.json();
+    if (!res.ok) {
+      console.error('Resend API error:', result);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Email send error:', err);
+    return false;
+  }
+}

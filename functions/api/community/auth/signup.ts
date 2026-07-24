@@ -1,4 +1,4 @@
-import { hashPassword, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit } from './_utils';
+import { hashPassword, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit, generateVerificationToken, checkDisposableEmail, sendVerificationEmail } from './_utils';
 
 export const onRequestPost = async ({ request, env }: any) => {
   const jsonHeaders = {
@@ -58,6 +58,12 @@ export const onRequestPost = async ({ request, env }: any) => {
     }
     const normEmail = cleanEmail.toLowerCase();
 
+    // 4a. Disposable email protection
+    const isDisposable = await checkDisposableEmail(db, normEmail);
+    if (isDisposable) {
+      return new Response(JSON.stringify({ error: 'Temporary or disposable email addresses are not allowed. Please use a permanent email address.' }), { status: 400, headers: jsonHeaders });
+    }
+
     // 5. Password validation
     if (!password || typeof password !== 'string') {
       return new Response(JSON.stringify({ error: 'Password is required' }), { status: 400, headers: jsonHeaders });
@@ -100,6 +106,25 @@ export const onRequestPost = async ({ request, env }: any) => {
       VALUES (?, ?)
     `).bind(userId, cleanUsername).run();
 
+    // 8. Generate verification token and send email
+    let requiresEmailVerification = true;
+    try {
+      const { rawToken, tokenHash, expiresAt } = await generateVerificationToken();
+      const verifyId = crypto.randomUUID();
+      await db.prepare(`
+        INSERT INTO community_email_verifications (id, user_id, token_hash, expires_at)
+        VALUES (?, ?, ?, ?)
+      `).bind(verifyId, userId, tokenHash, expiresAt).run();
+
+      // Fire-and-forget email send (non-blocking — don't fail signup if email fails)
+      sendVerificationEmail(env, cleanEmail, cleanUsername, rawToken).catch(err =>
+        console.error('Verification email send failed (non-blocking):', err)
+      );
+    } catch (tokenErr) {
+      console.error('Verification token generation error:', tokenErr);
+      requiresEmailVerification = false; // Degrade gracefully
+    }
+
     // 8. Session Generation
     const rawSessionToken = generateRawSessionToken();
     const sessionTokenHash = await hashSessionToken(rawSessionToken);
@@ -129,7 +154,7 @@ export const onRequestPost = async ({ request, env }: any) => {
     };
 
     return new Response(
-      JSON.stringify({ success: true, user: userPayload }),
+      JSON.stringify({ success: true, user: userPayload, requiresEmailVerification }),
       {
         status: 201,
         headers: {

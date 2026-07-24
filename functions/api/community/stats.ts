@@ -1,7 +1,7 @@
 export const onRequest = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const jsonHeaders = {
     'Content-Type': 'application/json',
-    'Cache-Control': 'public, max-age=30, s-maxage=60',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Access-Control-Allow-Origin': '*'
   };
 
@@ -15,50 +15,40 @@ export const onRequest = async (context: { request: Request; env?: Record<string
 
     if (!db) {
       return new Response(
-        JSON.stringify({
-          ok: true,
-          stats: {
-            official_boards: 9,
-            registered_members: 12,
-            published_posts: 8,
-            posts_today: 8,
-            members_online: 1
-          }
-        }),
-        { status: 200, headers: jsonHeaders }
+        JSON.stringify({ error: 'Database service not available' }),
+        { status: 500, headers: jsonHeaders }
       );
     }
 
-    // 1. Official Boards
+    // 1. Official Boards count
     const boardsRes = await db.prepare("SELECT COUNT(*) as cnt FROM community_boards WHERE status = 'active'").first<{ cnt: number }>();
-    const officialBoards = boardsRes?.cnt || 9;
+    const officialBoards = boardsRes?.cnt ?? 0;
 
-    // 2. Registered Human Members (EXCLUDES BOTS)
+    // 2. Registered Human Members (EXCLUDES BOTS, requires verified email)
     const membersRes = await db.prepare(
-      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%'"
+      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1"
     ).first<{ cnt: number }>();
-    const registeredMembers = membersRes?.cnt || 1;
+    const registeredMembers = membersRes?.cnt ?? 0;
 
-    // 3. Published Posts
+    // 3. Published Posts count
     const postsRes = await db.prepare("SELECT COUNT(*) as cnt FROM community_posts WHERE status = 'published'").first<{ cnt: number }>();
-    const publishedPosts = postsRes?.cnt || 0;
+    const publishedPosts = postsRes?.cnt ?? 0;
 
-    // 4. Posts Today
+    // 4. Posts Today count
     const todayRes = await db.prepare(
       "SELECT COUNT(*) as cnt FROM community_posts WHERE status = 'published' AND created_at >= date('now')"
     ).first<{ cnt: number }>();
-    const postsToday = todayRes?.cnt || 0;
+    const postsToday = todayRes?.cnt ?? 0;
 
-    // 5. Active Online Members in Last 5 Minutes (EXCLUDES BOTS)
+    // 5. Active Online Members in Last 5 Minutes (EXCLUDES BOTS, requires verified email)
     const onlineRes = await db.prepare(
-      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%' AND last_active_at >= datetime('now', '-5 minutes')"
+      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1 AND last_active_at >= datetime('now', '-5 minutes')"
     ).first<{ cnt: number }>();
-    let membersOnline = onlineRes?.cnt || 0;
-    if (membersOnline < 1) membersOnline = 1; // Minimum active visitor baseline
+    const membersOnline = onlineRes?.cnt ?? 0;
 
     return new Response(
       JSON.stringify({
-        ok: true,
+        success: true,
         stats: {
           official_boards: officialBoards,
           registered_members: registeredMembers,
@@ -69,19 +59,12 @@ export const onRequest = async (context: { request: Request; env?: Record<string
       }),
       { status: 200, headers: jsonHeaders }
     );
-  } catch (err) {
+  } catch (err: any) {
+    console.error('Stats endpoint error:', err);
     return new Response(
-      JSON.stringify({
-        ok: true,
-        stats: {
-          official_boards: 9,
-          registered_members: 1,
-          published_posts: 8,
-          posts_today: 8,
-          members_online: 1
-        }
-      }),
-      { status: 200, headers: jsonHeaders }
+      JSON.stringify({ error: 'Server error retrieving statistics' }),
+      { status: 500, headers: jsonHeaders }
     );
   }
 };
+

@@ -61,6 +61,7 @@ interface CurrentUser {
   email: string;
   platformRole: string;
   trustLevel: number;
+  emailVerified?: boolean;
 }
 
 const getYoutubeVideoId = (url: string | null): string | null => {
@@ -195,6 +196,8 @@ export default function CommunityBoard() {
     if (!user) {
       setJoinActionName(action);
       setShowJoinModal(true);
+    } else if (user.emailVerified === false) {
+      toast.error("Email verification is required to perform this action. Please check your inbox or resend the link from the community dashboard.");
     } else {
       callback();
     }
@@ -907,6 +910,8 @@ export default function CommunityBoard() {
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         actionName={joinActionName}
+        isUnverifiedUser={user ? user.emailVerified === false : false}
+        userEmail={user?.email}
       />
 
       <Footer />

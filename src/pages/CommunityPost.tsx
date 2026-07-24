@@ -46,6 +46,7 @@ interface CurrentUser {
   email: string;
   platformRole: string;
   trustLevel: number;
+  emailVerified?: boolean;
 }
 
 const getYoutubeVideoId = (url: string | null): string | null => {
@@ -109,6 +110,9 @@ export default function CommunityPost() {
 
   const requireAuth = (action: string, callback: () => void) => {
     if (!user) {
+      setJoinActionName(action);
+      setShowJoinModal(true);
+    } else if (user.emailVerified === false) {
       setJoinActionName(action);
       setShowJoinModal(true);
     } else {
@@ -406,6 +410,8 @@ export default function CommunityPost() {
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         actionName={joinActionName}
+        isUnverifiedUser={user ? user.emailVerified === false : false}
+        userEmail={user?.email}
       />
 
       {/* Edit Post Modal */}

@@ -31,6 +31,7 @@ const SubmitBlog = lazy(() => import("./pages/SubmitBlog"));
 const Community = lazy(() => import("./pages/Community"));
 const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
 const CommunityPost = lazy(() => import("./pages/CommunityPost"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 
 // Blog Categories
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -270,6 +271,7 @@ const App = () => (
                 <Route path="/community" element={<Community />} />
                 <Route path="/community/boards/:slug" element={<CommunityBoard />} />
                 <Route path="/community/boards/:slug/posts/:postId" element={<CommunityPost />} />
+                <Route path="/community/verify-email" element={<VerifyEmail />} />
 
                 {/* Blog Category Pages */}
                 <Route path="/blog-posts/analyzers-category" element={<AnalyzersCategoryPage />} />
