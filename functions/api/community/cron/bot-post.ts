@@ -1,4 +1,4 @@
-export const onRequest = async (context: { request: Request; env?: Record<string, unknown> }) => {
+const handleCron = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
   const envObj = env || {};
   const db = envObj.COMMUNITY_DB as {
@@ -250,3 +250,6 @@ export const onRequest = async (context: { request: Request; env?: Record<string
     );
   }
 };
+
+export const onRequestGet = handleCron;
+export const onRequestPost = handleCron;
