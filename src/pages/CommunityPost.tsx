@@ -294,39 +294,39 @@ export default function CommunityPost() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-between">
+    <div className="min-h-screen bg-slate-50/40 flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-900">
       <Header />
 
-      <main className="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
         {/* Navigation & Breadcrumb */}
         <div className="mb-6 flex items-center justify-between">
-          <Link to={`/community/boards/${post.board_slug}`} className="text-sm font-semibold text-primary hover:underline flex items-center gap-1.5 w-fit">
+          <Link to={`/community/boards/${post.board_slug}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1.5 w-fit">
             <ArrowLeft className="h-4 w-4" /> Back to {post.board_name}
           </Link>
           
           <div className="flex gap-2">
             {user && (isAuthor || isPrivileged) && (
               <>
-                <Button variant="outline" size="sm" onClick={() => setShowEditModal(true)} className="text-xs font-semibold flex items-center gap-1">
+                <Button variant="outline" size="sm" onClick={() => setShowEditModal(true)} className="text-xs font-semibold flex items-center gap-1 rounded-xl">
                   <Edit className="h-3.5 w-3.5" /> Edit
                 </Button>
-                <Button variant="destructive" size="sm" onClick={handleDeletePost} className="text-xs font-semibold flex items-center gap-1">
+                <Button variant="destructive" size="sm" onClick={handleDeletePost} className="text-xs font-semibold flex items-center gap-1 rounded-xl">
                   <Trash2 className="h-3.5 w-3.5" /> Delete
                 </Button>
               </>
             )}
             
             {user && !isAuthor && (
-              <Button variant="outline" size="sm" onClick={() => setShowReportModal(true)} className="text-xs font-semibold text-destructive border-destructive/30 hover:bg-destructive/10 flex items-center gap-1">
-                <AlertTriangle className="h-3.5 w-3.5 text-destructive" /> Report
+              <Button variant="outline" size="sm" onClick={() => setShowReportModal(true)} className="text-xs font-semibold text-red-600 border-red-200 hover:bg-red-50 flex items-center gap-1 rounded-xl">
+                <AlertTriangle className="h-3.5 w-3.5 text-red-600" /> Report
               </Button>
             )}
           </div>
         </div>
 
         {/* Post Detail Card */}
-        <Card className="border-border/60 shadow-xl bg-card">
-          <CardHeader className="border-b border-border/40 pb-4">
+        <Card className="border border-slate-200/80 shadow-md bg-white rounded-2xl overflow-hidden">
+          <CardHeader className="p-6 border-b border-slate-100 pb-4">
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-medium mb-2">
               <span className="font-bold text-foreground">@{post.username || 'Anonymous'}</span>
               {isBotPost ? (

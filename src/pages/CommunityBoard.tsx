@@ -408,45 +408,48 @@ export default function CommunityBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-between">
+    <div className="min-h-screen bg-slate-50/40 flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-900">
       <Header />
 
-      <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl">
         {/* Breadcrumb & Navigation */}
         <div className="mb-6">
-          <Link to="/community" className="text-sm font-semibold text-primary hover:underline flex items-center gap-1.5 w-fit">
+          <Link to="/community" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1.5 w-fit">
             <ArrowLeft className="h-4 w-4" /> Back to Community Dashboard
           </Link>
         </div>
 
         {/* Board Header Card */}
-        <Card className="border-border/60 shadow-lg bg-card/60 backdrop-blur mb-8">
-          <CardHeader className="md:flex md:flex-row md:items-start justify-between gap-4">
+        <Card className="border border-slate-200/80 shadow-sm bg-white rounded-2xl mb-8 overflow-hidden">
+          <CardHeader className="p-6 md:flex md:flex-row md:items-start justify-between gap-4 pb-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{board.name}</h1>
-                <Badge className="bg-primary/15 text-primary border-none text-[10px] font-bold">OFFICIAL</Badge>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">{board.name}</h1>
+                <Badge variant="outline" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600 bg-slate-100/80 border-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-indigo-600" />
+                  OFFICIAL
+                </Badge>
               </div>
-              <p className="text-muted-foreground text-sm max-w-3xl leading-relaxed">{board.description}</p>
+              <p className="text-slate-600 text-sm max-w-3xl leading-relaxed font-normal">{board.description}</p>
             </div>
             
             <div className="mt-4 md:mt-0 flex gap-2 shrink-0">
               {user ? (
-                <Button onClick={() => setShowCreateModal(true)} className="font-semibold flex items-center gap-1.5">
+                <Button onClick={() => setShowCreateModal(true)} className="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5">
                   <PlusCircle className="h-4 w-4" /> Create Post
                 </Button>
               ) : (
                 <Link to="/community#join-section">
-                  <Button className="font-semibold flex items-center gap-1.5">
+                  <Button className="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5">
                     <PlusCircle className="h-4 w-4" /> Sign In to Post
                   </Button>
                 </Link>
               )}
             </div>
           </CardHeader>
-          <CardContent className="border-t border-border/40 pt-4 flex flex-wrap gap-6 text-xs text-muted-foreground font-medium">
-            <div>Posts: <span className="text-foreground font-bold">{board.post_count}</span></div>
-            <div>Visibility: <span className="text-foreground font-bold capitalize">{board.visibility}</span></div>
+          <CardContent className="border-t border-slate-100 p-6 py-3 flex flex-wrap gap-6 text-xs text-slate-500 font-medium bg-slate-50/50">
+            <div>Posts: <span className="text-slate-900 font-bold">{board.post_count}</span></div>
+            <div>Visibility: <span className="text-slate-900 font-bold capitalize">{board.visibility}</span></div>
           </CardContent>
         </Card>
 
