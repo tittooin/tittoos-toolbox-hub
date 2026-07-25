@@ -121,25 +121,55 @@ export function serializeCookie(name: string, value: string, maxAge: number, pro
   return `${name}=${encodeURIComponent(value)}; HttpOnly${secure}; SameSite=Lax; Path=/; Max-Age=${maxAge}`;
 }
 
+export interface TurnstileResult {
+  success: boolean;
+  outcome?: any;
+  errorCodes?: string[];
+  error?: string;
+}
+
 // 4. TURNSTILE BOT PROTECTION VERIFICATION
-export async function verifyTurnstile(token: string, secretKey: string | undefined): Promise<boolean> {
-  // Use dummy secret key if not set (fallback for local testing)
-  const key = secretKey || '1x00000000000000000000000000000000AA';
-  if (!token) return false;
+export async function verifyTurnstile(
+  token: string,
+  secretKey: string | undefined,
+  remoteip?: string
+): Promise<TurnstileResult> {
+  // PRODUCTION GUARD: Do NOT fall back to test key in production.
+  // If secret key is missing, fail-closed immediately with a clear error.
+  if (!secretKey) {
+    console.error('[Turnstile] TURNSTILE_SECRET_KEY is not set in environment variables. Failing verification.');
+    return { success: false, error: 'missing_secret_key', errorCodes: ['missing-secret-key'] };
+  }
+  if (!token) {
+    return { success: false, error: 'missing_token', errorCodes: ['missing-input-response'] };
+  }
   
   try {
+    let body = `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`;
+    if (remoteip) {
+      body += `&remoteip=${encodeURIComponent(remoteip)}`;
+    }
+
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `secret=${encodeURIComponent(key)}&response=${encodeURIComponent(token)}`,
+      body,
     });
     const outcome: any = await response.json();
-    return !!outcome.success;
-  } catch (err) {
-    console.error('Turnstile error:', err);
-    return false;
+
+    // Always log the complete Cloudflare siteverify response for debugging
+    console.log('[Turnstile] Siteverify response:', JSON.stringify(outcome));
+
+    return {
+      success: !!outcome.success,
+      outcome,
+      errorCodes: outcome['error-codes'] || [],
+    };
+  } catch (err: any) {
+    console.error('[Turnstile] Network error calling siteverify:', err);
+    return { success: false, error: err?.message || 'network_error', errorCodes: ['internal-network-error'] };
   }
 }
 

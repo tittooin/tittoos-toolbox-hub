@@ -23,9 +23,26 @@ export const onRequestPost = async ({ request, env }: any) => {
     const { username, email, password, turnstileToken } = data || {};
 
     // 2. Turnstile Bot Protection
-    const isBotChallengePassed = await verifyTurnstile(turnstileToken, env?.TURNSTILE_SECRET_KEY);
-    if (!isBotChallengePassed) {
-      return new Response(JSON.stringify({ error: 'Bot verification failed. Please try again.' }), { status: 400, headers: jsonHeaders });
+    const turnstileResult = await verifyTurnstile(turnstileToken, env?.TURNSTILE_SECRET_KEY, clientIp);
+    if (!turnstileResult.success) {
+      console.error('[Signup] Turnstile failed.', {
+        tokenLength: turnstileToken?.length,
+        secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
+        errorCodes: turnstileResult.errorCodes,
+        outcome: turnstileResult.outcome,
+        internalError: turnstileResult.error
+      });
+      return new Response(JSON.stringify({ 
+        error: 'Bot verification failed. Please try again.',
+        code: 'TURNSTILE_FAILED',
+        details: {
+          tokenLength: turnstileToken?.length || 0,
+          secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
+          errorCodes: turnstileResult.errorCodes || [],
+          cloudflareResponse: turnstileResult.outcome || null,
+          internalError: turnstileResult.error || null
+        }
+      }), { status: 400, headers: jsonHeaders });
     }
 
     // 3. Username validation
