@@ -194,23 +194,13 @@ export default function Community() {
     const container = document.getElementById(widgetId);
     if (!container) return;
 
-    const oldScript = document.getElementById('cf-turnstile-script');
-    if (oldScript) {
-      oldScript.remove();
-    }
+    let currentWidgetId: string | undefined;
 
-    const script = document.createElement('script');
-    script.id = 'cf-turnstile-script';
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    script.onload = () => {
+    const renderWidget = () => {
       // @ts-ignore
       if (window.turnstile) {
         // @ts-ignore
-        window.turnstile.render(`#${widgetId}`, {
+        currentWidgetId = window.turnstile.render(`#${widgetId}`, {
           sitekey: siteKey,
           callback: (token: string) => {
             setTurnstileToken(token);
@@ -222,17 +212,47 @@ export default function Community() {
       }
     };
 
+    // @ts-ignore
+    if (window.turnstile) {
+      renderWidget();
+    } else {
+      const scriptId = 'cf-turnstile-script';
+      let script = document.getElementById(scriptId) as HTMLScriptElement;
+      
+      if (!script) {
+        script = document.createElement('script');
+        script.id = scriptId;
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+
+      const handleLoad = () => renderWidget();
+      script.addEventListener('load', handleLoad);
+      
+      return () => {
+        script.removeEventListener('load', handleLoad);
+        // @ts-ignore
+        if (window.turnstile && currentWidgetId !== undefined) {
+          try {
+            // @ts-ignore
+            window.turnstile.remove(currentWidgetId);
+          } catch (e) {}
+        }
+      };
+    }
+
     return () => {
       // @ts-ignore
-      if (window.turnstile) {
+      if (window.turnstile && currentWidgetId !== undefined) {
         try {
           // @ts-ignore
-          window.turnstile.remove(`#${widgetId}`);
+          window.turnstile.remove(currentWidgetId);
         } catch (e) {
           // Ignore removal exceptions
         }
       }
-      script.remove();
     };
   }, [user, loading, authMode]);
 
