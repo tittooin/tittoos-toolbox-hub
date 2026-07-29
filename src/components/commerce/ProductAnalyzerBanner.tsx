@@ -12,10 +12,10 @@ export const ProductAnalyzerBanner = () => {
   const handleAnalyze = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!productUrl.trim()) {
-      navigate("/tools/product-analysis");
+      navigate("/ai");
       return;
     }
-    navigate(`/tools/product-analysis?url=${encodeURIComponent(productUrl.trim())}`);
+    navigate(`/ai?url=${encodeURIComponent(productUrl.trim())}`);
   };
 
   return (

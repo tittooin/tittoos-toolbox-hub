@@ -155,9 +155,9 @@ const Index = () => {
 
               {/* Primary Hero CTAs */}
               <div className="flex flex-wrap justify-center gap-4 mb-10">
-                <Link to="/tools">
+                <Link to="/ai">
                   <Button size="lg" className="rounded-full px-8 font-bold gap-2 shadow-lg shadow-primary/20">
-                    Explore Tools <ArrowRight className="w-4 h-4" />
+                    Try AI Assistant <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to="/community">

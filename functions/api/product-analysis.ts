@@ -9,8 +9,15 @@ import { ComparisonDimensionResolver } from '../../src/modules/commerce/resolver
 import { ComparisonRecommendationService } from '../../src/modules/commerce/resolver/ComparisonRecommendationService';
 import { OneLinkOrchestratorService } from '../../src/modules/commerce/resolver/OneLinkOrchestratorService';
 import { ResolutionContext } from '../../src/modules/commerce/resolver/types';
+import { RealWebScraperAdapter } from '../../src/modules/commerce/resolver/adapters/RealWebScraperAdapter';
 
 const router = new ProviderRouter();
+
+// Register the real web scraper for primary MVP merchants
+const scraperAdapter = new RealWebScraperAdapter();
+router.registerProvider('amazon_in', scraperAdapter);
+router.registerProvider('flipkart', scraperAdapter);
+
 const redirectResolver = new SafeRedirectResolver();
 const linkResolver = new ProductLinkResolver(router, redirectResolver);
 const catalogRepo = new CatalogRepository();
@@ -26,7 +33,7 @@ const orchestrator = new OneLinkOrchestratorService(
   comparisonService
 );
 
-export const onRequestPost = async ({ request }: { request: Request }) => {
+export const onRequestPost = async ({ request, env }: { request: Request, env: any }) => {
   try {
     const data = (await request.json()) as { url?: string; comparisonLimit?: number; intent?: 'BEST_OVERALL' | 'BEST_VALUE' };
     const { url, comparisonLimit, intent } = data || {};
@@ -51,6 +58,35 @@ export const onRequestPost = async ({ request }: { request: Request }) => {
       comparisonLimit,
       intent,
     });
+
+    // Generate AI Summary for the product if AI is available
+    if (result.productIntelligence && (env as any)?.AI) {
+      try {
+        const { WorkersAIProvider } = await import('./shopping/providers/WorkersAIProvider');
+        const aiProvider = new WorkersAIProvider();
+        
+        const title = result.productIntelligence.productFacts.title?.value || 'the product';
+        const rawDesc = result.productIntelligence.productFacts.description?.value || '';
+        const specs = JSON.stringify(result.productIntelligence.productFacts.customAttributes?.value || {});
+        
+        const summaryResponse = await aiProvider.generateResponse([
+          { role: 'system', content: 'You are an expert shopping assistant. Summarize the product briefly (3-4 sentences max) focusing on its key value proposition, target audience, and best features.' },
+          { role: 'user', content: `Product Name: ${title}\nDescription: ${rawDesc}\nSpecs: ${specs}\n\nProvide a concise and engaging summary.` }
+        ], { model: '@cf/meta/llama-3.3-70b-instruct-fp8-fast', maxTokens: 150 }, env as any);
+        
+        if (summaryResponse.text) {
+          result.productIntelligence.productFacts.description = {
+            value: summaryResponse.text,
+            source: 'ai_inferred',
+            confidence: 'HIGH',
+            observedAt: new Date().toISOString()
+          };
+        }
+      } catch (aiErr) {
+        console.error('AI Summary generation failed:', aiErr);
+        result.warnings.push('AI Summary generation failed.');
+      }
+    }
 
     return new Response(
       JSON.stringify(result),
