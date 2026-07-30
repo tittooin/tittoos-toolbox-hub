@@ -427,8 +427,12 @@ export default function Community() {
         toast.error(data.error || "Google authentication failed.");
       }
     } catch (err: any) {
-      console.error(err);
-      toast.error("Google authentication cancelled or failed.");
+      console.error("[Google Auth Error] Complete Error Object:", err);
+      console.error("[Google Auth Error] Code:", err?.code);
+      console.error("[Google Auth Error] Message:", err?.message);
+      if (err?.customData) console.error("[Google Auth Error] Custom Data:", err.customData);
+      
+      toast.error(err?.message || "Google authentication cancelled or failed.");
     } finally {
       setSubmitting(false);
     }

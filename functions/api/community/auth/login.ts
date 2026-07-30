@@ -156,7 +156,9 @@ export const onRequestPost = async ({ request, env }: any) => {
       }
     );
   } catch (err: any) {
-    console.error('Login error:', err);
-    return new Response(JSON.stringify({ error: 'Server error during authentication' }), { status: 500, headers: jsonHeaders });
+    console.error('[Auth] Login API Error: Complete Error Object:', err);
+    console.error('[Auth] Login API Error Code:', err?.code);
+    console.error('[Auth] Login API Error Message:', err?.message);
+    return new Response(JSON.stringify({ error: 'Server error during authentication', detail: err?.message }), { status: 500, headers: jsonHeaders });
   }
 };
