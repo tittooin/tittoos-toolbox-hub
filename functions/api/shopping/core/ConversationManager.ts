@@ -120,6 +120,8 @@ export class ConversationManager {
         noDataReason: aiError.details.message
       };
     }
+  }
+
   async handleChatStream(
     conversationId: string,
     userQuery: string,
