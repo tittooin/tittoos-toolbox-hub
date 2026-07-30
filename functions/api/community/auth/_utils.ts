@@ -405,7 +405,7 @@ export async function verifyFirebaseToken(
   env: any,
   idToken: string
 ): Promise<{ localId: string, email: string, emailVerified: boolean, displayName?: string, photoUrl?: string } | null> {
-  const apiKey = env?.FIREBASE_API_KEY;
+  const apiKey = env?.FIREBASE_API_KEY || "AIzaSyBG2PTSnpuT1voacdxNUu8j8a1QjF0tdPw";
   if (!apiKey) {
     console.error('[Auth] FIREBASE_API_KEY not configured');
     return null;
