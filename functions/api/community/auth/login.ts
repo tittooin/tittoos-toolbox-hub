@@ -1,6 +1,7 @@
-import { verifyPassword, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit } from './_utils';
+import { verifyFirebaseToken, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit } from './_utils';
 
 export const onRequestPost = async ({ request, env }: any) => {
+  console.log('[Auth] Login Request Started (Firebase Auth)');
   const jsonHeaders = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -20,71 +21,103 @@ export const onRequestPost = async ({ request, env }: any) => {
     }
 
     const data = await request.json();
-    const { usernameOrEmail, password, turnstileToken } = data || {};
+    const { firebaseIdToken, turnstileToken } = data || {};
 
-    // 2. Turnstile Verification (if client provided token)
+    // 2. Turnstile Verification
     if (turnstileToken) {
       const turnstileResult = await verifyTurnstile(turnstileToken, env?.TURNSTILE_SECRET_KEY, clientIp);
       if (!turnstileResult.success) {
-        console.error('[Login] Turnstile failed.', {
-          tokenLength: turnstileToken?.length,
-          secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
-          errorCodes: turnstileResult.errorCodes,
-          outcome: turnstileResult.outcome,
-        });
         return new Response(JSON.stringify({ 
           error: 'Bot verification failed. Please try again.',
-          code: 'TURNSTILE_FAILED',
-          details: {
-            tokenLength: turnstileToken?.length || 0,
-            secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
-            errorCodes: turnstileResult.errorCodes || [],
-            cloudflareResponse: turnstileResult.outcome || null,
-            internalError: turnstileResult.error || null
-          }
+          code: 'TURNSTILE_FAILED'
         }), { status: 400, headers: jsonHeaders });
       }
     }
 
-    if (!usernameOrEmail || !password) {
-      return new Response(JSON.stringify({ error: 'Username/Email and Password are required' }), { status: 400, headers: jsonHeaders });
+    if (!firebaseIdToken) {
+      return new Response(JSON.stringify({ error: 'Firebase ID Token is required' }), { status: 400, headers: jsonHeaders });
     }
 
-    const normInput = usernameOrEmail.trim().toLowerCase();
+    // 3. Verify Firebase Token
+    const firebaseUser = await verifyFirebaseToken(env, firebaseIdToken);
+    if (!firebaseUser) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication token' }), { status: 401, headers: jsonHeaders });
+    }
 
-    // 3. Retrieve user record
-    const user = await db.prepare(`
+    const { localId: firebaseUid, email: fbEmail, displayName: fbDisplayName, photoUrl: fbPhotoUrl, emailVerified } = firebaseUser;
+    
+    if (!fbEmail) {
+      return new Response(JSON.stringify({ error: 'Email is required from identity provider' }), { status: 400, headers: jsonHeaders });
+    }
+    const normEmail = fbEmail.toLowerCase();
+
+    // 4. Retrieve user record
+    let user = await db.prepare(`
       SELECT * FROM community_users 
-      WHERE username_normalized = ? OR email_normalized = ?
-    `).bind(normInput, normInput).first();
+      WHERE firebase_uid = ?
+    `).bind(firebaseUid).first();
 
-    let passwordMatch = false;
+    // Legacy Auth Migration or Google Login Auto-Sync
+    if (!user) {
+      user = await db.prepare(`
+        SELECT * FROM community_users 
+        WHERE email_normalized = ?
+      `).bind(normEmail).first();
 
-    if (user) {
-      // User status check (early reject if user is not active, but check password to prevent timing attack)
-      passwordMatch = await verifyPassword(
-        password,
-        user.password_salt || '',
-        user.password_hash,
-        user.password_iterations,
-        user.password_algorithm
-      );
-      
-      if (user.status !== 'active') {
-        return new Response(JSON.stringify({ error: 'Your account is suspended or inactive' }), { status: 403, headers: jsonHeaders });
+      if (user) {
+        // Link account (Migration safe strategy)
+        await db.prepare(`UPDATE community_users SET firebase_uid = ? WHERE id = ?`).bind(firebaseUid, user.id).run();
+        user.firebase_uid = firebaseUid;
+      } else {
+        // Create new user (Google Login Auto Sync scenario)
+        const userId = crypto.randomUUID();
+        const randomStr = Math.random().toString(36).substring(2, 6);
+        const baseUsername = (fbEmail.split('@')[0] + randomStr).replace(/[^a-zA-Z0-9]/g, '');
+        const normUsername = baseUsername.toLowerCase();
+
+        try {
+          await db.prepare(`
+            INSERT INTO community_users (
+              id, firebase_uid, username, username_normalized, email, email_normalized,
+              platform_role, trust_level, status, email_verified
+            ) VALUES (?, ?, ?, ?, ?, ?, 'user', 1, 'active', ?)
+          `).bind(
+            userId, firebaseUid, baseUsername, normUsername, fbEmail, normEmail, emailVerified ? 1 : 0
+          ).run();
+
+          await db.prepare(`
+            INSERT INTO community_profiles (user_id, display_name, avatar_url) 
+            VALUES (?, ?, ?)
+          `).bind(userId, fbDisplayName || baseUsername, fbPhotoUrl || null).run();
+
+          user = await db.prepare(`SELECT * FROM community_users WHERE id = ?`).bind(userId).first();
+        } catch (dbErr) {
+          console.error('[Auth] D1 profile creation failed for Google Login:', dbErr);
+          return new Response(JSON.stringify({ error: 'Failed to create profile.' }), { status: 500, headers: jsonHeaders });
+        }
       }
-    } else {
-      // Dummy check to prevent timing enumeration attacks
-      const dummySalt = '00000000000000000000000000000000';
-      const dummyHash = '0000000000000000000000000000000000000000000000000000000000000000';
-      await verifyPassword(password, dummySalt, dummyHash, 100000, 'pbkdf2-sha256');
     }
 
-    if (!passwordMatch || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid email/username or password' }), { status: 401, headers: jsonHeaders });
+    // 5. Email Verification Rules & Sync
+    const isD1EmailVerified = user.email_verified === 1;
+
+    // Sync if Firebase verified but D1 not verified
+    if (emailVerified && !isD1EmailVerified) {
+      await db.prepare(`UPDATE community_users SET email_verified = 1, status = 'active' WHERE id = ?`).bind(user.id).run();
+      user.email_verified = 1;
+      user.status = 'active';
     }
 
-    // 4. Create session
+    // Enforce email verification (block login if neither Firebase nor D1 shows verified)
+    if (!emailVerified && !isD1EmailVerified) {
+      return new Response(JSON.stringify({ error: 'Please verify your email before login.' }), { status: 403, headers: jsonHeaders });
+    }
+
+    if (user.status !== 'active') {
+      return new Response(JSON.stringify({ error: 'Your account is suspended or inactive.' }), { status: 403, headers: jsonHeaders });
+    }
+
+    // 6. Create session
     const rawSessionToken = generateRawSessionToken();
     const sessionTokenHash = await hashSessionToken(rawSessionToken);
     const sessionId = crypto.randomUUID();
@@ -103,12 +136,13 @@ export const onRequestPost = async ({ request, env }: any) => {
 
     const userPayload = {
       id: user.id,
+      firebase_uid: user.firebase_uid,
       username: user.username,
       email: user.email,
       platformRole: user.platform_role,
       trustLevel: user.trust_level,
       status: user.status,
-      emailVerified: user.email_verified === 1
+      emailVerified: user.email_verified === 1 || emailVerified
     };
 
     return new Response(

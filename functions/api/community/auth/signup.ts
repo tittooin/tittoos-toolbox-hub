@@ -1,7 +1,7 @@
-import { hashPassword, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit, generateVerificationToken, checkDisposableEmail, sendVerificationEmail } from './_utils';
+import { verifyFirebaseToken, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit, checkDisposableEmail } from './_utils';
 
-export const onRequestPost = async ({ request, env, waitUntil }: any) => {
-  console.log('[Auth] Signup Request Started');
+export const onRequestPost = async ({ request, env }: any) => {
+  console.log('[Auth] Signup Request Started (Firebase Auth)');
   const jsonHeaders = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -21,32 +21,43 @@ export const onRequestPost = async ({ request, env, waitUntil }: any) => {
     }
 
     const data = await request.json();
-    const { username, email, password, turnstileToken } = data || {};
+    const { username, firebaseIdToken, turnstileToken } = data || {};
 
     // 2. Turnstile Bot Protection
     const turnstileResult = await verifyTurnstile(turnstileToken, env?.TURNSTILE_SECRET_KEY, clientIp);
     if (!turnstileResult.success) {
-      console.error('[Signup] Turnstile failed.', {
-        tokenLength: turnstileToken?.length,
-        secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
-        errorCodes: turnstileResult.errorCodes,
-        outcome: turnstileResult.outcome,
-        internalError: turnstileResult.error
-      });
       return new Response(JSON.stringify({ 
         error: 'Bot verification failed. Please try again.',
-        code: 'TURNSTILE_FAILED',
-        details: {
-          tokenLength: turnstileToken?.length || 0,
-          secretKeyExists: !!env?.TURNSTILE_SECRET_KEY,
-          errorCodes: turnstileResult.errorCodes || [],
-          cloudflareResponse: turnstileResult.outcome || null,
-          internalError: turnstileResult.error || null
-        }
+        code: 'TURNSTILE_FAILED'
       }), { status: 400, headers: jsonHeaders });
     }
 
-    // 3. Username validation
+    if (!firebaseIdToken) {
+      return new Response(JSON.stringify({ error: 'Firebase ID Token is required' }), { status: 400, headers: jsonHeaders });
+    }
+
+    // 3. Verify Firebase Token
+    const firebaseUser = await verifyFirebaseToken(env, firebaseIdToken);
+    if (!firebaseUser) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication token' }), { status: 401, headers: jsonHeaders });
+    }
+
+    const { localId: firebaseUid, email: fbEmail, displayName: fbDisplayName, photoUrl: fbPhotoUrl, emailVerified } = firebaseUser;
+
+    if (!fbEmail) {
+      return new Response(JSON.stringify({ error: 'Email is required from identity provider' }), { status: 400, headers: jsonHeaders });
+    }
+
+    const cleanEmail = fbEmail.trim();
+    const normEmail = cleanEmail.toLowerCase();
+
+    // 4. Disposable email protection
+    const isDisposable = await checkDisposableEmail(db, normEmail);
+    if (isDisposable) {
+      return new Response(JSON.stringify({ error: 'Temporary or disposable email addresses are not allowed.' }), { status: 400, headers: jsonHeaders });
+    }
+
+    // 5. Username validation
     if (!username || typeof username !== 'string') {
       return new Response(JSON.stringify({ error: 'Username is required' }), { status: 400, headers: jsonHeaders });
     }
@@ -57,99 +68,87 @@ export const onRequestPost = async ({ request, env, waitUntil }: any) => {
     if (!/^[a-zA-Z0-9_-]+$/.test(cleanUsername)) {
       return new Response(JSON.stringify({ error: 'Username can only contain letters, numbers, hyphens, and underscores' }), { status: 400, headers: jsonHeaders });
     }
-
-    // Reserved name protection
     const reservedNames = ['admin', 'administrator', 'moderator', 'official', 'axevora', 'support', 'security', 'staff', 'system', 'root', 'founder'];
     const normUsername = cleanUsername.toLowerCase();
     if (reservedNames.some(res => normUsername === res || normUsername.includes(res))) {
       return new Response(JSON.stringify({ error: 'This username is reserved or unavailable' }), { status: 400, headers: jsonHeaders });
     }
 
-    // 4. Email validation
-    if (!email || typeof email !== 'string') {
-      return new Response(JSON.stringify({ error: 'Email is required' }), { status: 400, headers: jsonHeaders });
-    }
-    const cleanEmail = email.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(cleanEmail) || cleanEmail.length > 254) {
-      return new Response(JSON.stringify({ error: 'Invalid email address' }), { status: 400, headers: jsonHeaders });
-    }
-    const normEmail = cleanEmail.toLowerCase();
+    // 6. Transaction Safety & Migration Strategy
+    let userId = crypto.randomUUID();
+    let isNewUser = true;
+    let actualRole = 'user';
+    let actualTrust = 1;
+    let actualStatus = 'active';
 
-    // 4a. Disposable email protection
-    const isDisposable = await checkDisposableEmail(db, normEmail);
-    if (isDisposable) {
-      return new Response(JSON.stringify({ error: 'Temporary or disposable email addresses are not allowed. Please use a permanent email address.' }), { status: 400, headers: jsonHeaders });
-    }
+    const existingUser = await db.prepare(`
+      SELECT id, firebase_uid, email_normalized, platform_role, trust_level, status 
+      FROM community_users 
+      WHERE firebase_uid = ? OR email_normalized = ? OR username_normalized = ?
+    `).bind(firebaseUid, normEmail, normUsername).first();
 
-    // 5. Password validation
-    if (!password || typeof password !== 'string') {
-      return new Response(JSON.stringify({ error: 'Password is required' }), { status: 400, headers: jsonHeaders });
-    }
-    if (password.length < 8) {
-      return new Response(JSON.stringify({ error: 'Password must be at least 8 characters' }), { status: 400, headers: jsonHeaders });
-    }
-    if (password.length > 72) {
-      return new Response(JSON.stringify({ error: 'Password is too long' }), { status: 400, headers: jsonHeaders });
-    }
-
-    // Check unique username or email
-    const duplicateCheck = await db.prepare(`
-      SELECT id FROM community_users 
-      WHERE username_normalized = ? OR email_normalized = ?
-    `).bind(normUsername, normEmail).first();
-
-    if (duplicateCheck) {
-      return new Response(JSON.stringify({ error: 'Username or email is already registered' }), { status: 409, headers: jsonHeaders });
-    }
-
-    // 6. Secure Hashing
-    const passwordMeta = await hashPassword(password);
-    const userId = crypto.randomUUID();
-
-    // 7. DB Inserts inside a transaction-like sequential statement execution
-    await db.prepare(`
-      INSERT INTO community_users (
-        id, username, username_normalized, email, email_normalized,
-        password_hash, password_salt, password_algorithm, password_iterations, password_version,
-        platform_role, trust_level, status, email_verified
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'user', 1, 'active', 0)
-    `).bind(
-      userId, cleanUsername, normUsername, cleanEmail, normEmail,
-      passwordMeta.hash, passwordMeta.salt, passwordMeta.algorithm, passwordMeta.iterations, passwordMeta.version
-    ).run();
-
-    await db.prepare(`
-      INSERT INTO community_profiles (user_id, display_name) 
-      VALUES (?, ?)
-    `).bind(userId, cleanUsername).run();
-
-    // 8. Generate verification token and send email
-    let requiresEmailVerification = true;
-    try {
-      const { rawToken, tokenHash, expiresAt } = await generateVerificationToken();
-      const verifyId = crypto.randomUUID();
-      await db.prepare(`
-        INSERT INTO community_email_verifications (id, user_id, token_hash, expires_at)
-        VALUES (?, ?, ?, ?)
-      `).bind(verifyId, userId, tokenHash, expiresAt).run();
-
-      console.log('[Auth] Token Generated and Saved, starting Email Sending');
-      // Fire-and-forget email send using waitUntil to prevent Cloudflare from terminating the isolate
-      const emailPromise = sendVerificationEmail(env, cleanEmail, cleanUsername, rawToken).catch(err =>
-        console.error('[Auth] Verification email send failed (non-blocking):', err)
-      );
-      if (typeof waitUntil === 'function') {
-        waitUntil(emailPromise);
-      } else {
-        await emailPromise; // Fallback for local testing if waitUntil isn't present
+    if (existingUser) {
+      // Retry-safe: If already completely registered with this firebase_uid, just log them in
+      if (existingUser.firebase_uid === firebaseUid) {
+        userId = existingUser.id;
+        isNewUser = false;
+        actualRole = existingUser.platform_role;
+        actualTrust = existingUser.trust_level;
+        actualStatus = existingUser.status;
+      } 
+      // Migration Strategy: If email matches but firebase_uid is null, link the account
+      else if (existingUser.email_normalized === normEmail && !existingUser.firebase_uid) {
+        userId = existingUser.id;
+        isNewUser = false;
+        actualRole = existingUser.platform_role;
+        actualTrust = existingUser.trust_level;
+        actualStatus = existingUser.status;
+        
+        await db.prepare(`
+          UPDATE community_users SET firebase_uid = ? WHERE id = ?
+        `).bind(firebaseUid, userId).run();
+      } 
+      else {
+        // Conflict
+        return new Response(JSON.stringify({ error: 'Username or email is already registered to another account' }), { status: 409, headers: jsonHeaders });
       }
-    } catch (tokenErr) {
-      console.error('Verification token generation error:', tokenErr);
-      requiresEmailVerification = false; // Degrade gracefully
     }
 
-    // 8. Session Generation
+    if (isNewUser) {
+      // Create new D1 Profile with Auto Sync
+      const finalDisplayName = fbDisplayName || cleanUsername;
+      const initialStatus = emailVerified ? 'active' : 'pending_verification';
+      
+      try {
+        await db.prepare(`
+          INSERT INTO community_users (
+            id, firebase_uid, username, username_normalized, email, email_normalized,
+            platform_role, trust_level, status, email_verified
+          ) VALUES (?, ?, ?, ?, ?, ?, 'user', 1, ?, ?)
+        `).bind(
+          userId, firebaseUid, cleanUsername, normUsername, cleanEmail, normEmail, initialStatus, emailVerified ? 1 : 0
+        ).run();
+
+        await db.prepare(`
+          INSERT INTO community_profiles (user_id, display_name, avatar_url) 
+          VALUES (?, ?, ?)
+        `).bind(userId, finalDisplayName, fbPhotoUrl || null).run();
+      } catch (dbErr) {
+        console.error('[Auth] D1 profile creation failed:', dbErr);
+        return new Response(JSON.stringify({ error: 'Failed to create profile. Please try again.' }), { status: 500, headers: jsonHeaders });
+      }
+    }
+
+    // Enforce Email Verification: Do not create session if email is not verified
+    if (!emailVerified) {
+      return new Response(JSON.stringify({ 
+        success: true, 
+        requireVerification: true,
+        message: 'Registration successful! Please verify your email before logging in.'
+      }), { status: 201, headers: jsonHeaders });
+    }
+
+    // 7. Secure Session Generation (HTTP-only) for Verified Users
     const rawSessionToken = generateRawSessionToken();
     const sessionTokenHash = await hashSessionToken(rawSessionToken);
     const sessionId = crypto.randomUUID();
@@ -169,18 +168,19 @@ export const onRequestPost = async ({ request, env, waitUntil }: any) => {
 
     const userPayload = {
       id: userId,
+      firebase_uid: firebaseUid,
       username: cleanUsername,
       email: cleanEmail,
-      platformRole: 'user',
-      trustLevel: 1,
-      status: 'active',
-      emailVerified: false
+      platformRole: actualRole,
+      trustLevel: actualTrust,
+      status: emailVerified ? 'active' : actualStatus,
+      emailVerified: emailVerified
     };
 
     return new Response(
-      JSON.stringify({ success: true, user: userPayload, requiresEmailVerification }),
+      JSON.stringify({ success: true, user: userPayload }),
       {
-        status: 201,
+        status: isNewUser ? 201 : 200,
         headers: {
           ...jsonHeaders,
           'Set-Cookie': cookie

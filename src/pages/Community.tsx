@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
+import { auth, googleProvider } from "@/lib/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
 
 interface CommunityUser {
   id: string;
@@ -285,31 +287,64 @@ export default function Community() {
 
     setSubmitting(true);
     try {
+      // 1. Firebase Auth Signup
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseIdToken = await userCredential.user.getIdToken();
+
+      // 2. Send Token to Backend for Edge session & D1 profile
       const res = await fetch('/api/community/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, turnstileToken })
+        body: JSON.stringify({ username, firebaseIdToken, turnstileToken })
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        toast.success("Registration successful! Welcome to Axevora Community.");
-        setUser(data.user);
-        setUsername('');
-        setEmail('');
-        setPassword('');
-        setTurnstileToken('');
-        if (redirectParam) {
-          navigate(redirectParam);
+        // Send Verification Email via Firebase
+        await sendEmailVerification(userCredential.user);
+
+        if (data.requireVerification) {
+          toast.success(data.message || "Please check your inbox to verify your email before logging in.");
+          // Reset form but do not set user state since they aren't verified
+          setUsername('');
+          setEmail('');
+          setPassword('');
+          setTurnstileToken('');
+          await signOut(auth); // Sign out of Firebase so they have to login after verification
+          setAuthMode('login'); // Switch to login tab
+        } else {
+          toast.success("Registration successful! Welcome to Axevora Community.");
+          setUser(data.user);
+          setUsername('');
+          setEmail('');
+          setPassword('');
+          setTurnstileToken('');
+          if (redirectParam) {
+            navigate(redirectParam);
+          }
         }
       } else {
+        // Rollback Firebase User if D1 profile creation fails or conflicts
+        try {
+          await userCredential.user.delete();
+        } catch (e) {
+          console.error("Firebase rollback failed", e);
+        }
+        
         toast.error(data.error || "Signup failed. Please try again.");
         // @ts-ignore
         if (window.turnstile) window.turnstile.reset('#turnstile-widget');
         setTurnstileToken('');
       }
-    } catch (err) {
-      toast.error("Network error during signup");
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        toast.error("Email is already registered. Please login.");
+      } else {
+        toast.error("Registration error. Please try again.");
+      }
+      // @ts-ignore
+      if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+      setTurnstileToken('');
     } finally {
       setSubmitting(false);
     }
@@ -318,16 +353,21 @@ export default function Community() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error("Please enter email/username and password");
+      toast.error("Please enter email and password");
       return;
     }
 
     setSubmitting(true);
     try {
+      // 1. Firebase Login
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseIdToken = await userCredential.user.getIdToken();
+
+      // 2. Backend Login (D1 Edge Session sync)
       const res = await fetch('/api/community/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usernameOrEmail: email, password, turnstileToken })
+        body: JSON.stringify({ firebaseIdToken, turnstileToken })
       });
 
       const data = await res.json();
@@ -341,13 +381,54 @@ export default function Community() {
           navigate(redirectParam);
         }
       } else {
+        await signOut(auth); // Sign out if backend rejected
         toast.error(data.error || "Authentication failed.");
         // @ts-ignore
         if (window.turnstile) window.turnstile.reset('#turnstile-widget');
         setTurnstileToken('');
       }
-    } catch (err) {
-      toast.error("Network error during login");
+    } catch (err: any) {
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        toast.error("Invalid email or password");
+      } else {
+        toast.error("Login error. Please try again.");
+      }
+      // @ts-ignore
+      if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+      setTurnstileToken('');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    setSubmitting(true);
+    try {
+      // 1. Firebase Google Auth
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const firebaseIdToken = await userCredential.user.getIdToken();
+
+      // 2. Backend Login / Auto-Signup
+      const res = await fetch('/api/community/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firebaseIdToken }) // Turnstile optional for Google Auth if preferred, but we can send empty
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success("Authenticated with Google successfully!");
+        setUser(data.user);
+        if (redirectParam) {
+          navigate(redirectParam);
+        }
+      } else {
+        await signOut(auth);
+        toast.error(data.error || "Google authentication failed.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Google authentication cancelled or failed.");
     } finally {
       setSubmitting(false);
     }
@@ -355,11 +436,32 @@ export default function Community() {
 
   const handleLogout = async () => {
     try {
+      await signOut(auth);
       await fetch('/api/community/auth/logout', { method: 'POST' });
       setUser(null);
       toast.success("Logged out successfully");
     } catch (err) {
       toast.error("Failed to logout securely");
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error("Please enter your email address to reset password");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent! Check your inbox.");
+    } catch (err: any) {
+      if (err.code === 'auth/user-not-found') {
+        toast.error("No account found with this email");
+      } else {
+        toast.error("Failed to send reset email. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -580,7 +682,22 @@ export default function Community() {
                   
                   <CardContent className="p-6">
                     {authMode === 'login' ? (
-                      <form onSubmit={handleLogin} className="space-y-4">
+                      <div className="space-y-4">
+                        <Button type="button" variant="outline" onClick={handleGoogleAuth} disabled={submitting} className="w-full h-11 rounded-xl font-bold text-slate-700 bg-white hover:bg-slate-50 border-slate-200 shadow-sm flex items-center justify-center gap-2.5 transition-all">
+                          <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.7 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                          </svg>
+                          Continue with Google
+                        </Button>
+                        <div className="relative flex items-center py-2">
+                          <div className="flex-grow border-t border-slate-200"></div>
+                          <span className="flex-shrink-0 mx-4 text-xs font-semibold uppercase text-slate-400">Or email</span>
+                          <div className="flex-grow border-t border-slate-200"></div>
+                        </div>
+                        <form onSubmit={handleLogin} className="space-y-4">
                         <div className="space-y-1.5">
                           <Label htmlFor="login-email" className="text-xs font-bold uppercase tracking-wider text-slate-600">Username or Email</Label>
                           <div className="relative">
@@ -597,7 +714,10 @@ export default function Community() {
                         </div>
                         
                         <div className="space-y-1.5">
-                          <Label htmlFor="login-pass" className="text-xs font-bold uppercase tracking-wider text-slate-600">Password</Label>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="login-pass" className="text-xs font-bold uppercase tracking-wider text-slate-600">Password</Label>
+                            <button type="button" onClick={handleForgotPassword} disabled={submitting} className="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Forgot Password?</button>
+                          </div>
                           <div className="relative">
                             <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                             <Input
@@ -615,8 +735,24 @@ export default function Community() {
                           {submitting ? 'Authenticating...' : 'Sign In'}
                         </Button>
                       </form>
+                      </div>
                     ) : (
-                      <form onSubmit={handleSignup} className="space-y-4">
+                      <div className="space-y-4">
+                        <Button type="button" variant="outline" onClick={handleGoogleAuth} disabled={submitting} className="w-full h-11 rounded-xl font-bold text-slate-700 bg-white hover:bg-slate-50 border-slate-200 shadow-sm flex items-center justify-center gap-2.5 transition-all">
+                          <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.7 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                          </svg>
+                          Continue with Google
+                        </Button>
+                        <div className="relative flex items-center py-2">
+                          <div className="flex-grow border-t border-slate-200"></div>
+                          <span className="flex-shrink-0 mx-4 text-xs font-semibold uppercase text-slate-400">Or email</span>
+                          <div className="flex-grow border-t border-slate-200"></div>
+                        </div>
+                        <form onSubmit={handleSignup} className="space-y-4">
                         <div className="space-y-1.5">
                           <Label htmlFor="sign-user" className="text-xs font-bold uppercase tracking-wider text-slate-600">Username</Label>
                           <div className="relative">
@@ -671,6 +807,7 @@ export default function Community() {
                           {submitting ? 'Registering...' : 'Register Account'}
                         </Button>
                       </form>
+                      </div>
                     )}
                   </CardContent>
                 </Card>

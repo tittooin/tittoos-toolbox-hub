@@ -399,3 +399,45 @@ export async function sendVerificationEmail(
     return false;
   }
 }
+
+// 10. FIREBASE TOKEN VERIFICATION VIA REST API
+export async function verifyFirebaseToken(
+  env: any,
+  idToken: string
+): Promise<{ localId: string, email: string, emailVerified: boolean, displayName?: string, photoUrl?: string } | null> {
+  const apiKey = env?.FIREBASE_API_KEY;
+  if (!apiKey) {
+    console.error('[Auth] FIREBASE_API_KEY not configured');
+    return null;
+  }
+
+  try {
+    const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        idToken
+      })
+    });
+    
+    const result: any = await res.json();
+    if (!res.ok || !result.users || result.users.length === 0) {
+      console.error('[Auth] Firebase token verification failed:', result);
+      return null;
+    }
+
+    const user = result.users[0];
+    return {
+      localId: user.localId,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      displayName: user.displayName,
+      photoUrl: user.photoUrl
+    };
+  } catch (err) {
+    console.error('[Auth] Firebase token verification exception:', err);
+    return null;
+  }
+}
