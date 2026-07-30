@@ -320,14 +320,15 @@ export async function sendVerificationEmail(
   username: string,
   rawToken: string
 ): Promise<boolean> {
+  console.log('[Auth] sendVerificationEmail Started', { to, username });
   const resendApiKey = env?.RESEND_API_KEY;
   if (!resendApiKey) {
-    console.warn('RESEND_API_KEY not configured — skipping email send');
+    console.error('[Auth] RESEND_API_KEY not configured — skipping email send');
     return false;
   }
 
   const verifyUrl = `https://axevora.com/community/verify-email?token=${rawToken}`;
-
+  // ... [keep HTML exact same]
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -367,6 +368,7 @@ export async function sendVerificationEmail(
 </html>`;
 
   try {
+    console.log('[Auth] Executing Resend API call');
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -374,20 +376,26 @@ export async function sendVerificationEmail(
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Axevora <noreply@axevora.com>',
+        from: env?.EMAIL_FROM || 'Axevora <hello@axevora.com>',
         to: [to],
         subject: 'Verify your Axevora email address',
-        html
+        html,
+        text: `Welcome to Axevora Community!\n\nHey @${username} 👋\nYou're one step away. Please verify your email address to unlock full community participation.\n\nCopy and paste this link in your browser to verify:\n${verifyUrl}\n\nThis link expires in 24 hours.\nDidn't create an Axevora account? You can safely ignore this email.\n\n© 2026 Axevora • security@axevora.com`
       })
     });
     const result: any = await res.json();
+    console.log('[Auth] Resend API Response Status:', res.status);
+    console.log('[Auth] Resend API Response Body:', JSON.stringify(result));
+
     if (!res.ok) {
-      console.error('Resend API error:', result);
+      console.error('[Auth] Resend API error:', result);
       return false;
     }
+    
+    console.log('[Auth] Email Sent Successfully via Resend');
     return true;
   } catch (err) {
-    console.error('Email send error:', err);
+    console.error('[Auth] Email send exception:', err);
     return false;
   }
 }

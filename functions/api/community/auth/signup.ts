@@ -1,6 +1,7 @@
 import { hashPassword, generateRawSessionToken, hashSessionToken, serializeCookie, COOKIE_NAME, verifyTurnstile, checkRateLimit, generateVerificationToken, checkDisposableEmail, sendVerificationEmail } from './_utils';
 
-export const onRequestPost = async ({ request, env }: any) => {
+export const onRequestPost = async ({ request, env, waitUntil }: any) => {
+  console.log('[Auth] Signup Request Started');
   const jsonHeaders = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -133,10 +134,16 @@ export const onRequestPost = async ({ request, env }: any) => {
         VALUES (?, ?, ?, ?)
       `).bind(verifyId, userId, tokenHash, expiresAt).run();
 
-      // Fire-and-forget email send (non-blocking — don't fail signup if email fails)
-      sendVerificationEmail(env, cleanEmail, cleanUsername, rawToken).catch(err =>
-        console.error('Verification email send failed (non-blocking):', err)
+      console.log('[Auth] Token Generated and Saved, starting Email Sending');
+      // Fire-and-forget email send using waitUntil to prevent Cloudflare from terminating the isolate
+      const emailPromise = sendVerificationEmail(env, cleanEmail, cleanUsername, rawToken).catch(err =>
+        console.error('[Auth] Verification email send failed (non-blocking):', err)
       );
+      if (typeof waitUntil === 'function') {
+        waitUntil(emailPromise);
+      } else {
+        await emailPromise; // Fallback for local testing if waitUntil isn't present
+      }
     } catch (tokenErr) {
       console.error('Verification token generation error:', tokenErr);
       requiresEmailVerification = false; // Degrade gracefully
@@ -181,7 +188,7 @@ export const onRequestPost = async ({ request, env }: any) => {
       }
     );
   } catch (err: any) {
-    console.error('Signup error:', err);
+    console.error('[Auth] Signup error:', err);
     return new Response(JSON.stringify({ error: 'Server error during registration' }), { status: 500, headers: jsonHeaders });
   }
 };
