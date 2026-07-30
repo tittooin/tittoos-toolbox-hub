@@ -20,8 +20,8 @@ import { BotBadge } from "@/components/community/BotBadge";
 import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
 import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
-
-
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BoardLiveChat } from "@/components/community/BoardLiveChat";
 interface BoardDetails {
   id: string;
   name: string;
@@ -564,10 +564,27 @@ export default function CommunityBoard() {
             )}
           </div>
 
-          {/* Posts Feed (Right) */}
+          {/* Feed and Chat Area (Right) */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Sorting Toolbar */}
-            <div className="flex justify-between items-center bg-card border border-border/50 p-2.5 rounded-xl">
+            <Tabs defaultValue="posts" className="w-full">
+              <TabsList className="w-full grid grid-cols-2 mb-6 bg-slate-100/50 p-1 border border-slate-200 rounded-xl h-12">
+                <TabsTrigger 
+                  value="posts" 
+                  className="rounded-lg text-xs font-bold uppercase tracking-wider data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-700 transition-all"
+                >
+                  Board Posts
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="chat" 
+                  className="rounded-lg text-xs font-bold uppercase tracking-wider data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-700 transition-all flex items-center gap-2 justify-center"
+                >
+                  <MessageSquare className="w-4 h-4" /> Live Chat
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="posts" className="m-0 space-y-6 animate-in fade-in-50 duration-500">
+                {/* Sorting Toolbar */}
+                <div className="flex justify-between items-center bg-card border border-border/50 p-2.5 rounded-xl">
               <div className="flex gap-1">
                 <Button 
                   variant={sort === 'newest' ? 'default' : 'ghost'} 
@@ -826,6 +843,12 @@ export default function CommunityBoard() {
                 )}
               </div>
             )}
+              </TabsContent>
+
+              <TabsContent value="chat" className="m-0 animate-in fade-in-50 duration-500">
+                <BoardLiveChat boardSlug={board.slug} user={user} />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </main>
