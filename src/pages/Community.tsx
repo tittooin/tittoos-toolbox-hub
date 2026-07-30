@@ -206,7 +206,7 @@ export default function Community() {
       }
     };
 
-    handleGoogleRedirect().then(() => {
+    handleGoogleRedirect().finally(() => {
       checkAuth();
     });
   }, []);
