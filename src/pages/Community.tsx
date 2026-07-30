@@ -177,21 +177,28 @@ export default function Community() {
     const handleGoogleRedirect = async () => {
       console.log('[STEP 2] handleGoogleRedirect() started');
       try {
-        console.log('[STEP 3] Calling getRedirectResult(auth)...');
-        const result = await getRedirectResult(auth);
-        console.log('[STEP 4] getRedirectResult() resolved. Result:', result ? 'EXISTS (user came from Google redirect)' : 'NULL (no redirect, normal page load)');
+        console.log('[STEP 3] Calling getRedirectResult(auth) with 8s timeout...');
+        // Race against timeout to prevent Firebase SDK from hanging indefinitely
+        const result = await Promise.race([
+          getRedirectResult(auth),
+          new Promise<null>((resolve) => setTimeout(() => {
+            console.warn('[STEP 3 TIMEOUT] getRedirectResult() took >8s - treating as null');
+            resolve(null);
+          }, 8000))
+        ]);
+        console.log('[STEP 4] getRedirectResult resolved:', result ? 'EXISTS - user came from Google redirect' : 'NULL - normal page load');
 
         if (result) {
-          console.log('[STEP 5] Firebase user found:', result.user?.email, 'UID:', result.user?.uid);
+          console.log('[STEP 5] Firebase user:', result.user?.email, 'UID:', result.user?.uid);
           setSubmitting(true);
 
-          console.log('[STEP 6] Calling result.user.getIdToken()...');
+          console.log('[STEP 6] Calling getIdToken()...');
           let firebaseIdToken: string;
           try {
             firebaseIdToken = await result.user.getIdToken();
-            console.log('[STEP 7] ID Token generated. Length:', firebaseIdToken?.length, 'First 20 chars:', firebaseIdToken?.substring(0, 20));
+            console.log('[STEP 7] ID Token generated. Length:', firebaseIdToken?.length);
           } catch (tokenErr: any) {
-            console.error('[STEP 7 FAILED] getIdToken() threw error:', tokenErr?.code, tokenErr?.message, tokenErr?.stack);
+            console.error('[STEP 7 FAILED] getIdToken error:', tokenErr?.code, tokenErr?.message);
             throw tokenErr;
           }
 
@@ -203,18 +210,18 @@ export default function Community() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ firebaseIdToken })
             });
-            console.log('[STEP 9] /api/community/auth/login response received. Status:', res.status, res.statusText);
+            console.log('[STEP 9] /api/community/auth/login status:', res.status, res.statusText);
           } catch (fetchErr: any) {
-            console.error('[STEP 8 FAILED] fetch /api/community/auth/login threw error (network issue?):', fetchErr?.code, fetchErr?.message, fetchErr?.stack);
+            console.error('[STEP 8 FAILED] fetch error (network?):', fetchErr?.code, fetchErr?.message);
             throw fetchErr;
           }
 
           let data: any;
           try {
             data = await res.json();
-            console.log('[STEP 10] Login response JSON:', JSON.stringify(data));
+            console.log('[STEP 10] Login response:', JSON.stringify(data));
           } catch (jsonErr: any) {
-            console.error('[STEP 9 FAILED] res.json() threw error (response body not valid JSON?):', jsonErr?.message);
+            console.error('[STEP 9 FAILED] JSON parse error:', jsonErr?.message);
             throw jsonErr;
           }
 
@@ -226,34 +233,36 @@ export default function Community() {
               navigate(redirectParam);
             }
           } else {
-            console.error('[STEP 10 FAILED] Backend login rejected. Status:', res.status, 'Error:', data?.error);
+            console.error('[STEP 10 FAILED] Backend rejected. Status:', res.status, 'Error:', data?.error);
             await signOut(auth);
-            console.log('[STEP 10b] Firebase signOut() completed (half-auth prevented)');
+            console.log('[STEP 10b] Firebase signOut done - half-auth prevented');
             toast.error(data.error || "Google authentication failed.");
           }
           setSubmitting(false);
-          console.log('[STEP 12] handleGoogleRedirect() complete - setSubmitting(false) done');
+          console.log('[STEP 12] handleGoogleRedirect complete');
         } else {
-          console.log('[STEP 4b] No redirect result - normal page load, skipping Google auth processing');
+          console.log('[STEP 4b] No redirect result - normal page load');
         }
       } catch (err: any) {
-        console.error('[GOOGLE AUTH CATCH] Error caught in handleGoogleRedirect:');
-        console.error('  code:', err?.code);
-        console.error('  message:', err?.message);
-        console.error('  stack:', err?.stack);
-        await signOut(auth);
+        console.error('[GOOGLE AUTH CATCH] code:', err?.code, 'message:', err?.message);
+        console.error('[GOOGLE AUTH CATCH] stack:', err?.stack);
+        try { await signOut(auth); } catch (_) {}
         toast.error(err?.message || "Google authentication failed.");
         setSubmitting(false);
-        console.log('[GOOGLE AUTH CATCH] signOut done, setSubmitting(false) done');
       }
-      console.log('[STEP END] handleGoogleRedirect() function returning');
+      console.log('[STEP END] handleGoogleRedirect() returning');
     };
 
-    handleGoogleRedirect().finally(() => {
-      console.log('[STEP FINALLY] handleGoogleRedirect() settled - now calling checkAuth()');
-      checkAuth();
+    // CRITICAL FIX: checkAuth() runs IMMEDIATELY and independently.
+    // Loading state must NEVER depend on handleGoogleRedirect() resolving.
+    // If Google redirect result exists, handleGoogleRedirect updates user state in background.
+    console.log('[STEP A] Calling checkAuth() immediately (independent of redirect)');
+    checkAuth();
+    handleGoogleRedirect().catch((err) => {
+      console.error('[handleGoogleRedirect unhandled rejection]', err);
     });
   }, []);
+
 
   // Smooth scroll to hash anchor after loading finishes
   useEffect(() => {
