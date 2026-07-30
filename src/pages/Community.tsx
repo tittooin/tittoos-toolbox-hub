@@ -172,41 +172,85 @@ export default function Community() {
       type: 'website'
     });
 
-    const handleGoogleRedirect = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          setSubmitting(true);
-          const firebaseIdToken = await result.user.getIdToken();
-          
-          const res = await fetch('/api/community/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ firebaseIdToken })
-          });
+    console.log('[STEP 1] Component mounted - starting auth flow');
 
-          const data = await res.json();
+    const handleGoogleRedirect = async () => {
+      console.log('[STEP 2] handleGoogleRedirect() started');
+      try {
+        console.log('[STEP 3] Calling getRedirectResult(auth)...');
+        const result = await getRedirectResult(auth);
+        console.log('[STEP 4] getRedirectResult() resolved. Result:', result ? 'EXISTS (user came from Google redirect)' : 'NULL (no redirect, normal page load)');
+
+        if (result) {
+          console.log('[STEP 5] Firebase user found:', result.user?.email, 'UID:', result.user?.uid);
+          setSubmitting(true);
+
+          console.log('[STEP 6] Calling result.user.getIdToken()...');
+          let firebaseIdToken: string;
+          try {
+            firebaseIdToken = await result.user.getIdToken();
+            console.log('[STEP 7] ID Token generated. Length:', firebaseIdToken?.length, 'First 20 chars:', firebaseIdToken?.substring(0, 20));
+          } catch (tokenErr: any) {
+            console.error('[STEP 7 FAILED] getIdToken() threw error:', tokenErr?.code, tokenErr?.message, tokenErr?.stack);
+            throw tokenErr;
+          }
+
+          console.log('[STEP 8] Calling POST /api/community/auth/login...');
+          let res: Response;
+          try {
+            res = await fetch('/api/community/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ firebaseIdToken })
+            });
+            console.log('[STEP 9] /api/community/auth/login response received. Status:', res.status, res.statusText);
+          } catch (fetchErr: any) {
+            console.error('[STEP 8 FAILED] fetch /api/community/auth/login threw error (network issue?):', fetchErr?.code, fetchErr?.message, fetchErr?.stack);
+            throw fetchErr;
+          }
+
+          let data: any;
+          try {
+            data = await res.json();
+            console.log('[STEP 10] Login response JSON:', JSON.stringify(data));
+          } catch (jsonErr: any) {
+            console.error('[STEP 9 FAILED] res.json() threw error (response body not valid JSON?):', jsonErr?.message);
+            throw jsonErr;
+          }
+
           if (res.ok && data.success) {
+            console.log('[STEP 11] Login SUCCESS. User:', data.user?.username, data.user?.email);
             toast.success("Authenticated with Google successfully!");
             setUser(data.user);
             if (redirectParam) {
               navigate(redirectParam);
             }
           } else {
+            console.error('[STEP 10 FAILED] Backend login rejected. Status:', res.status, 'Error:', data?.error);
             await signOut(auth);
+            console.log('[STEP 10b] Firebase signOut() completed (half-auth prevented)');
             toast.error(data.error || "Google authentication failed.");
           }
           setSubmitting(false);
+          console.log('[STEP 12] handleGoogleRedirect() complete - setSubmitting(false) done');
+        } else {
+          console.log('[STEP 4b] No redirect result - normal page load, skipping Google auth processing');
         }
       } catch (err: any) {
+        console.error('[GOOGLE AUTH CATCH] Error caught in handleGoogleRedirect:');
+        console.error('  code:', err?.code);
+        console.error('  message:', err?.message);
+        console.error('  stack:', err?.stack);
         await signOut(auth);
-        console.error("[Google Auth Error] Complete Error Object:", err);
         toast.error(err?.message || "Google authentication failed.");
         setSubmitting(false);
+        console.log('[GOOGLE AUTH CATCH] signOut done, setSubmitting(false) done');
       }
+      console.log('[STEP END] handleGoogleRedirect() function returning');
     };
 
     handleGoogleRedirect().finally(() => {
+      console.log('[STEP FINALLY] handleGoogleRedirect() settled - now calling checkAuth()');
       checkAuth();
     });
   }, []);
@@ -295,17 +339,26 @@ export default function Community() {
   }, [user, loading, authMode]);
 
   const checkAuth = async () => {
+    console.log('[STEP A] checkAuth() started - calling GET /api/community/auth/me');
     try {
       const res = await fetch('/api/community/auth/me');
+      console.log('[STEP B] /api/community/auth/me response. Status:', res.status, res.statusText);
       if (res.ok) {
         const data = await res.json();
+        console.log('[STEP C] /me response JSON:', JSON.stringify(data));
         if (data.authenticated) {
+          console.log('[STEP D] User authenticated via session! User:', data.user?.username);
           setUser(data.user);
+        } else {
+          console.log('[STEP D] /me returned 200 but authenticated=false. No active session.');
         }
+      } else {
+        console.warn('[STEP B WARN] /me returned non-OK status:', res.status, '(this is normal if no session exists)');
       }
-    } catch (err) {
-      console.error("Auth check failed:", err);
+    } catch (err: any) {
+      console.error('[STEP A FAILED] checkAuth fetch error:', err?.message, err?.stack);
     } finally {
+      console.log('[STEP LOADING FALSE] setLoading(false) being called now');
       setLoading(false);
     }
   };
