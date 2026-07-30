@@ -175,6 +175,11 @@ export default function Community() {
     console.log('[STEP 1] Component mounted - starting auth flow');
 
     const handleGoogleRedirect = async () => {
+      if (!sessionStorage.getItem('ax_google_redirect')) {
+        console.log('[STEP 0] ax_google_redirect flag missing - skipping getRedirectResult');
+        return;
+      }
+
       console.log('[STEP 2] handleGoogleRedirect() started');
       try {
         console.log('[STEP 3] Calling getRedirectResult(auth) with 8s timeout...');
@@ -186,6 +191,9 @@ export default function Community() {
             resolve(null);
           }, 8000))
         ]);
+
+        sessionStorage.removeItem('ax_google_redirect');
+
         console.log('[STEP 4] getRedirectResult resolved:', result ? 'EXISTS - user came from Google redirect' : 'NULL - normal page load');
 
         if (result) {
@@ -501,6 +509,7 @@ export default function Community() {
 
   const handleGoogleAuth = async () => {
     setSubmitting(true);
+    sessionStorage.setItem('ax_google_redirect', '1');
     try {
       // 1. Firebase Google Auth via Redirect
       await signInWithRedirect(auth, googleProvider);
