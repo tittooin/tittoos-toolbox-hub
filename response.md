@@ -1,50 +1,141 @@
-# AXEVORA - Google Auth Evidence Collection
+# Sprint 1.2 - signInWithRedirect() Implementation
 
-Is sprint me maine repository ki deep inspection ki taaki bina kisi assumption ke COOP/COEP headers ki exact location aur unka impact verify kiya ja sake.
+## Authentication State Diagram
 
-## Headers Evidence
+```
+[USER CLICKS "Continue with Google"]
+        |
+        v
+[signInWithRedirect(auth, googleProvider)]
+        |
+        v  (Page navigates away to Google)
+[GOOGLE ACCOUNTS PAGE]
+        |
+   User selects account
+        |
+        v  (Google redirects back to /community)
+[Component Mounts -> useEffect fires]
+        |
+        v
+[getRedirectResult(auth)]
+        |
+   +----+----+
+   |         |
+ null      result
+   |         |
+   v         v
+[checkAuth] [Get Firebase ID Token]
+(Normal flow)      |
+                   v
+         [POST /api/community/auth/login]
+                   |
+           +-------+-------+
+           |               |
+          OK           NOT OK
+           |               |
+           v               v
+      [setUser(data.user)] [signOut(auth)]  <-- Half-auth state prevented
+           |               |
+           v               v
+      [toast success]  [toast error]
+```
 
-**1. `public/_headers`**
-- **File Name:** `public/_headers`
-- **Line Number:** 5 and 6
-- **Current Value:**
-  ```text
-  Cross-Origin-Opener-Policy: same-origin-allow-popups
-  Cross-Origin-Embedder-Policy: credentialless
-  ```
-- **Apply to:** Cloudflare Pages par deploy hone ke baad sabhi incoming requests (`/*`) par.
-- **Note:** COEP `credentialless` require karta hai ki browser environment strict isolation follow kare. Agar COOP `same-origin` nahi hai toh cross-origin isolation fail ho jati hai WASM ke liye. Agar COOP ko `same-origin-allow-popups` rakhte hain, tab bhi combination Firebase popup window ki property access ko strictly block karta hai (jaise screenshot me dikhaya gaya hai).
+## Google Redirect Flow
 
-**2. `vite.config.ts`**
-- **File Name:** `vite.config.ts`
-- **Line Number:** 11 and 12
-- **Current Value:**
-  ```javascript
-  headers: {
-    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-    "Cross-Origin-Embedder-Policy": "credentialless",
-  },
-  ```
-- **Apply to:** Vite dev server (`npm run dev`) ke dwara serve kiye jaane wale sabhi requests (Localhost:8080 / 8081).
-- **Note:** Dev environment me bhi bilkul production jaisi strict policy enforce ki gayi hai taaki AI/WASM tools properly load ho sakein.
+1. User "Continue with Google" button click karta hai
+2. `handleGoogleAuth()` call hoti hai
+3. `signInWithRedirect(auth, googleProvider)` fire hota hai
+4. **Browser Google Accounts page par navigate kar jata hai** (COOP se koi conflict nahi, kyunki koi popup window nahi khulti)
+5. User apna Google account select karta hai
+6. Google `axevora.com/community` par redirect karta hai
+7. `Community.tsx` mount hota hai
+8. `useEffect` me `getRedirectResult(auth)` call hoti hai
+9. **Agar result null hai** → `checkAuth()` silently chalti hai, app crash nahi hoti
+10. **Agar result available hai** → Firebase ID Token liya jata hai → Backend `POST /api/community/auth/login` call hoti hai
+11. Backend success → `setUser()` set, toast success, redirect agar param tha
+12. Backend failure → **`signOut(auth)` mandatory call** → Half-auth state prevent kiya jata hai
 
-**3. `wrangler.toml` / `wrangler.jsonc`**
-- **Evidence:** Repository me sirf `wrangler.toml.bak` maujood hai. Active `wrangler.jsonc` ya `wrangler.toml` root directory me configure nahi hai jo Cloudflare Pages settings ko override karein. Header configuration entirely `public/_headers` se control ho rahi hai.
+## Failure Flow
 
-**4. `_redirects`**
-- **Evidence:** Iss file me headers configure nahi hote, sirf route redirections set hote hain.
+```
+[getRedirectResult() FAILS with error]
+        |
+        v
+[signOut(auth)]  <-- Firebase user sign out
+        |
+        v
+[console.error with full error object]
+        |
+        v
+[toast.error message]
+        |
+        v
+[setSubmitting(false)]
+        |
+        v
+[checkAuth() runs normally]  <-- App continues gracefully
+```
 
-## Root Cause Declaration
-Evidence ke basis par ye clear hai ki **COOP aur COEP dono headers globally set hain**. Kyunki application `Cross-Origin-Embedder-Policy: credentialless` use kar rahi hai, browser ki security strictly cross-origin popups se baat karne (`window.closed` and `postMessage`) ko reject kar deti hai. Ye Firebase SDK ko break kar deta hai.
+```
+[Backend /api/community/auth/login FAILS]
+        |
+        v
+[signOut(auth)]  <-- Firebase user sign out
+        |
+        v
+[toast.error with backend error message]
+```
 
-## Conclusion: signInWithPopup vs signInWithRedirect
+## Rollback Plan
 
-Axevora ke architecture ke liye **`signInWithRedirect`** use karna 100% correct approach hai.
+Agar `signInWithRedirect` me koi issue aaye toh rollback yeh hai:
 
-**Kyunki:**
-Axevora AI tools (`SharedArrayBuffer`) par heavily depend karta hai jinke chalne ke liye COEP aur COOP headers lazmi (mandatory) hain. Agar hum in headers ko hatate hain toh login theek ho jayega lekin application ke AI features break ho jayenge.
-`signInWithRedirect` koi popup window open nahi karta, balki usi browser tab me navigation karta hai. Is wajah se window communication ka COOP block trigger hi nahi hota.
+1. `Community.tsx` line 21 me import wapas karo:
+   ```
+   import { ..., signInWithPopup, ... } from "firebase/auth";
+   ```
+2. `handleGoogleAuth()` function me `signInWithRedirect` ki jagah wapas:
+   ```javascript
+   const userCredential = await signInWithPopup(auth, googleProvider);
+   const firebaseIdToken = await userCredential.user.getIdToken();
+   ```
+3. `useEffect` se `handleGoogleRedirect()` call ko hata do, sirf `checkAuth()` rakhno
+4. git commit -m "revert: rollback google auth to signInWithPopup"
+
+Rollback Zero-Downtime hai. Koi database ya backend change nahi hua.
+
+## Modified Files
+
+| File | Change | Reason |
+|------|--------|--------|
+| `src/pages/Community.tsx` | `signInWithPopup` → `signInWithRedirect` | COOP header conflict fix |
+| `src/pages/Community.tsx` | `getRedirectResult` added in `useEffect` | Handle redirect response on mount |
+| `src/pages/Community.tsx` | `signOut(auth)` on backend fail | Prevent half-auth state |
+| `src/pages/Community.tsx` | Null check on redirect result | Graceful continue if null |
+
+## Security Headers
+
+> [!IMPORTANT]
+> Security headers (`public/_headers`, `vite.config.ts`) is sprint me **modify nahi kiye gaye** as per instructions. Ye next sprint me authentication browser verification ke baad handle kiya jayega.
+
+## Build Verification
+
+✅ `npm run build` - **SUCCESS** (43.61s)
+✅ 182 static pages generated
+✅ Sitemap regenerated
+✅ Git push successful → `ea2aba4`
+
+## Browser Verification
+
+> [!WARNING]
+> Browser subagent quota limit ke karan automated verification possible nahi thi. Aapko manually test karna hoga:
+> 1. `http://localhost:8081/community` open karo
+> 2. "Continue with Google" click karo
+> 3. Verify karo ki page Google Accounts par redirect ho raha hai (popup nahi khulta)
+> 4. Account select karo
+> 5. Verify karo ki wapas community page par aao aur logged in ho
 
 ## PASS / FAIL
-**PASS**
-(Evidence strictly collect kar li gayi hai, root cause 100% verifiable hai. Ab hum securely `signInWithRedirect` implementation ki taraf badh sakte hain.)
+
+**CONDITIONAL PASS** - Code implementation complete, build successful, push successful.
+Browser verification aapko manually karni hogi kyunki automated browser quota exhaust ho gaya tha.
