@@ -18,7 +18,7 @@ import {
 import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { auth, googleProvider } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithRedirect, getRedirectResult, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
 
 interface CommunityUser {
   id: string;
@@ -172,7 +172,43 @@ export default function Community() {
       type: 'website'
     });
 
-    checkAuth();
+    const handleGoogleRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          setSubmitting(true);
+          const firebaseIdToken = await result.user.getIdToken();
+          
+          const res = await fetch('/api/community/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firebaseIdToken })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            toast.success("Authenticated with Google successfully!");
+            setUser(data.user);
+            if (redirectParam) {
+              navigate(redirectParam);
+            }
+          } else {
+            await signOut(auth);
+            toast.error(data.error || "Google authentication failed.");
+          }
+          setSubmitting(false);
+        }
+      } catch (err: any) {
+        await signOut(auth);
+        console.error("[Google Auth Error] Complete Error Object:", err);
+        toast.error(err?.message || "Google authentication failed.");
+        setSubmitting(false);
+      }
+    };
+
+    handleGoogleRedirect().then(() => {
+      checkAuth();
+    });
   }, []);
 
   // Smooth scroll to hash anchor after loading finishes
@@ -404,36 +440,15 @@ export default function Community() {
   const handleGoogleAuth = async () => {
     setSubmitting(true);
     try {
-      // 1. Firebase Google Auth
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const firebaseIdToken = await userCredential.user.getIdToken();
-
-      // 2. Backend Login / Auto-Signup
-      const res = await fetch('/api/community/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firebaseIdToken }) // Turnstile optional for Google Auth if preferred, but we can send empty
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        toast.success("Authenticated with Google successfully!");
-        setUser(data.user);
-        if (redirectParam) {
-          navigate(redirectParam);
-        }
-      } else {
-        await signOut(auth);
-        toast.error(data.error || "Google authentication failed.");
-      }
+      // 1. Firebase Google Auth via Redirect
+      await signInWithRedirect(auth, googleProvider);
     } catch (err: any) {
       console.error("[Google Auth Error] Complete Error Object:", err);
       console.error("[Google Auth Error] Code:", err?.code);
       console.error("[Google Auth Error] Message:", err?.message);
       if (err?.customData) console.error("[Google Auth Error] Custom Data:", err.customData);
       
-      toast.error(err?.message || "Google authentication cancelled or failed.");
-    } finally {
+      toast.error(err?.message || "Google authentication initialization failed.");
       setSubmitting(false);
     }
   };
