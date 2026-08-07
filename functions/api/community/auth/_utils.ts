@@ -245,9 +245,13 @@ export async function getAuthenticatedUser(request: Request, db: any): Promise<a
     const hash = await hashSessionToken(token);
     
     const session = await db.prepare(`
-      SELECT s.*, u.username, u.username_normalized, u.email, u.email_normalized, u.platform_role, u.trust_level, u.status, u.email_verified
+      SELECT s.*, 
+             u.username, u.username_normalized, u.email, u.email_normalized, 
+             u.platform_role, u.trust_level, u.status, u.email_verified,
+             p.display_name, p.avatar_url, p.cover_image
       FROM community_sessions s
       JOIN community_users u ON s.user_id = u.id
+      LEFT JOIN community_profiles p ON u.id = p.user_id
       WHERE s.session_token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > datetime('now')
     `).bind(hash).first();
     
@@ -279,7 +283,10 @@ export async function getAuthenticatedUser(request: Request, db: any): Promise<a
       trustLevel: session.trust_level,
       status: session.status,
       emailVerified: session.email_verified === 1,
-      sessionId: session.id
+      sessionId: session.id,
+      display_name: session.display_name,
+      avatar_url: session.avatar_url,
+      cover_image: session.cover_image
     };
   } catch (err) {
     console.error('Auth middleware resolve error:', err);
@@ -440,4 +447,19 @@ export async function verifyFirebaseToken(
     console.error('[Auth] Firebase token verification exception:', err);
     return null;
   }
+}
+
+export function jsonResponse(data: any, status: number = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
+  });
+}
+
+export function sanitizeHTML(str: string): string {
+  if (!str) return '';
+  return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }

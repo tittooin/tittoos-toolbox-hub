@@ -5,6 +5,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { NetworkQualityMonitor, AxevoraLiveEventBus } from "@/lib/audioAbstractions";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -43,6 +44,10 @@ export interface VoiceParticipant {
   displayName: string;
   photoURL: string;
   peerId: string;
+  role?: "host" | "co-host" | "moderator" | "speaker" | "listener" | "guest" | "bot" | "ai-assistant";
+  isMuted?: boolean;
+  handRaised?: boolean;
+  presence?: "ONLINE" | "CONNECTING" | "MUTED" | "SPEAKING" | "AWAY" | "RECONNECTING";
 }
 
 export type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
@@ -53,6 +58,8 @@ interface UseChatSocketOptions {
   displayName: string;
   photoURL: string;
   enabled: boolean;
+  accessPolicy?: string;
+  isVerified?: boolean;
 }
 
 // The Cloudflare Worker WebSocket URL — change after deployment
@@ -60,7 +67,7 @@ export const CHAT_WS_URL = import.meta.env.VITE_CHAT_WS_URL || "wss://axevora-ch
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: UseChatSocketOptions) {
+export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, accessPolicy, isVerified }: UseChatSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -72,6 +79,8 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const [voiceParticipants, setVoiceParticipants] = useState<VoiceParticipant[]>([]);
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
+  
+  const networkMonitorRef = useRef(new NetworkQualityMonitor());
 
   const connect = useCallback(() => {
     if (!enabled || !roomId || !uid) return;
@@ -81,6 +90,8 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
       uid,
       name: encodeURIComponent(displayName),
       photo: encodeURIComponent(photoURL),
+      accessPolicy: accessPolicy || "public",
+      verified: isVerified ? "true" : "false",
     });
     const url = `${CHAT_WS_URL}/ws/${roomId}?${params}`;
 
@@ -95,6 +106,7 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
       // Ping every 30s to keep connection alive
       pingIntervalRef.current = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
+          networkMonitorRef.current.recordPingSent();
           ws.send(JSON.stringify({ type: "PING" }));
         }
       }, 30_000);
@@ -169,6 +181,57 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
             detail: { fromUid: data.fromUid, signal: data.signal },
           }));
           break;
+
+        case "SPEAKER_MODERATED": {
+          const { targetUid, muted } = data as { targetUid: string; muted: boolean };
+          window.dispatchEvent(new CustomEvent("axevora-voice-moderated", {
+            detail: { targetUid, muted }
+          }));
+          break;
+        }
+
+        case "KICKED": {
+          const { targetUid } = data as { targetUid: string };
+          if (targetUid === uid) {
+            window.dispatchEvent(new CustomEvent("axevora-voice-kicked"));
+          }
+          break;
+        }
+
+        case "PONG": {
+          const latency = networkMonitorRef.current.recordPongReceived();
+          window.dispatchEvent(new CustomEvent("axevora-network-quality", {
+            detail: {
+              latency,
+              quality: networkMonitorRef.current.getQualityRating()
+            }
+          }));
+          break;
+        }
+
+        case "HOST_DISCONNECTED_RECOVERY": {
+          const { hostUid, timeoutSec } = data as { hostUid: string; timeoutSec: number };
+          window.dispatchEvent(new CustomEvent("axevora-host-recovery", {
+            detail: { hostUid, timeoutSec }
+          }));
+          break;
+        }
+
+        case "HOST_RECONNECTED": {
+          const { hostUid } = data as { hostUid: string };
+          window.dispatchEvent(new CustomEvent("axevora-host-reconnected", {
+            detail: { hostUid }
+          }));
+          break;
+        }
+
+        case "HOST_TRANSFERRED": {
+          const { oldHostUid, newHostUid } = data as { oldHostUid: string; newHostUid: string };
+          window.dispatchEvent(new CustomEvent("axevora-host-transferred", {
+            detail: { oldHostUid, newHostUid }
+          }));
+          break;
+        }
       }
     };
 
@@ -225,9 +288,13 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
     send({ type: "GIFT", giftName, giftEmoji, giftValue });
   }, [send]);
 
-  const sendVoiceJoin = useCallback((peerId: string) => {
-    send({ type: "VOICE_JOIN", peerId });
-  }, [send]);
+  const sendVoiceJoin = useCallback((peerId: string, role?: string) => {
+    send({ type: "VOICE_JOIN", peerId, role: role || "listener" });
+    AxevoraLiveEventBus.emit({ type: "USER_JOINED", roomId, uid, displayName });
+    if (role === "host") {
+      AxevoraLiveEventBus.emit({ type: "ROOM_CREATED", roomId, hostUid: uid });
+    }
+  }, [send, roomId, uid, displayName]);
 
   const sendVoiceLeave = useCallback(() => {
     send({ type: "VOICE_LEAVE" });
@@ -235,6 +302,34 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled }: U
 
   const sendVoiceSignal = useCallback((targetUid: string, signal: unknown) => {
     send({ type: "VOICE_SIGNAL", targetUid, signal });
+  }, [send]);
+
+  const sendMuteUser = useCallback((targetUid: string, muted: boolean) => {
+    send({ type: "MUTE_USER", targetUid, muted });
+    AxevoraLiveEventBus.emit({ type: "MIC_ENABLED", uid: targetUid, enabled: !muted });
+  }, [send]);
+
+  const sendKickUser = useCallback((targetUid: string) => {
+    send({ type: "KICK_USER", targetUid });
+  }, [send]);
+
+  const sendRaiseHand = useCallback((handRaised: boolean) => {
+    send({ type: "RAISE_HAND", handRaised });
+  }, [send]);
+
+  const sendSetRole = useCallback((targetUid: string, role: string) => {
+    send({ type: "SET_ROLE", targetUid, role });
+    if (role === "host") {
+      AxevoraLiveEventBus.emit({ type: "HOST_TRANSFERRED", oldHostUid: uid, newHostUid: targetUid });
+    }
+  }, [send, uid]);
+
+  const sendPresenceState = useCallback((presence: string) => {
+    send({ type: "PRESENCE_STATE", presence });
+  }, [send]);
+
+  const sendAudioQualityProfile = useCallback((profile: string) => {
+    send({ type: "AUDIO_QUALITY", profile });
   }, [send]);
 
   return {

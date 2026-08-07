@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import type { User } from "firebase/auth";
 import { useChatSocket, type ChatMessage, type ChatUser } from "@/hooks/useChatSocket";
 import { useChatHistory } from "@/hooks/useChatHistory";
-import { VoiceChatBar } from "@/components/live-rooms/VoiceChatBar";
+import { AudioRoomManager } from "@/components/live-rooms/AudioRoomManager";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -228,12 +228,20 @@ export function LiveChatShell({ user, userCoins, onAddCoins, onJoinCricketRoom }
     sendVoiceJoin,
     sendVoiceLeave,
     sendVoiceSignal,
+    sendMuteUser,
+    sendKickUser,
+    sendRaiseHand,
+    sendSetRole,
+    sendPresenceState,
+    sendAudioQualityProfile,
   } = useChatSocket({
     roomId: activeRoom?.id || "",
     uid: myUid,
     displayName: myName,
     photoURL: myPhoto,
     enabled: !!activeRoom,
+    accessPolicy: activeRoom?.vip ? "verified_only" : "public",
+    isVerified: true,
   });
 
   // ─── localStorage history ─────────────────────────────────────────────────
@@ -241,6 +249,7 @@ export function LiveChatShell({ user, userCoins, onAddCoins, onJoinCricketRoom }
   const { loadHistory, saveHistory } = useChatHistory(activeRoom?.id || "");
 
   const [allMessages, setAllMessages] = useState<ChatMessage[]>([]);
+  const [voiceStageOpen, setVoiceStageOpen] = useState(true); // default open to showcase it!
 
   useEffect(() => {
     if (!activeRoom) return;
@@ -461,18 +470,20 @@ export function LiveChatShell({ user, userCoins, onAddCoins, onJoinCricketRoom }
             {status}
           </div>
 
-          {/* Voice bar */}
+          {/* Live Stage Toggle */}
           {activeRoom && (
-            <VoiceChatBar
-              roomId={activeRoom.id}
-              myUid={myUid}
-              myDisplayName={myName}
-              myPhotoURL={myPhoto}
-              voiceParticipants={voiceParticipants}
-              onJoinVoice={sendVoiceJoin}
-              onLeaveVoice={sendVoiceLeave}
-              onSendSignal={sendVoiceSignal}
-            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setVoiceStageOpen(v => !v)}
+              className={cn(
+                "border-white/10 text-xs font-black rounded-xl",
+                voiceStageOpen ? "bg-indigo-600 text-white border-indigo-500" : "text-white/60 hover:text-white"
+              )}
+            >
+              <Mic className="w-3.5 h-3.5 mr-1" />
+              Live Stage
+            </Button>
           )}
 
           <button
@@ -485,6 +496,30 @@ export function LiveChatShell({ user, userCoins, onAddCoins, onJoinCricketRoom }
             <Users className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Audio Room Stage Console */}
+        {activeRoom && voiceStageOpen && (
+          <div className="p-4 bg-slate-950/40 border-b border-white/5 shrink-0">
+            <AudioRoomManager
+              roomId={activeRoom.id}
+              myUid={myUid}
+              myName={myName}
+              myPhoto={myPhoto}
+              voiceParticipants={voiceParticipants}
+              socketHelpers={{
+                sendVoiceJoin,
+                sendVoiceLeave,
+                sendVoiceSignal,
+                sendMuteUser,
+                sendKickUser,
+                sendRaiseHand,
+                sendSetRole,
+                sendPresenceState,
+                sendAudioQualityProfile
+              }}
+            />
+          </div>
+        )}
 
         {/* Messages */}
         <ScrollArea className="flex-1 min-h-0">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,6 +19,7 @@ import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { auth, googleProvider } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithRedirect, getRedirectResult, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { useAuth } from "@/context/AuthContext";
 
 interface CommunityUser {
   id: string;
@@ -121,8 +122,7 @@ export default function Community() {
   const redirectParam = searchParams.get('redirect');
   const modeParam = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
 
-  const [user, setUser] = useState<CommunityUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, checkAuth, logout, setUser } = useAuth();
   const [authMode, setAuthMode] = useState<'login' | 'signup'>(modeParam);
 
   useEffect(() => {
@@ -171,106 +171,7 @@ export default function Community() {
       url: window.location.href,
       type: 'website'
     });
-
-    console.log('[STEP 1] Component mounted - starting auth flow');
-
-    const handleGoogleRedirect = async () => {
-      if (!sessionStorage.getItem('ax_google_redirect')) {
-        console.log('[STEP 0] ax_google_redirect flag missing - skipping getRedirectResult');
-        return;
-      }
-
-      console.log('[STEP 2] handleGoogleRedirect() started');
-      try {
-        console.log('[STEP 3] Calling getRedirectResult(auth) with 8s timeout...');
-        // Race against timeout to prevent Firebase SDK from hanging indefinitely
-        const result = await Promise.race([
-          getRedirectResult(auth),
-          new Promise<null>((resolve) => setTimeout(() => {
-            console.warn('[STEP 3 TIMEOUT] getRedirectResult() took >8s - treating as null');
-            resolve(null);
-          }, 8000))
-        ]);
-
-        sessionStorage.removeItem('ax_google_redirect');
-
-        console.log('[STEP 4] getRedirectResult resolved:', result ? 'EXISTS - user came from Google redirect' : 'NULL - normal page load');
-
-        if (result) {
-          console.log('[STEP 5] Firebase user:', result.user?.email, 'UID:', result.user?.uid);
-          setSubmitting(true);
-
-          console.log('[STEP 6] Calling getIdToken()...');
-          let firebaseIdToken: string;
-          try {
-            firebaseIdToken = await result.user.getIdToken();
-            console.log('[STEP 7] ID Token generated. Length:', firebaseIdToken?.length);
-          } catch (tokenErr: any) {
-            console.error('[STEP 7 FAILED] getIdToken error:', tokenErr?.code, tokenErr?.message);
-            throw tokenErr;
-          }
-
-          console.log('[STEP 8] Calling POST /api/community/auth/login...');
-          let res: Response;
-          try {
-            res = await fetch('/api/community/auth/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ firebaseIdToken })
-            });
-            console.log('[STEP 9] /api/community/auth/login status:', res.status, res.statusText);
-          } catch (fetchErr: any) {
-            console.error('[STEP 8 FAILED] fetch error (network?):', fetchErr?.code, fetchErr?.message);
-            throw fetchErr;
-          }
-
-          let data: any;
-          try {
-            data = await res.json();
-            console.log('[STEP 10] Login response:', JSON.stringify(data));
-          } catch (jsonErr: any) {
-            console.error('[STEP 9 FAILED] JSON parse error:', jsonErr?.message);
-            throw jsonErr;
-          }
-
-          if (res.ok && data.success) {
-            console.log('[STEP 11] Login SUCCESS. User:', data.user?.username, data.user?.email);
-            toast.success("Authenticated with Google successfully!");
-            setUser(data.user);
-            if (redirectParam) {
-              navigate(redirectParam);
-            }
-          } else {
-            console.error('[STEP 10 FAILED] Backend rejected. Status:', res.status, 'Error:', data?.error);
-            await signOut(auth);
-            console.log('[STEP 10b] Firebase signOut done - half-auth prevented');
-            toast.error(data.error || "Google authentication failed.");
-          }
-          setSubmitting(false);
-          console.log('[STEP 12] handleGoogleRedirect complete');
-        } else {
-          console.log('[STEP 4b] No redirect result - normal page load');
-        }
-      } catch (err: any) {
-        console.error('[GOOGLE AUTH CATCH] code:', err?.code, 'message:', err?.message);
-        console.error('[GOOGLE AUTH CATCH] stack:', err?.stack);
-        try { await signOut(auth); } catch (_) {}
-        toast.error(err?.message || "Google authentication failed.");
-        setSubmitting(false);
-      }
-      console.log('[STEP END] handleGoogleRedirect() returning');
-    };
-
-    // CRITICAL FIX: checkAuth() runs IMMEDIATELY and independently.
-    // Loading state must NEVER depend on handleGoogleRedirect() resolving.
-    // If Google redirect result exists, handleGoogleRedirect updates user state in background.
-    console.log('[STEP A] Calling checkAuth() immediately (independent of redirect)');
-    checkAuth();
-    handleGoogleRedirect().catch((err) => {
-      console.error('[handleGoogleRedirect unhandled rejection]', err);
-    });
   }, []);
-
 
   // Smooth scroll to hash anchor after loading finishes
   useEffect(() => {
@@ -355,30 +256,7 @@ export default function Community() {
     };
   }, [user, loading, authMode]);
 
-  const checkAuth = async () => {
-    console.log('[STEP A] checkAuth() started - calling GET /api/community/auth/me');
-    try {
-      const res = await fetch('/api/community/auth/me');
-      console.log('[STEP B] /api/community/auth/me response. Status:', res.status, res.statusText);
-      if (res.ok) {
-        const data = await res.json();
-        console.log('[STEP C] /me response JSON:', JSON.stringify(data));
-        if (data.authenticated) {
-          console.log('[STEP D] User authenticated via session! User:', data.user?.username);
-          setUser(data.user);
-        } else {
-          console.log('[STEP D] /me returned 200 but authenticated=false. No active session.');
-        }
-      } else {
-        console.warn('[STEP B WARN] /me returned non-OK status:', res.status, '(this is normal if no session exists)');
-      }
-    } catch (err: any) {
-      console.error('[STEP A FAILED] checkAuth fetch error:', err?.message, err?.stack);
-    } finally {
-      console.log('[STEP LOADING FALSE] setLoading(false) being called now');
-      setLoading(false);
-    }
-  };
+
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -439,7 +317,7 @@ export default function Community() {
         
         toast.error(data.error || "Signup failed. Please try again.");
         // @ts-ignore
-        if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+        try { if (window.turnstile) window.turnstile.reset(); } catch(e) {}
         setTurnstileToken('');
       }
     } catch (err: any) {
@@ -449,7 +327,7 @@ export default function Community() {
         toast.error("Registration error. Please try again.");
       }
       // @ts-ignore
-      if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+      try { if (window.turnstile) window.turnstile.reset(); } catch(e) {}
       setTurnstileToken('');
     } finally {
       setSubmitting(false);
@@ -479,7 +357,7 @@ export default function Community() {
       const data = await res.json();
       if (res.ok && data.success) {
         toast.success("Logged in successfully!");
-        setUser(data.user);
+        await checkAuth();
         setEmail('');
         setPassword('');
         setTurnstileToken('');
@@ -490,7 +368,7 @@ export default function Community() {
         await signOut(auth); // Sign out if backend rejected
         toast.error(data.error || "Authentication failed.");
         // @ts-ignore
-        if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+        try { if (window.turnstile) window.turnstile.reset(); } catch(e) {}
         setTurnstileToken('');
       }
     } catch (err: any) {
@@ -500,7 +378,7 @@ export default function Community() {
         toast.error("Login error. Please try again.");
       }
       // @ts-ignore
-      if (window.turnstile) window.turnstile.reset('#turnstile-widget');
+      try { if (window.turnstile) window.turnstile.reset(); } catch(e) {}
       setTurnstileToken('');
     } finally {
       setSubmitting(false);
@@ -525,14 +403,7 @@ export default function Community() {
   };
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      await fetch('/api/community/auth/logout', { method: 'POST' });
-      setUser(null);
-      toast.success("Logged out successfully");
-    } catch (err) {
-      toast.error("Failed to logout securely");
-    }
+    await logout();
   };
 
   const handleForgotPassword = async () => {

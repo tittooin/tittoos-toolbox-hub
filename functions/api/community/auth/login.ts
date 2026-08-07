@@ -85,9 +85,12 @@ export const onRequestPost = async ({ request, env }: any) => {
             userId, firebaseUid, baseUsername, normUsername, fbEmail, normEmail, emailVerified ? 1 : 0
           ).run();
 
+          // Phase 4: AXEVORA IDENTITY FOUNDATION - AUTO PROFILE CREATION
           await db.prepare(`
-            INSERT INTO community_profiles (user_id, display_name, avatar_url) 
-            VALUES (?, ?, ?)
+            INSERT INTO community_profiles (
+              user_id, display_name, avatar_url, profile_visibility, created_at, updated_at
+            ) 
+            VALUES (?, ?, ?, 'public', datetime('now'), datetime('now'))
           `).bind(userId, fbDisplayName || baseUsername, fbPhotoUrl || null).run();
 
           user = await db.prepare(`SELECT * FROM community_users WHERE id = ?`).bind(userId).first();

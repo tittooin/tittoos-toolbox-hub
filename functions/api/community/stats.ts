@@ -1,4 +1,5 @@
 export const onRequest = async (context: { request: Request; env?: Record<string, unknown> }) => {
+  console.log('[stats.ts] [STEP 1] Request received');
   const jsonHeaders = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -14,11 +15,14 @@ export const onRequest = async (context: { request: Request; env?: Record<string
     };
 
     if (!db) {
+      console.error('[stats.ts] Error: COMMUNITY_DB binding is missing');
       return new Response(
         JSON.stringify({ error: 'Database service not available' }),
         { status: 500, headers: jsonHeaders }
       );
     }
+    console.log('[stats.ts] [STEP 4] D1 connected');
+    console.log('[stats.ts] [STEP 5] SQL executing (Fetching stats)');
 
     // 1. Official Boards count
     const boardsRes = await db.prepare("SELECT COUNT(*) as cnt FROM community_boards WHERE status = 'active'").first<{ cnt: number }>();
@@ -26,7 +30,7 @@ export const onRequest = async (context: { request: Request; env?: Record<string
 
     // 2. Registered Human Members (EXCLUDES BOTS, requires verified email)
     const membersRes = await db.prepare(
-      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1"
+      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (platform_role = 'user' OR platform_role IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1"
     ).first<{ cnt: number }>();
     const registeredMembers = membersRes?.cnt ?? 0;
 
@@ -42,9 +46,12 @@ export const onRequest = async (context: { request: Request; env?: Record<string
 
     // 5. Active Online Members in Last 5 Minutes (EXCLUDES BOTS, requires verified email)
     const onlineRes = await db.prepare(
-      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (actor_type = 'user' OR actor_type IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1 AND last_active_at >= datetime('now', '-5 minutes')"
+      "SELECT COUNT(*) as cnt FROM community_users WHERE status = 'active' AND (platform_role = 'user' OR platform_role IS NULL) AND username NOT LIKE 'bot-%' AND email_verified = 1 AND last_login_at >= datetime('now', '-5 minutes')"
     ).first<{ cnt: number }>();
     const membersOnline = onlineRes?.cnt ?? 0;
+
+    console.log('[stats.ts] [STEP 6] SQL result successful');
+    console.log('[stats.ts] [STEP 7] Response 200 OK');
 
     return new Response(
       JSON.stringify({
@@ -61,6 +68,7 @@ export const onRequest = async (context: { request: Request; env?: Record<string
     );
   } catch (err: any) {
     console.error('Stats endpoint error:', err);
+    if (err.stack) console.error(err.stack);
     return new Response(
       JSON.stringify({ error: 'Server error retrieving statistics' }),
       { status: 500, headers: jsonHeaders }

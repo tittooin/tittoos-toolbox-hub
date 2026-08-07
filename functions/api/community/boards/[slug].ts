@@ -1,6 +1,7 @@
 import { getAuthenticatedUser } from '../auth/_utils';
 
 export const onRequestGet = async ({ env, params, request }: any) => {
+  console.log('[boards/[slug].ts] [STEP 1] Request received');
   const jsonHeaders = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -9,8 +10,10 @@ export const onRequestGet = async ({ env, params, request }: any) => {
   try {
     const db = env?.COMMUNITY_DB;
     if (!db) {
+      console.error('[boards/[slug].ts] Error: COMMUNITY_DB binding is missing');
       return new Response(JSON.stringify({ error: 'Database service not available' }), { status: 500, headers: jsonHeaders });
     }
+    console.log('[boards/[slug].ts] [STEP 4] D1 connected');
 
     const { slug } = params;
     if (!slug) {
@@ -18,6 +21,7 @@ export const onRequestGet = async ({ env, params, request }: any) => {
     }
 
     // 1. Fetch Board details
+    console.log('[boards/[slug].ts] [STEP 5] SQL executing (Fetch Board details)');
     const board = await db.prepare(`
       SELECT id, name, slug, description, board_type, visibility, status, icon_name, rules_text, is_locked, member_count, post_count
       FROM community_boards
@@ -48,7 +52,7 @@ export const onRequestGet = async ({ env, params, request }: any) => {
       FROM community_posts 
       WHERE board_id = ? AND status = 'published'
     `).bind(board.id).first();
-    const totalPosts = countRecord ? countRecord.count : 0;
+    const totalPosts = countRecord ? (countRecord.count as number) : 0;
 
     // 4. Fetch Posts
     const { results: posts } = await db.prepare(`
@@ -61,7 +65,9 @@ export const onRequestGet = async ({ env, params, request }: any) => {
       ORDER BY ${orderBy}
       LIMIT ? OFFSET ?
     `).bind(board.id, limit, offset).all();
+    console.log('[boards/[slug].ts] [STEP 6] SQL result successful');
 
+    console.log('[boards/[slug].ts] [STEP 7] Response 200 OK');
     return new Response(
       JSON.stringify({
         success: true,
@@ -78,6 +84,7 @@ export const onRequestGet = async ({ env, params, request }: any) => {
     );
   } catch (err: any) {
     console.error('Get board detail/posts error:', err);
+    if (err.stack) console.error(err.stack);
     return new Response(JSON.stringify({ error: 'Server error retrieving board data' }), { status: 500, headers: jsonHeaders });
   }
 };

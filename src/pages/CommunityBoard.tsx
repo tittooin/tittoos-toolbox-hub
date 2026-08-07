@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setSEO } from "@/utils/seoUtils";
@@ -22,6 +22,7 @@ import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BoardLiveChat } from "@/components/community/BoardLiveChat";
+import { useAuth } from "@/context/AuthContext";
 interface BoardDetails {
   id: string;
   name: string;
@@ -171,7 +172,7 @@ export default function CommunityBoard() {
   const navigate = useNavigate();
   const [board, setBoard] = useState<BoardDetails | null>(null);
   const [posts, setPosts] = useState<PostItem[]>([]);
-  const [user, setUser] = useState<CurrentUser | null>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(true);
   
@@ -188,16 +189,20 @@ export default function CommunityBoard() {
   const [rulesAgreed, setRulesAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Guest join modal
+  // Guest join / unverified modal
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [isUnverifiedModal, setIsUnverifiedModal] = useState(false);
   const [joinActionName, setJoinActionName] = useState('');
 
   const requireAuth = (action: string, callback: () => void) => {
     if (!user) {
+      setIsUnverifiedModal(false);
       setJoinActionName(action);
       setShowJoinModal(true);
     } else if (user.emailVerified === false) {
-      toast.error("Email verification is required to perform this action. Please check your inbox or resend the link from the community dashboard.");
+      setIsUnverifiedModal(true);
+      setJoinActionName(action);
+      setShowJoinModal(true);
     } else {
       callback();
     }
@@ -207,10 +212,6 @@ export default function CommunityBoard() {
   const [deals, setDeals] = useState<CommerceDiscoveryItem[]>([]);
   const [dealsLoading, setDealsLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  useEffect(() => {
-    checkUser();
-  }, []);
 
   useEffect(() => {
     if (slug) {
@@ -405,24 +406,7 @@ export default function CommunityBoard() {
   }
 
   if (!board) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col justify-between">
-        <Header />
-        <div className="flex-grow flex flex-col items-center justify-center text-center px-4">
-          <AlertTriangle className="h-16 w-16 text-destructive mb-4" />
-          <h1 className="text-3xl font-extrabold tracking-tight mb-2">Board Not Found</h1>
-          <p className="text-muted-foreground max-w-md mb-6">
-            The board you are looking for does not exist or has been locked.
-          </p>
-          <Link to="/community">
-            <Button className="font-semibold">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Dashboard
-            </Button>
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <Navigate to="/community" replace />;
   }
 
   return (

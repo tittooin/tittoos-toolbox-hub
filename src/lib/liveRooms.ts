@@ -58,6 +58,21 @@ export const AVAILABLE_GIFTS: LiveRoomGift[] = [
   { id: "rocket", name: "Rocket", cost: 1000, icon: "🚀", colorClass: "text-purple-500 bg-purple-500/10 border-purple-500/20" },
 ];
 
+export type LiveRoomStatus = "draft" | "scheduled" | "starting" | "live" | "ending" | "ended" | "archived";
+
+export type AudioPresenceState = "ONLINE" | "CONNECTING" | "MUTED" | "SPEAKING" | "AWAY" | "RECONNECTING";
+
+export type AudioQualityProfile = "low" | "medium" | "high" | "music";
+
+export type RoomAccessPolicy = "public" | "private" | "invite_only" | "followers_only" | "subscribers_only" | "verified_only";
+
+export const FEATURE_FLAGS = {
+  LIVE_AUDIO_ENABLED: true,
+  SYSTEM_AUDIO_ENABLED: true,
+  ROOM_RECORDING_ENABLED: true,
+  AI_ROOM_ENABLED: true,
+};
+
 export interface LiveRoom {
   id: string;
   roomCode: string;
@@ -71,6 +86,16 @@ export interface LiveRoom {
   micRequestsOpen?: boolean;
   speakerLimit?: number;
   status: "live" | "closed";
+  lifecycleStatus?: LiveRoomStatus;
+  audioQuality?: AudioQualityProfile;
+  accessPolicy?: RoomAccessPolicy;
+  discoveryMetadata?: {
+    isTrending?: boolean;
+    isLiveNow?: boolean;
+    friendsCount?: number;
+    language?: string;
+    category?: string;
+  };
   createdAt?: {
     toDate?: () => Date;
   } | null;
@@ -80,12 +105,13 @@ export interface LiveRoomParticipant {
   uid: string;
   displayName: string;
   photoURL: string;
-  role: "host" | "guest";
+  role: "host" | "co-host" | "moderator" | "speaker" | "listener" | "guest" | "bot" | "ai-assistant";
   moodId: LiveMoodId;
   micState: MicState;
   isOnline: boolean;
   canSpeak: boolean;
   isMicLive: boolean;
+  presence?: AudioPresenceState;
   joinedAt?: {
     toDate?: () => Date;
   } | null;

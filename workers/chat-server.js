@@ -98,14 +98,29 @@ export class ChatRoom {
   }
 
   async handleSession(ws, request) {
-    this.state.acceptWebSocket(ws);
-    
-    // Parse user info from URL query params (passed after Firebase token verification on frontend)
     const url = new URL(request.url);
     const uid = url.searchParams.get("uid") || `anon_${Date.now()}`;
     const displayName = decodeURIComponent(url.searchParams.get("name") || "Guest");
     const photoURL = decodeURIComponent(url.searchParams.get("photo") || "");
+    const accessPolicy = url.searchParams.get("accessPolicy") || "public";
+    const isVerified = url.searchParams.get("verified") === "true";
 
+    // Enforce verified user policy
+    if (accessPolicy === "verified_only" && !isVerified) {
+      ws.accept();
+      ws.send(JSON.stringify({ type: "ERROR", message: "Only verified users can join this room." }));
+      ws.close(4003, "Verified Users Only");
+      return;
+    }
+
+    // Cancel recovery timer if host reconnects
+    if (this.hostRecoveryTimer && uid === this.currentHostUid) {
+      clearTimeout(this.hostRecoveryTimer);
+      this.hostRecoveryTimer = null;
+      this.broadcast({ type: "HOST_RECONNECTED", hostUid: uid });
+    }
+
+    this.state.acceptWebSocket(ws);
     const session = { uid, displayName, photoURL, joinedAt: Date.now() };
     this.sessions.set(ws, session);
 
@@ -207,10 +222,17 @@ export class ChatRoom {
       }
 
       case "VOICE_JOIN": {
+        if (data.role === "host") {
+          this.currentHostUid = session.uid;
+        }
         this.voiceParticipants.set(session.uid, {
           displayName: session.displayName,
           photoURL: session.photoURL,
           peerId: data.peerId,
+          role: data.role || "listener",
+          isMuted: false,
+          handRaised: false,
+          presence: "ONLINE"
         });
         this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
         break;
@@ -232,6 +254,70 @@ export class ChatRoom {
             signal: data.signal,
           }));
         }
+        break;
+      }
+
+      case "MUTE_USER": {
+        // Find speaker in voice participants map
+        const speaker = this.voiceParticipants.get(data.targetUid);
+        if (speaker) {
+          speaker.isMuted = !!data.muted;
+          this.voiceParticipants.set(data.targetUid, speaker);
+          this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+          this.broadcast({ type: "SPEAKER_MODERATED", targetUid: data.targetUid, muted: speaker.isMuted });
+        }
+        break;
+      }
+
+      case "KICK_USER": {
+        const speaker = this.voiceParticipants.get(data.targetUid);
+        if (speaker) {
+          this.voiceParticipants.delete(data.targetUid);
+          this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+          this.broadcast({ type: "KICKED", targetUid: data.targetUid });
+          
+          // Force disconnect the WebSocket session if matching
+          const kickedWs = this.findSessionByUid(data.targetUid);
+          if (kickedWs) {
+            kickedWs.send(JSON.stringify({ type: "ERROR", message: "You have been kicked from the audio room by the host." }));
+            kickedWs.close(4000, "Kicked by host");
+          }
+        }
+        break;
+      }
+
+      case "RAISE_HAND": {
+        const participant = this.voiceParticipants.get(session.uid);
+        if (participant) {
+          participant.handRaised = !!data.handRaised;
+          this.voiceParticipants.set(session.uid, participant);
+          this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+        }
+        break;
+      }
+
+      case "SET_ROLE": {
+        const participant = this.voiceParticipants.get(data.targetUid);
+        if (participant) {
+          participant.role = data.role;
+          this.voiceParticipants.set(data.targetUid, participant);
+          this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+        }
+        break;
+      }
+
+      case "PRESENCE_STATE": {
+        const participant = this.voiceParticipants.get(session.uid);
+        if (participant) {
+          participant.presence = data.presence;
+          this.voiceParticipants.set(session.uid, participant);
+          this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+        }
+        break;
+      }
+
+      case "AUDIO_QUALITY": {
+        this.broadcast({ type: "QUALITY_UPDATE", roomId: this.roomId, qualityProfile: data.profile });
         break;
       }
 
@@ -262,7 +348,23 @@ export class ChatRoom {
     const session = this.sessions.get(ws);
     if (session) {
       this.sessions.delete(ws);
-      this.voiceParticipants.delete(session.uid);
+      
+      const participant = this.voiceParticipants.get(session.uid);
+      if (participant && participant.role === "host") {
+        this.hostRecoveryTimer = setTimeout(() => {
+          this.promoteNewHost(session.uid);
+        }, 60_000);
+        
+        this.broadcast({ 
+          type: "HOST_DISCONNECTED_RECOVERY", 
+          hostUid: session.uid, 
+          timeoutSec: 60 
+        });
+      } else {
+        this.voiceParticipants.delete(session.uid);
+        this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
+      }
+
       this.broadcast({
         type: "PRESENCE",
         action: "LEAVE",
@@ -270,6 +372,47 @@ export class ChatRoom {
         displayName: session.displayName,
         usersOnline: this.getOnlineUsers(),
       });
+    }
+  }
+
+  promoteNewHost(oldHostUid) {
+    this.hostRecoveryTimer = null;
+    this.voiceParticipants.delete(oldHostUid);
+
+    const candidates = Array.from(this.voiceParticipants.entries()).map(([uid, data]) => ({
+      uid, ...data,
+    }));
+    
+    const rolePriority = { "co-host": 1, "moderator": 2, "speaker": 3, "listener": 4 };
+    candidates.sort((a, b) => {
+      const aPriority = rolePriority[a.role] || 5;
+      const bPriority = rolePriority[b.role] || 5;
+      return aPriority - bPriority;
+    });
+
+    if (candidates.length > 0) {
+      const newHost = candidates[0];
+      newHost.role = "host";
+      this.currentHostUid = newHost.uid;
+      
+      this.voiceParticipants.set(newHost.uid, {
+        displayName: newHost.displayName,
+        photoURL: newHost.photoURL,
+        peerId: newHost.peerId,
+        role: "host",
+        isMuted: newHost.isMuted,
+        handRaised: false,
+        presence: "ONLINE"
+      });
+
+      this.broadcast({ 
+        type: "HOST_TRANSFERRED", 
+        oldHostUid, 
+        newHostUid: newHost.uid,
+        participants: this.getVoiceParticipants() 
+      });
+    } else {
+      this.broadcast({ type: "ROOM_TERMINATED" });
     }
   }
 

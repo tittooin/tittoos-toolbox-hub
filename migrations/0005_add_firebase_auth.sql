@@ -1,7 +1,7 @@
 -- AXEVORA COMMUNITY ENGINE - MIGRATION 0005: ADD FIREBASE UID
 
 -- 1. Add firebase_uid to community_users
-ALTER TABLE community_users ADD COLUMN firebase_uid TEXT UNIQUE;
+ALTER TABLE community_users ADD COLUMN firebase_uid TEXT;
 
 -- 2. Make password fields nullable (Since Firebase handles Auth now)
 -- SQLite doesn't support ALTER TABLE ... ALTER COLUMN for nullability directly without rebuilding the table.

@@ -1,0 +1,132 @@
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { auth, googleProvider } from "@/lib/firebase";
+import { getRedirectResult, signOut } from "firebase/auth";
+import { toast } from "sonner";
+
+export interface CommunityUser {
+  id: string;
+  firebase_uid: string;
+  username: string;
+  email: string;
+  platformRole: string;
+  trustLevel: number;
+  status: string;
+  emailVerified: boolean;
+  avatar_url?: string | null;
+  cover_image?: string | null;
+  display_name?: string | null;
+}
+
+interface AuthContextType {
+  user: CommunityUser | null;
+  loading: boolean;
+  checkAuth: () => Promise<void>;
+  logout: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<CommunityUser | null>>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<CommunityUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const authInitializedRef = useRef(false);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/community/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error('[AuthContext] checkAuth error:', err);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      await fetch('/api/community/auth/logout', { method: 'POST' });
+      setUser(null);
+      toast.success("Logged out successfully");
+    } catch (err) {
+      console.error('[AuthContext] logout error:', err);
+      toast.error("Failed to logout securely");
+    }
+  };
+
+  useEffect(() => {
+    if (authInitializedRef.current) return;
+    authInitializedRef.current = true;
+
+    const isGoogleRedirect = sessionStorage.getItem('ax_google_redirect') === '1';
+
+    const handleInitialAuth = async () => {
+      if (isGoogleRedirect) {
+        try {
+          const result = await Promise.race([
+            getRedirectResult(auth),
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000))
+          ]);
+
+          if (result && result.user) {
+            const firebaseIdToken = await result.user.getIdToken();
+            const res = await fetch('/api/community/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ firebaseIdToken })
+            });
+
+            const data = await res.json();
+            sessionStorage.removeItem('ax_google_redirect');
+
+            if (res.ok && data.success) {
+              await checkAuth();
+              toast.success("Authenticated with Google successfully!");
+            } else {
+              await signOut(auth);
+              toast.error(data.error || "Google authentication failed.");
+              await checkAuth();
+            }
+          } else {
+            sessionStorage.removeItem('ax_google_redirect');
+            await checkAuth();
+          }
+        } catch (err: any) {
+          sessionStorage.removeItem('ax_google_redirect');
+          try { await signOut(auth); } catch (_) {}
+          toast.error(err?.message || "Google authentication failed.");
+          await checkAuth();
+        }
+      } else {
+        await checkAuth();
+      }
+    };
+
+    handleInitialAuth();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, loading, checkAuth, logout, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

@@ -11,6 +11,7 @@ import AdminRouteGuard from "./components/AdminRouteGuard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdMobBanner from "./components/AdMobBanner";
+import { AuthProvider } from "./context/AuthContext";
 
 // Lazy load pages for better performance
 const Categories = lazy(() => import("./pages/Categories"));
@@ -33,6 +34,8 @@ const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
 const CommunityPost = lazy(() => import("./pages/CommunityPost"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const ShoppingAssistant = lazy(() => import("./pages/shopping/ShoppingAssistant"));
+const CommunityProfile = lazy(() => import("./pages/CommunityProfile"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 
 // Blog Categories
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -248,10 +251,10 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <LegacyHashRedirect />
-          <SimpleErrorBoundary>
-            <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
-              <Routes>
+          <AuthProvider>
+            <SimpleErrorBoundary>
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/about" element={<About />} />
@@ -270,6 +273,8 @@ const App = () => (
                 <Route path="/submit-blog" element={<SubmitBlog />} />
                 <Route path="/earn" element={<DigitalIncomeKit />} />
                 <Route path="/community" element={<Community />} />
+                <Route path="/community/profile" element={<CommunityProfile />} />
+                <Route path="/u/:username" element={<PublicProfile />} />
                 <Route path="/community/boards/:slug" element={<CommunityBoard />} />
                 <Route path="/community/boards/:slug/posts/:postId" element={<CommunityPost />} />
                 <Route path="/community/verify-email" element={<VerifyEmail />} />
@@ -479,7 +484,8 @@ const App = () => (
               </Routes>
             </Suspense>
           </SimpleErrorBoundary>
-        </BrowserRouter>
+        </AuthProvider>
+      </BrowserRouter>
         {/* <AdMobBanner /> */}
       </TooltipProvider>
     </HelmetProvider>

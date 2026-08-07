@@ -17,6 +17,7 @@ import { BotBadge } from "@/components/community/BotBadge";
 import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
 import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
+import { useAuth } from "@/context/AuthContext";
 
 interface PostDetails {
   id: string;
@@ -86,7 +87,7 @@ export default function CommunityPost() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<PostDetails | null>(null);
-  const [user, setUser] = useState<CurrentUser | null>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   
   // Modals
@@ -121,25 +122,10 @@ export default function CommunityPost() {
   };
 
   useEffect(() => {
-    checkUser();
     if (postId) {
       fetchPost();
     }
   }, [postId]);
-
-  const checkUser = async () => {
-    try {
-      const res = await fetch('/api/community/auth/me');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.authenticated) {
-          setUser(data.user);
-        }
-      }
-    } catch (err) {
-      console.error('Error fetching user:', err);
-    }
-  };
 
   const fetchPost = async () => {
     setLoading(true);

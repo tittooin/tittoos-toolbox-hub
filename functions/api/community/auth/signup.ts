@@ -68,7 +68,7 @@ export const onRequestPost = async ({ request, env }: any) => {
     if (!/^[a-zA-Z0-9_-]+$/.test(cleanUsername)) {
       return new Response(JSON.stringify({ error: 'Username can only contain letters, numbers, hyphens, and underscores' }), { status: 400, headers: jsonHeaders });
     }
-    const reservedNames = ['admin', 'administrator', 'moderator', 'official', 'axevora', 'support', 'security', 'staff', 'system', 'root', 'founder'];
+    const reservedNames = ['admin', 'administrator', 'support', 'help', 'api', 'login', 'logout', 'settings', 'profile', 'community', 'forum', 'system', 'root', 'owner', 'developer', 'moderator', 'axevora', 'staff', 'official', 'founder'];
     const normUsername = cleanUsername.toLowerCase();
     if (reservedNames.some(res => normUsername === res || normUsername.includes(res))) {
       return new Response(JSON.stringify({ error: 'This username is reserved or unavailable' }), { status: 400, headers: jsonHeaders });

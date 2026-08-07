@@ -1,12 +1,21 @@
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X, Users, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Users, ChevronDown, User, LogOut, Settings, ShieldCheck, CheckCircle2, AlertTriangle, Sparkles, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const getInitials = (name: string) => {
+    if (!name) return 'U';
+    return name.substring(0, 2).toUpperCase();
+  };
 
   return (
     <header className="bg-background text-foreground shadow-sm border-b sticky top-0 z-50">
@@ -86,6 +95,140 @@ const Header = () => {
             </div>
           </nav>
 
+          {/* Desktop Right Side: Authentication Controls */}
+          <div className="hidden lg:flex items-center space-x-3">
+            {loading ? (
+              <div className="h-8 w-20 bg-slate-200 animate-pulse rounded-lg"></div>
+            ) : user ? (
+              <div className="relative" onMouseLeave={() => setIsProfileOpen(false)}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  className="flex items-center space-x-2.5 p-1.5 rounded-xl hover:bg-accent/60 transition-colors focus:outline-none border border-transparent hover:border-border/60"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                    ) : (
+                      getInitials(user.display_name || user.username)
+                    )}
+                  </div>
+                  <div className="text-left hidden xl:block">
+                    <div className="text-xs font-bold text-foreground leading-tight truncate max-w-[110px]">
+                      {user.display_name || user.username}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+                      {user.emailVerified ? (
+                        <span className="text-emerald-600 flex items-center gap-0.5 font-semibold">
+                          <CheckCircle2 className="w-2.5 h-2.5" /> Verified
+                        </span>
+                      ) : (
+                        <span className="text-amber-600 flex items-center gap-0.5 font-semibold">
+                          <AlertTriangle className="w-2.5 h-2.5" /> Unverified
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Logged-In User Dropdown */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-1 w-64 bg-card border border-border shadow-2xl rounded-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                    {/* User Summary Card */}
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 mb-1 space-y-1.5">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                          {user.avatar_url ? (
+                            <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                          ) : (
+                            getInitials(user.display_name || user.username)
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-extrabold text-slate-900 truncate">
+                            {user.display_name || user.username}
+                          </div>
+                          <div className="text-[11px] text-slate-500 truncate">
+                            @{user.username}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-[11px] text-slate-600 truncate border-t border-slate-200/60 pt-1.5">
+                        {user.email}
+                      </div>
+
+                      <div className="flex items-center gap-1.5 pt-0.5">
+                        <Badge variant="outline" className="text-[9px] font-extrabold uppercase bg-white text-indigo-700 border-indigo-200 px-1.5 py-0">
+                          {user.platformRole || 'Member'}
+                        </Badge>
+                        {user.emailVerified ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none text-[9px] font-bold px-1.5 py-0">
+                            Verified
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 border-none text-[9px] font-bold px-1.5 py-0">
+                            Pending Verify
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Menu Actions */}
+                    <Link
+                      to="/community/profile"
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-100/80 rounded-xl transition-colors"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <User className="w-4 h-4 text-indigo-600" />
+                      My Profile & Posts
+                    </Link>
+
+                    <Link
+                      to="/community#join-section"
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-indigo-600 hover:bg-slate-100/80 rounded-xl transition-colors"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <Settings className="w-4 h-4 text-slate-500" />
+                      Account Settings
+                    </Link>
+
+                    <div className="my-1 border-t border-slate-200/80"></div>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors text-left"
+                    >
+                      <LogOut className="w-4 h-4 text-red-500" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="text-xs font-bold text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl"
+                >
+                  <Link to="/community?mode=login">Sign In</Link>
+                </Button>
+                <Button
+                  size="sm"
+                  asChild
+                  className="text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md shadow-indigo-600/20"
+                >
+                  <Link to="/community?mode=signup">Create Account</Link>
+                </Button>
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -107,6 +250,58 @@ const Header = () => {
         {isMenuOpen && (
           <div id="mobile-menu" className="lg:hidden py-4 border-t">
             <nav className="flex flex-col space-y-3 font-medium text-sm">
+              {/* Mobile Auth Bar */}
+              {user ? (
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center overflow-hidden">
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                        ) : (
+                          getInitials(user.display_name || user.username)
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">{user.display_name || user.username}</div>
+                        <div className="text-[10px] text-slate-500">@{user.username}</div>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        logout();
+                      }}
+                      className="h-8 text-xs font-bold text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut className="w-3.5 h-3.5 mr-1" /> Sign Out
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 pb-2 border-b border-border/50">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="w-full text-xs font-bold"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/community?mode=login">Sign In</Link>
+                  </Button>
+                  <Button
+                    size="sm"
+                    asChild
+                    className="w-full text-xs font-bold bg-indigo-600 text-white"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/community?mode=signup">Create Account</Link>
+                  </Button>
+                </div>
+              )}
+
               <Link
                 to="/"
                 className="text-foreground hover:text-primary transition-colors py-1"

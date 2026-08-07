@@ -1,0 +1,19 @@
+name = "axevora-chat"
+main = "workers/chat-server.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "COMMUNITY_DB"
+database_name = "axevora-community"
+database_id = "7db70cc1-be6e-44fe-b523-1bf35f3f0ca0"
+
+[env.production]
+name = "axevora-chat-prod"
+routes = [
+  { pattern = "chat.axevora.workers.dev/*", zone_name = "axevora.workers.dev" }
+]
+
+[[r2_buckets]]
+binding = "AVATARS_BUCKET"
+bucket_name = "axevora-avatars"
