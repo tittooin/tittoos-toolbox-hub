@@ -123,12 +123,12 @@ export default function Community() {
   const modeParam = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
 
   const { user, loading, checkAuth, logout, setUser } = useAuth();
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>(modeParam);
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'verify'>(modeParam as any);
 
   useEffect(() => {
     const mode = searchParams.get('mode');
-    if (mode === 'signup' || mode === 'login') {
-      setAuthMode(mode);
+    if (mode === 'signup' || mode === 'login' || mode === 'verify') {
+      setAuthMode(mode as any);
     }
   }, [searchParams]);
   
@@ -138,18 +138,38 @@ export default function Community() {
   const [password, setPassword] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  
+  // Verification states
   const [resendingEmail, setResendingEmail] = useState(false);
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState('');
+  const [pendingFirebaseIdToken, setPendingFirebaseIdToken] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(c => c - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   const handleResendVerification = async () => {
+    if (!pendingFirebaseIdToken) {
+      toast.error("Session expired. Please try logging in again to resend the verification email.");
+      return;
+    }
+    
     setResendingEmail(true);
     try {
       const res = await fetch('/api/community/auth/resend-verification', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firebaseIdToken: pendingFirebaseIdToken })
       });
       const data = await res.json();
       if (res.ok && data.success) {
         toast.success(data.message || "Verification email sent. Please check your inbox.");
+        setResendCooldown(60); // 60 seconds cooldown
       } else {
         toast.error(data.error || "Failed to resend verification email.");
       }
@@ -285,17 +305,19 @@ export default function Community() {
       const data = await res.json();
       if (res.ok && data.success) {
         // Send Verification Email via Firebase
-        await sendEmailVerification(userCredential.user);
+        try { await sendEmailVerification(userCredential.user); } catch (e) { console.error("Initial email send error", e); }
 
         if (data.requireVerification) {
           toast.success(data.message || "Please check your inbox to verify your email before logging in.");
-          // Reset form but do not set user state since they aren't verified
+          setPendingVerificationEmail(data.email || email);
+          setPendingFirebaseIdToken(firebaseIdToken);
+          setResendCooldown(data.cooldown || 60);
+          
           setUsername('');
-          setEmail('');
           setPassword('');
           setTurnstileToken('');
-          await signOut(auth); // Sign out of Firebase so they have to login after verification
-          setAuthMode('login'); // Switch to login tab
+          // Do not sign out of firebase immediately so the token is valid for resend
+          setAuthMode('verify'); // Switch to verify tab
         } else {
           toast.success("Registration successful! Welcome to Axevora Community.");
           setUser(data.user);
@@ -365,8 +387,15 @@ export default function Community() {
           navigate(redirectParam);
         }
       } else {
-        await signOut(auth); // Sign out if backend rejected
-        toast.error(data.error || "Authentication failed.");
+        if (data.code === 'EMAIL_NOT_VERIFIED') {
+          toast.error("Please verify your email address to continue.");
+          setPendingVerificationEmail(email);
+          setPendingFirebaseIdToken(firebaseIdToken);
+          setAuthMode('verify');
+        } else {
+          await signOut(auth); // Sign out if backend rejected
+          toast.error(data.error || "Authentication failed.");
+        }
         // @ts-ignore
         try { if (window.turnstile) window.turnstile.reset(); } catch(e) {}
         setTurnstileToken('');
@@ -642,7 +671,55 @@ export default function Community() {
                   </CardHeader>
                   
                   <CardContent className="p-6">
-                    {authMode === 'login' ? (
+                    {authMode === 'verify' ? (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="text-center space-y-2">
+                          <div className="w-12 h-12 mx-auto bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
+                            <Mail className="w-6 h-6" />
+                          </div>
+                          <h3 className="text-xl font-black text-slate-900 tracking-tight">Verify your email</h3>
+                          <p className="text-sm text-slate-600">
+                            We've sent a verification link to<br/>
+                            <strong className="text-slate-900">{pendingVerificationEmail}</strong>
+                          </p>
+                        </div>
+                        
+                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center space-y-3">
+                          <p className="text-xs text-slate-500">
+                            Didn't receive the email?{' '}
+                            <span className="font-semibold text-amber-700">Check your spam/junk folder</span>
+                            {' '}— verification emails sometimes land there. You can also resend it below.
+                          </p>
+                          <Button 
+                            type="button" 
+                            onClick={handleResendVerification} 
+                            disabled={resendingEmail || resendCooldown > 0} 
+                            className="w-full h-10 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold shadow-sm flex justify-center items-center gap-2 transition-all"
+                          >
+                            {resendingEmail ? (
+                              <><Loader2 className="w-4 h-4 animate-spin text-slate-400" /> Resending...</>
+                            ) : resendCooldown > 0 ? (
+                              `Resend Email in ${resendCooldown}s`
+                            ) : (
+                              <><RefreshCw className="w-4 h-4 text-indigo-600" /> Resend Email</>
+                            )}
+                          </Button>
+                        </div>
+                        
+                        <div className="text-center">
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              setAuthMode('login');
+                              setPendingFirebaseIdToken('');
+                            }} 
+                            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-2"
+                          >
+                            Return to Login
+                          </button>
+                        </div>
+                      </div>
+                    ) : authMode === 'login' ? (
                       <div className="space-y-4">
                         <Button type="button" variant="outline" onClick={handleGoogleAuth} disabled={submitting} className="w-full h-11 rounded-xl font-bold text-slate-700 bg-white hover:bg-slate-50 border-slate-200 shadow-sm flex items-center justify-center gap-2.5 transition-all">
                           <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">

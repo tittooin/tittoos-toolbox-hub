@@ -144,6 +144,10 @@ export const onRequestPost = async ({ request, env }: any) => {
       return new Response(JSON.stringify({ 
         success: true, 
         requireVerification: true,
+        status: 'pending_verification',
+        email: cleanEmail,
+        cooldown: 60,
+        canResend: true,
         message: 'Registration successful! Please verify your email before logging in.'
       }), { status: 201, headers: jsonHeaders });
     }

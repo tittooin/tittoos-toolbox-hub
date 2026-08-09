@@ -113,7 +113,11 @@ export const onRequestPost = async ({ request, env }: any) => {
 
     // Enforce email verification (block login if neither Firebase nor D1 shows verified)
     if (!emailVerified && !isD1EmailVerified) {
-      return new Response(JSON.stringify({ error: 'Please verify your email before login.' }), { status: 403, headers: jsonHeaders });
+      return new Response(JSON.stringify({ 
+        error: 'Please verify your email before login.',
+        code: 'EMAIL_NOT_VERIFIED',
+        canResend: true
+      }), { status: 403, headers: jsonHeaders });
     }
 
     if (user.status !== 'active') {

@@ -1,4 +1,4 @@
-import { getAuthenticatedUser, generateVerificationToken, sendVerificationEmail } from './_utils';
+import { verifyFirebaseToken } from './_utils';
 
 export const onRequestPost = async ({ request, env }: any) => {
   const jsonHeaders = {
@@ -12,14 +12,32 @@ export const onRequestPost = async ({ request, env }: any) => {
       return new Response(JSON.stringify({ error: 'Database service not available' }), { status: 500, headers: jsonHeaders });
     }
 
-    // Require authentication
-    const user = await getAuthenticatedUser(request, db);
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401, headers: jsonHeaders });
+    const { firebaseIdToken } = await request.json();
+
+    if (!firebaseIdToken) {
+      return new Response(JSON.stringify({ error: 'Firebase ID Token is required' }), { status: 400, headers: jsonHeaders });
+    }
+
+    // Require authentication via Firebase token instead of session cookie
+    const firebaseUser = await verifyFirebaseToken(env, firebaseIdToken);
+    if (!firebaseUser) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication token' }), { status: 401, headers: jsonHeaders });
     }
 
     // Already verified — no action needed
-    if (user.emailVerified === true) {
+    if (firebaseUser.emailVerified === true) {
+      return new Response(JSON.stringify({ error: 'Your email address is already verified', code: 'ALREADY_VERIFIED' }), { status: 400, headers: jsonHeaders });
+    }
+
+    const user = await db.prepare(`
+      SELECT id, email_verified FROM community_users WHERE firebase_uid = ?
+    `).bind(firebaseUser.localId).first() as { id: string, email_verified: number } | null;
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'User record not found' }), { status: 404, headers: jsonHeaders });
+    }
+
+    if (user.email_verified === 1) {
       return new Response(JSON.stringify({ error: 'Your email address is already verified', code: 'ALREADY_VERIFIED' }), { status: 400, headers: jsonHeaders });
     }
 
@@ -33,39 +51,35 @@ export const onRequestPost = async ({ request, env }: any) => {
       return new Response(JSON.stringify({ error: 'Too many resend attempts. Please wait 1 hour before trying again.', code: 'RATE_LIMITED' }), { status: 429, headers: jsonHeaders });
     }
 
-    // Get user email from DB
-    const userRecord = await db.prepare(`
-      SELECT email FROM community_users WHERE id = ?
-    `).bind(user.id).first() as { email: string } | null;
-
-    if (!userRecord) {
-      return new Response(JSON.stringify({ error: 'User record not found' }), { status: 404, headers: jsonHeaders });
+    // Send email via Firebase Identity Toolkit REST API
+    const apiKey = env?.FIREBASE_API_KEY || "AIzaSyBG2PTSnpuT1voacdxNUu8j8a1QjF0tdPw";
+    const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            requestType: 'VERIFY_EMAIL',
+            idToken: firebaseIdToken
+        })
+    });
+    
+    if (!res.ok) {
+      const fbError = await res.json();
+      console.error('[Resend] Firebase sendOobCode failed:', fbError);
+      return new Response(JSON.stringify({ error: 'Failed to trigger verification email. Please try again later.' }), { status: 500, headers: jsonHeaders });
     }
 
-    // Invalidate all existing unused tokens for this user
-    await db.prepare(`
-      UPDATE community_email_verifications
-      SET used_at = datetime('now')
-      WHERE user_id = ? AND used_at IS NULL
-    `).bind(user.id).run();
-
-    // Generate fresh token
-    const { rawToken, tokenHash, expiresAt } = await generateVerificationToken();
+    // Log the request to enforce rate limits
     const verifyId = crypto.randomUUID();
-
     await db.prepare(`
       INSERT INTO community_email_verifications (id, user_id, token_hash, expires_at)
-      VALUES (?, ?, ?, ?)
-    `).bind(verifyId, user.id, tokenHash, expiresAt).run();
-
-    // Send email (non-blocking)
-    const sent = await sendVerificationEmail(env, userRecord.email, user.username, rawToken);
+      VALUES (?, ?, ?, datetime('now', '+1 hour'))
+    `).bind(verifyId, user.id, 'firebase_managed_token').run();
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Verification email sent. Please check your inbox.',
-        emailSent: sent
+        message: 'Verification email sent via Firebase. Please check your inbox.',
+        emailSent: true
       }),
       { status: 200, headers: jsonHeaders }
     );
