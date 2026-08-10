@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (authInitializedRef.current) return;
     authInitializedRef.current = true;
 
-    const isGoogleRedirect = sessionStorage.getItem('ax_google_redirect') === '1';
+    const isGoogleRedirect = localStorage.getItem('ax_google_redirect') === '1';
 
     const handleInitialAuth = async () => {
       if (isGoogleRedirect) {
@@ -95,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             const data = await res.json();
-            sessionStorage.removeItem('ax_google_redirect');
+            localStorage.removeItem('ax_google_redirect');
 
             if (res.ok && data.success) {
               await checkAuth();
@@ -106,11 +106,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               await checkAuth();
             }
           } else {
-            sessionStorage.removeItem('ax_google_redirect');
+            localStorage.removeItem('ax_google_redirect');
             await checkAuth();
           }
         } catch (err: any) {
-          sessionStorage.removeItem('ax_google_redirect');
+          localStorage.removeItem('ax_google_redirect');
           try { await signOut(auth); } catch (_) {}
           toast.error(err?.message || "Google authentication failed.");
           await checkAuth();

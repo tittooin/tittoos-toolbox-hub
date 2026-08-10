@@ -428,7 +428,7 @@ export default function Community() {
 
   const handleGoogleAuth = async () => {
     setSubmitting(true);
-    sessionStorage.setItem('ax_google_redirect', '1');
+    localStorage.setItem('ax_google_redirect', '1');
     try {
       // 1. Firebase Google Auth via Redirect
       await signInWithRedirect(auth, googleProvider);
