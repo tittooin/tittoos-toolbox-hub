@@ -1,4 +1,4 @@
-import { getAuthenticatedUser, jsonResponse } from '../../../auth/_utils';
+import { getAuthenticatedUser, jsonResponse } from "../../auth/_utils";
 
 export const onRequestPost = async ({ request, env, params }: any) => {
   try {
