@@ -80,9 +80,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleInitialAuth = async () => {
       if (isGoogleRedirect) {
         try {
-          console.log("[AuthContext] Awaiting getRedirectResult...");
-          const result = await getRedirectResult(auth);
-          console.log("[AuthContext] getRedirectResult returned:", result);
+          console.log("[AUTH REDIRECT] BEFORE getRedirectResult");
+          
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("DIAGNOSTIC_TIMEOUT")), 15000)
+          );
+          
+          console.log("[AUTH REDIRECT] Promise created");
+          const result = await Promise.race([
+            getRedirectResult(auth),
+            timeoutPromise
+          ]) as any;
+
+          console.log("[AUTH REDIRECT] RESOLVED");
+          console.log("[AUTH REDIRECT] RESULT:", result);
 
           if (result && result.user) {
             console.log("[AuthContext] User found in redirect result. Fetching ID token...");
@@ -110,6 +121,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             await checkAuth();
           }
         } catch (err: any) {
+          if (err.message === "DIAGNOSTIC_TIMEOUT") {
+             console.error("[AUTH REDIRECT] TIMEOUT: getRedirectResult took longer than 15s");
+          } else {
+             console.error("[AUTH REDIRECT] ERROR:", err);
+          }
           localStorage.removeItem('ax_google_redirect');
           try { await signOut(auth); } catch (_) {}
           toast.error(err?.message || "Google authentication failed.");
