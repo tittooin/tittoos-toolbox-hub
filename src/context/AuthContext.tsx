@@ -33,22 +33,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const authInitializedRef = useRef(false);
 
   const checkAuth = async () => {
+    console.log("[EXECUTION TRACE] STEP 7: Before calling /api/community/auth/me");
     try {
       const res = await fetch('/api/community/auth/me');
       if (res.ok) {
         const data = await res.json();
+        console.log(`[EXECUTION TRACE] STEP 8: After auth/me | Status: ${res.status} | Response:`, data);
         if (data.authenticated && data.user) {
+          console.log("[EXECUTION TRACE] STEP 9: Before setUser() (SUCCESS)");
           setUser(data.user);
         } else {
+          console.log("[EXECUTION TRACE] STEP 9: Before setUser(null) (NO USER)");
           setUser(null);
         }
       } else {
+        console.log(`[EXECUTION TRACE] STEP 8: After auth/me | Status: ${res.status} | OK: false`);
         setUser(null);
       }
     } catch (err) {
       console.error('[AuthContext] checkAuth error:', err);
       setUser(null);
     } finally {
+      console.log("[EXECUTION TRACE] STEP 10: Setting loading to false");
       setLoading(false);
     }
   };

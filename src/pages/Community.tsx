@@ -365,18 +365,29 @@ export default function Community() {
 
     setSubmitting(true);
     try {
-      // 1. Firebase Login
+      console.log("[EXECUTION TRACE] STEP 1: Before signInWithEmailAndPassword()");
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("[EXECUTION TRACE] STEP 2: signInWithEmailAndPassword SUCCESS");
+
+      console.log("[EXECUTION TRACE] STEP 3: Before getIdToken()");
       const firebaseIdToken = await userCredential.user.getIdToken();
+      console.log(`[EXECUTION TRACE] STEP 4: getIdToken SUCCESS | JWT length: ${firebaseIdToken.length}`);
 
       // 2. Backend Login (D1 Edge Session sync)
+      console.log("[EXECUTION TRACE] STEP 5: Immediately BEFORE fetch('/api/community/auth/login')");
       const res = await fetch('/api/community/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firebaseIdToken, turnstileToken })
       });
 
+      console.log(`[EXECUTION TRACE] STEP 6: Immediately AFTER fetch() | Status Code: ${res.status}`);
+      const responseHeaders = Object.fromEntries([...res.headers.entries()]);
+      console.log("[EXECUTION TRACE] STEP 6: Headers:", responseHeaders);
+
       const data = await res.json();
+      console.log("[EXECUTION TRACE] STEP 6: Response Body:", data);
+
       if (res.ok && data.success) {
         toast.success("Logged in successfully!");
         await checkAuth();
@@ -401,6 +412,7 @@ export default function Community() {
         setTurnstileToken('');
       }
     } catch (err: any) {
+      console.error("[EXECUTION TRACE] FAILED Exception Caught:", err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         toast.error("Invalid email or password");
       } else {
