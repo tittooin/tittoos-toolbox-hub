@@ -5,19 +5,21 @@ import Footer from "@/components/Footer";
 import { setCommunityPostSEO } from "@/utils/seoUtils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { 
   ArrowLeft, MessageSquare, Flame, ShieldCheck, ExternalLink, 
-  Calendar, Edit, Trash2, AlertTriangle, AlertCircle
+  Calendar, Edit, Trash2, AlertTriangle, AlertCircle, Share2
 } from "lucide-react";
 import { BotBadge } from "@/components/community/BotBadge";
 import { RichCommerceCard, CommerceOfferPayload } from "@/components/community/RichCommerceCard";
 import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { useAuth } from "@/context/AuthContext";
+import { CommentComposer } from "@/components/community/CommentComposer";
 
 interface PostDetails {
   id: string;
@@ -87,6 +89,7 @@ export default function CommunityPost() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<PostDetails | null>(null);
+  const [comments, setComments] = useState<any[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   
@@ -151,13 +154,27 @@ export default function CommunityPost() {
           board_name: data.post.board_name,
           url: window.location.href
         });
+        fetchComments();
       } else {
-        toast.error("Failed to load post details");
+        toast.error("Failed to load post");
       }
     } catch (err) {
-      toast.error("Error connecting to server");
+      console.error(err);
+      toast.error("Network error while fetching post");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`/api/community/posts/${postId}/comments`);
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data.comments || []);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -192,6 +209,36 @@ export default function CommunityPost() {
       toast.error("Network error during update");
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleBoom = async () => {
+    requireAuth('boom this post', async () => {
+      try {
+        const res = await fetch(`/api/community/posts/${postId}/react`, {
+          method: 'POST'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setPost(prev => prev ? { ...prev, upvotes_count: prev.upvotes_count + data.upvotes_count_change } : null);
+        } else {
+          toast.error("Failed to boom post");
+        }
+      } catch (err) {
+        toast.error("Network error while booming");
+      }
+    });
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: post?.title,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
     }
   };
 
@@ -365,9 +412,10 @@ export default function CommunityPost() {
             ) : (
               <>
                 {/* Main post text content */}
-                <p className="text-sm md:text-base text-slate-800 whitespace-pre-wrap leading-relaxed">
-                  {post.content}
-                </p>
+                <div 
+                  className="text-sm md:text-base text-slate-800 leading-relaxed max-w-none prose prose-slate prose-img:rounded-xl prose-a:text-indigo-600 hover:prose-a:text-indigo-800"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+                />
 
                 {/* Universal Rich Media Engine */}
                 {post.external_url && (
@@ -378,17 +426,79 @@ export default function CommunityPost() {
               </>
             )}
           </CardContent>
-          <CardFooter className="py-4 border-t border-border/40 bg-muted/10 text-xs text-muted-foreground flex gap-4 font-semibold">
-            <div>Views: <span className="text-foreground">{post.views_count}</span></div>
+          <CardFooter className="py-4 border-t border-border/40 bg-muted/10 text-xs text-muted-foreground flex gap-6 font-semibold items-center">
+            <div className="flex items-center gap-1.5" title="Views">
+              <span className="text-xl">👁️</span> 
+              <span className="text-foreground">{post.views_count}</span>
+            </div>
+            
             <button
-              onClick={() => requireAuth('upvote this post', () => {})}
-              className="flex items-center gap-1 hover:text-indigo-600 transition-colors cursor-pointer"
+              onClick={handleBoom}
+              className="flex items-center gap-1.5 hover:text-orange-500 transition-colors cursor-pointer group"
+              title="Boom"
             >
-              <Flame className="h-3.5 w-3.5" />
-              <span>Upvotes: <span className="text-foreground">{post.upvotes_count}</span></span>
+              <span className="text-xl group-hover:scale-110 transition-transform">💥</span>
+              <span className="text-foreground">{post.upvotes_count}</span>
+            </button>
+
+            <div className="flex items-center gap-1.5" title="Replies">
+              <span className="text-xl">💬</span>
+              <span className="text-foreground">{post.comments_count}</span>
+            </div>
+
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors cursor-pointer ml-auto"
+              title="Share"
+            >
+              <span className="text-xl">🔗</span>
+              <span>Share</span>
             </button>
           </CardFooter>
         </Card>
+
+        {/* Replies Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-indigo-600" />
+            Replies ({post.comments_count})
+          </h2>
+
+          <CommentComposer 
+            postId={post.id} 
+            onCommentAdded={(newComment) => {
+              setComments(prev => [...prev, newComment]);
+              setPost(prev => prev ? { ...prev, comments_count: prev.comments_count + 1 } : null);
+            }} 
+          />
+
+          <div className="space-y-4">
+            {comments.map((comment) => (
+              <div key={comment.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-700">
+                    {comment.username ? comment.username.charAt(0).toUpperCase() : '?'}
+                  </div>
+                </div>
+                <div className="flex-grow">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-bold text-sm text-slate-800">@{comment.username || 'Anonymous'}</span>
+                    <span className="text-xs text-slate-500">• {new Date(comment.created_at + ' Z').toLocaleString()}</span>
+                  </div>
+                  <div 
+                    className="text-sm text-slate-700 leading-relaxed max-w-none prose prose-sm prose-slate prose-img:rounded-xl prose-a:text-indigo-600 hover:prose-a:text-indigo-800"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content) }}
+                  />
+                </div>
+              </div>
+            ))}
+            {comments.length === 0 && (
+              <div className="text-center py-8 text-slate-500 text-sm font-medium bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                No replies yet. Be the first to share your thoughts!
+              </div>
+            )}
+          </div>
+        </div>
       </main>
 
       {/* Guest Join Modal */}

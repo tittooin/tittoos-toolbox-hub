@@ -1,4 +1,6 @@
 import { getAuthenticatedUser } from '../auth/_utils';
+import sanitizeHtml from 'sanitize-html';
+import { S3Client, CopyObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 export const onRequestGet = async ({ env, params, request }: any) => {
   console.log('[boards/[slug].ts] [STEP 1] Request received');
@@ -135,7 +137,7 @@ export const onRequestPost = async ({ request, env, params }: any) => {
 
     // 4. Validate fields
     const body = await request.json();
-    const { title, content, externalUrl } = body || {};
+    const { title, content, externalUrl, imageObjectKey } = body || {};
 
     if (!title || typeof title !== 'string') {
       return new Response(JSON.stringify({ error: 'Title is required' }), { status: 400, headers: jsonHeaders });
@@ -153,16 +155,75 @@ export const onRequestPost = async ({ request, env, params }: any) => {
       return new Response(JSON.stringify({ error: 'Content must be between 10 and 5000 characters' }), { status: 400, headers: jsonHeaders });
     }
 
-    // Reject basic HTML / script tags
-    if (/<[a-zA-Z!/]/gi.test(cleanTitle) || /<[a-zA-Z!/]/gi.test(cleanContent)) {
-      return new Response(JSON.stringify({ error: 'HTML tag content is not allowed' }), { status: 400, headers: jsonHeaders });
+    // Reject basic HTML / script tags ONLY for title now. Content will be sanitized.
+    if (/<[a-zA-Z!/]/gi.test(cleanTitle)) {
+      return new Response(JSON.stringify({ error: 'HTML tag content is not allowed in title' }), { status: 400, headers: jsonHeaders });
     }
+
+    // Sanitize rich text content
+    const sanitizedContent = sanitizeHtml(cleanContent, {
+      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'p', 'br', 'u', 's'],
+      allowedAttributes: {
+        'a': ['href', 'target', 'rel']
+      },
+      allowedSchemes: ['http', 'https'],
+      enforceHtmlBoundary: true
+    });
 
     let cleanUrl = null;
     let urlDomain = null;
     let embedType = 'none';
 
-    if (externalUrl) {
+    if (imageObjectKey && typeof imageObjectKey === 'string') {
+      // Validate secure object key
+      if (!imageObjectKey.startsWith(`community/temp/`)) {
+        return new Response(JSON.stringify({ error: 'Invalid temporary image reference' }), { status: 403, headers: jsonHeaders });
+      }
+      
+      const extension = imageObjectKey.split('.').pop()?.toLowerCase();
+      if (!['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'].includes(extension || '')) {
+         return new Response(JSON.stringify({ error: 'Invalid image extension' }), { status: 400, headers: jsonHeaders });
+      }
+
+      const accountId = env.R2_ACCOUNT_ID;
+      const accessKeyId = env.R2_ACCESS_KEY_ID;
+      const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
+
+      if (!accountId || !accessKeyId || !secretAccessKey) {
+        return new Response(JSON.stringify({ error: 'Server configuration error for object movement' }), { status: 500, headers: jsonHeaders });
+      }
+
+      const s3 = new S3Client({
+        region: "auto",
+        endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: accessKeyId,
+          secretAccessKey: secretAccessKey,
+        },
+      });
+
+      const permanentKey = `community/posts/${user.id}/${crypto.randomUUID()}.${extension}`;
+      const bucketName = 'axevora-avatars';
+
+      try {
+        await s3.send(new CopyObjectCommand({
+          Bucket: bucketName,
+          CopySource: `${bucketName}/${imageObjectKey}`,
+          Key: permanentKey,
+        }));
+        await s3.send(new DeleteObjectCommand({
+          Bucket: bucketName,
+          Key: imageObjectKey,
+        }));
+      } catch (err) {
+        console.error("Failed to move temporary R2 object:", err);
+        return new Response(JSON.stringify({ error: 'Failed to process image upload' }), { status: 500, headers: jsonHeaders });
+      }
+
+      cleanUrl = `/content/${permanentKey}`; 
+      urlDomain = 'axevora.com';
+      embedType = 'image';
+    } else if (externalUrl) {
       if (typeof externalUrl !== 'string') {
         return new Response(JSON.stringify({ error: 'Invalid URL type' }), { status: 400, headers: jsonHeaders });
       }
@@ -193,6 +254,12 @@ export const onRequestPost = async ({ request, env, params }: any) => {
           // Classify embedType
           if (urlDomain.includes('youtube.com') || urlDomain.includes('youtu.be')) {
             embedType = 'youtube';
+            const ytMatch = cleanUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            if (ytMatch && ytMatch[1]) {
+              cleanUrl = `https://www.youtube.com/watch?v=${ytMatch[1]}`;
+            } else {
+               return new Response(JSON.stringify({ error: 'Invalid YouTube URL format' }), { status: 400, headers: jsonHeaders });
+            }
           } else if (urlDomain.includes('instagram.com')) {
             embedType = 'instagram';
           } else if (urlDomain.includes('twitter.com') || urlDomain.includes('x.com')) {
@@ -213,7 +280,7 @@ export const onRequestPost = async ({ request, env, params }: any) => {
     await db.prepare(`
       INSERT INTO community_posts (id, board_id, user_id, title, content, external_url, url_domain, embed_type, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published')
-    `).bind(postId, board.id, user.id, cleanTitle, cleanContent, cleanUrl, urlDomain, embedType).run();
+    `).bind(postId, board.id, user.id, cleanTitle, sanitizedContent, cleanUrl, urlDomain, embedType).run();
 
     // Increment post count in board and profile
     await db.prepare(`UPDATE community_boards SET post_count = post_count + 1 WHERE id = ?`).bind(board.id).run();

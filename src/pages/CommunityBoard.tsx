@@ -12,8 +12,8 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, MessageSquare, Flame, ShieldCheck, ExternalLink, 
   Calendar, PlusCircle, AlertCircle, AlertTriangle, Eye, ThumbsUp, MessageCircle,
-  Instagram, Twitter, Globe, Video, Copy, Check, Share2, Youtube
-} from "lucide-react";
+  Trash2, Image, Link2, MoreHorizontal, Bot, MessageSquareWarning, Search
+} from 'lucide-react';
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
 import { BotBadge } from "@/components/community/BotBadge";
@@ -22,6 +22,9 @@ import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BoardLiveChat } from "@/components/community/BoardLiveChat";
+import { Helmet } from 'react-helmet';
+import DOMPurify from 'dompurify';
+import { CreatePostModal } from '@/components/community/CreatePostModal';
 import { useAuth } from "@/context/AuthContext";
 interface BoardDetails {
   id: string;
@@ -183,10 +186,6 @@ export default function CommunityBoard() {
   
   // Post Creation Form states
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [newContent, setNewContent] = useState('');
-  const [newUrl, setNewUrl] = useState('');
-  const [rulesAgreed, setRulesAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Guest join / unverified modal
@@ -275,24 +274,10 @@ export default function CommunityBoard() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const checkUser = async () => {
-    try {
-      const res = await fetch('/api/community/auth/me');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.authenticated) {
-          setUser(data.user);
-        }
-      }
-    } catch (err) {
-      console.error('Error fetching user:', err);
-    }
-  };
-
-  const fetchBoardAndPosts = async () => {
+  const fetchBoardAndPosts = async (resetPage?: boolean) => {
     setPostsLoading(true);
     try {
-      const res = await fetch(`/api/community/boards/${slug}?sort=${sort}&page=${page}&limit=10`);
+      const res = await fetch(`/api/community/boards/${slug}?sort=${sort}&page=${resetPage ? 1 : page}&limit=10`);
       if (res.status === 404) {
         setBoard(null);
         setLoading(false);
@@ -323,44 +308,34 @@ export default function CommunityBoard() {
     }
   };
 
-  const handleCreatePost = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim() || !newContent.trim()) {
-      toast.error("Title and Content are required");
-      return;
-    }
-    if (!rulesAgreed) {
-      toast.error("You must agree to the Board Guidelines and Rules");
-      return;
-    }
-
+  const handleCreatePost = async (title: string, content: string, externalUrl: string, imageObjectKey: string | null) => {
+    if (!board || !user) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/community/boards/${slug}`, {
+      const res = await fetch(`/api/community/boards/${board.slug}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          title: newTitle,
-          content: newContent,
-          externalUrl: newUrl
-        })
+          title,
+          content,
+          externalUrl,
+          imageObjectKey
+        }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        toast.success(data.message || "Post created successfully!");
-        setNewTitle('');
-        setNewContent('');
-        setNewUrl('');
-        setRulesAgreed(false);
+        toast.success("Post created successfully!");
         setShowCreateModal(false);
-        setPage(1);
-        fetchBoardAndPosts();
+        fetchBoardAndPosts(true); // Refresh
       } else {
-        toast.error(data.error || "Failed to submit post");
+        toast.error(data.error || "Failed to create post.");
       }
     } catch (err) {
-      toast.error("Network error during submission");
+      console.error("Create post error:", err);
+      toast.error("Failed to communicate with server.");
     } finally {
       setSubmitting(false);
     }
@@ -734,7 +709,7 @@ export default function CommunityBoard() {
                         
                         <CardFooter className="px-4 py-2 border-t border-border/30 bg-muted/20 flex gap-4 text-[10px] text-muted-foreground font-semibold">
                           <div className="flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {post.views_count} views</div>
-                          <div className="flex items-center gap-1"><ThumbsUp className="h-3.5 w-3.5" /> {post.upvotes_count} upvotes</div>
+                          <div className="flex items-center gap-1"><Flame className="h-3.5 w-3.5" /> 💥 Boom {post.upvotes_count}</div>
                           <div className="flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> {post.comments_count} comments</div>
                         </CardFooter>
                       </>
@@ -839,77 +814,12 @@ export default function CommunityBoard() {
 
       {/* Create Post Dialog Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="w-full max-w-lg border-border/80 shadow-2xl animate-scale-in">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold">Create Post in {board.name}</CardTitle>
-              <CardDescription className="text-xs">
-                Submit links, promotion profiles, or general posts. Follow the rules to avoid post removal.
-              </CardDescription>
-            </CardHeader>
-            <form onSubmit={handleCreatePost}>
-              <CardContent className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="post-title" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Title</Label>
-                  <Input 
-                    id="post-title"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="Enter post title (5-100 characters)"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-1.5">
-                  <Label htmlFor="post-content" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Content Details</Label>
-                  <textarea 
-                    id="post-content"
-                    value={newContent}
-                    onChange={(e) => setNewContent(e.target.value)}
-                    placeholder="Provide detailed description of your post (10-5000 characters)"
-                    className="w-full min-h-[120px] rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="post-url" className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    External URL <span className="text-[10px] font-normal text-muted-foreground">(Optional)</span>
-                  </Label>
-                  <Input 
-                    id="post-url"
-                    value={newUrl}
-                    onChange={(e) => setNewUrl(e.target.value)}
-                    placeholder="e.g. https://youtube.com/..."
-                    type="url"
-                  />
-                  <p className="text-[9px] text-muted-foreground">Must be a secure HTTPS link to your video, profile, startup, or blog.</p>
-                </div>
-
-                <div className="flex items-start space-x-2 pt-2">
-                  <input 
-                    type="checkbox" 
-                    id="agree-rules" 
-                    checked={rulesAgreed}
-                    onChange={(e) => setRulesAgreed(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <label htmlFor="agree-rules" className="text-xs text-muted-foreground cursor-pointer select-none leading-relaxed">
-                    I agree to the Board Guidelines and confirm that my link does not violate general platform rules (no phishing, scams, or malicious content).
-                  </label>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2.5">
-                <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={submitting} className="font-semibold">
-                  {submitting ? 'Submitting...' : 'Submit Post'}
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </div>
+        <CreatePostModal 
+           boardName={board.name}
+           onClose={() => setShowCreateModal(false)}
+           onSubmit={handleCreatePost}
+           submitting={submitting}
+        />
       )}
 
       {/* Guest Join Modal */}

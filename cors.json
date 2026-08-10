@@ -1,0 +1,18 @@
+{
+  "rules": [
+    {
+      "id": "axevora-web-cors",
+      "allowed": {
+        "origins": [
+          "https://axevora.com",
+          "https://www.axevora.com",
+          "http://localhost:5173",
+          "http://127.0.0.1:5173"
+        ],
+        "methods": ["GET", "PUT", "OPTIONS"],
+        "headers": ["Content-Type", "Authorization"]
+      },
+      "maxAgeSeconds": 3600
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { Button } from '@/components/ui/button';
+import { AxevoraEmojiPicker } from './AxevoraEmojiPicker';
+import { Smile, Send } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+
+interface CommentComposerProps {
+  postId: string;
+  onCommentAdded: (comment: any) => void;
+}
+
+const modules = {
+  toolbar: [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link'],
+    ['clean']
+  ],
+};
+
+const formats = [
+  'bold', 'italic', 'underline', 'strike',
+  'list', 'bullet',
+  'link'
+];
+
+export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onCommentAdded }) => {
+  const [content, setContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { user } = useAuth();
+  const quillRef = React.useRef<ReactQuill>(null);
+
+  const handleSubmit = async () => {
+    if (!content.trim() || content === '<p><br></p>') {
+      toast.error('Reply cannot be empty');
+      return;
+    }
+
+    if (!user) {
+      toast.error('You must be logged in to reply');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`/api/community/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to post reply');
+      }
+
+      const data = await res.json();
+      toast.success('Reply posted successfully!');
+      setContent('');
+      onCommentAdded(data.comment);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const onEmojiClick = (emojiData: any) => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      const range = editor.getSelection();
+      const position = range ? range.index : editor.getLength();
+      editor.insertText(position, emojiData.emoji);
+      editor.setSelection(position + emojiData.emoji.length, 0);
+    }
+    setShowEmojiPicker(false);
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6 flex flex-col">
+      <div className="p-3 border-b border-slate-100 bg-slate-50">
+        <h3 className="text-sm font-bold text-slate-700">Write a Reply</h3>
+      </div>
+      <div className="p-0">
+        <ReactQuill 
+          ref={quillRef}
+          theme="snow" 
+          value={content} 
+          onChange={setContent} 
+          modules={modules}
+          formats={formats}
+          className="comment-quill-editor"
+          placeholder="Share your thoughts..."
+        />
+      </div>
+      <div className="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center relative">
+        <button 
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          className="text-slate-500 hover:text-indigo-600 transition-colors p-1 rounded-md hover:bg-slate-200"
+          type="button"
+        >
+          <Smile className="h-5 w-5" />
+        </button>
+
+        {showEmojiPicker && (
+          <div className="absolute bottom-full left-0 mb-2 z-50">
+            <AxevoraEmojiPicker onEmojiClick={onEmojiClick} />
+          </div>
+        )}
+
+        <Button 
+          onClick={handleSubmit} 
+          disabled={isSubmitting}
+          size="sm"
+          className="gap-1.5 font-semibold"
+        >
+          {isSubmitting ? 'Posting...' : <><Send className="h-3.5 w-3.5"/> Reply</>}
+        </Button>
+      </div>
+      <style>{`
+        .comment-quill-editor .ql-container {
+          border: none !important;
+          font-family: inherit;
+          font-size: 14px;
+          min-height: 100px;
+        }
+        .comment-quill-editor .ql-toolbar {
+          border: none !important;
+          border-bottom: 1px solid #e2e8f0 !important;
+          background: #f8fafc;
+        }
+      `}</style>
+    </div>
+  );
+};

@@ -6,6 +6,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useChatSocket, type ChatMessage } from '@/hooks/useChatSocket';
 import { toast } from 'sonner';
+import { AxevoraEmojiPicker } from './AxevoraEmojiPicker';
+import { AxevoraGifPicker } from './AxevoraGifPicker';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import DOMPurify from 'dompurify';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface BoardLiveChatProps {
   boardSlug: string;
@@ -50,17 +56,23 @@ function MessageBubble({ msg, myUid, onReact }: { msg: ChatMessage; myUid: strin
 
         <div
           className={cn(
-            "relative px-3 py-2 rounded-2xl text-sm break-words",
+            "relative px-3 py-2 text-sm break-words chat-bubble-content",
             isOwn
-              ? "bg-indigo-600 text-white rounded-tr-none shadow-md shadow-indigo-600/20"
+              ? "bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-md shadow-indigo-600/20"
               : isBot
-              ? "bg-indigo-50 border border-indigo-100 text-indigo-900 rounded-tl-none"
-              : "bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm"
+              ? "bg-indigo-50 border border-indigo-100 text-indigo-900 rounded-2xl rounded-tl-none"
+              : "bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none shadow-sm"
           )}
           onMouseEnter={() => setShowReactions(true)}
           onMouseLeave={() => setShowReactions(false)}
         >
-          {msg.text}
+          <div 
+            className="prose prose-sm max-w-none prose-p:my-0 prose-img:rounded-md prose-img:max-h-48 prose-img:inline-block prose-a:text-blue-200 hover:prose-a:text-blue-100"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(msg.text, {
+              ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'p', 'br', 'u', 's', 'img'],
+              ALLOWED_ATTR: ['href', 'target', 'src', 'alt', 'class']
+            }) }}
+          />
 
           <AnimatePresence>
             {showReactions && (
@@ -114,9 +126,11 @@ function MessageBubble({ msg, myUid, onReact }: { msg: ChatMessage; myUid: strin
 
 export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
   const [inputText, setInputText] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const quillRef = useRef<ReactQuill>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
 
   const myUid = user?.id || `guest_${Math.random().toString(36).slice(2, 8)}`;
   const myName = user?.username || "Guest";
@@ -148,10 +162,11 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
       return;
     }
     const text = inputText.trim();
-    if (!text) return;
+    if (!text || text === '<p><br></p>') return;
     sendMessage(text);
     setInputText("");
     setShowEmojiPicker(false);
+    setShowGifPicker(false);
   };
 
   const handleTyping = (val: string) => {
@@ -218,54 +233,132 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-3 border-t border-border/40 bg-white">
-        <AnimatePresence>
-          {showEmojiPicker && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              className="flex gap-1 flex-wrap mb-2 p-2 bg-slate-50 border border-slate-200 rounded-xl"
-            >
-              {QUICK_EMOJIS.map(e => (
-                <button
-                  key={e}
-                  onClick={() => setInputText(t => t + e)}
-                  className="text-lg hover:scale-125 transition-transform"
-                >
-                  {e}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <div className="border-t border-border/40 bg-white relative flex flex-col">
+        {!user && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
+            <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
+              Sign in to chat in this room
+            </span>
+          </div>
+        )}
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowEmojiPicker(p => !p)}
-            className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors shrink-0"
-          >
-            <Smile className="w-5 h-5" />
-          </button>
-
-          <input
-            value={inputText}
-            onChange={e => handleTyping(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder={user ? "Type a message..." : "Sign in to chat..."}
-            disabled={!user || status !== "connected"}
-            className="flex-1 bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+        <div className="p-0">
+          <ReactQuill 
+            ref={quillRef}
+            theme="snow" 
+            value={inputText} 
+            onChange={(val) => {
+              setInputText(val);
+              handleTyping(val);
+            }} 
+            placeholder="Type a message..."
+            readOnly={!user || status !== "connected"}
+            modules={{
+              toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+              ],
+              keyboard: {
+                bindings: {
+                  enter: {
+                    key: 13,
+                    shiftKey: false,
+                    handler: () => {
+                      handleSend();
+                      return false;
+                    }
+                  }
+                }
+              }
+            }}
+            className="chat-quill-editor"
           />
+        </div>
+
+        <div className="flex items-center justify-between p-2 bg-slate-50 border-t border-slate-200">
+          <div className="flex items-center gap-1">
+            <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+              <PopoverTrigger asChild>
+                <button
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0"
+                  title="Insert Emoji"
+                >
+                  <Smile className="w-5 h-5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="start" className="p-0 border-none w-auto">
+                <AxevoraEmojiPicker 
+                  onEmojiClick={(emojiData) => {
+                    const editor = quillRef.current?.getEditor();
+                    if (editor) {
+                      const range = editor.getSelection();
+                      const position = range ? range.index : editor.getLength();
+                      editor.insertText(position, emojiData.emoji);
+                      editor.setSelection(position + emojiData.emoji.length, 0);
+                    }
+                    setShowEmojiPicker(false);
+                  }} 
+                />
+              </PopoverContent>
+            </Popover>
+
+            <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+              <PopoverTrigger asChild>
+                <button
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0 font-extrabold text-xs"
+                  title="Insert GIF"
+                >
+                  GIF
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="start" className="p-0 border-none w-auto shadow-2xl">
+                <AxevoraGifPicker 
+                  onGifSelect={(gifUrl) => {
+                    const editor = quillRef.current?.getEditor();
+                    if (editor) {
+                      const range = editor.getSelection();
+                      const position = range ? range.index : editor.getLength();
+                      editor.insertEmbed(position, 'image', gifUrl);
+                      editor.setSelection(position + 1, 0);
+                    }
+                    setShowGifPicker(false);
+                  }} 
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
           <button
             onClick={handleSend}
-            disabled={!inputText.trim() || !user || status !== "connected"}
-            className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shrink-0 shadow-md shadow-indigo-600/20"
+            disabled={!inputText.trim() || inputText === '<p><br></p>' || !user || status !== "connected"}
+            className="px-4 py-1.5 rounded-lg font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shrink-0 shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" /> Send
           </button>
         </div>
       </div>
+      
+      <style>{`
+        .chat-quill-editor .ql-container {
+          border: none !important;
+          font-family: inherit;
+          font-size: 14px;
+          min-height: 60px;
+          max-height: 120px;
+          overflow-y: auto;
+        }
+        .chat-quill-editor .ql-toolbar {
+          border: none !important;
+          border-bottom: 1px solid #e2e8f0 !important;
+          background: #f8fafc;
+          padding: 4px 8px !important;
+        }
+        .chat-bubble-content p {
+          margin: 0;
+        }
+      `}</style>
     </div>
   );
 }
