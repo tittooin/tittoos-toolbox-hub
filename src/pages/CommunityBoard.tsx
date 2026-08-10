@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, MessageSquare, Flame, ShieldCheck, ExternalLink, 
   Calendar, PlusCircle, AlertCircle, AlertTriangle, Eye, ThumbsUp, MessageCircle,
-  Trash2, Image, Link2, MoreHorizontal, Bot, MessageSquareWarning, Search
+  Trash2, Image, Link2, MoreHorizontal, Bot, MessageSquareWarning, Search, Share2
 } from 'lucide-react';
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
