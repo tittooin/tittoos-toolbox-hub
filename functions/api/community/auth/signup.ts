@@ -124,8 +124,8 @@ export const onRequestPost = async ({ request, env }: any) => {
         await db.prepare(`
           INSERT INTO community_users (
             id, firebase_uid, username, username_normalized, email, email_normalized,
-            platform_role, trust_level, status, email_verified
-          ) VALUES (?, ?, ?, ?, ?, ?, 'user', 1, ?, ?)
+            password_hash, platform_role, trust_level, status, email_verified
+          ) VALUES (?, ?, ?, ?, ?, ?, '', 'user', 1, ?, ?)
         `).bind(
           userId, firebaseUid, cleanUsername, normUsername, cleanEmail, normEmail, initialStatus, emailVerified ? 1 : 0
         ).run();
