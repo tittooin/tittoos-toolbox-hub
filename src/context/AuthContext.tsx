@@ -80,13 +80,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleInitialAuth = async () => {
       if (isGoogleRedirect) {
         try {
-          const result = await Promise.race([
-            getRedirectResult(auth),
-            new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000))
-          ]);
+          console.log("[AuthContext] Awaiting getRedirectResult...");
+          const result = await getRedirectResult(auth);
+          console.log("[AuthContext] getRedirectResult returned:", result);
 
           if (result && result.user) {
+            console.log("[AuthContext] User found in redirect result. Fetching ID token...");
             const firebaseIdToken = await result.user.getIdToken();
+            console.log("[AuthContext] ID token fetched. Sending POST request to backend...");
             const res = await fetch('/api/community/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
