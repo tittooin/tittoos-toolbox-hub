@@ -80,8 +80,8 @@ export const onRequestPost = async ({ request, env }: any) => {
           await db.prepare(`
             INSERT INTO community_users (
               id, firebase_uid, username, username_normalized, email, email_normalized,
-              platform_role, trust_level, status, email_verified
-            ) VALUES (?, ?, ?, ?, ?, ?, 'user', 1, 'active', ?)
+              password_hash, platform_role, trust_level, status, email_verified
+            ) VALUES (?, ?, ?, ?, ?, ?, '', 'user', 1, 'active', ?)
           `).bind(
             userId, firebaseUid, baseUsername, normUsername, fbEmail, normEmail, emailVerified ? 1 : 0
           ).run();
@@ -97,7 +97,8 @@ export const onRequestPost = async ({ request, env }: any) => {
           user = await db.prepare(`SELECT * FROM community_users WHERE id = ?`).bind(userId).first();
         } catch (dbErr) {
           console.error('[Auth] D1 profile creation failed for Google Login:', dbErr);
-          return new Response(JSON.stringify({ error: 'Failed to create profile.' }), { status: 500, headers: jsonHeaders });
+          const errorMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+          return new Response(JSON.stringify({ error: 'Failed to create profile.', detail: errorMsg }), { status: 500, headers: jsonHeaders });
         }
       }
     }
