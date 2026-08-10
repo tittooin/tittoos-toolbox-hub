@@ -28,7 +28,8 @@ export const onRequestPost = async ({ request, env }: any) => {
     if (!turnstileResult.success) {
       return new Response(JSON.stringify({ 
         error: 'Bot verification failed. Please try again.',
-        code: 'TURNSTILE_FAILED'
+        code: 'TURNSTILE_FAILED',
+        debug: turnstileResult
       }), { status: 400, headers: jsonHeaders });
     }
 
