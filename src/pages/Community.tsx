@@ -18,7 +18,7 @@ import {
 import { CommunityStatsBar } from "@/components/community/CommunityStatsBar";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { auth, googleProvider } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithRedirect, getRedirectResult, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
 
 interface CommunityUser {
@@ -428,17 +428,33 @@ export default function Community() {
 
   const handleGoogleAuth = async () => {
     setSubmitting(true);
-    localStorage.setItem('ax_google_redirect', '1');
     try {
-      // 1. Firebase Google Auth via Redirect
-      await signInWithRedirect(auth, googleProvider);
+      // 1. Firebase Google Auth via Popup (Reliable for Desktop/Cross-Origin)
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      if (result && result.user) {
+        const firebaseIdToken = await result.user.getIdToken();
+        const res = await fetch('/api/community/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firebaseIdToken })
+        });
+        
+        const data = await res.json();
+        if (res.ok && data.success) {
+          await checkAuth();
+          toast.success("Authenticated with Google successfully!");
+        } else {
+          await signOut(auth);
+          toast.error(data.error || "Google authentication failed.");
+        }
+      }
     } catch (err: any) {
       console.error("[Google Auth Error] Complete Error Object:", err);
-      console.error("[Google Auth Error] Code:", err?.code);
-      console.error("[Google Auth Error] Message:", err?.message);
-      if (err?.customData) console.error("[Google Auth Error] Custom Data:", err.customData);
-      
-      toast.error(err?.message || "Google authentication initialization failed.");
+      if (err?.code !== 'auth/popup-closed-by-user') {
+        toast.error(err?.message || "Google authentication failed.");
+      }
+    } finally {
       setSubmitting(false);
     }
   };

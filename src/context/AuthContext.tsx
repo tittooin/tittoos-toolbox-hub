@@ -75,65 +75,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (authInitializedRef.current) return;
     authInitializedRef.current = true;
 
-    const isGoogleRedirect = localStorage.getItem('ax_google_redirect') === '1';
-
     const handleInitialAuth = async () => {
-      if (isGoogleRedirect) {
-        try {
-          console.log("[AUTH REDIRECT] BEFORE getRedirectResult");
-          
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("DIAGNOSTIC_TIMEOUT")), 15000)
-          );
-          
-          console.log("[AUTH REDIRECT] Promise created");
-          const result = await Promise.race([
-            getRedirectResult(auth),
-            timeoutPromise
-          ]) as any;
-
-          console.log("[AUTH REDIRECT] RESOLVED");
-          console.log("[AUTH REDIRECT] RESULT:", result);
-
-          if (result && result.user) {
-            console.log("[AuthContext] User found in redirect result. Fetching ID token...");
-            const firebaseIdToken = await result.user.getIdToken();
-            console.log("[AuthContext] ID token fetched. Sending POST request to backend...");
-            const res = await fetch('/api/community/auth/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ firebaseIdToken })
-            });
-
-            const data = await res.json();
-            localStorage.removeItem('ax_google_redirect');
-
-            if (res.ok && data.success) {
-              await checkAuth();
-              toast.success("Authenticated with Google successfully!");
-            } else {
-              await signOut(auth);
-              toast.error(data.error || "Google authentication failed.");
-              await checkAuth();
-            }
-          } else {
-            localStorage.removeItem('ax_google_redirect');
-            await checkAuth();
-          }
-        } catch (err: any) {
-          if (err.message === "DIAGNOSTIC_TIMEOUT") {
-             console.error("[AUTH REDIRECT] TIMEOUT: getRedirectResult took longer than 15s");
-          } else {
-             console.error("[AUTH REDIRECT] ERROR:", err);
-          }
-          localStorage.removeItem('ax_google_redirect');
-          try { await signOut(auth); } catch (_) {}
-          toast.error(err?.message || "Google authentication failed.");
-          await checkAuth();
-        }
-      } else {
-        await checkAuth();
-      }
+      await checkAuth();
     };
 
     handleInitialAuth();
