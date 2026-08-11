@@ -425,7 +425,10 @@ export default function CommunityPost() {
                 {/* Main post text content */}
                 <div 
                   className="text-sm md:text-base text-slate-800 leading-relaxed max-w-none prose prose-slate prose-img:rounded-xl prose-a:text-indigo-600 hover:prose-a:text-indigo-800"
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content, {
+                    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'p', 'br', 'u', 's', 'img', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div'],
+                    ALLOWED_ATTR: ['href', 'target', 'src', 'alt', 'class', 'style', 'rel']
+                  }) }}
                 />
 
                 {/* Universal Rich Media Engine */}
@@ -497,8 +500,11 @@ export default function CommunityPost() {
                     <span className="text-xs text-slate-500">• {new Date(comment.created_at + ' Z').toLocaleString()}</span>
                   </div>
                   <div 
-                    className="text-sm text-slate-700 leading-relaxed max-w-none prose prose-sm prose-slate prose-img:rounded-xl prose-a:text-indigo-600 hover:prose-a:text-indigo-800"
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content) }}
+                    className="text-sm text-slate-700 leading-relaxed max-w-none prose prose-sm prose-slate prose-img:rounded-md prose-img:max-h-48 prose-img:inline-block prose-p:my-0 prose-a:text-indigo-600 hover:prose-a:text-indigo-800"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment.content, {
+                      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'p', 'br', 'u', 's', 'img', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div'],
+                      ALLOWED_ATTR: ['href', 'target', 'src', 'alt', 'class', 'style', 'rel']
+                    }) }}
                   />
                 </div>
               </div>

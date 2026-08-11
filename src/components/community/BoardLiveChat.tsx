@@ -279,10 +279,12 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
             readOnly={!user}
             modules={{
               toolbar: [
+                [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
                 ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link'],
-                ['clean']
+                ['link', 'clean']
               ],
               keyboard: {
                 bindings: {
@@ -297,6 +299,14 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
                 }
               }
             }}
+            formats={[
+              'font', 'size',
+              'bold', 'italic', 'underline', 'strike',
+              'color', 'background',
+              'align',
+              'list', 'bullet',
+              'link', 'image'
+            ]}
             className="chat-quill-editor"
           />
         </div>

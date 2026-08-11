@@ -129,10 +129,12 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ boardName, onC
 
   const quillModules = {
     toolbar: [
+      [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
       ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link'],
-      ['clean']
+      ['link', 'clean']
     ],
   };
 
@@ -166,6 +168,14 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ boardName, onC
                   value={newContent}
                   onChange={setNewContent}
                   modules={quillModules}
+                  formats={[
+                    'font', 'size',
+                    'bold', 'italic', 'underline', 'strike',
+                    'color', 'background',
+                    'align',
+                    'list', 'bullet',
+                    'link', 'image'
+                  ]}
                   placeholder="Provide detailed description of your post..."
                 />
               </div>

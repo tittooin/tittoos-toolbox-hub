@@ -152,5 +152,40 @@ All colors MUST be HSL.
     @apply hover:bg-gradient-to-r hover:from-purple-600 hover:to-red-500 hover:bg-clip-text hover:text-transparent transition-all duration-300;
   }
 
+  /* Custom Quill Toolbar styling for Canva-like rich text editor */
+  .ql-toolbar.ql-snow {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    border-color: #e2e8f0;
+    background-color: #f8fafc;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+  .ql-container.ql-snow {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-color: #e2e8f0;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .ql-editor {
+    min-height: 80px;
+    padding: 12px;
+  }
+  .chat-quill-editor .ql-editor {
+    min-height: 40px;
+  }
+  @media (max-width: 640px) {
+    .ql-toolbar.ql-snow {
+      padding: 4px;
+      gap: 2px;
+    }
+    .ql-toolbar.ql-snow .ql-formats {
+      margin-right: 4px;
+    }
+  }
 
 }

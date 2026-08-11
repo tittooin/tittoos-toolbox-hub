@@ -16,17 +16,22 @@ interface CommentComposerProps {
 
 const modules = {
   toolbar: [
+    [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
     ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'align': [] }],
     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    ['link'],
-    ['clean']
+    ['link', 'clean']
   ],
 };
 
 const formats = [
+  'font', 'size',
   'bold', 'italic', 'underline', 'strike',
+  'color', 'background',
+  'align',
   'list', 'bullet',
-  'link'
+  'link', 'image'
 ];
 
 export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onCommentAdded }) => {
