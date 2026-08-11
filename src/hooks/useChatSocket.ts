@@ -131,7 +131,7 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, acc
             const merged = [...newOnes, ...prev];
             // Sort by ts ascending (chronological), stable by id for ties
             merged.sort((a, b) => a.ts !== b.ts ? a.ts - b.ts : a.id.localeCompare(b.id));
-            return merged.slice(-200);
+            return merged.slice(-500);
           });
           break;
         }
@@ -144,7 +144,7 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, acc
             const next = [...prev, incoming];
             // Ensure chronological order (messages should arrive in order, but guard anyway)
             next.sort((a, b) => a.ts !== b.ts ? a.ts - b.ts : a.id.localeCompare(b.id));
-            return next.slice(-200);
+            return next.slice(-500);
           });
           break;
         }

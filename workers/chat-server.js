@@ -100,27 +100,37 @@ export class ChatRoom {
     this.roomId = null; // Set lazily from URL on first request
     this.currentHostUid = null;
     this.hostRecoveryTimer = null;
+    this.dbInitialized = false;
+  }
 
-    // Initialize SQLite schema synchronously (idempotent)
-    this.state.storage.sql.exec(`
-      CREATE TABLE IF NOT EXISTS chat_messages (
-        id          TEXT    PRIMARY KEY,
-        room_id     TEXT    NOT NULL,
-        user_id     TEXT    NOT NULL,
-        display_name TEXT   NOT NULL,
-        photo_url   TEXT    DEFAULT '',
-        content     TEXT    NOT NULL,
-        html        TEXT    DEFAULT '',
-        ts          INTEGER NOT NULL,
-        is_bot      INTEGER NOT NULL DEFAULT 0,
-        reactions   TEXT    DEFAULT '{}',
-        metadata    TEXT    DEFAULT '{}'
-      )
-    `);
-    this.state.storage.sql.exec(`
-      CREATE INDEX IF NOT EXISTS idx_msg_room_ts
-        ON chat_messages(room_id, ts ASC, rowid ASC)
-    `);
+  ensureDb() {
+    if (this.dbInitialized) return;
+    try {
+      if (this.state.storage && this.state.storage.sql) {
+        this.state.storage.sql.exec(`
+          CREATE TABLE IF NOT EXISTS chat_messages (
+            id          TEXT    PRIMARY KEY,
+            room_id     TEXT    NOT NULL,
+            user_id     TEXT    NOT NULL,
+            display_name TEXT   NOT NULL,
+            photo_url   TEXT    DEFAULT '',
+            content     TEXT    NOT NULL,
+            html        TEXT    DEFAULT '',
+            ts          INTEGER NOT NULL,
+            is_bot      INTEGER NOT NULL DEFAULT 0,
+            reactions   TEXT    DEFAULT '{}',
+            metadata    TEXT    DEFAULT '{}'
+          )
+        `);
+        this.state.storage.sql.exec(`
+          CREATE INDEX IF NOT EXISTS idx_msg_room_ts
+            ON chat_messages(room_id, ts ASC, rowid ASC)
+        `);
+        this.dbInitialized = true;
+      }
+    } catch (e) {
+      console.error("SQLite init warning:", e);
+    }
   }
 
   // ─── fetch ───────────────────────────────────────────────────────────────
@@ -132,13 +142,14 @@ export class ChatRoom {
     if (url.pathname === "/_internal/history") {
       const roomId = url.searchParams.get("roomId") || this.roomId || "unknown";
       if (!this.roomId) this.roomId = roomId;
-      const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 200);
+      const limit = Math.min(parseInt(url.searchParams.get("limit") || "500"), 500);
       const messages = this.getHistory(roomId, limit);
       return jsonResponse({ messages });
     }
 
     // WebSocket upgrade
-    const [client, server] = Object.values(new WebSocketPair());
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
     await this.handleSession(server, request);
     return new Response(null, { status: 101, webSocket: client });
   }
@@ -175,8 +186,8 @@ export class ChatRoom {
     const session = { uid, displayName, photoURL, joinedAt: Date.now() };
     this.sessions.set(ws, session);
 
-    // 1. Send persisted chat history (last 100 messages from SQLite)
-    const history = this.getHistory(roomId, 100);
+    // 1. Send persisted chat history (last 500 messages from SQLite)
+    const history = this.getHistory(roomId, 500);
     ws.send(JSON.stringify({ type: "HISTORY", messages: history }));
 
     // 2. Broadcast presence: user joined (exclude new user's ws)
@@ -191,6 +202,9 @@ export class ChatRoom {
 
     // 3. Send current online users list to new user
     ws.send(JSON.stringify({ type: "USERS_LIST", users: this.getOnlineUsers() }));
+
+    // 4. Trigger one-time welcome message for new genuine user (if not sent before)
+    await this.handleUserWelcome(ws, session);
   }
 
   // ─── webSocketMessage ─────────────────────────────────────────────────────
@@ -236,16 +250,16 @@ export class ChatRoom {
         this.persistMessage(msg, this.roomId || "unknown");
 
         // AI Bot trigger
-        if (plainText.toLowerCase().startsWith("@bot")) {
-          const botReply = await this.getBotReply(plainText.slice(4).trim());
+        if (plainText.toLowerCase().startsWith("@bot") || plainText.toLowerCase().includes("bot")) {
+          const botReply = await this.getBotReply(plainText.slice(4).trim(), session);
           const botMsgId = `bot_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
           const botMsg = {
             id: botMsgId,
-            uid: "axevora_bot",
-            displayName: "Axevora Bot 🤖",
-            photoURL: "",
-            text: botReply,
-            html: botReply,
+            uid: botReply.botUid || "axevora_bot",
+            displayName: botReply.displayName || "Axevora Bot 🤖",
+            photoURL: botReply.photoURL || "",
+            text: botReply.text,
+            html: botReply.html,
             ts: ts + 100,
             reactions: {},
             isBot: true,
@@ -463,39 +477,45 @@ export class ChatRoom {
    * Trims to 500 messages per room when exceeded.
    */
   persistMessage(msg, roomId) {
-    this.state.storage.sql.exec(
-      `INSERT OR IGNORE INTO chat_messages
-         (id, room_id, user_id, display_name, photo_url, content, html, ts, is_bot, reactions, metadata)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      msg.id,
-      roomId,
-      msg.uid,
-      msg.displayName,
-      msg.photoURL || "",
-      msg.text || "",
-      msg.html || msg.text || "",
-      msg.ts,
-      msg.isBot ? 1 : 0,
-      JSON.stringify(msg.reactions || {}),
-      JSON.stringify(msg.metadata || {})
-    );
-
-    // Trim: keep only the 500 most recent messages for this room
-    const countRows = this.state.storage.sql.exec(
-      `SELECT COUNT(*) as cnt FROM chat_messages WHERE room_id = ?`,
-      roomId
-    ).toArray();
-    const count = countRows[0]?.cnt || 0;
-    if (count > 500) {
+    this.ensureDb();
+    try {
+      if (!this.state.storage?.sql) return;
       this.state.storage.sql.exec(
-        `DELETE FROM chat_messages
-         WHERE room_id = ? AND id NOT IN (
-           SELECT id FROM chat_messages
-           WHERE room_id = ? ORDER BY ts DESC, rowid DESC LIMIT 500
-         )`,
+        `INSERT OR IGNORE INTO chat_messages
+           (id, room_id, user_id, display_name, photo_url, content, html, ts, is_bot, reactions, metadata)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        msg.id,
         roomId,
-        roomId
+        msg.uid,
+        msg.displayName,
+        msg.photoURL || "",
+        msg.text || "",
+        msg.html || msg.text || "",
+        msg.ts,
+        msg.isBot ? 1 : 0,
+        JSON.stringify(msg.reactions || {}),
+        JSON.stringify(msg.metadata || {})
       );
+
+      // Trim: keep only the 500 most recent messages for this room
+      const countRows = this.state.storage.sql.exec(
+        `SELECT COUNT(*) as cnt FROM chat_messages WHERE room_id = ?`,
+        roomId
+      ).toArray();
+      const count = countRows[0]?.cnt || 0;
+      if (count > 500) {
+        this.state.storage.sql.exec(
+          `DELETE FROM chat_messages
+           WHERE room_id = ? AND id NOT IN (
+             SELECT id FROM chat_messages
+             WHERE room_id = ? ORDER BY ts DESC, rowid DESC LIMIT 500
+           )`,
+          roomId,
+          roomId
+        );
+      }
+    } catch (e) {
+      console.error("persistMessage error:", e);
     }
   }
 
@@ -503,33 +523,40 @@ export class ChatRoom {
    * Fetch persisted chat history from SQLite.
    * Returns `limit` most recent messages in chronological order (oldest first).
    */
-  getHistory(roomId, limit = 100) {
-    const rows = this.state.storage.sql.exec(
-      `SELECT * FROM (
-         SELECT * FROM chat_messages
-         WHERE room_id = ?
-         ORDER BY ts DESC, rowid DESC
-         LIMIT ?
-       ) ORDER BY ts ASC, rowid ASC`,
-      roomId,
-      limit
-    ).toArray();
+  getHistory(roomId, limit = 500) {
+    this.ensureDb();
+    try {
+      if (!this.state.storage?.sql) return [];
+      const rows = this.state.storage.sql.exec(
+        `SELECT * FROM (
+           SELECT * FROM chat_messages
+           WHERE room_id = ?
+           ORDER BY ts DESC, rowid DESC
+           LIMIT ?
+         ) ORDER BY ts ASC, rowid ASC`,
+        roomId,
+        limit
+      ).toArray();
 
-    return rows.map(row => {
-      let reactions = {};
-      try { reactions = JSON.parse(row.reactions || "{}"); } catch {}
-      return {
-        id: row.id,
-        uid: row.user_id,
-        displayName: row.display_name,
-        photoURL: row.photo_url || "",
-        text: row.content,
-        html: row.html || row.content,
-        ts: row.ts,
-        reactions,
-        isBot: row.is_bot === 1,
-      };
-    });
+      return rows.map(row => {
+        let reactions = {};
+        try { reactions = JSON.parse(row.reactions || "{}"); } catch {}
+        return {
+          id: row.id,
+          uid: row.user_id,
+          displayName: row.display_name,
+          photoURL: row.photo_url || "",
+          text: row.content,
+          html: row.html || row.content,
+          ts: row.ts,
+          reactions,
+          isBot: row.is_bot === 1,
+        };
+      });
+    } catch (e) {
+      console.error("getHistory error:", e);
+      return [];
+    }
   }
 
   // ─── Broadcast helpers ────────────────────────────────────────────────────
@@ -589,36 +616,140 @@ export class ChatRoom {
     }
   }
 
-  // ─── Bot replies ──────────────────────────────────────────────────────────
+  // ─── AI Bots Architecture & Configuration ────────────────────────────────
 
-  async getBotReply(query) {
-    const q = query.toLowerCase();
-    const cricketKws = ["score", "match", "cricket", "ipl", "player", "team", "run", "wicket"];
-    if (cricketKws.some(k => q.includes(k))) {
-      return "🏏 Cricket Hub tip: Check the live score panel above! Our Cricbuzz feed updates every 30 seconds.";
+  getBotProfiles(roomId) {
+    const boardSlug = (roomId || "").replace(/^board_/, "");
+    return [
+      {
+        uid: `bot_guide_${boardSlug}`,
+        displayName: "Axevora Guide 🤖",
+        role: "Community Guide",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Guide",
+        category: "guide"
+      },
+      {
+        uid: `bot_helper_${boardSlug}`,
+        displayName: "Axevora Helper 🤖",
+        role: "Community Assistant",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Helper",
+        category: "helper"
+      },
+      {
+        uid: `bot_deals_${boardSlug}`,
+        displayName: "Axevora Deals 🤖",
+        role: "Deals & Product Assistant",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Deals",
+        category: "deals"
+      },
+      {
+        uid: `bot_community_${boardSlug}`,
+        displayName: "Axevora Community 🤖",
+        role: "Engagement Assistant",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Community",
+        category: "community"
+      }
+    ];
+  }
+
+  async handleUserWelcome(ws, session) {
+    if (!session || !session.uid || session.uid.startsWith("anon_")) return;
+    this.ensureDb();
+    if (!this.state.storage?.sql) return;
+
+    try {
+      const welcomeKey = `welcome_${this.roomId}_${session.uid}`;
+      const existing = this.state.storage.sql.exec(
+        `SELECT id FROM chat_messages WHERE id = ?`,
+        welcomeKey
+      ).toArray();
+
+      if (existing.length === 0) {
+        const boardSlug = (this.roomId || "").replace(/^board_/, "").replace(/-/g, " ");
+        const welcomeText = `👋 Welcome @${session.displayName} to the ${boardSlug.toUpperCase()} community board! Share updates, ask questions, or interact with fellow members. (AI Community Guide)`;
+        const welcomeMsg = {
+          id: welcomeKey,
+          uid: `bot_guide_${this.roomId}`,
+          displayName: "Axevora Guide 🤖",
+          photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Guide",
+          text: welcomeText,
+          html: `<p>👋 Welcome <strong>@${escAttr(session.displayName)}</strong> to the <strong>${escAttr(boardSlug.toUpperCase())}</strong> community board! Share updates, ask questions, or interact with fellow members. <span style="color:#6366f1;font-weight:bold;">[AI Community Assistant]</span></p>`,
+          ts: Date.now(),
+          reactions: {},
+          isBot: true
+        };
+        this.persistMessage(welcomeMsg, this.roomId || "unknown");
+        this.broadcast({ type: "NEW_MSG", message: welcomeMsg });
+      }
+    } catch (e) {
+      console.error("handleUserWelcome error:", e);
     }
+  }
+
+  async getBotReply(query, userSession) {
+    const q = (query || "").toLowerCase();
+    const boardSlug = (this.roomId || "").replace(/^board_/, "");
+
+    // 1. Direct command or mention match
+    if (q.includes("deals") || q.includes("product") || q.includes("recommend") || q.includes("buy") || q.includes("mic") || q.includes("camera")) {
+      let prodText = "";
+      let prodUrl = "";
+      let prodDesc = "";
+
+      if (boardSlug.includes("youtube") || boardSlug.includes("creator")) {
+        prodText = "FIFINE K669B USB Condenser Microphone for YouTube Recording";
+        prodUrl = "https://www.amazon.in/dp/B07XZPHBGZ?tag=axevora06-21";
+        prodDesc = "Ideal studio microphone for crisp voice recording and streaming.";
+      } else if (boardSlug.includes("gaming")) {
+        prodText = "Logitech G231 Prodigy Gaming Headset";
+        prodUrl = "https://www.amazon.in/dp/B01K4517A2?tag=axevora06-21";
+        prodDesc = "High performance stereo gaming headset with noise-cancelling mic.";
+      } else if (boardSlug.includes("tech") || boardSlug.includes("ai")) {
+        prodText = "SanDisk 1TB Extreme Portable SSD";
+        prodUrl = "https://www.amazon.in/dp/B08GTYFCJB?tag=axevora06-21";
+        prodDesc = "Fast NVMe solid state performance for tech projects and media backups.";
+      } else {
+        prodText = "Axevora Featured Productivity & Creator Hub Accessories";
+        prodUrl = "https://axevora.com/deals";
+        prodDesc = "Explore curated deals and verified platform tools.";
+      }
+
+      return {
+        botUid: `bot_deals_${this.roomId}`,
+        displayName: "Axevora Deals 🤖",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Deals",
+        html: `<p>💡 <strong>Product Recommendation:</strong> <a href="${prodUrl}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:bold;">${prodText}</a> - ${prodDesc}</p><p><small style="color:#64748b;">(Affiliate Link - As an Amazon Associate I earn from qualifying purchases.) <span style="color:#6366f1;">[AI Deals Assistant]</span></small></p>`,
+        text: `💡 Product Recommendation: ${prodText} (${prodUrl}) - ${prodDesc} (Paid/Affiliate Link)`
+      };
+    }
+
+    if (q.includes("help") || q.includes("guide") || q.includes("rules")) {
+      return {
+        botUid: `bot_guide_${this.roomId}`,
+        displayName: "Axevora Guide 🤖",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Guide",
+        html: `<p>📖 <strong>Axevora Community Rules:</strong> Be respectful, avoid spam, and post high quality content relevant to this board. Type <code>@bot deals</code> for product recommendations! <span style="color:#6366f1;">[AI Community Assistant]</span></p>`,
+        text: `📖 Axevora Community Rules: Be respectful, avoid spam, and post high quality content relevant to this board. Type @bot deals for product recommendations! [AI Community Assistant]`
+      };
+    }
+
     if (q.includes("hello") || q.includes("hi") || q.includes("hey")) {
-      return "👋 Hey there! I'm Axevora Bot. Ask me anything about cricket, games, or type @bot help!";
+      return {
+        botUid: `bot_helper_${this.roomId}`,
+        displayName: "Axevora Helper 🤖",
+        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Helper",
+        html: `<p>👋 Hello @${escAttr(userSession?.displayName || 'Friend')}! How can I assist you with this board today? <span style="color:#6366f1;">[AI Community Assistant]</span></p>`,
+        text: `👋 Hello @${userSession?.displayName || 'Friend'}! How can I assist you with this board today? [AI Community Assistant]`
+      };
     }
-    if (q.includes("help")) return "🤖 Commands: @bot score | @bot tip | @bot joke | @bot cricket | @bot game";
-    if (q.includes("joke")) {
-      const jokes = [
-        "Why do cricket players never drink? Because they're always caught on the leg side! 😄",
-        "What do you call a cricket player who runs really fast? A run machine! ⚡",
-        "Why was the cricket bat arrested? It was caught playing sixes 😂",
-      ];
-      return jokes[Math.floor(Math.random() * jokes.length)];
-    }
-    if (q.includes("tip")) {
-      const tips = [
-        "💡 Pro tip: Pick in-form batters who bat in top 4 positions!",
-        "💡 Always have at least 2 all-rounders in your Fantasy XI for maximum points.",
-        "💡 Pitch report matters! Spin-friendly pitches → pick more spinners.",
-      ];
-      return tips[Math.floor(Math.random() * tips.length)];
-    }
-    if (q.includes("game")) return "🎮 Try the 2048 mini-game in the Games tab! Earn Axevora Coins for high scores.";
-    return `🤖 You asked: "${query}" — I'm still learning! Try: @bot cricket | @bot joke | @bot tip | @bot help`;
+
+    return {
+      botUid: `bot_community_${this.roomId}`,
+      displayName: "Axevora Community 🤖",
+      photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=Community",
+      html: `<p>🤖 Thanks for sharing! What are others in the community working on today? <span style="color:#6366f1;">[AI Community Assistant]</span></p>`,
+      text: `🤖 Thanks for sharing! What are others in the community working on today? [AI Community Assistant]`
+    };
   }
 }
 
