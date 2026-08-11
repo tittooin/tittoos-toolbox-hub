@@ -72,13 +72,16 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
     }
   };
 
+  const lastSelectionRef = React.useRef<number | null>(null);
+
   const onEmojiClick = (emojiData: any) => {
     const editor = quillRef.current?.getEditor();
     if (editor) {
-      const range = editor.getSelection();
-      const position = range ? range.index : editor.getLength();
+      editor.focus();
+      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
       editor.insertText(position, emojiData.emoji);
       editor.setSelection(position + emojiData.emoji.length, 0);
+      lastSelectionRef.current = position + emojiData.emoji.length;
     }
     setShowEmojiPicker(false);
   };
@@ -86,10 +89,11 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
   const onGifClick = (gifUrl: string) => {
     const editor = quillRef.current?.getEditor();
     if (editor) {
-      const range = editor.getSelection();
-      const position = range ? range.index : editor.getLength();
+      editor.focus();
+      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
       editor.insertEmbed(position, 'image', gifUrl);
       editor.setSelection(position + 1, 0);
+      lastSelectionRef.current = position + 1;
     }
     setShowGifPicker(false);
   };
@@ -105,6 +109,11 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
           theme="snow" 
           value={content} 
           onChange={setContent} 
+          onChangeSelection={(selection) => {
+            if (selection) {
+              lastSelectionRef.current = selection.index;
+            }
+          }}
           modules={modules}
           formats={formats}
           className="comment-quill-editor"

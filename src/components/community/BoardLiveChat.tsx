@@ -131,6 +131,7 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
   const quillRef = useRef<ReactQuill>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const lastSelectionRef = useRef<number | null>(null);
 
   const myUid = user?.id || `guest_${Math.random().toString(36).slice(2, 8)}`;
   const myName = user?.username || "Guest";
@@ -269,6 +270,11 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
               setInputText(val);
               handleTyping(val);
             }} 
+            onChangeSelection={(selection) => {
+              if (selection) {
+                lastSelectionRef.current = selection.index;
+              }
+            }}
             placeholder="Type a message..."
             readOnly={!user}
             modules={{
@@ -311,10 +317,11 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
                   onEmojiClick={(emojiData) => {
                     const editor = quillRef.current?.getEditor();
                     if (editor) {
-                      const range = editor.getSelection();
-                      const position = range ? range.index : editor.getLength();
+                      editor.focus();
+                      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
                       editor.insertText(position, emojiData.emoji);
                       editor.setSelection(position + emojiData.emoji.length, 0);
+                      lastSelectionRef.current = position + emojiData.emoji.length;
                     }
                     setShowEmojiPicker(false);
                   }} 
@@ -336,10 +343,11 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
                   onGifSelect={(gifUrl) => {
                     const editor = quillRef.current?.getEditor();
                     if (editor) {
-                      const range = editor.getSelection();
-                      const position = range ? range.index : editor.getLength();
+                      editor.focus();
+                      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
                       editor.insertEmbed(position, 'image', gifUrl);
                       editor.setSelection(position + 1, 0);
+                      lastSelectionRef.current = position + 1;
                     }
                     setShowGifPicker(false);
                   }} 

@@ -1,6 +1,4 @@
 import { getAuthenticatedUser } from '../../auth/_utils';
-import sanitizeHtml from 'sanitize-html';
-
 export const onRequestGet = async ({ env, params, request }: any) => {
   const jsonHeaders = {
     'Content-Type': 'application/json',
@@ -70,14 +68,7 @@ export const onRequestPost = async ({ env, params, request }: any) => {
       return new Response(JSON.stringify({ error: 'Comment content is too long' }), { status: 400, headers: jsonHeaders });
     }
 
-    // Server-side HTML Sanitization for rich text
-    const cleanContent = sanitizeHtml(body.content, {
-      allowedTags: [ 'b', 'i', 'em', 'strong', 'u', 's', 'p', 'br', 'ul', 'ol', 'li', 'a', 'span' ],
-      allowedAttributes: {
-        'a': [ 'href', 'target', 'rel' ],
-        'span': [ 'class' ] // For emoji classes or styling if necessary
-      }
-    });
+    const cleanContent = body.content; // Client-side DOMPurify will handle sanitization on render
 
     const commentId = crypto.randomUUID();
     const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
