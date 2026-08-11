@@ -7,6 +7,7 @@ import { AxevoraGifPicker } from './AxevoraGifPicker';
 import { Smile, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface CommentComposerProps {
   postId: string;
@@ -112,36 +113,38 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
       </div>
       <div className="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center relative">
         <div className="flex gap-2">
-          <button 
-            onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
-            className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200"
-            type="button"
-            title="Add Emoji"
-          >
-            <Smile className="h-5 w-5" />
-          </button>
+          <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+            <PopoverTrigger asChild>
+              <button 
+                onClick={() => { setShowGifPicker(false); }}
+                className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                type="button"
+                title="Add Emoji"
+              >
+                <Smile className="h-5 w-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent side="top" align="start" className="w-auto p-0 border-none shadow-none bg-transparent" sideOffset={10}>
+              <AxevoraEmojiPicker onEmojiClick={onEmojiClick} />
+            </PopoverContent>
+          </Popover>
           
-          <button 
-            onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
-            className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200 text-xs font-bold"
-            type="button"
-            title="Add GIF"
-          >
-            GIF
-          </button>
+          <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+            <PopoverTrigger asChild>
+              <button 
+                onClick={() => { setShowEmojiPicker(false); }}
+                className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                type="button"
+                title="Add GIF"
+              >
+                GIF
+              </button>
+            </PopoverTrigger>
+            <PopoverContent side="top" align="start" className="w-auto p-0 border-border bg-white rounded-xl shadow-xl overflow-hidden" sideOffset={10}>
+              <AxevoraGifPicker onGifSelect={onGifClick} />
+            </PopoverContent>
+          </Popover>
         </div>
-
-        {showEmojiPicker && (
-          <div className="absolute bottom-full left-0 mb-2 z-50">
-            <AxevoraEmojiPicker onEmojiClick={onEmojiClick} />
-          </div>
-        )}
-
-        {showGifPicker && (
-          <div className="absolute bottom-full left-12 mb-2 z-50 shadow-xl rounded-xl border border-border bg-white">
-            <AxevoraGifPicker onGifSelect={onGifClick} />
-          </div>
-        )}
 
         <Button 
           onClick={handleSubmit} 

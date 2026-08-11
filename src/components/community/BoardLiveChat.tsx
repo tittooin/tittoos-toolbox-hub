@@ -234,13 +234,31 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
 
       {/* Input Area */}
       <div className="border-t border-border/40 bg-white relative flex flex-col">
-        {!user && (
+        {!user ? (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
             <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
               Sign in to chat in this room
             </span>
           </div>
-        )}
+        ) : status === 'disconnected' ? (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
+            <div className="text-center bg-white px-4 py-3 rounded-lg border border-red-200 shadow-sm flex flex-col items-center">
+              <span className="text-sm font-semibold text-red-600 mb-1">
+                Chat Disconnected
+              </span>
+              <span className="text-xs text-slate-500">
+                Attempting to reconnect...
+              </span>
+            </div>
+          </div>
+        ) : status === 'connecting' ? (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
+            <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full border-2 border-slate-600 border-t-transparent animate-spin"></div>
+              Connecting...
+            </span>
+          </div>
+        ) : null}
 
         <div className="p-0">
           <ReactQuill 
