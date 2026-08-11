@@ -138,7 +138,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
                 <Smile className="h-5 w-5" />
               </button>
             </PopoverTrigger>
-            <PopoverContent side="top" align="start" className="w-auto p-0 border-none shadow-none bg-transparent" sideOffset={10}>
+            <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
               <AxevoraEmojiPicker onEmojiClick={onEmojiClick} />
             </PopoverContent>
           </Popover>
@@ -154,7 +154,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
                 GIF
               </button>
             </PopoverTrigger>
-            <PopoverContent side="top" align="start" className="w-auto p-0 border-border bg-white rounded-xl shadow-xl overflow-hidden" sideOffset={10}>
+            <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
               <AxevoraGifPicker onGifSelect={onGifClick} />
             </PopoverContent>
           </Popover>

@@ -234,17 +234,17 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border/40 bg-white relative flex flex-col">
+      <div className="border-t border-border/40 bg-white relative flex flex-col shrink-0">
         {!user ? (
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
-            <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
+            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 shadow-sm">
               Sign in to chat in this room
             </span>
           </div>
         ) : status === 'disconnected' ? (
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
-            <div className="text-center bg-white px-4 py-3 rounded-lg border border-red-200 shadow-sm flex flex-col items-center">
-              <span className="text-sm font-semibold text-red-600 mb-1">
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
+            <div className="text-center bg-white px-4 py-3 rounded-lg border border-red-200 shadow-lg flex flex-col items-center">
+              <span className="text-sm font-bold text-red-600 mb-1">
                 Chat Disconnected
               </span>
               <span className="text-xs text-slate-500">
@@ -253,15 +253,15 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
             </div>
           </div>
         ) : status === 'connecting' ? (
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
-            <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-slate-600 border-t-transparent animate-spin"></div>
-              Connecting...
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
+            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 shadow-sm flex items-center gap-2">
+              <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-600 border-t-transparent animate-spin"></div>
+              Connecting to live chat...
             </span>
           </div>
         ) : null}
 
-        <div className="p-0">
+        <div className="p-0 bg-white min-h-[100px] flex flex-col">
           <ReactQuill 
             ref={quillRef}
             theme="snow" 
@@ -307,7 +307,7 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
               'list', 'bullet',
               'link', 'image'
             ]}
-            className="chat-quill-editor"
+            className="chat-quill-editor flex-1 flex flex-col"
           />
         </div>
 
@@ -318,11 +318,12 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
                 <button
                   className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0"
                   title="Insert Emoji"
+                  type="button"
                 >
                   <Smile className="w-5 h-5" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent side="top" align="start" className="p-0 border-none w-auto">
+              <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
                 <AxevoraEmojiPicker 
                   onEmojiClick={(emojiData) => {
                     const editor = quillRef.current?.getEditor();
@@ -344,11 +345,12 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
                 <button
                   className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0 font-extrabold text-xs"
                   title="Insert GIF"
+                  type="button"
                 >
                   GIF
                 </button>
               </PopoverTrigger>
-              <PopoverContent side="top" align="start" className="p-0 border-none w-auto shadow-2xl">
+              <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
                 <AxevoraGifPicker 
                   onGifSelect={(gifUrl) => {
                     const editor = quillRef.current?.getEditor();
@@ -370,6 +372,7 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
             onClick={handleSend}
             disabled={!inputText.trim() || inputText === '<p><br></p>' || !user || status !== "connected"}
             className="px-4 py-1.5 rounded-lg font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shrink-0 shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
+            type="button"
           >
             <Send className="w-3.5 h-3.5" /> Send
           </button>
@@ -377,19 +380,37 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
       </div>
       
       <style>{`
-        .chat-quill-editor .ql-container {
-          border: none !important;
-          font-family: inherit;
-          font-size: 14px;
-          min-height: 60px;
-          max-height: 120px;
-          overflow-y: auto;
+        .chat-quill-editor {
+          display: flex;
+          flex-direction: column;
         }
         .chat-quill-editor .ql-toolbar {
           border: none !important;
           border-bottom: 1px solid #e2e8f0 !important;
           background: #f8fafc;
-          padding: 4px 8px !important;
+          padding: 6px 8px !important;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2px;
+        }
+        .chat-quill-editor .ql-container {
+          border: none !important;
+          font-family: inherit;
+          font-size: 14px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+        .chat-quill-editor .ql-editor {
+          min-height: 70px !important;
+          max-height: 140px !important;
+          overflow-y: auto !important;
+          padding: 10px 12px !important;
+          color: #0f172a;
+        }
+        .chat-quill-editor .ql-editor.ql-blank::before {
+          color: #94a3b8;
+          font-style: normal;
         }
         .chat-bubble-content p {
           margin: 0;

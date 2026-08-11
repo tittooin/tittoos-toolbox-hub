@@ -44,14 +44,14 @@ export const onRequestPost = async ({ env, params, request }: any) => {
   };
 
   try {
-    const user = await getAuthenticatedUser(request);
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: jsonHeaders });
-    }
-
     const db = env?.COMMUNITY_DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database service not available' }), { status: 500, headers: jsonHeaders });
+    }
+
+    const user = await getAuthenticatedUser(request, db);
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: jsonHeaders });
     }
 
     const { postId } = params;
@@ -78,7 +78,7 @@ export const onRequestPost = async ({ env, params, request }: any) => {
       db.prepare(`
         INSERT INTO community_comments (id, post_id, user_id, content, status, created_at, updated_at)
         VALUES (?, ?, ?, ?, 'published', ?, ?)
-      `).bind(commentId, postId, user.communityUserId, cleanContent, now, now),
+      `).bind(commentId, postId, user.id, cleanContent, now, now),
       db.prepare(`
         UPDATE community_posts
         SET comments_count = comments_count + 1

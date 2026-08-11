@@ -1,5 +1,3 @@
-import { strict as assert } from 'node:assert';
-
 // 1. CRYPTO UTILITIES (PBKDF2 Web Crypto implementation)
 export async function hashPassword(password: string, iterations: number = 100000) {
   const saltBytes = new Uint8Array(16);

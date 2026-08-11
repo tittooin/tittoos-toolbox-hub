@@ -15,8 +15,8 @@ export const AxevoraEmojiPicker: React.FC<AxevoraEmojiPickerProps> = ({ onEmojiC
       onEmojiClick={onEmojiClick}
       theme={theme === 'dark' ? Theme.DARK : Theme.LIGHT}
       lazyLoadEmojis={lazyLoadEmojis}
-      width="100%"
-      height="350px"
+      width={330}
+      height={350}
       style={{ border: 'none', backgroundColor: 'transparent' }}
     />
   );
