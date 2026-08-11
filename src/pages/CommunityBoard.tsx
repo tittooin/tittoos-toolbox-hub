@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, MessageSquare, Flame, ShieldCheck, ExternalLink, 
   Calendar, PlusCircle, AlertCircle, AlertTriangle, Eye, ThumbsUp, MessageCircle,
-  Trash2, Image, Link2, MoreHorizontal, Bot, MessageSquareWarning, Search, Share2
+  Trash2, Image, Link2, MoreHorizontal, Bot, MessageSquareWarning, Search, Share2, Copy, Check, Instagram, Twitter, Video, Globe
 } from 'lucide-react';
 import { CuelinksService } from "@/modules/commerce/services/CuelinksService";
 import { CommerceDiscoveryItem } from "@/modules/commerce/types/commerceDiscovery";
@@ -22,7 +22,7 @@ import { RichMediaEngine } from "@/components/community/RichMediaEngine";
 import { JoinCommunityModal } from "@/components/community/JoinCommunityModal";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BoardLiveChat } from "@/components/community/BoardLiveChat";
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
 import { CreatePostModal } from '@/components/community/CreatePostModal';
 import { useAuth } from "@/context/AuthContext";
@@ -615,6 +615,7 @@ export default function CommunityBoard() {
                       };
                     }
                   }
+                  const feedDeal = deals && deals.length > 0 ? deals[0] : null;
 
                   return (
                     <React.Fragment key={post.id}>
