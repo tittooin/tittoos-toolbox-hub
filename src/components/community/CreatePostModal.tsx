@@ -3,8 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { RichTextComposer } from './RichTextComposer';
 import { ImagePlus, X, UploadCloud } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import { toast } from 'sonner';
@@ -127,17 +126,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ boardName, onC
     await onSubmit(newTitle, newContent, newUrl, uploadedKey);
   };
 
-  const quillModules = {
-    toolbar: [
-      [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'align': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'clean']
-    ],
-  };
-
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl border-border/80 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
@@ -162,23 +150,15 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ boardName, onC
             
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Content Details</Label>
-              <div className="bg-background rounded-md border border-input [&_.ql-container]:min-h-[150px] [&_.ql-editor]:text-sm [&_.ql-toolbar]:border-t-0 [&_.ql-toolbar]:border-x-0 [&_.ql-toolbar]:bg-muted/50 [&_.ql-toolbar]:rounded-t-md">
-                <ReactQuill 
-                  theme="snow"
-                  value={newContent}
-                  onChange={setNewContent}
-                  modules={quillModules}
-                  formats={[
-                    'font', 'size',
-                    'bold', 'italic', 'underline', 'strike',
-                    'color', 'background',
-                    'align',
-                    'list', 'bullet',
-                    'link', 'image'
-                  ]}
-                  placeholder="Provide detailed description of your post..."
-                />
-              </div>
+              <RichTextComposer
+                mode="comment"
+                value={newContent}
+                onChange={setNewContent}
+                onSubmit={() => {}}
+                placeholder="Provide detailed description of your post..."
+                minHeight="120px"
+                maxHeight="250px"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

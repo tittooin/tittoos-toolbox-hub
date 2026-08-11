@@ -8,8 +8,7 @@ import { useChatSocket, type ChatMessage } from '@/hooks/useChatSocket';
 import { toast } from 'sonner';
 import { AxevoraEmojiPicker } from './AxevoraEmojiPicker';
 import { AxevoraGifPicker } from './AxevoraGifPicker';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { RichTextComposer } from './RichTextComposer';
 import DOMPurify from 'dompurify';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -234,184 +233,39 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border/40 bg-white relative flex flex-col shrink-0">
-        {!user ? (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
-            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 shadow-sm">
-              Sign in to chat in this room
-            </span>
-          </div>
-        ) : status === 'disconnected' ? (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
-            <div className="text-center bg-white px-4 py-3 rounded-lg border border-red-200 shadow-lg flex flex-col items-center">
-              <span className="text-sm font-bold text-red-600 mb-1">
-                Chat Disconnected
-              </span>
-              <span className="text-xs text-slate-500">
-                Attempting to reconnect...
-              </span>
-            </div>
-          </div>
-        ) : status === 'connecting' ? (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex items-center justify-center p-4">
-            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-4 py-2 rounded-full border border-slate-200 shadow-sm flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-600 border-t-transparent animate-spin"></div>
-              Connecting to live chat...
-            </span>
-          </div>
-        ) : null}
-
-        <div className="p-0 bg-white min-h-[100px] flex flex-col">
-          <ReactQuill 
-            ref={quillRef}
-            theme="snow" 
-            value={inputText} 
-            onChange={(val) => {
-              setInputText(val);
-              handleTyping(val);
-            }} 
-            onChangeSelection={(selection) => {
-              if (selection) {
-                lastSelectionRef.current = selection.index;
-              }
-            }}
-            placeholder="Type a message..."
-            readOnly={!user}
-            modules={{
-              toolbar: [
-                [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'clean']
-              ],
-              keyboard: {
-                bindings: {
-                  enter: {
-                    key: 13,
-                    shiftKey: false,
-                    handler: () => {
-                      handleSend();
-                      return false;
-                    }
-                  }
-                }
-              }
-            }}
-            formats={[
-              'font', 'size',
-              'bold', 'italic', 'underline', 'strike',
-              'color', 'background',
-              'align',
-              'list', 'bullet',
-              'link', 'image'
-            ]}
-            className="chat-quill-editor flex-1 flex flex-col"
-          />
-        </div>
-
-        <div className="flex items-center justify-between p-2 bg-slate-50 border-t border-slate-200">
-          <div className="flex items-center gap-1">
-            <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-              <PopoverTrigger asChild>
-                <button
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0"
-                  title="Insert Emoji"
-                  type="button"
-                >
-                  <Smile className="w-5 h-5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
-                <AxevoraEmojiPicker 
-                  onEmojiClick={(emojiData) => {
-                    const editor = quillRef.current?.getEditor();
-                    if (editor) {
-                      editor.focus();
-                      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
-                      editor.insertText(position, emojiData.emoji);
-                      editor.setSelection(position + emojiData.emoji.length, 0);
-                      lastSelectionRef.current = position + emojiData.emoji.length;
-                    }
-                    setShowEmojiPicker(false);
-                  }} 
-                />
-              </PopoverContent>
-            </Popover>
-
-            <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
-              <PopoverTrigger asChild>
-                <button
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-100 transition-colors shrink-0 font-extrabold text-xs"
-                  title="Insert GIF"
-                  type="button"
-                >
-                  GIF
-                </button>
-              </PopoverTrigger>
-              <PopoverContent side="top" align="start" sideOffset={8} className="p-0 border border-slate-200 shadow-2xl rounded-2xl w-[330px] z-50 bg-white">
-                <AxevoraGifPicker 
-                  onGifSelect={(gifUrl) => {
-                    const editor = quillRef.current?.getEditor();
-                    if (editor) {
-                      editor.focus();
-                      const position = lastSelectionRef.current !== null ? lastSelectionRef.current : editor.getLength();
-                      editor.insertEmbed(position, 'image', gifUrl);
-                      editor.setSelection(position + 1, 0);
-                      lastSelectionRef.current = position + 1;
-                    }
-                    setShowGifPicker(false);
-                  }} 
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          <button
-            onClick={handleSend}
-            disabled={!inputText.trim() || inputText === '<p><br></p>' || !user || status !== "connected"}
-            className="px-4 py-1.5 rounded-lg font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shrink-0 shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
-            type="button"
-          >
-            <Send className="w-3.5 h-3.5" /> Send
-          </button>
-        </div>
+      <div className="p-3 border-t border-border/40 bg-slate-50/50">
+        <RichTextComposer
+          mode="chat"
+          value={inputText}
+          onChange={(html) => {
+            setInputText(html);
+            handleTyping(html);
+          }}
+          onSubmit={(html) => {
+            if (!user) {
+              toast.error("You must be logged in to send messages.");
+              return;
+            }
+            sendMessage(html);
+            setInputText("");
+          }}
+          disabled={!user || status !== "connected"}
+          disabledReason={
+            !user 
+              ? "Sign in to chat in this room" 
+              : status === "disconnected" 
+              ? "Chat Disconnected - Attempting to reconnect..." 
+              : status === "connecting" 
+              ? "Connecting to live chat..." 
+              : undefined
+          }
+          placeholder="Type a message..."
+          minHeight="70px"
+          maxHeight="150px"
+        />
       </div>
-      
+
       <style>{`
-        .chat-quill-editor {
-          display: flex;
-          flex-direction: column;
-        }
-        .chat-quill-editor .ql-toolbar {
-          border: none !important;
-          border-bottom: 1px solid #e2e8f0 !important;
-          background: #f8fafc;
-          padding: 6px 8px !important;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 2px;
-        }
-        .chat-quill-editor .ql-container {
-          border: none !important;
-          font-family: inherit;
-          font-size: 14px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        .chat-quill-editor .ql-editor {
-          min-height: 70px !important;
-          max-height: 140px !important;
-          overflow-y: auto !important;
-          padding: 10px 12px !important;
-          color: #0f172a;
-        }
-        .chat-quill-editor .ql-editor.ql-blank::before {
-          color: #94a3b8;
-          font-style: normal;
-        }
         .chat-bubble-content p {
           margin: 0;
         }
