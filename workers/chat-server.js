@@ -36,7 +36,7 @@ export default {
       const roomId = decodeURIComponent(url.pathname.slice("/history/".length));
       if (!roomId) return jsonResponse({ error: "Room ID required" }, 400);
 
-      const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 200);
+      const limit = Math.min(parseInt(url.searchParams.get("limit") || "500"), 500);
       const id = env.CHAT_ROOM.idFromName(roomId);
       const room = env.CHAT_ROOM.get(id);
 
@@ -103,35 +103,30 @@ export class ChatRoom {
     this.dbInitialized = false;
   }
 
+
   ensureDb() {
     if (this.dbInitialized) return;
+    const hasSql = !!(this.state.storage && this.state.storage.sql);
+    console.log("[ensureDb] sql available:", hasSql);
+    if (!hasSql) {
+      console.error("[ensureDb] CRITICAL: this.state.storage.sql is not available! Durable Object may not have SQLite migration applied.");
+      return;
+    }
     try {
-      if (this.state.storage && this.state.storage.sql) {
-        this.state.storage.sql.exec(`
-          CREATE TABLE IF NOT EXISTS chat_messages (
-            id          TEXT    PRIMARY KEY,
-            room_id     TEXT    NOT NULL,
-            user_id     TEXT    NOT NULL,
-            display_name TEXT   NOT NULL,
-            photo_url   TEXT    DEFAULT '',
-            content     TEXT    NOT NULL,
-            html        TEXT    DEFAULT '',
-            ts          INTEGER NOT NULL,
-            is_bot      INTEGER NOT NULL DEFAULT 0,
-            reactions   TEXT    DEFAULT '{}',
-            metadata    TEXT    DEFAULT '{}'
-          )
-        `);
-        this.state.storage.sql.exec(`
-          CREATE INDEX IF NOT EXISTS idx_msg_room_ts
-            ON chat_messages(room_id, ts ASC, rowid ASC)
-        `);
-        this.dbInitialized = true;
-      }
+      this.state.storage.sql.exec(
+        "CREATE TABLE IF NOT EXISTS chat_messages (id TEXT PRIMARY KEY, room_id TEXT NOT NULL, user_id TEXT NOT NULL, display_name TEXT NOT NULL, photo_url TEXT DEFAULT '', content TEXT NOT NULL, html TEXT DEFAULT '', ts INTEGER NOT NULL, is_bot INTEGER NOT NULL DEFAULT 0, reactions TEXT DEFAULT '{}', metadata TEXT DEFAULT '{}')"
+      );
+      this.state.storage.sql.exec(
+        "CREATE INDEX IF NOT EXISTS idx_msg_room_ts ON chat_messages(room_id, ts ASC)"
+      );
+      this.dbInitialized = true;
+      console.log("[ensureDb] SQLite initialized OK");
     } catch (e) {
-      console.error("SQLite init warning:", e);
+      console.error("[ensureDb] FAILED:", e.message);
     }
   }
+
+
 
   // ─── fetch ───────────────────────────────────────────────────────────────
 
@@ -479,7 +474,10 @@ export class ChatRoom {
   persistMessage(msg, roomId) {
     this.ensureDb();
     try {
-      if (!this.state.storage?.sql) return;
+      if (!this.state.storage?.sql) {
+        console.error("[persistMessage] SKIP: sql storage not available");
+        return;
+      }
       this.state.storage.sql.exec(
         `INSERT OR IGNORE INTO chat_messages
            (id, room_id, user_id, display_name, photo_url, content, html, ts, is_bot, reactions, metadata)
@@ -496,6 +494,7 @@ export class ChatRoom {
         JSON.stringify(msg.reactions || {}),
         JSON.stringify(msg.metadata || {})
       );
+      console.log("[persistMessage] Saved msg", msg.id, "to room", roomId);
 
       // Trim: keep only the 500 most recent messages for this room
       const countRows = this.state.storage.sql.exec(
@@ -508,14 +507,14 @@ export class ChatRoom {
           `DELETE FROM chat_messages
            WHERE room_id = ? AND id NOT IN (
              SELECT id FROM chat_messages
-             WHERE room_id = ? ORDER BY ts DESC, rowid DESC LIMIT 500
+             WHERE room_id = ? ORDER BY ts DESC LIMIT 500
            )`,
           roomId,
           roomId
         );
       }
     } catch (e) {
-      console.error("persistMessage error:", e);
+      console.error("[persistMessage] ERROR:", e.message, e.stack);
     }
   }
 
@@ -531,9 +530,9 @@ export class ChatRoom {
         `SELECT * FROM (
            SELECT * FROM chat_messages
            WHERE room_id = ?
-           ORDER BY ts DESC, rowid DESC
+           ORDER BY ts DESC
            LIMIT ?
-         ) ORDER BY ts ASC, rowid ASC`,
+         ) ORDER BY ts ASC`,
         roomId,
         limit
       ).toArray();
@@ -653,7 +652,7 @@ export class ChatRoom {
   }
 
   async handleUserWelcome(ws, session) {
-    if (!session || !session.uid || session.uid.startsWith("anon_")) return;
+    if (!session || !session.uid) return;
     this.ensureDb();
     if (!this.state.storage?.sql) return;
 
@@ -679,7 +678,8 @@ export class ChatRoom {
           isBot: true
         };
         this.persistMessage(welcomeMsg, this.roomId || "unknown");
-        this.broadcast({ type: "NEW_MSG", message: welcomeMsg });
+        ws.send(JSON.stringify({ type: "NEW_MSG", message: welcomeMsg }));
+        this.broadcast({ type: "NEW_MSG", message: welcomeMsg }, ws);
       }
     } catch (e) {
       console.error("handleUserWelcome error:", e);
