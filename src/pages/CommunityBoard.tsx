@@ -178,6 +178,7 @@ export default function CommunityBoard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(true);
+
   
   // Pagination & Sorting
   const [sort, setSort] = useState<'newest' | 'popular' | 'discussed'>('newest');
@@ -187,6 +188,10 @@ export default function CommunityBoard() {
   // Post Creation Form states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Reaction State Tracking
+  const [reactedPosts, setReactedPosts] = useState<Set<string>>(new Set());
+  const [isReacting, setIsReacting] = useState<Record<string, boolean>>({});
 
   // Guest join / unverified modal
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -248,30 +253,84 @@ export default function CommunityBoard() {
 
   const handleOpenShare = (deal: CommerceDiscoveryItem, e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = deal.trackingUrl || deal.destinationUrl;
-    if (!url) return;
-    const text = `🔥 ${deal.merchantName} Deal: ${deal.title} on Axevora! Check it out here:`;
-    
-    if (navigator.share && typeof navigator.share === 'function') {
-      navigator.share({
-        title: deal.title,
-        text: text,
-        url: url,
-      }).catch(() => {});
+    const url = deal.trackingUrl || deal.destinationUrl || window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: deal.title, url: url }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(`${text} ${url}`);
-      toast.success("Share text copied to clipboard!");
+      navigator.clipboard.writeText(url);
+      toast.success("Deal link copied to clipboard!");
     }
   };
 
   const handleCopyLink = (deal: CommerceDiscoveryItem, e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = deal.trackingUrl || deal.destinationUrl;
-    if (!url) return;
+    const url = deal.trackingUrl || deal.destinationUrl || window.location.href;
     navigator.clipboard.writeText(url);
     setCopiedId(deal.id);
-    toast.success("Affiliate link copied to clipboard!");
+    toast.success("Link copied!");
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleBoom = async (postId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isReacting[postId]) return;
+
+    requireAuth("react to this post", async () => {
+      try {
+        setIsReacting(prev => ({ ...prev, [postId]: true }));
+        const res = await fetch(`/api/community/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          // Update local post count
+          setPosts(prevPosts => prevPosts.map(p => {
+            if (p.id === postId) {
+              return { ...p, upvotes_count: p.upvotes_count + data.upvotes_count_change };
+            }
+            return p;
+          }));
+          
+          // Update local reaction state
+          setReactedPosts(prev => {
+            const newSet = new Set(prev);
+            if (data.action === 'added') newSet.add(postId);
+            else newSet.delete(postId);
+            return newSet;
+          });
+        }
+      } catch (err) {
+        console.error("Failed to react to post", err);
+      } finally {
+        setIsReacting(prev => ({ ...prev, [postId]: false }));
+      }
+    });
+  };
+
+  const handleSharePost = async (post: PostItem, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/community/boards/${board?.slug}/posts/${post.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          url: url
+        });
+      } catch (err) {
+        // user cancelled or error
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success("Post link copied to clipboard!");
+    }
   };
 
   const fetchBoardAndPosts = async (resetPage?: boolean) => {
@@ -709,9 +768,20 @@ export default function CommunityBoard() {
                         </CardContent>
                         
                         <CardFooter className="px-4 py-2 border-t border-border/30 bg-muted/20 flex gap-4 text-[10px] text-muted-foreground font-semibold">
-                          <div className="flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {post.views_count} views</div>
-                          <div className="flex items-center gap-1"><Flame className="h-3.5 w-3.5" /> 💥 Boom {post.upvotes_count}</div>
-                          <div className="flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> {post.comments_count} comments</div>
+                          <div title={`${post.views_count} community members have viewed this post`} className="flex items-center gap-1 cursor-help hover:text-foreground transition-colors"><Eye className="h-3.5 w-3.5" /> {post.views_count} views</div>
+                          <button 
+                            onClick={(e) => handleBoom(post.id, e)} 
+                            disabled={isReacting[post.id]}
+                            className={`flex items-center gap-1 transition-colors cursor-pointer hover:text-orange-500 ${reactedPosts.has(post.id) ? 'text-orange-500' : ''}`}
+                          >
+                            <Flame className={`h-3.5 w-3.5 ${reactedPosts.has(post.id) ? 'fill-orange-500 text-orange-500' : ''}`} /> 💥 Boom {post.upvotes_count}
+                          </button>
+                          <Link to={`/community/boards/${board.slug}/posts/${post.id}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors">
+                            <MessageCircle className="h-3.5 w-3.5" /> {post.comments_count} comments
+                          </Link>
+                          <button onClick={(e) => handleSharePost(post, e)} className="flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors ml-auto">
+                            <Share2 className="h-3.5 w-3.5" /> Share
+                          </button>
                         </CardFooter>
                       </>
                     )}

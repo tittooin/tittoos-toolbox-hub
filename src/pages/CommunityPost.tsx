@@ -212,20 +212,31 @@ export default function CommunityPost() {
     }
   };
 
+  const [reacted, setReacted] = useState(false);
+  const [isReacting, setIsReacting] = useState(false);
+
   const handleBoom = async () => {
+    if (isReacting) return;
     requireAuth('boom this post', async () => {
       try {
+        setIsReacting(true);
         const res = await fetch(`/api/community/posts/${postId}/react`, {
-          method: 'POST'
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
         if (res.ok) {
           const data = await res.json();
           setPost(prev => prev ? { ...prev, upvotes_count: prev.upvotes_count + data.upvotes_count_change } : null);
+          setReacted(data.action === 'added');
         } else {
           toast.error("Failed to boom post");
         }
       } catch (err) {
         toast.error("Network error while booming");
+      } finally {
+        setIsReacting(false);
       }
     });
   };
@@ -427,32 +438,32 @@ export default function CommunityPost() {
             )}
           </CardContent>
           <CardFooter className="py-4 border-t border-border/40 bg-muted/10 text-xs text-muted-foreground flex gap-6 font-semibold items-center">
-            <div className="flex items-center gap-1.5" title="Views">
+            <div className="flex items-center gap-1.5 cursor-help hover:text-foreground transition-colors" title={`${post.views_count} community members have viewed this post`}>
               <span className="text-xl">👁️</span> 
               <span className="text-foreground">{post.views_count}</span>
             </div>
             
             <button
               onClick={handleBoom}
-              className="flex items-center gap-1.5 hover:text-orange-500 transition-colors cursor-pointer group"
-              title="Boom"
+              disabled={isReacting}
+              className={`flex items-center gap-1.5 transition-colors cursor-pointer group ${reacted ? 'text-orange-500' : 'hover:text-orange-500'}`}
             >
-              <span className="text-xl group-hover:scale-110 transition-transform">💥</span>
-              <span className="text-foreground">{post.upvotes_count}</span>
+              <Flame className={`h-5 w-5 ${reacted ? 'fill-orange-500 text-orange-500' : 'group-hover:fill-orange-500/20'}`} /> 
+              <span className="text-foreground">Boom {post.upvotes_count}</span>
             </button>
 
-            <div className="flex items-center gap-1.5" title="Replies">
-              <span className="text-xl">💬</span>
-              <span className="text-foreground">{post.comments_count}</span>
-            </div>
-
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors cursor-pointer ml-auto"
-              title="Share"
+            <button 
+              onClick={() => {
+                document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer group"
             >
-              <span className="text-xl">🔗</span>
-              <span>Share</span>
+              <MessageSquare className="h-4 w-4 group-hover:fill-primary/20" /> 
+              <span className="text-foreground">{post.comments_count}</span>
+            </button>
+            
+            <button onClick={handleShare} className="flex items-center gap-1.5 hover:text-foreground transition-colors cursor-pointer ml-auto">
+              <Share2 className="h-4 w-4" /> Share
             </button>
           </CardFooter>
         </Card>

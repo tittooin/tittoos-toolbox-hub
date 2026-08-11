@@ -252,7 +252,7 @@ export function BoardLiveChat({ boardSlug, user }: BoardLiveChatProps) {
               handleTyping(val);
             }} 
             placeholder="Type a message..."
-            readOnly={!user || status !== "connected"}
+            readOnly={!user}
             modules={{
               toolbar: [
                 ['bold', 'italic', 'underline', 'strike'],

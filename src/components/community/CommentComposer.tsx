@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Button } from '@/components/ui/button';
 import { AxevoraEmojiPicker } from './AxevoraEmojiPicker';
+import { AxevoraGifPicker } from './AxevoraGifPicker';
 import { Smile, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -31,6 +32,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const { user } = useAuth();
   const quillRef = React.useRef<ReactQuill>(null);
 
@@ -80,6 +82,17 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
     setShowEmojiPicker(false);
   };
 
+  const onGifClick = (gifUrl: string) => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      const range = editor.getSelection();
+      const position = range ? range.index : editor.getLength();
+      editor.insertEmbed(position, 'image', gifUrl);
+      editor.setSelection(position + 1, 0);
+    }
+    setShowGifPicker(false);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6 flex flex-col">
       <div className="p-3 border-b border-slate-100 bg-slate-50">
@@ -98,17 +111,35 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({ postId, onComm
         />
       </div>
       <div className="p-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center relative">
-        <button 
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="text-slate-500 hover:text-indigo-600 transition-colors p-1 rounded-md hover:bg-slate-200"
-          type="button"
-        >
-          <Smile className="h-5 w-5" />
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }}
+            className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200"
+            type="button"
+            title="Add Emoji"
+          >
+            <Smile className="h-5 w-5" />
+          </button>
+          
+          <button 
+            onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }}
+            className="text-slate-500 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-slate-200 text-xs font-bold"
+            type="button"
+            title="Add GIF"
+          >
+            GIF
+          </button>
+        </div>
 
         {showEmojiPicker && (
           <div className="absolute bottom-full left-0 mb-2 z-50">
             <AxevoraEmojiPicker onEmojiClick={onEmojiClick} />
+          </div>
+        )}
+
+        {showGifPicker && (
+          <div className="absolute bottom-full left-12 mb-2 z-50 shadow-xl rounded-xl border border-border bg-white">
+            <AxevoraGifPicker onGifSelect={onGifClick} />
           </div>
         )}
 

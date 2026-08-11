@@ -63,7 +63,7 @@ interface UseChatSocketOptions {
 }
 
 // The Cloudflare Worker WebSocket URL — change after deployment
-export const CHAT_WS_URL = import.meta.env.VITE_CHAT_WS_URL || "wss://axevora-chat.axevora.workers.dev";
+export const CHAT_WS_URL = import.meta.env.VITE_CHAT_WS_URL || "wss://chat.axevora.workers.dev";
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
