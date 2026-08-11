@@ -25,7 +25,8 @@ export interface ChatMessage {
   uid: string;
   displayName: string;
   photoURL: string;
-  text: string;
+  text: string;         // Plain text (fallback)
+  html?: string;        // Rich text HTML (preferred for rendering)
   ts: number;
   reactions: ChatReactions;
   isBot?: boolean;
@@ -121,16 +122,32 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, acc
       }
 
       switch (data.type) {
-        case "HISTORY":
-          setMessages((data.messages as ChatMessage[]) || []);
-          break;
-
-        case "NEW_MSG":
+        case "HISTORY": {
+          const incoming = (data.messages as ChatMessage[]) || [];
           setMessages(prev => {
-            if (prev.some(m => m.id === (data.message as ChatMessage).id)) return prev;
-            return [...prev, data.message as ChatMessage].slice(-200);
+            // Merge history with any existing messages, deduplicate by ID, sort chronologically
+            const existingIds = new Set(prev.map(m => m.id));
+            const newOnes = incoming.filter(m => !existingIds.has(m.id));
+            const merged = [...newOnes, ...prev];
+            // Sort by ts ascending (chronological), stable by id for ties
+            merged.sort((a, b) => a.ts !== b.ts ? a.ts - b.ts : a.id.localeCompare(b.id));
+            return merged.slice(-200);
           });
           break;
+        }
+
+        case "NEW_MSG": {
+          const incoming = data.message as ChatMessage;
+          setMessages(prev => {
+            // Deduplicate by stable server ID
+            if (prev.some(m => m.id === incoming.id)) return prev;
+            const next = [...prev, incoming];
+            // Ensure chronological order (messages should arrive in order, but guard anyway)
+            next.sort((a, b) => a.ts !== b.ts ? a.ts - b.ts : a.id.localeCompare(b.id));
+            return next.slice(-200);
+          });
+          break;
+        }
 
         case "PRESENCE": {
           const users = (data.usersOnline as ChatUser[]) || [];
@@ -171,9 +188,14 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, acc
           setVoiceParticipants((data.participants as VoiceParticipant[]) || []);
           break;
 
-        case "GIFT_EVENT":
-          setMessages(prev => [...prev, data.message as ChatMessage].slice(-200));
+        case "GIFT_EVENT": {
+          const giftMsg = data.message as ChatMessage;
+          setMessages(prev => {
+            if (prev.some(m => m.id === giftMsg.id)) return prev;
+            return [...prev, giftMsg].slice(-200);
+          });
           break;
+        }
 
         case "VOICE_SIGNAL":
           // Re-dispatched as a custom event for VoiceChatBar to handle
@@ -272,8 +294,16 @@ export function useChatSocket({ roomId, uid, displayName, photoURL, enabled, acc
     }
   }, []);
 
-  const sendMessage = useCallback((text: string, replyTo?: string) => {
-    send({ type: "SEND_MSG", text, replyTo: replyTo || null });
+  /**
+   * sendMessage — sends rich text HTML to server.
+   * Server sanitizes, persists, generates stable ID, then broadcasts to ALL clients.
+   * @param html — rich text HTML from RichTextComposer
+   * @param replyTo — optional message ID being replied to
+   */
+  const sendMessage = useCallback((html: string, replyTo?: string) => {
+    // Strip HTML tags for plain-text fallback (server also does this, but send both)
+    const text = html.replace(/<[^>]+>/g, "").trim();
+    send({ type: "SEND_MSG", text, html, replyTo: replyTo || null });
   }, [send]);
 
   const sendTyping = useCallback((isTyping: boolean) => {

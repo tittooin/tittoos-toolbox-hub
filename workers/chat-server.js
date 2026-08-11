@@ -1,13 +1,11 @@
 /**
  * Axevora Chat WebSocket Server
- * Cloudflare Worker with Durable Objects for real-time messaging
- * 
- * Handles: JOIN_ROOM, SEND_MSG, LEAVE_ROOM, TYPING, REACTION, VOICE_SIGNAL
- * Storage: In-memory only (no DB) — Firebase Auth token validated on each connection
- * CRICBUZZ SCRAPER: Added fallback for cricket scores
+ * Cloudflare Worker with Durable Objects + SQLite for real-time messaging
+ *
+ * Handles: JOIN_ROOM, SEND_MSG, LEAVE_ROOM, TYPING, REACTION, VOICE_SIGNAL, GIFT
+ * Storage: Durable Object SQLite (persistent across restarts/hibernation)
+ * Security: Server-side HTML sanitization (allowlist-based)
  */
-
-const CRICBUZZ_URL = "https://www.cricbuzz.com/cricket-match/live-scores";
 
 export default {
   async fetch(request, env) {
@@ -15,18 +13,12 @@ export default {
 
     // CORS preflight
     if (request.method === "OPTIONS") {
-      return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      });
+      return corsOk();
     }
 
     // WebSocket upgrade endpoint: /ws/:roomId
     if (url.pathname.startsWith("/ws/")) {
-      const roomId = url.pathname.slice(4); // e.g. "cricket_hub"
+      const roomId = url.pathname.slice(4);
       if (!roomId) return new Response("Room ID required", { status: 400 });
 
       const upgradeHeader = request.headers.get("Upgrade");
@@ -34,78 +26,135 @@ export default {
         return new Response("Expected WebSocket upgrade", { status: 426 });
       }
 
-      // Route to Durable Object for the room
       const id = env.CHAT_ROOM.idFromName(roomId);
       const room = env.CHAT_ROOM.get(id);
       return room.fetch(request);
     }
 
+    // Chat history REST endpoint: GET /history/:roomId
+    if (url.pathname.startsWith("/history/")) {
+      const roomId = decodeURIComponent(url.pathname.slice("/history/".length));
+      if (!roomId) return jsonResponse({ error: "Room ID required" }, 400);
+
+      const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 200);
+      const id = env.CHAT_ROOM.idFromName(roomId);
+      const room = env.CHAT_ROOM.get(id);
+
+      // Proxy to DO's internal history endpoint
+      const histUrl = new URL(request.url);
+      histUrl.pathname = "/_internal/history";
+      histUrl.searchParams.set("limit", String(limit));
+      histUrl.searchParams.set("roomId", roomId);
+      return room.fetch(new Request(histUrl.toString(), { method: "GET" }));
+    }
+
     // Health check
     if (url.pathname === "/health") {
-      return new Response(JSON.stringify({ status: "ok", ts: Date.now() }), {
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      });
+      return jsonResponse({ status: "ok", ts: Date.now() });
     }
 
-    // Matches endpoint (Scraper Fallback)
-    if (url.pathname === "/api/matches") {
-      try {
-        const matches = await scrapeCricbuzz();
-        return new Response(JSON.stringify({ success: true, data: matches }), {
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ success: false, error: err.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-        });
-      }
-    }
-
-    return new Response("Axevora Chat Server — WebSocket endpoint: /ws/:roomId", {
+    return new Response("Axevora Chat Server — WebSocket: /ws/:roomId | History: /history/:roomId", {
       headers: { "Content-Type": "text/plain" },
     });
   },
 };
 
-/**
- * ChatRoom Durable Object
- * One instance per unique roomId — handles all WebSocket connections for that room
- */
+function corsOk() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ChatRoom Durable Object
+// One instance per unique roomId — handles all WebSocket connections for that room
+// Persists messages to SQLite storage (survives restarts and hibernation)
+// ─────────────────────────────────────────────────────────────────────────────
+
 export class ChatRoom {
   constructor(state, env) {
     this.state = state;
     this.env = env;
 
-    /** @type {Map<WebSocket, { uid: string, displayName: string, photoURL: string, joinedAt: number }>} */
+    /** @type {Map<WebSocket, { uid, displayName, photoURL, joinedAt }>} */
     this.sessions = new Map();
 
-    /** @type {Array<{id: string, uid: string, displayName: string, text: string, ts: number, reactions: Record<string, string[]>}>} */
-    this.recentMessages = []; // Last 50 messages in memory
+    /** @type {Map<string, object>} voice participants: uid -> data */
+    this.voiceParticipants = new Map();
 
-    this.voiceParticipants = new Map(); // uid -> { displayName, peerId }
+    this.roomId = null; // Set lazily from URL on first request
+    this.currentHostUid = null;
+    this.hostRecoveryTimer = null;
+
+    // Initialize SQLite schema synchronously (idempotent)
+    this.state.storage.sql.exec(`
+      CREATE TABLE IF NOT EXISTS chat_messages (
+        id          TEXT    PRIMARY KEY,
+        room_id     TEXT    NOT NULL,
+        user_id     TEXT    NOT NULL,
+        display_name TEXT   NOT NULL,
+        photo_url   TEXT    DEFAULT '',
+        content     TEXT    NOT NULL,
+        html        TEXT    DEFAULT '',
+        ts          INTEGER NOT NULL,
+        is_bot      INTEGER NOT NULL DEFAULT 0,
+        reactions   TEXT    DEFAULT '{}',
+        metadata    TEXT    DEFAULT '{}'
+      );
+      CREATE INDEX IF NOT EXISTS idx_msg_room_ts
+        ON chat_messages(room_id, ts ASC, rowid ASC);
+    `);
   }
+
+  // ─── fetch ───────────────────────────────────────────────────────────────
 
   async fetch(request) {
+    const url = new URL(request.url);
+
+    // Internal history REST endpoint (proxied from main worker)
+    if (url.pathname === "/_internal/history") {
+      const roomId = url.searchParams.get("roomId") || this.roomId || "unknown";
+      if (!this.roomId) this.roomId = roomId;
+      const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 200);
+      const messages = this.getHistory(roomId, limit);
+      return jsonResponse({ messages });
+    }
+
+    // WebSocket upgrade
     const [client, server] = Object.values(new WebSocketPair());
-
     await this.handleSession(server, request);
-
-    return new Response(null, {
-      status: 101,
-      webSocket: client,
-    });
+    return new Response(null, { status: 101, webSocket: client });
   }
+
+  // ─── handleSession ───────────────────────────────────────────────────────
 
   async handleSession(ws, request) {
     const url = new URL(request.url);
+    const roomId = url.pathname.slice(4); // /ws/roomId
+    if (!this.roomId) this.roomId = roomId;
+
     const uid = url.searchParams.get("uid") || `anon_${Date.now()}`;
     const displayName = decodeURIComponent(url.searchParams.get("name") || "Guest");
     const photoURL = decodeURIComponent(url.searchParams.get("photo") || "");
     const accessPolicy = url.searchParams.get("accessPolicy") || "public";
     const isVerified = url.searchParams.get("verified") === "true";
 
-    // Enforce verified user policy
+    // Verified-only room enforcement
     if (accessPolicy === "verified_only" && !isVerified) {
       ws.accept();
       ws.send(JSON.stringify({ type: "ERROR", message: "Only verified users can join this room." }));
@@ -113,7 +162,7 @@ export class ChatRoom {
       return;
     }
 
-    // Cancel recovery timer if host reconnects
+    // Cancel host recovery if host reconnects
     if (this.hostRecoveryTimer && uid === this.currentHostUid) {
       clearTimeout(this.hostRecoveryTimer);
       this.hostRecoveryTimer = null;
@@ -124,13 +173,11 @@ export class ChatRoom {
     const session = { uid, displayName, photoURL, joinedAt: Date.now() };
     this.sessions.set(ws, session);
 
-    // Send recent message history to new user
-    ws.send(JSON.stringify({
-      type: "HISTORY",
-      messages: this.recentMessages.slice(-50),
-    }));
+    // 1. Send persisted chat history (last 100 messages from SQLite)
+    const history = this.getHistory(roomId, 100);
+    ws.send(JSON.stringify({ type: "HISTORY", messages: history }));
 
-    // Broadcast presence: user joined
+    // 2. Broadcast presence: user joined (exclude new user's ws)
     this.broadcast({
       type: "PRESENCE",
       action: "JOIN",
@@ -140,12 +187,11 @@ export class ChatRoom {
       usersOnline: this.getOnlineUsers(),
     }, ws);
 
-    // Send current online list to the new user immediately
-    ws.send(JSON.stringify({
-      type: "USERS_LIST",
-      users: this.getOnlineUsers(),
-    }));
+    // 3. Send current online users list to new user
+    ws.send(JSON.stringify({ type: "USERS_LIST", users: this.getOnlineUsers() }));
   }
+
+  // ─── webSocketMessage ─────────────────────────────────────────────────────
 
   async webSocketMessage(ws, rawMsg) {
     let data;
@@ -159,38 +205,55 @@ export class ChatRoom {
     if (!session) return;
 
     switch (data.type) {
+
       case "SEND_MSG": {
+        // Server-side sanitization of both plain text and rich HTML
+        const plainText = sanitizePlain(data.text || "");
+        const richHtml = sanitizeHtml(data.html || data.text || "");
+
+        // Reject empty messages
+        if (!plainText.trim() && !richHtml.includes("<img")) break;
+
+        // Generate stable server-side message ID
+        const msgId = `${this.roomId || "r"}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+        const ts = Date.now();
+
         const msg = {
-          id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          id: msgId,
           uid: session.uid,
           displayName: session.displayName,
           photoURL: session.photoURL,
-          text: sanitize(data.text || ""),
-          ts: Date.now(),
+          text: plainText,
+          html: richHtml,
+          ts,
           reactions: {},
           replyTo: data.replyTo || null,
         };
 
+        // Persist to SQLite first
+        this.persistMessage(msg, this.roomId || "unknown");
+
         // AI Bot trigger
-        if (msg.text.toLowerCase().startsWith("@bot")) {
-          const botReply = await this.getBotReply(msg.text.slice(4).trim());
+        if (plainText.toLowerCase().startsWith("@bot")) {
+          const botReply = await this.getBotReply(plainText.slice(4).trim());
+          const botMsgId = `bot_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
           const botMsg = {
-            id: `bot_${Date.now()}`,
+            id: botMsgId,
             uid: "axevora_bot",
             displayName: "Axevora Bot 🤖",
             photoURL: "",
             text: botReply,
-            ts: Date.now() + 100,
+            html: botReply,
+            ts: ts + 100,
             reactions: {},
             isBot: true,
           };
-          this.recentMessages.push(msg, botMsg);
-          if (this.recentMessages.length > 100) this.recentMessages.shift();
+          this.persistMessage(botMsg, this.roomId || "unknown");
+          // Broadcast canonical persisted messages to ALL clients (including sender)
           this.broadcast({ type: "NEW_MSG", message: msg });
           this.broadcast({ type: "NEW_MSG", message: botMsg });
         } else {
-          this.recentMessages.push(msg);
-          if (this.recentMessages.length > 100) this.recentMessages.shift();
+          // Broadcast canonical persisted message to ALL clients (including sender)
           this.broadcast({ type: "NEW_MSG", message: msg });
         }
         break;
@@ -207,16 +270,32 @@ export class ChatRoom {
       }
 
       case "REACTION": {
-        const targetMsg = this.recentMessages.find(m => m.id === data.messageId);
-        if (targetMsg) {
-          if (!targetMsg.reactions[data.emoji]) targetMsg.reactions[data.emoji] = [];
-          const idx = targetMsg.reactions[data.emoji].indexOf(session.uid);
+        // Update reactions in SQLite and broadcast
+        const rows = this.state.storage.sql.exec(
+          `SELECT reactions FROM chat_messages WHERE id = ?`,
+          data.messageId
+        ).toArray();
+
+        if (rows.length > 0) {
+          let reactions = {};
+          try { reactions = JSON.parse(rows[0].reactions || "{}"); } catch { reactions = {}; }
+
+          if (!reactions[data.emoji]) reactions[data.emoji] = [];
+          const idx = reactions[data.emoji].indexOf(session.uid);
           if (idx === -1) {
-            targetMsg.reactions[data.emoji].push(session.uid);
+            reactions[data.emoji].push(session.uid);
           } else {
-            targetMsg.reactions[data.emoji].splice(idx, 1);
+            reactions[data.emoji].splice(idx, 1);
           }
-          this.broadcast({ type: "REACTION_UPDATE", messageId: data.messageId, reactions: targetMsg.reactions });
+          // Clean up empty emoji keys
+          if (reactions[data.emoji].length === 0) delete reactions[data.emoji];
+
+          this.state.storage.sql.exec(
+            `UPDATE chat_messages SET reactions = ? WHERE id = ?`,
+            JSON.stringify(reactions),
+            data.messageId
+          );
+          this.broadcast({ type: "REACTION_UPDATE", messageId: data.messageId, reactions });
         }
         break;
       }
@@ -232,7 +311,7 @@ export class ChatRoom {
           role: data.role || "listener",
           isMuted: false,
           handRaised: false,
-          presence: "ONLINE"
+          presence: "ONLINE",
         });
         this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
         break;
@@ -245,7 +324,6 @@ export class ChatRoom {
       }
 
       case "VOICE_SIGNAL": {
-        // WebRTC signaling relay — forward to target peer
         const targetWs = this.findSessionByUid(data.targetUid);
         if (targetWs) {
           targetWs.send(JSON.stringify({
@@ -258,7 +336,6 @@ export class ChatRoom {
       }
 
       case "MUTE_USER": {
-        // Find speaker in voice participants map
         const speaker = this.voiceParticipants.get(data.targetUid);
         if (speaker) {
           speaker.isMuted = !!data.muted;
@@ -275,8 +352,6 @@ export class ChatRoom {
           this.voiceParticipants.delete(data.targetUid);
           this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
           this.broadcast({ type: "KICKED", targetUid: data.targetUid });
-          
-          // Force disconnect the WebSocket session if matching
           const kickedWs = this.findSessionByUid(data.targetUid);
           if (kickedWs) {
             kickedWs.send(JSON.stringify({ type: "ERROR", message: "You have been kicked from the audio room by the host." }));
@@ -317,23 +392,25 @@ export class ChatRoom {
       }
 
       case "AUDIO_QUALITY": {
-        this.broadcast({ type: "QUALITY_UPDATE", roomId: this.roomId, qualityProfile: data.profile });
+        this.broadcast({ type: "QUALITY_UPDATE", qualityProfile: data.profile });
         break;
       }
 
       case "GIFT": {
+        const giftMsgId = `gift_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
         const giftMsg = {
-          id: `gift_${Date.now()}`,
+          id: giftMsgId,
           uid: session.uid,
           displayName: session.displayName,
           photoURL: session.photoURL,
           text: `🎁 ${session.displayName} sent a ${data.giftName}!`,
+          html: `🎁 ${session.displayName} sent a ${data.giftName}!`,
           ts: Date.now(),
           reactions: {},
           isGift: true,
           giftData: { name: data.giftName, emoji: data.giftEmoji, value: data.giftValue },
         };
-        this.recentMessages.push(giftMsg);
+        this.persistMessage(giftMsg, this.roomId || "unknown");
         this.broadcast({ type: "GIFT_EVENT", message: giftMsg });
         break;
       }
@@ -344,82 +421,122 @@ export class ChatRoom {
     }
   }
 
+  // ─── webSocketClose ───────────────────────────────────────────────────────
+
   async webSocketClose(ws) {
     const session = this.sessions.get(ws);
-    if (session) {
-      this.sessions.delete(ws);
-      
-      const participant = this.voiceParticipants.get(session.uid);
-      if (participant && participant.role === "host") {
-        this.hostRecoveryTimer = setTimeout(() => {
-          this.promoteNewHost(session.uid);
-        }, 60_000);
-        
-        this.broadcast({ 
-          type: "HOST_DISCONNECTED_RECOVERY", 
-          hostUid: session.uid, 
-          timeoutSec: 60 
-        });
-      } else {
-        this.voiceParticipants.delete(session.uid);
-        this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
-      }
+    if (!session) return;
 
-      this.broadcast({
-        type: "PRESENCE",
-        action: "LEAVE",
-        uid: session.uid,
-        displayName: session.displayName,
-        usersOnline: this.getOnlineUsers(),
-      });
-    }
-  }
+    this.sessions.delete(ws);
 
-  promoteNewHost(oldHostUid) {
-    this.hostRecoveryTimer = null;
-    this.voiceParticipants.delete(oldHostUid);
-
-    const candidates = Array.from(this.voiceParticipants.entries()).map(([uid, data]) => ({
-      uid, ...data,
-    }));
-    
-    const rolePriority = { "co-host": 1, "moderator": 2, "speaker": 3, "listener": 4 };
-    candidates.sort((a, b) => {
-      const aPriority = rolePriority[a.role] || 5;
-      const bPriority = rolePriority[b.role] || 5;
-      return aPriority - bPriority;
-    });
-
-    if (candidates.length > 0) {
-      const newHost = candidates[0];
-      newHost.role = "host";
-      this.currentHostUid = newHost.uid;
-      
-      this.voiceParticipants.set(newHost.uid, {
-        displayName: newHost.displayName,
-        photoURL: newHost.photoURL,
-        peerId: newHost.peerId,
-        role: "host",
-        isMuted: newHost.isMuted,
-        handRaised: false,
-        presence: "ONLINE"
-      });
-
-      this.broadcast({ 
-        type: "HOST_TRANSFERRED", 
-        oldHostUid, 
-        newHostUid: newHost.uid,
-        participants: this.getVoiceParticipants() 
-      });
+    const participant = this.voiceParticipants.get(session.uid);
+    if (participant && participant.role === "host") {
+      this.hostRecoveryTimer = setTimeout(() => {
+        this.promoteNewHost(session.uid);
+      }, 60_000);
+      this.broadcast({ type: "HOST_DISCONNECTED_RECOVERY", hostUid: session.uid, timeoutSec: 60 });
     } else {
-      this.broadcast({ type: "ROOM_TERMINATED" });
+      this.voiceParticipants.delete(session.uid);
+      this.broadcast({ type: "VOICE_UPDATE", participants: this.getVoiceParticipants() });
     }
+
+    this.broadcast({
+      type: "PRESENCE",
+      action: "LEAVE",
+      uid: session.uid,
+      displayName: session.displayName,
+      usersOnline: this.getOnlineUsers(),
+    });
   }
 
   async webSocketError(ws) {
     await this.webSocketClose(ws);
   }
 
+  // ─── SQLite helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Persist a message to SQLite.
+   * Uses INSERT OR IGNORE to safely handle duplicates.
+   * Trims to 500 messages per room when exceeded.
+   */
+  persistMessage(msg, roomId) {
+    this.state.storage.sql.exec(
+      `INSERT OR IGNORE INTO chat_messages
+         (id, room_id, user_id, display_name, photo_url, content, html, ts, is_bot, reactions, metadata)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      msg.id,
+      roomId,
+      msg.uid,
+      msg.displayName,
+      msg.photoURL || "",
+      msg.text || "",
+      msg.html || msg.text || "",
+      msg.ts,
+      msg.isBot ? 1 : 0,
+      JSON.stringify(msg.reactions || {}),
+      JSON.stringify(msg.metadata || {})
+    );
+
+    // Trim: keep only the 500 most recent messages for this room
+    const countRows = this.state.storage.sql.exec(
+      `SELECT COUNT(*) as cnt FROM chat_messages WHERE room_id = ?`,
+      roomId
+    ).toArray();
+    const count = countRows[0]?.cnt || 0;
+    if (count > 500) {
+      this.state.storage.sql.exec(
+        `DELETE FROM chat_messages
+         WHERE room_id = ? AND id NOT IN (
+           SELECT id FROM chat_messages
+           WHERE room_id = ? ORDER BY ts DESC, rowid DESC LIMIT 500
+         )`,
+        roomId,
+        roomId
+      );
+    }
+  }
+
+  /**
+   * Fetch persisted chat history from SQLite.
+   * Returns `limit` most recent messages in chronological order (oldest first).
+   */
+  getHistory(roomId, limit = 100) {
+    const rows = this.state.storage.sql.exec(
+      `SELECT * FROM (
+         SELECT * FROM chat_messages
+         WHERE room_id = ?
+         ORDER BY ts DESC, rowid DESC
+         LIMIT ?
+       ) ORDER BY ts ASC, rowid ASC`,
+      roomId,
+      limit
+    ).toArray();
+
+    return rows.map(row => {
+      let reactions = {};
+      try { reactions = JSON.parse(row.reactions || "{}"); } catch {}
+      return {
+        id: row.id,
+        uid: row.user_id,
+        displayName: row.display_name,
+        photoURL: row.photo_url || "",
+        text: row.content,
+        html: row.html || row.content,
+        ts: row.ts,
+        reactions,
+        isBot: row.is_bot === 1,
+      };
+    });
+  }
+
+  // ─── Broadcast helpers ────────────────────────────────────────────────────
+
+  /**
+   * Send a message to all connected clients.
+   * @param {object} data
+   * @param {WebSocket|null} excludeWs — optionally exclude one client
+   */
   broadcast(data, excludeWs = null) {
     const payload = JSON.stringify(data);
     for (const [ws] of this.sessions) {
@@ -446,24 +563,42 @@ export class ChatRoom {
   }
 
   getVoiceParticipants() {
-    return Array.from(this.voiceParticipants.entries()).map(([uid, data]) => ({
-      uid, ...data,
-    }));
+    return Array.from(this.voiceParticipants.entries()).map(([uid, data]) => ({ uid, ...data }));
   }
 
-  async getBotReply(query) {
-    const cricketKeywords = ["score", "match", "cricket", "ipl", "player", "team", "run", "wicket"];
-    const q = query.toLowerCase();
+  // ─── Host promotion ───────────────────────────────────────────────────────
 
-    if (cricketKeywords.some(k => q.includes(k))) {
+  promoteNewHost(oldHostUid) {
+    this.hostRecoveryTimer = null;
+    this.voiceParticipants.delete(oldHostUid);
+
+    const candidates = Array.from(this.voiceParticipants.entries()).map(([uid, data]) => ({ uid, ...data }));
+    const rolePriority = { "co-host": 1, "moderator": 2, "speaker": 3, "listener": 4 };
+    candidates.sort((a, b) => (rolePriority[a.role] || 5) - (rolePriority[b.role] || 5));
+
+    if (candidates.length > 0) {
+      const newHost = candidates[0];
+      newHost.role = "host";
+      this.currentHostUid = newHost.uid;
+      this.voiceParticipants.set(newHost.uid, { ...newHost });
+      this.broadcast({ type: "HOST_TRANSFERRED", oldHostUid, newHostUid: newHost.uid, participants: this.getVoiceParticipants() });
+    } else {
+      this.broadcast({ type: "ROOM_TERMINATED" });
+    }
+  }
+
+  // ─── Bot replies ──────────────────────────────────────────────────────────
+
+  async getBotReply(query) {
+    const q = query.toLowerCase();
+    const cricketKws = ["score", "match", "cricket", "ipl", "player", "team", "run", "wicket"];
+    if (cricketKws.some(k => q.includes(k))) {
       return "🏏 Cricket Hub tip: Check the live score panel above! Our Cricbuzz feed updates every 30 seconds.";
     }
     if (q.includes("hello") || q.includes("hi") || q.includes("hey")) {
       return "👋 Hey there! I'm Axevora Bot. Ask me anything about cricket, games, or type @bot help!";
     }
-    if (q.includes("help")) {
-      return "🤖 Commands: @bot score | @bot tip | @bot joke | @bot cricket | @bot game";
-    }
+    if (q.includes("help")) return "🤖 Commands: @bot score | @bot tip | @bot joke | @bot cricket | @bot game";
     if (q.includes("joke")) {
       const jokes = [
         "Why do cricket players never drink? Because they're always caught on the leg side! 😄",
@@ -474,117 +609,137 @@ export class ChatRoom {
     }
     if (q.includes("tip")) {
       const tips = [
-        "💡 Pro tip: Pick in-form batters in fantasy cricket who bat in top 4 positions!",
+        "💡 Pro tip: Pick in-form batters who bat in top 4 positions!",
         "💡 Always have at least 2 all-rounders in your Fantasy XI for maximum points.",
         "💡 Pitch report matters! Spin-friendly pitches → pick more spinners.",
       ];
       return tips[Math.floor(Math.random() * tips.length)];
     }
-    if (q.includes("game")) {
-      return "🎮 Try the 2048 mini-game in the Games tab! Earn Axevora Coins for high scores.";
-    }
-
+    if (q.includes("game")) return "🎮 Try the 2048 mini-game in the Games tab! Earn Axevora Coins for high scores.";
     return `🤖 You asked: "${query}" — I'm still learning! Try: @bot cricket | @bot joke | @bot tip | @bot help`;
   }
 }
 
-function sanitize(text) {
-  return text
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .slice(0, 1000); // Max message length
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// HTML Sanitizer — Allowlist-based, no third-party dependencies
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ALLOWED_TAGS = new Set([
+  "b", "strong", "i", "em", "u", "s", "strike",
+  "p", "br", "ul", "ol", "li",
+  "span", "a", "img",
+]);
+
+const ALLOWED_ATTRS = {
+  a:    new Set(["href", "target", "rel"]),
+  img:  new Set(["src", "alt", "style"]),
+  span: new Set(["style"]),
+  p:    new Set(["style"]),
+  li:   new Set(["style"]),
+};
+
+const SAFE_CSS_PROPS = new Set([
+  "color", "background-color", "font-family", "font-size",
+  "font-weight", "font-style", "text-decoration", "text-align",
+]);
+
+const VOID_TAGS = new Set(["br", "img"]);
 
 /**
- * scrapeCricbuzz — Fetches and parses live scores from Cricbuzz
- * (Used when the primary API is unavailable)
+ * sanitizeHtml — Allow safe rich-text HTML, strip everything dangerous.
+ * Strips: script, style blocks, all on* handlers, javascript:/vbscript:/data: protocols.
+ * Allows: formatting tags (b,i,u,s,span,p,ul,ol,li,a,img) with safe attributes only.
  */
-async function scrapeCricbuzz() {
-  return { live: [{ id: "test", title: "API TEST", status: "live", team_a: "TEST", team_b: "OK", last_score: "WORKING" }], upcoming: [], recent: [] };
-}
-/*
-async function _realScrape() {
-    
-    // Improved Split: Look for each match link block
-    const matchSections = html.split('href="/live-cricket-scores/').slice(1);
-    
-    for (const section of matchSections) {
-       const matchId = section.match(/^(\d+)/)?.[1];
-       const statusMatch = section.match(/text-cbComplete[^>]+>([^<]+)<\/span>/) || section.match(/text-cbLive[^>]+>([^<]+)<\/span>/);
-       const statusText = statusMatch ? statusMatch[1].trim() : "Preview";
-       
-       const isLive = section.includes('text-cbLive') || statusText.toLowerCase().includes('live');
-       const isCompleted = section.includes('text-cbComplete') || statusText.toLowerCase().includes('won') || statusText.toLowerCase().includes('drawn');
-       
-       // Teams extraction via the "truncate" spans
-       const teams = [];
-       const teamIter = section.matchAll(/truncate max-w-\[100%\]">([^<]+)<\/span>/g);
-       for (const m of teamIter) {
-         if (!teams.includes(m[1])) teams.push(m[1]); // Filter repeated mobile/desktop spans
-         if (teams.length >= 2) break;
-       }
-       
-       // Scores extraction via the "font-medium" spans
-       const scores = [];
-       const scoreIter = section.matchAll(/font-medium[^>]+>([^<]*)<\/span>/g);
-       for (const m of scoreIter) {
-         scores.push(m[1].trim());
-         if (scores.length >= 2) break;
-       }
+function sanitizeHtml(html) {
+  if (!html) return "";
+  let s = String(html).slice(0, 15000);
 
-       if (matchId && teams.length >= 2) {
-         const match = {
-           id: matchId,
-           title: `${teams[0]} vs ${teams[1]}`,
-           status: isLive ? 'live' : isCompleted ? 'completed' : 'upcoming',
-           start_time: Date.now(),
-           team_a: teams[0],
-           team_b: teams[1],
-           team_a_img: "/placeholder.svg",
-           team_b_img: "/placeholder.svg",
-           series_name: "Live Feed",
-           last_score: isLive ? `${scores[0] || '0/0'} vs ${scores[1] || '0/0'}` : statusText || "Preview"
-         };
+  // Strip script and style block content entirely
+  s = s.replace(/<script\b[\s\S]*?<\/script>/gi, "");
+  s = s.replace(/<style\b[\s\S]*?<\/style>/gi, "");
 
-         if (match.status === 'live') matches.live.push(match);
-         else if (match.status === 'completed') matches.recent.push(match);
-         else matches.upcoming.push(match);
-       }
-    }
-    // Fallback if no matches successfully parsed
-    if (matches.live.length === 0 && matches.upcoming.length === 0) {
-      matches.live.push({
-        id: "no_live",
-        title: "No Live Matches",
-        status: "live",
-        start_time: Date.now(),
-        team_a: "Waiting for",
-        team_b: "Next Match",
-        team_a_img: "/placeholder.svg",
-        team_b_img: "/placeholder.svg",
-        series_name: "Cricbuzz Feed",
-        last_score: "Live Feed Active"
-      });
+  // Remove all event handler attributes (onX=...)
+  s = s.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+
+  // Block dangerous protocols at attribute-value level
+  s = s.replace(/(href|src|action)\s*=\s*["']?\s*(?:javascript|vbscript|data)\s*:/gi, '$1="blocked:"');
+
+  // Process tags
+  s = s.replace(/<(\/?)([\w]+)([^>]*?)(?:\/\s*)?>/gi, (_match, slash, tag, attrs) => {
+    const t = tag.toLowerCase();
+    if (!ALLOWED_TAGS.has(t)) return ""; // Strip unknown tags
+
+    if (slash) return `</${t}>`; // Closing tag
+
+    const allowedAttrs = ALLOWED_ATTRS[t];
+    if (!allowedAttrs) return `<${t}>`; // Tag allowed but no attrs
+
+    // Parse and filter attributes
+    let safeAttrs = "";
+    const attrRe = /([\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
+    let m;
+    while ((m = attrRe.exec(attrs)) !== null) {
+      const name = m[1].toLowerCase();
+      const val = m[2] !== undefined ? m[2] : (m[3] !== undefined ? m[3] : "");
+      if (!allowedAttrs.has(name)) continue;
+
+      if (name === "href") {
+        const vt = val.trim().toLowerCase();
+        if (vt.startsWith("javascript:") || vt.startsWith("data:") || vt.startsWith("vbscript:")) continue;
+        safeAttrs += ` href="${escAttr(val)}" target="_blank" rel="noopener noreferrer"`;
+
+      } else if (name === "src") {
+        const vt = val.trim().toLowerCase();
+        if (vt.startsWith("javascript:")) continue;
+        safeAttrs += ` src="${escAttr(val)}"`;
+
+      } else if (name === "style") {
+        const css = sanitizeStyle(val);
+        if (css) safeAttrs += ` style="${escAttr(css)}"`;
+
+      } else if (name === "alt") {
+        safeAttrs += ` alt="${escAttr(val)}"`;
+      }
     }
 
-    return matches;
-  } catch (err) {
-    clearTimeout(timeoutId);
-    console.error("Scraper Error:", err.message);
-    // Return a graceful error object instead of throwing
-    return {
-      live: [{
-        id: "scraper_err",
-        title: "Feed Offline",
-        status: "live",
-        start_time: Date.now(),
-        team_a: "Scraper",
-        team_b: "Error",
-        last_score: err.message === "aborted" ? "Timeout" : "Check logs"
-      }],
-      upcoming: [],
-      recent: []
-    };
-  }
+    return VOID_TAGS.has(t) ? `<${t}${safeAttrs}>` : `<${t}${safeAttrs}>`;
+  });
+
+  return s.slice(0, 5000);
 }
-*/
+
+function sanitizeStyle(css) {
+  return css
+    .split(";")
+    .map(p => p.trim())
+    .filter(p => {
+      const ci = p.indexOf(":");
+      if (ci < 0) return false;
+      const prop = p.slice(0, ci).trim().toLowerCase();
+      const val = p.slice(ci + 1).trim().toLowerCase();
+      if (!SAFE_CSS_PROPS.has(prop)) return false;
+      if (val.includes("url(") || val.includes("javascript")) return false;
+      return true;
+    })
+    .join("; ");
+}
+
+function escAttr(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/** Strip all HTML tags — for plain text fallback */
+function sanitizePlain(text) {
+  return String(text || "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .trim()
+    .slice(0, 2000);
+}
