@@ -115,9 +115,11 @@ export class ChatRoom {
         is_bot      INTEGER NOT NULL DEFAULT 0,
         reactions   TEXT    DEFAULT '{}',
         metadata    TEXT    DEFAULT '{}'
-      );
+      )
+    `);
+    this.state.storage.sql.exec(`
       CREATE INDEX IF NOT EXISTS idx_msg_room_ts
-        ON chat_messages(room_id, ts ASC, rowid ASC);
+        ON chat_messages(room_id, ts ASC, rowid ASC)
     `);
   }
 
