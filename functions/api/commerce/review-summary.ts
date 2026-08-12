@@ -15,12 +15,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const apiKey = (env?.GEMINI_API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
 
   const fallbackResponse = {
-    hookHeader: `🔥 Top Choice for ${query}!`,
+    hookHeader: `🔥 Here is what we found!`,
     overallSentiment: "Positive",
     rating: 4.5,
     pros: ["✅ Great value for money and solid build", "⚡ Premium features at an affordable price", "🔋 Reliable performance for everyday use"],
     cons: ["⚠️ Slightly expensive compared to budget options", "⚠️ Average battery life under heavy use"],
-    pitch: `Most users agree that ${query} is a fantastic choice in its category. With its exceptional feature set and trusted brand reliability, it's definitely worth checking out today!`,
+    pitch: `Most users agree that this is a fantastic choice in its category. With its exceptional feature set and trusted brand reliability, it's definitely worth checking out today!`,
   };
 
   if (!apiKey) {
