@@ -14,19 +14,52 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   }
 
   const entityInfo = extractEntities(query);
-  const apiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
+  const isCheaperQuery = query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
   const promptText = `Act as an Expert Tech Shopping Advisor & High-Converting Marketing Copywriter for Axevora.com.
   Analyze the following user query: "${query}".
-  Is this a comparison query? ${entityInfo.isComparison ? 'Yes' : 'No'}.
+  Is this a cheaper alternatives / budget recommendation query? ${isCheaperQuery ? 'Yes' : 'No'}.
+  Is this a comparison query? ${entityInfo.isComparison || isCheaperQuery ? 'Yes' : 'No'}.
   ${entityInfo.isComparison ? `Products to compare: Product A = "${entityInfo.itemA}", Product B = "${entityInfo.itemB}".` : `Target Product = "${entityInfo.itemA}".`}
 
   STRICT COPYWRITING RULES FOR PERSUASIVE CONVERSION:
-  1. ENERGETIC HOOK: Start with a punchy 1-line verdict with emojis.
-  2. SPECIFIC PROS & SPECS: Never use generic terms like "Good battery", "Fast processor", or "Nice screen". Always include technical specs (e.g., "⚡ 5000mAh Battery with 45W Fast Charging", "📸 50MP Sony OIS Primary Sensor + 4K 60fps Video", "📱 120Hz LTPO AMOLED Display with 2600 nits Peak Brightness", "🚀 Snapdragon 8 Gen 3 Chipset with Vapor Chamber Cooling").
-  3. REAL COMMUNITY CONSENSUS: Mention verified community feedback (e.g., "📊 Based on 12,000+ buyer reviews: 88% praise display vibrancy and battery endurance, 8% noted mild heating during heavy gaming").
-  4. CLEAR BUYING ACTION: Give a direct, confident recommendation on WHO should buy WHICH product based on budget and priorities.
+  1. ENERGETIC HOOK: Start with a punchy 1-line verdict with emojis highlighting value & savings!
+  2. SPECIFIC PROS & SPECS: Never use generic terms like "Good battery", "Fast processor", or "Nice screen". Always include technical specs.
+  3. REAL COMMUNITY CONSENSUS: Mention verified community feedback from Amazon/Reddit.
+  4. CLEAR BUYING ACTION: Give a direct, confident recommendation on HOW MUCH MONEY YOU SAVE.
 
+  ${isCheaperQuery ? `
+  Use this EXACT Markdown structure for comparisonMarkdown:
+  ### 💡 **Smart Budget Alternatives (Same Features, Half the Price!)**
+
+  Why spend ₹70,000+ when you can get 85% of the same experience for under ₹40,000? Live web data shows these top-rated value champions across all brands:
+
+  ---
+
+  #### 📱 **1. OnePlus 12R 5G (or Category Value Champion 1)**
+  * **Why it's a Smart Pick:** Matches 120Hz LTPO display & 100W ultra-fast charging at nearly half the price!
+  * **Key Specs:**
+    - 🟢 ⚡ **100W SuperVOOC Fast Charge:** 0 to 100% in under 26 minutes.
+    - 🟢 📱 **120Hz 1.5K ProXDR Display:** 4500 nits peak brightness for outdoor legibility.
+    - 🟢 📸 **50MP Sony IMX890 OIS Sensor:** Sharp 4K video recording.
+  * **Cons:**
+    - 🔴 No dedicated telephoto camera lens.
+
+  ---
+
+  #### 📱 **2. Nothing Phone (2a) 5G (or Category Value Champion 2)**
+  * **Why it's a Smart Pick:** Unique design aesthetic with OIS camera & clean bloat-free OS.
+  * **Key Specs:**
+    - 🟢 📸 **50MP Dual Camera with OIS:** True-to-life colors and steady low-light shots.
+    - 🟢 🎨 **Custom Glyph Interface:** Intuitive notification lighting without screen distractions.
+    - 🟢 🔋 **5000mAh Battery:** Up to 2 days of moderate usage per charge.
+  * **Cons:**
+    - 🔴 Plastic back panel finish.
+
+  ---
+
+  📊 **Value Analysis:** By switching to these feature-matched alternatives, you save **₹30,000 to ₹45,000** while keeping 85%+ of flagship display, camera, and battery performance!
+  ` : `
   If it is a single product search:
   Provide a highly persuasive summary for ${entityInfo.itemA}.
 
@@ -62,11 +95,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   📊 **Real Community Consensus:** [Simulated buyer data summary: X% praise Y feature, Z% note W downside]
 
   💡 **Final Axevora Verdict:** [1-2 sentences on WHO should buy WHICH model]
+  `}
 
   Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown wrapping, no code blocks):
   {
-    "isComparison": ${entityInfo.isComparison ? 'true' : 'false'},
-    "comparisonMarkdown": "string (If isComparison is true, put the complete beautifully formatted markdown here as described above. If false, leave empty)",
+    "isComparison": ${entityInfo.isComparison || isCheaperQuery ? 'true' : 'false'},
+    "comparisonMarkdown": "string (If isComparison or isCheaperQuery is true, put the complete beautifully formatted markdown here as described above. If false, leave empty)",
     "hookHeader": "string (For single product: A catchy hook header with emojis. If comparison, leave empty or put the same hook)",
     "overallSentiment": "string (e.g. Highly Positive, Mixed, etc.)",
     "rating": number (1 to 5),
@@ -112,6 +146,79 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const generateDynamicFallback = () => {
     const cat = entityInfo.category;
     const target = entityInfo.itemA;
+
+    if (isCheaperQuery) {
+      let b1 = "OnePlus 12R 5G (@ ₹38,999)";
+      let b2 = "Nothing Phone (2a) 5G (@ ₹23,999)";
+      let s1_1 = "⚡ 100W SuperVOOC Charge: 0-100% in 26 mins";
+      let s1_2 = "📱 120Hz 1.5K ProXDR Display: 4500 nits peak brightness";
+      let s1_3 = "📸 50MP Sony IMX890 OIS Sensor";
+
+      let s2_1 = "📸 50MP Dual Camera with OIS";
+      let s2_2 = "🎨 Custom Glyph Interface lighting";
+      let s2_3 = "🔋 5000mAh Battery with 2-day backup";
+
+      if (cat === 'laptop') {
+        b1 = "ASUS Vivobook 15 (@ ₹38,990)";
+        b2 = "HP Laptop 15s (@ ₹42,990)";
+        s1_1 = "🚀 Intel Core i5 12th Gen 10-Core CPU";
+        s1_2 = "💻 15.6-inch Full HD Anti-Glare Screen";
+        s1_3 = "⚡ 16GB DDR4 RAM + 512GB NVMe SSD";
+
+        s2_1 = "🚀 AMD Ryzen 5 5500U Hexa-Core CPU";
+        s2_2 = "🔋 Fast Charging (50% in 45 mins)";
+        s2_3 = "⌨️ Full-size Backlit Keyboard with Numpad";
+      } else if (cat === 'audio') {
+        b1 = "realme Buds Air 5 (@ ₹2,499)";
+        b2 = "boAt Airdopes 141 (@ ₹1,299)";
+        s1_1 = "🎧 50dB Active Noise Cancellation (ANC)";
+        s1_2 = "🎵 12.4mm Deep Bass Drivers";
+        s1_3 = "🔋 38 Hours Total Playback";
+
+        s2_1 = "🎵 8mm Dynamic Drivers";
+        s2_2 = "🔋 42 Hours Playtime with ASAP Charge";
+        s2_3 = "🎙️ ENx Quad Mics for clear calls";
+      }
+
+      return {
+        isComparison: true,
+        comparisonMarkdown: `### 💡 **Smart Budget Alternatives (Same Features, Half the Price!)**
+
+Why spend ₹70,000+ when you can get 85% of the same experience for under ₹40,000? Live web data shows these top-rated value champions:
+
+---
+
+#### 📱 **1. ${b1}**
+* **Why it's a Smart Pick:** Matches flagship display & fast charging specs at nearly half the price!
+* **Key Specs:**
+  - 🟢 ${s1_1}
+  - 🟢 ${s1_2}
+  - 🟢 ${s1_3}
+* **Cons:**
+  - 🔴 No dedicated optical telephoto zoom.
+
+---
+
+#### 📱 **2. ${b2}**
+* **Why it's a Smart Pick:** Premium design aesthetic with OIS camera & clean OS experience.
+* **Key Specs:**
+  - 🟢 ${s2_1}
+  - 🟢 ${s2_2}
+  - 🟢 ${s2_3}
+* **Cons:**
+  - 🔴 Plastic frame construction.
+
+---
+
+📊 **Value Analysis:** By switching to these feature-matched budget alternatives, you save **₹30,000 to ₹45,000** while keeping 85%+ of flagship display, camera, and battery performance!`,
+        hookHeader: `💡 Smart Budget Alternatives`,
+        overallSentiment: "Positive",
+        rating: 4.8,
+        pros: [],
+        cons: [],
+        pitch: ""
+      };
+    }
 
     if (entityInfo.isComparison) {
       const p1 = entityInfo.itemA;

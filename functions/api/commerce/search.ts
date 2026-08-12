@@ -112,50 +112,104 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   }
 
   // Final static fallback if Gemini fails
+  const qLower = query.toLowerCase();
+  const isCheaper = qLower.includes('cheaper') || qLower.includes('budget') || qLower.includes('lower price');
+  const isTopRated = qLower.includes('top rated') || qLower.includes('best rated') || qLower.includes('premium');
+
   if (fallbackItems.length === 0) {
+    let title1 = entityInfo.itemA;
+    let title2 = entityInfo.itemB;
     let price1 = 2999;
     let price2 = 3499;
     let img1 = 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&q=80&w=400';
     let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400';
 
-    if (entityInfo.category === 'audio') {
-      price1 = 1499;
-      price2 = 1999;
-      img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
-      img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
-    } else if (entityInfo.category === 'laptop') {
-      price1 = 89999;
-      price2 = 114999;
-      img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400';
-      img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400';
-    } else if (entityInfo.category === 'phone') {
-      price1 = 65999;
-      price2 = 74999;
-      img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
-      img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400';
+    if (isCheaper) {
+      if (entityInfo.category === 'phone') {
+        title1 = "OnePlus 12R 5G (16GB RAM / 256GB)";
+        title2 = "Nothing Phone (2a) 5G (12GB/256GB)";
+        price1 = 38999;
+        price2 = 23999;
+        img1 = 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'laptop') {
+        title1 = "ASUS Vivobook 15 Intel i5 12th Gen";
+        title2 = "HP Laptop 15s Ryzen 5";
+        price1 = 38990;
+        price2 = 42990;
+        img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'audio') {
+        title1 = "realme Buds Air 5 Active Noise Cancellation";
+        title2 = "boAt Airdopes 141 TWS Earbuds";
+        price1 = 2499;
+        price2 = 1299;
+        img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
+      }
+    } else if (isTopRated) {
+      if (entityInfo.category === 'phone') {
+        title1 = "Google Pixel 8 Pro 5G (12GB/128GB)";
+        title2 = "Apple iPhone 15 Pro Max 256GB";
+        price1 = 79999;
+        price2 = 134900;
+        img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'laptop') {
+        title1 = "Apple MacBook Pro M3 Max 16-inch";
+        title2 = "Dell XPS 15 Intel i9 Touch";
+        price1 = 199900;
+        price2 = 165000;
+        img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'audio') {
+        title1 = "Sony WF-1000XM5 Truly Wireless Earbuds";
+        title2 = "Apple AirPods Pro (2nd Gen) USB-C";
+        price1 = 24990;
+        price2 = 22900;
+        img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
+      }
+    } else {
+      if (entityInfo.category === 'audio') {
+        price1 = 1499;
+        price2 = 1999;
+        img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'laptop') {
+        price1 = 89999;
+        price2 = 114999;
+        img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'phone') {
+        price1 = 65999;
+        price2 = 74999;
+        img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400';
+      }
     }
 
     fallbackItems = [
       {
         id: `amz-${Date.now()}`,
-        title: entityInfo.itemA,
+        title: title1,
         price: price1,
         merchantName: 'Amazon',
         merchantLogo: getMerchantLogo('amazon.in'),
-        url: createSearchUrl('amazon', entityInfo.itemA),
+        url: createSearchUrl('amazon', title1),
         image: img1,
         type: 'search_result',
       }
     ];
 
-    if (entityInfo.isComparison) {
+    if (entityInfo.isComparison || isCheaper || isTopRated) {
       fallbackItems.push({
         id: `croma-${Date.now()}`,
-        title: entityInfo.itemB,
+        title: title2 || `${title1} Variant`,
         price: price2,
         merchantName: 'Croma',
         merchantLogo: getMerchantLogo('croma.com'),
-        url: createSearchUrl('croma', entityInfo.itemB),
+        url: createSearchUrl('croma', title2 || title1),
         image: img2,
         type: 'search_result',
       });
