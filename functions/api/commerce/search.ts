@@ -111,30 +111,51 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   // Final static fallback if Gemini fails
   if (fallbackItems.length === 0) {
-    const isMobile = query.toLowerCase().includes('iphone') || query.toLowerCase().includes('samsung') || query.toLowerCase().includes('phone') || query.toLowerCase().includes('pixel');
-    
+    const qLower = query.toLowerCase();
+    let price1 = 2999;
+    let price2 = 3499;
+    let img1 = 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&q=80&w=400'; // Generic tech gear
+    let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400'; // Generic gadget
+
+    if (qLower.includes('earbuds') || qLower.includes('tws') || qLower.includes('headphone') || qLower.includes('buds') || qLower.includes('audio')) {
+      price1 = 1499;
+      price2 = 1999;
+      img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400'; // Earbuds
+      img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400'; // Earbuds 2
+    } else if (qLower.includes('macbook') || qLower.includes('laptop') || qLower.includes('computer') || qLower.includes('pc') || qLower.includes('notebook')) {
+      price1 = 89999;
+      price2 = 114999;
+      img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400'; // Laptop
+      img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400'; // Laptop 2
+    } else if (qLower.includes('iphone') || qLower.includes('samsung') || qLower.includes('phone') || qLower.includes('pixel') || qLower.includes('mobile')) {
+      price1 = 65999;
+      price2 = 74999;
+      img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400'; // Phone
+      img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400'; // Phone 2
+    }
+
     fallbackItems = [
       {
         id: `amz-${Date.now()}`,
-        title: `${query.substring(0, 30)} - Latest Model`,
-        price: isMobile ? 65999 : 2999,
+        title: `${query.substring(0, 35)} - Latest Model`,
+        price: price1,
         merchantName: 'Amazon',
         merchantLogo: getMerchantLogo('amazon.in'),
         url: createSearchUrl('amazon', query),
-        image: isMobile ? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400' : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+        image: img1,
         type: 'search_result',
       }
     ];
 
-    if (query.toLowerCase().includes('vs') || query.toLowerCase().includes('compare')) {
+    if (query.toLowerCase().includes('vs') || query.toLowerCase().includes('compare') || query.toLowerCase().includes(' or ')) {
       fallbackItems.push({
         id: `croma-${Date.now()}`,
-        title: `${query.substring(0, 30)} - Alternative Option`,
-        price: isMobile ? 74999 : 3499,
+        title: `${query.substring(0, 35)} - Alternative Option`,
+        price: price2,
         merchantName: 'Croma',
         merchantLogo: getMerchantLogo('croma.com'),
         url: createSearchUrl('croma', query),
-        image: isMobile ? 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400' : 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400',
+        image: img2,
         type: 'search_result',
       });
     }
@@ -144,10 +165,8 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   fallbackItems = fallbackItems.map(item => {
     const isMobileQuery = query.toLowerCase().includes('iphone') || query.toLowerCase().includes('samsung');
     if (isMobileQuery && item.price < 10000) {
-      item.price = item.price + 60000; // Bump price to realistic mobile range
-      if (item.image.includes('1505740420928') || item.image.includes('1523275335684')) {
-        item.image = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400'; // Force smartphone image
-      }
+      item.price = item.price + 60000;
+      item.image = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
     }
     return item;
   });
