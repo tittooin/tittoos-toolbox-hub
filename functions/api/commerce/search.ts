@@ -172,10 +172,20 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       }
     } else {
       if (entityInfo.category === 'audio') {
-        price1 = 1499;
-        price2 = 1999;
-        img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
-        img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
+        const isHeadphone = qLower.includes('headphone') || qLower.includes('headphones') || qLower.includes('headset');
+        if (isHeadphone) {
+          title1 = "Sony WH-CH520 Wireless Over-Ear Headphones";
+          title2 = "boAt Rockerz 550 Bluetooth Headphones";
+          price1 = 3990;
+          price2 = 1999;
+          img1 = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400';
+          img2 = 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&q=80&w=400';
+        } else {
+          price1 = 1499;
+          price2 = 1999;
+          img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
+          img2 = 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&q=80&w=400';
+        }
       } else if (entityInfo.category === 'laptop') {
         price1 = 89999;
         price2 = 114999;

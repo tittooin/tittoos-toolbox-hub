@@ -1,21 +1,24 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **Brand-Agnostic Feature-Matched Cheaper Alternatives Engine (`review-summary.ts` & `search.ts`):**
-   - "Show me cheaper alternatives" click hone par AI ab feature profile match karta hai across all brands (e.g. 120Hz display, OIS camera, fast charge).
-   - Flagship smartphones (e.g. iPhone 15 / S24 @ ₹70,000+) ke liye ab brand-agnostic value champions return hote hain:
-     - **Card 1:** `OnePlus 12R 5G (16GB RAM / 256GB)` @ ₹38,999 (100W SuperVOOC, 1.5K 120Hz display).
-     - **Card 2:** `Nothing Phone (2a) 5G (12GB/256GB)` @ ₹23,999 (50MP OIS Dual Camera, Glyph OS).
-2. **High-Converting Value Analysis Copywriting (`review-summary.ts`):**
-   - Markdown summary layout updated with:
-     ```markdown
-     ### 💡 **Smart Budget Alternatives (Same Features, Half the Price!)**
-     Why spend ₹70,000+ when you can get 85% of the same experience for under ₹40,000?
-     📊 **Value Analysis:** You save ₹30,000 to ₹45,000 while keeping flagship display, camera, and battery performance!
-     ```
-3. **Monetization & Conversion Lock (LOCKED & VERIFIED):**
-   - **Amazon Affiliate Tag:** `axevora06-21` strictly attached to all Amazon Buy links.
-   - **Cuelinks Wrapper:** Active for Flipkart, Croma, Myntra, and other merchant links.
+1. **Category Collision & Word Boundary Fix (`entityExtractor.ts`):**
+   - Fixed bug where `lower.includes('phone')` matched `computer headphones` (due to `'phone'` inside `'headphone'`).
+   - Reordered category detection so `audio` (`headphone`, `headphones`, `earbuds`, `tws`, `earphone`, `buds`, `headset`) is evaluated **FIRST** before `laptop` or `phone`.
+   - Generic query `"show me best computer headphones"` now cleanly resolves to `category = 'audio'` and maps to `Sony WH-CH520 Wireless Over-Ear Headphones`.
+
+2. **Category Guardrails Engine (`review-summary.ts`):**
+   - Injected strict System Prompt Guardrails before sending queries to Gemini / AI model:
+     - **AUDIO:** Strictly prohibits Camera, Megapixels, OIS, Telephoto Zoom, AMOLED Display, Screen, OS, or Phone savings. Forces focus ONLY on Sound Quality, Bass Drivers, ANC, Battery Playtime, and Mic Quality.
+     - **LAPTOP:** Strictly focuses on CPU, RAM, SSD, Display, and Battery.
+   - Updated `generateDynamicFallback` so `isCheaperQuery` generates category-specific headlines, key specs, and realistic savings (e.g., `Save ₹1,500 to ₹3,500` for Audio vs `Save ₹30,000 to ₹45,000` for Smartphones).
+
+3. **Over-Ear Headphone Imagery & Pricing (`search.ts`):**
+   - Replaced 3.5mm wired/earphone photos with high-resolution Over-Ear Headphone Unsplash photography (`photo-1505740420928` & `photo-1546435770`).
+   - Mapped realistic headphone prices (₹1,999 - ₹3,990).
+
+4. **Monetization & Conversion Lock (LOCKED & VERIFIED):**
+   - **Amazon Tag:** `axevora06-21` strictly attached across all Amazon Buy links.
+   - **Cuelinks Wrapper:** 100% active and untouched.
 
 5. **Dynamic Image & Price Context Match:**
    - Prompt ko refine kiya gaya hai taaki Gemini smartphones ke liye smartphone ki image, headphones ke liye headphone ki image, aur real market prices inject kare.

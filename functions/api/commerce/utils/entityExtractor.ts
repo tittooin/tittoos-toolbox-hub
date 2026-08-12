@@ -33,22 +33,27 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
     itemA = sanitizeItemName(cleanQuery);
   }
 
-  // Category detection
+  // Category detection (Audio MUST be checked first to avoid 'phone' matching 'headphone' or 'computer' matching 'computer headphones')
   const lower = rawQuery.toLowerCase();
   let category: 'phone' | 'audio' | 'laptop' | 'tech' = 'tech';
-  if (lower.includes('iphone') || lower.includes('samsung') || lower.includes('phone') || lower.includes('mobile') || lower.includes('pixel') || lower.includes('s24') || lower.includes('s23')) {
-    category = 'phone';
-  } else if (lower.includes('earbuds') || lower.includes('tws') || lower.includes('headphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('boat') || lower.includes('realme')) {
+  
+  if (lower.includes('headphone') || lower.includes('headphones') || lower.includes('earbuds') || lower.includes('tws') || lower.includes('earphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('headset') || lower.includes('speaker')) {
     category = 'audio';
-  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('computer') || lower.includes('pc') || lower.includes('notebook')) {
+  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('notebook') || (lower.includes('computer') && !lower.includes('headphone')) || (lower.includes('pc') && !lower.includes('headphone'))) {
     category = 'laptop';
+  } else if (lower.includes('iphone') || lower.includes('samsung') || lower.includes('mobile') || lower.includes('pixel') || lower.includes('s24') || lower.includes('s23') || lower.includes('smartphone') || lower.includes('phone')) {
+    category = 'phone';
   }
 
   // Final fallback polish for generic titles
-  if (itemA.toLowerCase().includes('best tws earbuds') || itemA.toLowerCase().includes('earbuds under')) {
+  const itemALower = itemA.toLowerCase();
+  if (itemALower.includes('best tws earbuds') || itemALower.includes('earbuds under') || itemALower.includes('earbuds')) {
     itemA = 'boAt Airdopes 141 ANC TWS';
     if (!itemB) itemB = 'realme Buds Air 5 Pro TWS';
-  } else if (itemA.toLowerCase().includes('macbook air') || itemA.toLowerCase().includes('macbook deals')) {
+  } else if (itemALower.includes('computer headphones') || itemALower.includes('headphones') || itemALower.includes('headphone')) {
+    itemA = 'Sony WH-CH520 Wireless Over-Ear Headphones';
+    if (!itemB) itemB = 'boAt Rockerz 550 Bluetooth Headphones';
+  } else if (itemALower.includes('macbook air') || itemALower.includes('macbook deals') || itemALower.includes('macbook')) {
     itemA = 'Apple MacBook Air M3 (8GB/256GB)';
     if (!itemB && isComparison) itemB = 'Apple MacBook Air M2 (8GB/256GB)';
   }
