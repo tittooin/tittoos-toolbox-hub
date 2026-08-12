@@ -14,17 +14,8 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const apiKey = (env?.GEMINI_API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
 
-  const fallbackResponse = {
-    hookHeader: `🔥 Here is what we found!`,
-    overallSentiment: "Positive",
-    rating: 4.5,
-    pros: ["✅ Great value for money and solid build", "⚡ Premium features at an affordable price", "🔋 Reliable performance for everyday use"],
-    cons: ["⚠️ Slightly expensive compared to budget options", "⚠️ Average battery life under heavy use"],
-    pitch: `Most users agree that this is a fantastic choice in its category. With its exceptional feature set and trusted brand reliability, it's definitely worth checking out today!`,
-  };
-
   if (!apiKey) {
-    return new Response(JSON.stringify({ ok: true, source: 'fallback', data: fallbackResponse }), {
+    return new Response(JSON.stringify({ ok: false, error: 'AI Summary is currently unavailable (Missing API Key). Please check product cards below.' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -89,7 +80,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   } catch (err) {
     console.error('Review summary generation failed:', err);
-    return new Response(JSON.stringify({ ok: true, source: 'error_fallback', data: fallbackResponse }), {
+    return new Response(JSON.stringify({ ok: false, error: 'Failed to generate summary' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -114,6 +114,8 @@ export default function ShoppingAssistant() {
           decision: reviewData.data.overallSentiment === "Positive" || reviewData.data.rating >= 4 ? "Yes" : "Consider Alternatives",
           reason: `Based on a rating of ${reviewData.data.rating || 4}/5 and user consensus.`
         };
+      } else if (reviewData.error) {
+        assistantMessage.content = `⚠️ **${reviewData.error}**`;
       } else {
         assistantMessage.content = `I found some options for you.`;
       }
