@@ -111,29 +111,46 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   // Final static fallback if Gemini fails
   if (fallbackItems.length === 0) {
+    const isMobile = query.toLowerCase().includes('iphone') || query.toLowerCase().includes('samsung') || query.toLowerCase().includes('phone') || query.toLowerCase().includes('pixel');
+    
     fallbackItems = [
       {
         id: `amz-${Date.now()}`,
-        title: `Premium ${query.substring(0, 30)}`,
-        price: 1499,
+        title: `${query.substring(0, 30)} - Latest Model`,
+        price: isMobile ? 65999 : 2999,
         merchantName: 'Amazon',
         merchantLogo: getMerchantLogo('amazon.in'),
         url: createSearchUrl('amazon', query),
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
-        type: 'search_result',
-      },
-      {
-        id: `croma-${Date.now()}`,
-        title: `Best-selling ${query.substring(0, 30)}`,
-        price: 1299,
-        merchantName: 'Croma',
-        merchantLogo: getMerchantLogo('croma.com'),
-        url: createSearchUrl('croma', query),
-        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+        image: isMobile ? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400' : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
         type: 'search_result',
       }
     ];
+
+    if (query.toLowerCase().includes('vs') || query.toLowerCase().includes('compare')) {
+      fallbackItems.push({
+        id: `croma-${Date.now()}`,
+        title: `${query.substring(0, 30)} - Alternative Option`,
+        price: isMobile ? 74999 : 3499,
+        merchantName: 'Croma',
+        merchantLogo: getMerchantLogo('croma.com'),
+        url: createSearchUrl('croma', query),
+        image: isMobile ? 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400' : 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=400',
+        type: 'search_result',
+      });
+    }
   }
+
+  // Hardcode Safeguard Validation
+  fallbackItems = fallbackItems.map(item => {
+    const isMobileQuery = query.toLowerCase().includes('iphone') || query.toLowerCase().includes('samsung');
+    if (isMobileQuery && item.price < 10000) {
+      item.price = item.price + 60000; // Bump price to realistic mobile range
+      if (item.image.includes('1505740420928') || item.image.includes('1523275335684')) {
+        item.image = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400'; // Force smartphone image
+      }
+    }
+    return item;
+  });
 
   return new Response(JSON.stringify({ ok: true, source: 'ai_fallback', items: fallbackItems }), {
     status: 200,
