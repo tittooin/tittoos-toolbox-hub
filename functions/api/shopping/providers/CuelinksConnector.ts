@@ -45,11 +45,25 @@ export class CuelinksConnector implements IMerchantConnector {
     const requestId = crypto.randomUUID();
 
     try {
-      const response = await fetch('https://api.cuelinks.com/v1/deeplink', {
+      // 1. Amazon Bypass
+      if (merchantUrl.toLowerCase().includes('amazon.in') || merchantUrl.toLowerCase().includes('amazon.com')) {
+        try {
+          const urlObj = new URL(merchantUrl);
+          urlObj.searchParams.set('tag', 'axevora06-21');
+          return urlObj.toString();
+        } catch {
+          return merchantUrl;
+        }
+      }
+
+      // 2. Cuelinks API v3 call
+      const authHeader = env.CUELINKS_TOKEN.startsWith('Token ') ? env.CUELINKS_TOKEN : `Token ${env.CUELINKS_TOKEN}`;
+      const response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${env.CUELINKS_TOKEN}`,
-          'Content-Type': 'application/json'
+          'Authorization': authHeader,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({ url: merchantUrl })
       });
@@ -58,8 +72,8 @@ export class CuelinksConnector implements IMerchantConnector {
         throw new Error(`Cuelinks HTTP ${response.status}`);
       }
 
-      const data = await response.json() as { deeplink?: string };
-      return data.deeplink ?? merchantUrl;
+      const data = await response.json() as { tracking_url?: string; affiliate_url?: string };
+      return data.tracking_url ?? data.affiliate_url ?? merchantUrl;
     } catch (error) {
       Logger.error({
         requestId,
