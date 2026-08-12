@@ -42,7 +42,7 @@ export interface Message {
   products?: Product[];
   merchants?: Merchant[];
   shouldYouBuy?: ShouldYouBuy;
-  sources?: string[];
+  sources?: (string | { id?: string; name?: string; url?: string; snippet?: string })[];
   followUps?: string[];
   isLoading?: boolean;
 }

@@ -1,22 +1,15 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **Live Web Search Grounding Engine (`review-summary.ts`):**
-   - Gemini 1.5 Flash ko Google Search Grounding tool (`tools: [{ googleSearch: {} }]`) ke sath wire kar diya gaya hai.
-   - AI model ab static memory par depend rehne ke bajaye **live internet, Google Shopping, Amazon India, aur Reddit (r/IndiaTech)** ko real-time browse karta hai.
-   - Grounded prompt search engine parameters ke sath current market prices, active deals, aur real buyer feedback scrape karta hai.
-2. **Grounding Metadata & Source Citations (`review-summary.ts` & `ShoppingAssistant.tsx`):**
-   - Backend Response mein `metadata` object inject kiya gaya hai:
-     ```json
-     "metadata": {
-       "is_live_web_browsed": true,
-       "search_sources_used": ["Google Live Shopping", "Amazon India", "Flipkart", "Reddit R/IndiaTech"],
-       "model_used": "gemini-1.5-flash-grounded"
-     }
-     ```
-   - UI (`ShoppingAssistant.tsx` & `RecommendationSources.tsx`) ab is metadata ko live sources chip list ke roop me message bubble ke niche automatically render karta hai!
-3. **Category-Specific Fallback & Entity Extraction:**
-   - Pre-existing entity extraction (`entityExtractor.ts`) maintain rakhi gayi hai taaki product titles, specs, aur audio/laptop/phone categories 100% accurate rahein.
+1. **React Crash Error #31 Emergency Fix (`RecommendationSources.tsx` & `types/shopping.ts`):**
+   - Fixed `RecommendationSources.tsx` JSX renderer to safely render both `string` items and `{ id, name, url, snippet }` source objects.
+   - Replaced direct `{source}` object interpolation in JSX with safe property access `{source.name}` and `String(source)`.
+   - Updated `Message` interface in `types/shopping.ts` to support both string array and source object arrays.
+2. **Monetization & Affiliate Pipeline (LOCKED & VERIFIED):**
+   - **Amazon Tag:** Strictly `axevora06-21` maintained across all Buy buttons.
+   - **Cuelinks / Merchant Redirects:** 100% active and untouched.
+3. **Live Web Search Grounding Engine (`review-summary.ts`):**
+   - Gemini 1.5 Flash Google Search Grounding (`tools: [{ googleSearch: {} }]`) live browsing & metadata citations attached.
 
 5. **Dynamic Image & Price Context Match:**
    - Prompt ko refine kiya gaya hai taaki Gemini smartphones ke liye smartphone ki image, headphones ke liye headphone ki image, aur real market prices inject kare.
