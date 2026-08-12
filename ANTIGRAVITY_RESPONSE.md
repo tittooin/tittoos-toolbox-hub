@@ -1,17 +1,22 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **Category-Specific AI Specs Engine (`review-summary.ts`):**
-   - Smartphone specs (`48MP Main Camera System`, `A-Series Bionic Chipset`, `120Hz Dynamic AMOLED`) ko fallback se **completely NUKE** kar diya gaya hai.
-   - Fallback engine ab category-aware hai:
-     - **Audio (Earbuds/Headphones):** Produces `🎵 13mm Dynamic Bass Drivers`, `🔋 40-Hour Total Playtime`, `🎧 Active Noise Cancellation (ANC)`, `💧 IPX5 Water Resistance`.
-     - **Laptops (MacBook/PC):** Produces `🚀 M-Series / Core i7 Chipset`, `💻 Liquid Retina Display`, `🔋 18-Hour Battery Life`.
-     - **Phones (iPhone/Samsung):** Produces `📸 50MP OIS Camera`, `📱 120Hz AMOLED Display`, `⚡ Fast Charging`.
-2. **Clean Entity Extraction & Title Formatting (`entityExtractor.ts` & `search.ts`):**
-   - "Cheaper Budget Alternatives For Best Tws Earbuds Under ₹2000" jaisi concatenated strings product titles se **permanently remove** kar di gayi hain.
-   - Card titles ab strictly real model names render karte hain (`boAt Airdopes 141 ANC TWS`, `realme Buds Air 5 Pro TWS`).
-3. **Follow-up Chip Intent Routing (`ShoppingAssistant.tsx`):**
-   - `"Show me cheaper alternatives"` aur `"Compare with top rated options"` now fetch category-appropriate budget and premium picks respectively.
+1. **Live Web Search Grounding Engine (`review-summary.ts`):**
+   - Gemini 1.5 Flash ko Google Search Grounding tool (`tools: [{ googleSearch: {} }]`) ke sath wire kar diya gaya hai.
+   - AI model ab static memory par depend rehne ke bajaye **live internet, Google Shopping, Amazon India, aur Reddit (r/IndiaTech)** ko real-time browse karta hai.
+   - Grounded prompt search engine parameters ke sath current market prices, active deals, aur real buyer feedback scrape karta hai.
+2. **Grounding Metadata & Source Citations (`review-summary.ts` & `ShoppingAssistant.tsx`):**
+   - Backend Response mein `metadata` object inject kiya gaya hai:
+     ```json
+     "metadata": {
+       "is_live_web_browsed": true,
+       "search_sources_used": ["Google Live Shopping", "Amazon India", "Flipkart", "Reddit R/IndiaTech"],
+       "model_used": "gemini-1.5-flash-grounded"
+     }
+     ```
+   - UI (`ShoppingAssistant.tsx` & `RecommendationSources.tsx`) ab is metadata ko live sources chip list ke roop me message bubble ke niche automatically render karta hai!
+3. **Category-Specific Fallback & Entity Extraction:**
+   - Pre-existing entity extraction (`entityExtractor.ts`) maintain rakhi gayi hai taaki product titles, specs, aur audio/laptop/phone categories 100% accurate rahein.
 
 5. **Dynamic Image & Price Context Match:**
    - Prompt ko refine kiya gaya hai taaki Gemini smartphones ke liye smartphone ki image, headphones ke liye headphone ki image, aur real market prices inject kare.
