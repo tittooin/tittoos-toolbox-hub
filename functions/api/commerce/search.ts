@@ -28,13 +28,15 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   };
 
+  const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
   const results = [
     {
       id: `amz-${Date.now()}`,
       title: `${query} on Amazon (Best Deals)`,
       price: 'Check Latest Price',
       merchantName: 'Amazon',
-      merchantLogo: 'https://logo.clearbit.com/amazon.in',
+      merchantLogo: getMerchantLogo('amazon.in'),
       url: createSearchUrl('amazon', query),
       type: 'search_result',
     },
@@ -43,7 +45,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       title: `${query} at Croma`,
       price: 'Compare Price',
       merchantName: 'Croma',
-      merchantLogo: 'https://logo.clearbit.com/croma.com',
+      merchantLogo: getMerchantLogo('croma.com'),
       url: createSearchUrl('croma', query),
       type: 'search_result',
     },
@@ -52,7 +54,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       title: `${query} on Flipkart`,
       price: 'Compare Price',
       merchantName: 'Flipkart',
-      merchantLogo: 'https://logo.clearbit.com/flipkart.com',
+      merchantLogo: getMerchantLogo('flipkart.com'),
       url: createSearchUrl('flipkart', query),
       type: 'search_result',
     }
@@ -70,7 +72,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
             title: item.title,
             price: item.price,
             merchantName: item.source,
-            merchantLogo: `https://logo.clearbit.com/${item.source?.replace(/[^a-zA-Z0-9]/g, '')}.com`,
+            merchantLogo: getMerchantLogo(`${item.source?.replace(/[^a-zA-Z0-9]/g, '')}.com`),
             url: item.link,
             image: item.thumbnail,
             type: 'search_result',

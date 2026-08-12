@@ -15,11 +15,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const apiKey = (env?.GEMINI_API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
 
   const fallbackResponse = {
+    hookHeader: `🔥 Top Choice for ${query}!`,
     overallSentiment: "Positive",
     rating: 4.5,
-    pros: ["Great value for money", "Premium build quality", "Excellent performance"],
-    cons: ["Slightly expensive", "Average battery life"],
-    consensusSummary: `Most users agree that ${query} is a solid choice in its category, offering great features despite minor drawbacks.`,
+    pros: ["✅ Great value for money and solid build", "⚡ Premium features at an affordable price", "🔋 Reliable performance for everyday use"],
+    cons: ["⚠️ Slightly expensive compared to budget options", "⚠️ Average battery life under heavy use"],
+    pitch: `Most users agree that ${query} is a fantastic choice in its category. With its exceptional feature set and trusted brand reliability, it's definitely worth checking out today!`,
   };
 
   if (!apiKey) {
@@ -33,14 +34,15 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `You are a product reviewer. Provide a concise, objective summary for the product: "${query}".
-    Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown, no code blocks):
+    const prompt = `You are an expert Tech Shopping Advisor and a High-Converting Marketing Copywriter. Provide a highly persuasive, engaging, and attractive summary for the product: "${query}".
+    Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown wrapping, no code blocks):
     {
+      "hookHeader": "string (A catchy, energetic hook header with emojis, e.g., '🔥 Top Choice for Bass Lovers & Workouts under ₹2000!')",
       "overallSentiment": "string (e.g. Highly Positive, Mixed, etc.)",
       "rating": number (1 to 5),
-      "pros": ["string", "string"],
-      "cons": ["string", "string"],
-      "consensusSummary": "string (2-3 sentences max)"
+      "pros": ["string", "string"], (Write persuasive pros that highlight value, using emojis)
+      "cons": ["string", "string"], (Write honest but soft cons)
+      "pitch": "string (A smart pitch / key highlights paragraph explaining why it's worth buying TODAY, special features, or discount triggers. Make it persuasive and exciting. 3-4 sentences.)"
     }`;
 
     // Fast generation, no web scraping

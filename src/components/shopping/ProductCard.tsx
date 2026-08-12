@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Star, ShieldCheck, Box, RotateCcw, Zap, ExternalLink, ShoppingBag, Store } from 'lucide-react';
 import { Product } from '@/types/shopping';
 import { Button } from '@/components/ui/button';
@@ -8,13 +9,23 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const defaultFallback = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400';
+  const [imgSrc, setImgSrc] = useState(product.imageUrl || defaultFallback);
+
+  const handleImageError = () => {
+    if (imgSrc !== defaultFallback) {
+      setImgSrc(defaultFallback);
+    }
+  };
+
   return (
     <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative h-48 bg-muted w-full">
+      <div className="relative h-48 bg-muted w-full flex items-center justify-center overflow-hidden">
         <img 
-          src={product.imageUrl} 
+          src={imgSrc} 
           alt={product.name}
-          className="w-full h-full object-cover"
+          onError={handleImageError}
+          className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
         />
         <div className="absolute top-2 right-2 flex gap-1">
           <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold text-xs border-primary/20 text-primary flex items-center gap-1">

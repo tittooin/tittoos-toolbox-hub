@@ -12,7 +12,15 @@ export default function MerchantCard({ merchant }: MerchantCardProps) {
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 bg-white rounded-lg border border-border p-1 flex items-center justify-center flex-shrink-0">
           {merchant.logoUrl ? (
-            <img src={merchant.logoUrl} alt={merchant.name} className="w-full h-full object-contain" />
+            <img 
+              src={merchant.logoUrl} 
+              alt={merchant.name} 
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+              }}
+              className="w-full h-full object-contain" 
+            />
           ) : (
             <Store className="w-6 h-6 text-muted-foreground" />
           )}
