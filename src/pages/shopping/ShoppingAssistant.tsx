@@ -61,15 +61,28 @@ export default function ShoppingAssistant() {
     setIsLoading(true);
 
     try {
-      const isFollowUp = ["What are the pros and cons?", "Show me cheaper alternatives", "Compare with top rated options"].includes(content.trim());
-      let reviewContext = content.trim();
-      let shouldFetchNewProducts = !isFollowUp;
+      const trimmedContent = content.trim();
+      const isCheaperChip = trimmedContent === "Show me cheaper alternatives";
+      const isTopRatedChip = trimmedContent === "Compare with top rated options";
+      const isProsConsChip = trimmedContent === "What are the pros and cons?";
+      const isFollowUp = isCheaperChip || isTopRatedChip || isProsConsChip;
+
+      let reviewContext = trimmedContent;
+      let searchQuery = trimmedContent;
 
       if (isFollowUp && messages.length > 0) {
-        // Find the last user query that wasn't a follow up to maintain context
-        const lastRealQuery = [...messages].reverse().find(m => m.role === 'user' && !["What are the pros and cons?", "Show me cheaper alternatives", "Compare with top rated options"].includes(m.content));
-        if (lastRealQuery) {
-          reviewContext = `${content.trim()} regarding ${lastRealQuery.content}`;
+        const lastRealMsg = [...messages].reverse().find(m => m.role === 'user' && !["What are the pros and cons?", "Show me cheaper alternatives", "Compare with top rated options"].includes(m.content));
+        const baseContext = lastRealMsg ? lastRealMsg.content : "smartphones";
+
+        if (isCheaperChip) {
+          reviewContext = `Show me cheaper budget alternatives for ${baseContext}`;
+          searchQuery = `cheaper budget alternatives for ${baseContext}`;
+        } else if (isTopRatedChip) {
+          reviewContext = `Compare top rated premium options for ${baseContext}`;
+          searchQuery = `top rated premium alternatives for ${baseContext}`;
+        } else if (isProsConsChip) {
+          reviewContext = `Detailed pros and cons review for ${baseContext}`;
+          searchQuery = baseContext;
         }
       }
 
@@ -79,10 +92,10 @@ export default function ShoppingAssistant() {
       });
       const reviewData = await reviewRes.json();
       
-      // 2. Fetch Search Alternatives (only if it's not a generic follow-up)
+      // 2. Fetch Search Alternatives (only if not pros and cons chip)
       let searchData: any = { ok: false, items: [] };
-      if (shouldFetchNewProducts) {
-        const searchRes = await fetch(`/api/commerce/search?q=${encodeURIComponent(content.trim())}`, {
+      if (!isProsConsChip) {
+        const searchRes = await fetch(`/api/commerce/search?q=${encodeURIComponent(searchQuery)}`, {
           signal: abortControllerRef.current.signal
         });
         searchData = await searchRes.json();
@@ -120,8 +133,8 @@ export default function ShoppingAssistant() {
         assistantMessage.content = `I found some options for you.`;
       }
 
-      // If follow-up, copy products from last assistant message so we don't lose the UI cards
-      if (isFollowUp) {
+      if (isProsConsChip) {
+        // Keep previous products for pros and cons chip
         const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant' && m.products && m.products.length > 0);
         if (lastAssistantMsg) {
           assistantMessage.products = lastAssistantMsg.products;
