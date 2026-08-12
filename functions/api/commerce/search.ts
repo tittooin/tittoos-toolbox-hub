@@ -66,14 +66,22 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const prompt = `You are a shopping search engine. Given the query "${query}", generate exactly 3 specific, real, top-selling products that match the query. 
+      const isComparison = query?.toLowerCase().includes('vs') || query?.toLowerCase().includes('compare') || query?.toLowerCase().includes(' or ');
+      const prompt = `You are a shopping search engine. Given the user query "${query}":
+      Is this a comparison? ${isComparison ? 'Yes' : 'No'}.
+      
+      If it is a single product search, generate exactly 3 specific, real, top-selling products that match the query.
+      If it is a comparison between two products, generate exactly 2 specific products representing the items being compared (e.g. Card 1: iPhone 15, Card 2: Galaxy S24).
+      
+      Ensure you assign HIGHLY ACCURATE estimated market prices in INR (e.g., iPhone 15 ~ 65000, S24 ~ 75000) and contextually matched high-res tech product images.
+      
       Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
       [
         {
-          "title": "Specific Product Name (e.g. boAt Airdopes 141 Bluetooth TWS)",
-          "price": number (estimated market price in INR, just the number, no currency symbol),
+          "title": "Specific Product Name (e.g. Apple iPhone 15 128GB)",
+          "price": number (estimated market price in INR, just the number),
           "merchantName": "Amazon",
-          "image": "string (URL of a high-resolution realistic image of the product. Use reliable unsplash source like https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400 or specific tech product image CDN if possible)"
+          "image": "string (URL of a high-resolution realistic image of the product category. Use reliable unsplash source like https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400 for phones or specific tech image CDN)"
         }
       ]`;
       

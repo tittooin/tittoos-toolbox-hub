@@ -34,15 +34,25 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `You are an expert Tech Shopping Advisor and a High-Converting Marketing Copywriter. Provide a highly persuasive, engaging, and attractive summary for the product: "${query}".
+    const isComparison = query?.toLowerCase().includes('vs') || query?.toLowerCase().includes('compare') || query?.toLowerCase().includes(' or ');
+    
+    const prompt = `You are an expert Tech Shopping Advisor and a High-Converting Marketing Copywriter. Analyze the following user query: "${query}".
+    Is this a comparison query? ${isComparison ? 'Yes' : 'No'}.
+    
+    If it is a single product search:
+    Provide a highly persuasive summary for the product.
+    
+    If it is a comparison between two products (e.g. A vs B):
+    Provide a Side-by-Side Comparison highlighting Display, Camera, Battery, Performance, and Price Difference.
+    
     Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown wrapping, no code blocks):
     {
-      "hookHeader": "string (A catchy, energetic hook header with emojis, e.g., '🔥 Top Choice for Bass Lovers & Workouts under ₹2000!')",
+      "hookHeader": "string (A catchy, energetic hook header with emojis, e.g., '🔥 Top Choice for Bass Lovers!' or '🥊 Epic Showdown: iPhone 15 vs S24')",
       "overallSentiment": "string (e.g. Highly Positive, Mixed, etc.)",
       "rating": number (1 to 5),
-      "pros": ["string", "string"], (Write persuasive pros that highlight value, using emojis)
+      "pros": ["string", "string"], (Write persuasive pros, or winning points for both if comparison)
       "cons": ["string", "string"], (Write honest but soft cons)
-      "pitch": "string (A smart pitch / key highlights paragraph explaining why it's worth buying TODAY, special features, or discount triggers. Make it persuasive and exciting. 3-4 sentences.)"
+      "pitch": "string (For single product: A smart pitch explaining why it's worth buying TODAY. For comparison: A detailed markdown-formatted Side-by-Side Comparison of key specs and final verdict. Use markdown formatting like bolding and bullet points here.)"
     }`;
 
     // Fast generation, no web scraping
