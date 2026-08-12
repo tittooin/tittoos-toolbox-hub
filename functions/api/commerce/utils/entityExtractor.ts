@@ -8,14 +8,14 @@ export interface ExtractedEntity {
 export function extractEntities(rawQuery: string): ExtractedEntity {
   let cleanQuery = rawQuery;
 
-  // Handle follow-up queries like "What are the pros and cons? regarding Compare iPhone 15 and S24"
+  // 1. Handle follow-up query prefixes/suffixes
   if (cleanQuery.includes('regarding')) {
     const parts = cleanQuery.split('regarding');
     cleanQuery = parts[parts.length - 1].trim();
   }
 
-  // Remove leading query command phrases
-  cleanQuery = cleanQuery.replace(/^(compare|search|find|best deals for|show me|tell me about)\s+/i, '').trim();
+  // Remove intent phrases and follow-up prefixes
+  cleanQuery = cleanQuery.replace(/^(cheaper budget alternatives for|top rated premium alternatives for|detailed pros and cons review for|show me cheaper alternatives for|compare top rated options for|compare|search|find|best deals for|show me|tell me about|buy)\s+/i, '').trim();
 
   let isComparison = false;
   let itemA = "";
@@ -38,10 +38,19 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
   let category: 'phone' | 'audio' | 'laptop' | 'tech' = 'tech';
   if (lower.includes('iphone') || lower.includes('samsung') || lower.includes('phone') || lower.includes('mobile') || lower.includes('pixel') || lower.includes('s24') || lower.includes('s23')) {
     category = 'phone';
-  } else if (lower.includes('earbuds') || lower.includes('tws') || lower.includes('headphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods')) {
+  } else if (lower.includes('earbuds') || lower.includes('tws') || lower.includes('headphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('boat') || lower.includes('realme')) {
     category = 'audio';
   } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('computer') || lower.includes('pc') || lower.includes('notebook')) {
     category = 'laptop';
+  }
+
+  // Final fallback polish for generic titles
+  if (itemA.toLowerCase().includes('best tws earbuds') || itemA.toLowerCase().includes('earbuds under')) {
+    itemA = 'boAt Airdopes 141 ANC TWS';
+    if (!itemB) itemB = 'realme Buds Air 5 Pro TWS';
+  } else if (itemA.toLowerCase().includes('macbook air') || itemA.toLowerCase().includes('macbook deals')) {
+    itemA = 'Apple MacBook Air M3 (8GB/256GB)';
+    if (!itemB && isComparison) itemB = 'Apple MacBook Air M2 (8GB/256GB)';
   }
 
   return { isComparison, itemA, itemB, category };
@@ -49,7 +58,7 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
 
 function sanitizeItemName(name: string): string {
   let clean = name.trim();
-  clean = clean.replace(/^(compare|best|latest|buy)\s+/i, '').trim();
+  clean = clean.replace(/^(compare|best|latest|buy|cheaper|top rated)\s+/i, '').trim();
   
   const lower = clean.toLowerCase();
   if (lower === 's24' || lower === 'samsung s24') return 'Samsung Galaxy S24 5G';

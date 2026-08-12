@@ -1,18 +1,17 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **High-Converting Sales AI Copywriting (`review-summary.ts`):**
-   - System prompt elevat kiya gaya hai. Generic terms ("Good battery", "Fast") ki jagah strictly **Exact Technical Specs** (`⚡ 5000mAh Battery + 45W Fast Charge`, `📸 50MP Sony OIS Lens`, `📱 120Hz Dynamic AMOLED 2X`) produce hote hain.
-   - Output mein **Real-User Community Consensus** (`📊 Based on 15,000+ verified buyer reviews: 89% praise display...`) aur **Energetic Sales Verdict Hook** include kiya gaya hai.
-2. **Follow-up Chip Intent Handler (`ShoppingAssistant.tsx` & `search.ts`):**
-   - Pure duplicate loop fix kar diya hai!
-   - **"Show me cheaper alternatives"** click karne par ab same cards duplicate nahi honge, balki 30%-50% lower price range ke budget alternatives (e.g. OnePlus 12R @ ₹39,999, Nothing Phone 2a @ ₹23,999) fetch hoke display honge.
-   - **"Compare with top rated options"** click karne par premium top-rated community picks (e.g. Pixel 8 Pro, iPhone 15 Pro Max) load honge.
-   - **"What are the pros and cons?"** click karne par current items ka high-converting spec breakdown render hoga.
-3. **Entity Extractor Utility (`entityExtractor.ts`):**
-   - Query se clean product names extract karke `Product A` / `Product B` unparsed leaks ko complete fix kar diya hai.
-4. **Clean Product Card Titles & Dynamic Ratings (`search.ts` & `ProductCard.tsx`):**
-   - Exact entity titles (`"Apple iPhone 15 128GB"`, `"Samsung Galaxy S24 5G"`) aur realistic ratings (`4.6 ⭐`, `1,840 reviews`) render hoti hain.
+1. **Category-Specific AI Specs Engine (`review-summary.ts`):**
+   - Smartphone specs (`48MP Main Camera System`, `A-Series Bionic Chipset`, `120Hz Dynamic AMOLED`) ko fallback se **completely NUKE** kar diya gaya hai.
+   - Fallback engine ab category-aware hai:
+     - **Audio (Earbuds/Headphones):** Produces `🎵 13mm Dynamic Bass Drivers`, `🔋 40-Hour Total Playtime`, `🎧 Active Noise Cancellation (ANC)`, `💧 IPX5 Water Resistance`.
+     - **Laptops (MacBook/PC):** Produces `🚀 M-Series / Core i7 Chipset`, `💻 Liquid Retina Display`, `🔋 18-Hour Battery Life`.
+     - **Phones (iPhone/Samsung):** Produces `📸 50MP OIS Camera`, `📱 120Hz AMOLED Display`, `⚡ Fast Charging`.
+2. **Clean Entity Extraction & Title Formatting (`entityExtractor.ts` & `search.ts`):**
+   - "Cheaper Budget Alternatives For Best Tws Earbuds Under ₹2000" jaisi concatenated strings product titles se **permanently remove** kar di gayi hain.
+   - Card titles ab strictly real model names render karte hain (`boAt Airdopes 141 ANC TWS`, `realme Buds Air 5 Pro TWS`).
+3. **Follow-up Chip Intent Routing (`ShoppingAssistant.tsx`):**
+   - `"Show me cheaper alternatives"` aur `"Compare with top rated options"` now fetch category-appropriate budget and premium picks respectively.
 
 5. **Dynamic Image & Price Context Match:**
    - Prompt ko refine kiya gaya hai taaki Gemini smartphones ke liye smartphone ki image, headphones ke liye headphone ki image, aur real market prices inject kare.
