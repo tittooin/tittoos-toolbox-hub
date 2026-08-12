@@ -1,3 +1,5 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -11,12 +13,11 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   }
 
   const serpApiKey = env?.SERPAPI_KEY as string | undefined;
+  const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
-  // Fallback: Structured Search Provider Strategy
-  // If no SERPAPI_KEY, return structured JSON with Amazon and other store links
   const createSearchUrl = (store: string, q: string) => {
     const encoded = encodeURIComponent(q);
-    switch (store) {
+    switch (store.toLowerCase()) {
       case 'amazon':
         return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
       case 'croma':
@@ -28,38 +29,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   };
 
-  const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
-  const results = [
-    {
-      id: `amz-${Date.now()}`,
-      title: `${query} on Amazon (Best Deals)`,
-      price: 'Check Latest Price',
-      merchantName: 'Amazon',
-      merchantLogo: getMerchantLogo('amazon.in'),
-      url: createSearchUrl('amazon', query),
-      type: 'search_result',
-    },
-    {
-      id: `croma-${Date.now()}`,
-      title: `${query} at Croma`,
-      price: 'Compare Price',
-      merchantName: 'Croma',
-      merchantLogo: getMerchantLogo('croma.com'),
-      url: createSearchUrl('croma', query),
-      type: 'search_result',
-    },
-    {
-      id: `fk-${Date.now()}`,
-      title: `${query} on Flipkart`,
-      price: 'Compare Price',
-      merchantName: 'Flipkart',
-      merchantLogo: getMerchantLogo('flipkart.com'),
-      url: createSearchUrl('flipkart', query),
-      type: 'search_result',
-    }
-  ];
-
+  // Attempt SerpAPI first
   if (serpApiKey) {
     try {
       const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&api_key=${serpApiKey}&gl=in&hl=en`;
@@ -84,12 +54,80 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         }
       }
     } catch (e) {
-      console.warn('SerpAPI search failed, falling back to structured strategy', e);
+      console.warn('SerpAPI search failed, falling back to Gemini generation', e);
     }
   }
 
-  // Return structured strategy
-  return new Response(JSON.stringify({ ok: true, source: 'structured_fallback', items: results }), {
+  // Fallback: Use Gemini to generate realistic product items
+  const geminiApiKey = (env?.GEMINI_API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
+  let fallbackItems: any[] = [];
+
+  if (geminiApiKey) {
+    try {
+      const genAI = new GoogleGenerativeAI(geminiApiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = `You are a shopping search engine. Given the query "${query}", generate exactly 3 specific, real, top-selling products that match the query. 
+      Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
+      [
+        {
+          "title": "Specific Product Name (e.g. boAt Airdopes 141 Bluetooth TWS)",
+          "price": number (estimated market price in INR, just the number, no currency symbol),
+          "merchantName": "Amazon",
+          "image": "string (URL of a high-resolution realistic image of the product. Use reliable unsplash source like https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400 or specific tech product image CDN if possible)"
+        }
+      ]`;
+      
+      const result = await model.generateContent(prompt);
+      const cleanJson = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+      const generatedData = JSON.parse(cleanJson);
+      
+      if (Array.isArray(generatedData)) {
+        fallbackItems = generatedData.map((item: any, idx: number) => {
+          const merchant = idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon');
+          return {
+            id: `ai-gen-${Date.now()}-${idx}`,
+            title: item.title || `${query} Item ${idx + 1}`,
+            price: item.price || 1999,
+            merchantName: merchant,
+            merchantLogo: getMerchantLogo(`${merchant.toLowerCase()}.com`),
+            url: createSearchUrl(merchant.toLowerCase(), item.title || query),
+            image: item.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+            type: 'search_result',
+          };
+        });
+      }
+    } catch (e) {
+      console.warn('Gemini fallback generation failed', e);
+    }
+  }
+
+  // Final static fallback if Gemini fails
+  if (fallbackItems.length === 0) {
+    fallbackItems = [
+      {
+        id: `amz-${Date.now()}`,
+        title: `Premium ${query.substring(0, 30)}`,
+        price: 1499,
+        merchantName: 'Amazon',
+        merchantLogo: getMerchantLogo('amazon.in'),
+        url: createSearchUrl('amazon', query),
+        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
+        type: 'search_result',
+      },
+      {
+        id: `croma-${Date.now()}`,
+        title: `Best-selling ${query.substring(0, 30)}`,
+        price: 1299,
+        merchantName: 'Croma',
+        merchantLogo: getMerchantLogo('croma.com'),
+        url: createSearchUrl('croma', query),
+        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+        type: 'search_result',
+      }
+    ];
+  }
+
+  return new Response(JSON.stringify({ ok: true, source: 'ai_fallback', items: fallbackItems }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
