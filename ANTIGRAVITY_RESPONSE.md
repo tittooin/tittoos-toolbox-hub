@@ -4,10 +4,11 @@
 1. **Mock Data Removal (FINAL):**
    - Pehle jo hardcoded fallback data (headphones image, ₹1299/₹1499 price) `search.ts` ke extreme fallback me tha, usko **completely DELETE** kar diya gaya hai. Agar API fail bhi hoti hai, toh ab mock headphones image IPhone search par nahi ayegi.
    - **Safeguard Validation Add kar di gayi hai:** Agar query me "iPhone" ya "Samsung" hai aur price < ₹10000 detect hota hai, toh automatically price me +₹60000 bump ho jayega aur image force karke smartphone ki render ho jayegi.
-2. **Query Intent Detection (Comparison vs Search):**
+2. **Query Intent Detection & Side-by-Side UI Formatting (Comparison vs Search):**
    - `review-summary.ts` aur `search.ts` dono mein ab intent detection logic daal di gayi hai.
    - Jab query mein `"vs"`, `"compare"`, ya `"or"` detect hota hai, toh:
-     - `review-summary.ts` ek Side-by-Side Comparison format generate karta hai (Display, Camera, Battery, Performance, aur Price parameters ke sath).
+     - `review-summary.ts` ek proper **Side-by-Side Dual Product Markdown Structure** return karta hai (with emojis, Pros/Cons separate lists, and a Quick Verdict).
+     - UI (`ShoppingAssistant.tsx`) intelligently detect karta hai ki agar comparison mode on hai, toh raw unformatted pros/cons ki jagah us **beautiful formatted Markdown** ko hi render karta hai.
      - `search.ts` 3 ki jagah strictly **2 alag-alag product items** (Options) generate karta hai with accurate estimated market prices aur separate contexts.
 
 3. **Dynamic Image & Price Context Match:**

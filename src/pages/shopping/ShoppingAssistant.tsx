@@ -82,10 +82,14 @@ export default function ShoppingAssistant() {
 
       if (reviewData.ok && reviewData.data) {
         const d = reviewData.data;
-        assistantMessage.content = `### ${d.hookHeader || `🔥 Top Choice for **${content.trim()}**`}\n\n` + 
-          `${d.pitch || d.consensusSummary || ''}\n\n` +
-          `**Pros:**\n${d.pros?.map((p: string) => `- ${p}`).join('\n') || ''}\n\n` +
-          `**Cons:**\n${d.cons?.map((c: string) => `- ${c}`).join('\n') || ''}`;
+        if (d.isComparison === true && d.comparisonMarkdown) {
+          assistantMessage.content = d.comparisonMarkdown;
+        } else {
+          assistantMessage.content = `### ${d.hookHeader || `🔥 Top Choice for **${content.trim()}**`}\n\n` + 
+            `${d.pitch || d.consensusSummary || ''}\n\n` +
+            `**Pros:**\n${d.pros?.map((p: string) => `- ${p}`).join('\n') || ''}\n\n` +
+            `**Cons:**\n${d.cons?.map((c: string) => `- ${c}`).join('\n') || ''}`;
+        }
           
         assistantMessage.shouldYouBuy = {
           decision: reviewData.data.overallSentiment === "Positive" || reviewData.data.rating >= 4 ? "Yes" : "Consider Alternatives",

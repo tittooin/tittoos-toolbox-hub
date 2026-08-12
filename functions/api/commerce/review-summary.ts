@@ -43,16 +43,37 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     Provide a highly persuasive summary for the product.
     
     If it is a comparison between two products (e.g. A vs B):
-    Provide a Side-by-Side Comparison highlighting Display, Camera, Battery, Performance, and Price Difference.
+    Provide a Side-by-Side Comparison highlighting both products using a beautiful Markdown structure. 
+    Use this exact format for the comparisonMarkdown field:
+    ### ⚔️ **Product A vs Product B: Real User Consensus**
+    **Quick Verdict:** [1-2 sentences on who should buy what]
+    ---
+    #### 📱 **1. Product A**
+    * **Pros:**
+      - 🟢 [Pro 1]
+      - 🟢 [Pro 2]
+    * **Cons:**
+      - 🔴 [Con 1]
+    ---
+    #### 📱 **2. Product B**
+    * **Pros:**
+      - 🟢 [Pro 1]
+      - 🟢 [Pro 2]
+    * **Cons:**
+      - 🔴 [Con 1]
+    ---
+    💡 **Community Recommendation:** [Final one sentence recommendation]
     
     Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown wrapping, no code blocks):
     {
-      "hookHeader": "string (A catchy, energetic hook header with emojis, e.g., '🔥 Top Choice for Bass Lovers!' or '🥊 Epic Showdown: iPhone 15 vs S24')",
+      "isComparison": ${isComparison ? 'true' : 'false'},
+      "comparisonMarkdown": "string (If isComparison is true, put the complete beautifully formatted markdown here as described above. If false, leave empty)",
+      "hookHeader": "string (For single product: A catchy hook header with emojis. If comparison, you can leave empty or put the same hook)",
       "overallSentiment": "string (e.g. Highly Positive, Mixed, etc.)",
       "rating": number (1 to 5),
-      "pros": ["string", "string"], (Write persuasive pros, or winning points for both if comparison)
-      "cons": ["string", "string"], (Write honest but soft cons)
-      "pitch": "string (For single product: A smart pitch explaining why it's worth buying TODAY. For comparison: A detailed markdown-formatted Side-by-Side Comparison of key specs and final verdict. Use markdown formatting like bolding and bullet points here.)"
+      "pros": ["string", "string"], (For single product: Write persuasive pros. For comparison, leave empty array)
+      "cons": ["string", "string"], (For single product: Write honest but soft cons. For comparison, leave empty array)
+      "pitch": "string (For single product: A smart pitch explaining why it's worth buying TODAY.)"
     }`;
 
     // Fast generation, no web scraping
