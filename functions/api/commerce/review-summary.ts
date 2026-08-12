@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { extractEntities } from './utils/entityExtractor';
 
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
@@ -12,30 +13,30 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   }
 
+  const entityInfo = extractEntities(query);
   const apiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
 
-  const isComparison = query?.toLowerCase().includes('vs') || query?.toLowerCase().includes('compare') || query?.toLowerCase().includes(' or ');
-  
   const promptText = `You are an expert Tech Shopping Advisor and a High-Converting Marketing Copywriter. Analyze the following user query: "${query}".
-  Is this a comparison query? ${isComparison ? 'Yes' : 'No'}.
+  Is this a comparison query? ${entityInfo.isComparison ? 'Yes' : 'No'}.
+  ${entityInfo.isComparison ? `Products to compare: Product A = "${entityInfo.itemA}", Product B = "${entityInfo.itemB}".` : `Target Product = "${entityInfo.itemA}".`}
   
   If it is a single product search:
-  Provide a highly persuasive summary for the product.
+  Provide a highly persuasive summary for ${entityInfo.itemA}.
   
-  If it is a comparison between two products (e.g. A vs B):
-  Provide a Side-by-Side Comparison highlighting both products using a beautiful Markdown structure. 
+  If it is a comparison between two products:
+  Provide a Side-by-Side Comparison highlighting both ${entityInfo.itemA} and ${entityInfo.itemB} using a beautiful Markdown structure. 
   Use this exact format for the comparisonMarkdown field:
-  ### ⚔️ **Product A vs Product B: Real User Consensus**
+  ### ⚔️ **${entityInfo.itemA} vs ${entityInfo.itemB}: Real User Consensus**
   **Quick Verdict:** [1-2 sentences on who should buy what]
   ---
-  #### 📱 **1. Product A**
+  #### 📱 **1. ${entityInfo.itemA}**
   * **Pros:**
     - 🟢 [Pro 1]
     - 🟢 [Pro 2]
   * **Cons:**
     - 🔴 [Con 1]
   ---
-  #### 📱 **2. Product B**
+  #### 📱 **2. ${entityInfo.itemB}**
   * **Pros:**
     - 🟢 [Pro 1]
     - 🟢 [Pro 2]
@@ -46,7 +47,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   
   Return ONLY a raw valid JSON object with EXACTLY these fields (no markdown wrapping, no code blocks):
   {
-    "isComparison": ${isComparison ? 'true' : 'false'},
+    "isComparison": ${entityInfo.isComparison ? 'true' : 'false'},
     "comparisonMarkdown": "string (If isComparison is true, put the complete beautifully formatted markdown here as described above. If false, leave empty)",
     "hookHeader": "string (For single product: A catchy hook header with emojis. If comparison, you can leave empty or put the same hook)",
     "overallSentiment": "string (e.g. Highly Positive, Mixed, etc.)",
@@ -59,7 +60,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const parseAIResponse = (text: string) => {
     try {
       const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      // Handle edge cases where LLM might output text before/after JSON
       const jsonStart = cleanJson.indexOf('{');
       const jsonEnd = cleanJson.lastIndexOf('}');
       if (jsonStart >= 0 && jsonEnd > jsonStart) {
@@ -88,61 +88,51 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     return parseAIResponse(response.response);
   };
 
-  const generateDynamicFallback = (q: string) => {
-    const qLower = q.toLowerCase();
-    const isComp = qLower.includes('vs') || qLower.includes('compare') || qLower.includes(' or ');
-    
-    if (isComp) {
-      let p1 = "Product A";
-      let p2 = "Product B";
-      const parts = q.split(/vs|compare|or/i);
-      if (parts.length >= 2) {
-        p1 = parts[0].replace(/compare/i, '').trim() || "Product A";
-        p2 = parts[1].trim() || "Product B";
-      }
-      // Capitalize first letters
-      p1 = p1.charAt(0).toUpperCase() + p1.slice(1);
-      p2 = p2.charAt(0).toUpperCase() + p2.slice(1);
+  const generateDynamicFallback = () => {
+    if (entityInfo.isComparison) {
+      const p1 = entityInfo.itemA;
+      const p2 = entityInfo.itemB;
       
       return {
         isComparison: true,
         comparisonMarkdown: `### ⚔️ **${p1} vs ${p2}: Real User Consensus**
 
-**Quick Verdict:** Both are excellent products! Choose **${p1}** for its robust software ecosystem and reliability, or choose **${p2}** for superior raw performance and hardware specifications.
+**Quick Verdict:** Both are top-tier options! Choose **${p1}** for its software optimization and build quality, or choose **${p2}** for display capabilities, battery endurance, and value.
 
 ---
 
 #### 📱 **1. ${p1}**
 * **Pros:**
-  - 🟢 Premium build quality and sleek design aesthetics.
+  - 🟢 Premium build quality and refined design.
   - 🟢 Highly optimized performance and reliable daily usage.
 * **Cons:**
-  - 🔴 Premium pricing and accessories sold separately.
+  - 🔴 Premium price point and slower standard charging.
 
 ---
 
 #### 📱 **2. ${p2}**
 * **Pros:**
-  - 🟢 Cutting-edge features and versatile hardware config.
-  - 🟢 Outstanding value for money in this segment.
+  - 🟢 Feature-rich hardware with high refresh rate display.
+  - 🟢 Versatile camera setup and fast charging capabilities.
 * **Cons:**
-  - 🔴 Battery life could be slightly optimized under heavy loads.
+  - 🔴 Software support window may vary by region.
 
 ---
 
-💡 **Community Recommendation:** If you are invested in the brand ecosystem, **${p1}** is the safest bet. If you want maximum features for the price, **${p2}** is unbeatable!`,
-        hookHeader: `🥊 Showdown: ${p1} vs ${p2}`,
+💡 **Community Recommendation:** If ecosystem integration matters most to you, **${p1}** is the ideal pick. If hardware versatility is key, **${p2}** delivers unmatched value!`,
+        hookHeader: `🥊 Epic Showdown: ${p1} vs ${p2}`,
         overallSentiment: "Positive",
-        rating: 4.5,
+        rating: 4.6,
         pros: [],
         cons: [],
         pitch: ""
       };
     } else {
+      const target = entityInfo.itemA;
       return {
         isComparison: false,
         comparisonMarkdown: "",
-        hookHeader: `🔥 Top Choice: ${q.charAt(0).toUpperCase() + q.slice(1)}`,
+        hookHeader: `🔥 Top Choice: ${target}`,
         overallSentiment: "Positive",
         rating: 4.6,
         pros: [
@@ -153,7 +143,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         cons: [
           `Slightly higher price point compared to generic options.`
         ],
-        pitch: `The ${q} is an outstanding choice that offers exceptional reliability, sleek design, and top-tier features. Users highly recommend it for both casual and professional use.`
+        pitch: `The ${target} is an outstanding choice that offers exceptional reliability, sleek design, and top-tier features. Users highly recommend it for daily use.`
       };
     }
   };

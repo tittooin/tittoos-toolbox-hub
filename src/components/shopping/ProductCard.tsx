@@ -9,7 +9,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const defaultFallback = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400';
+  const defaultFallback = 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&q=80&w=400';
   const [imgSrc, setImgSrc] = useState(product.imageUrl || defaultFallback);
 
   const handleImageError = () => {

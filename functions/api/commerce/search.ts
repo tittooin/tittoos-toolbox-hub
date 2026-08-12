@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { extractEntities } from './utils/entityExtractor';
 
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
@@ -12,6 +13,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   }
 
+  const entityInfo = extractEntities(query);
   const serpApiKey = env?.SERPAPI_KEY as string | undefined;
   const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
@@ -66,14 +68,14 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const isComparison = query?.toLowerCase().includes('vs') || query?.toLowerCase().includes('compare') || query?.toLowerCase().includes(' or ');
       const prompt = `You are a shopping search engine. Given the user query "${query}":
-      Is this a comparison? ${isComparison ? 'Yes' : 'No'}.
+      Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
+      ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
       
-      If it is a single product search, generate exactly 3 specific, real, top-selling products that match the query.
-      If it is a comparison between two products, generate exactly 2 specific products representing the items being compared (e.g. Card 1: iPhone 15, Card 2: Galaxy S24).
+      If single product, generate exactly 3 specific, real, top-selling products matching the query.
+      If comparison, generate exactly 2 specific products representing "${entityInfo.itemA}" and "${entityInfo.itemB}".
       
-      Ensure you assign HIGHLY ACCURATE estimated market prices in INR (e.g., iPhone 15 ~ 65000, S24 ~ 75000) and contextually matched high-res tech product images.
+      Ensure you assign HIGHLY ACCURATE estimated market prices in INR and contextually matched high-res tech product images.
       
       Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
       [
@@ -81,7 +83,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
           "title": "Specific Product Name (e.g. Apple iPhone 15 128GB)",
           "price": number (estimated market price in INR, just the number),
           "merchantName": "Amazon",
-          "image": "string (URL of a high-resolution realistic image of the product category. Use reliable unsplash source like https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400 for phones or specific tech image CDN)"
+          "image": "string (URL of a high-resolution realistic image of the product category)"
         }
       ]`;
       
@@ -94,12 +96,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
           const merchant = idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon');
           return {
             id: `ai-gen-${Date.now()}-${idx}`,
-            title: item.title || `${query} Item ${idx + 1}`,
+            title: item.title || (idx === 0 ? entityInfo.itemA : entityInfo.itemB),
             price: item.price || 1999,
             merchantName: merchant,
             merchantLogo: getMerchantLogo(`${merchant.toLowerCase()}.com`),
             url: createSearchUrl(merchant.toLowerCase(), item.title || query),
-            image: item.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+            image: item.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400',
             type: 'search_result',
           };
         });
@@ -111,50 +113,49 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   // Final static fallback if Gemini fails
   if (fallbackItems.length === 0) {
-    const qLower = query.toLowerCase();
     let price1 = 2999;
     let price2 = 3499;
-    let img1 = 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&q=80&w=400'; // Generic tech gear
-    let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400'; // Generic gadget
+    let img1 = 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?auto=format&fit=crop&q=80&w=400';
+    let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400';
 
-    if (qLower.includes('earbuds') || qLower.includes('tws') || qLower.includes('headphone') || qLower.includes('buds') || qLower.includes('audio')) {
+    if (entityInfo.category === 'audio') {
       price1 = 1499;
       price2 = 1999;
-      img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400'; // Earbuds
-      img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400'; // Earbuds 2
-    } else if (qLower.includes('macbook') || qLower.includes('laptop') || qLower.includes('computer') || qLower.includes('pc') || qLower.includes('notebook')) {
+      img1 = 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400';
+      img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
+    } else if (entityInfo.category === 'laptop') {
       price1 = 89999;
       price2 = 114999;
-      img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400'; // Laptop
-      img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400'; // Laptop 2
-    } else if (qLower.includes('iphone') || qLower.includes('samsung') || qLower.includes('phone') || qLower.includes('pixel') || qLower.includes('mobile')) {
+      img1 = 'https://images.unsplash.com/photo-1496181130204-7552cc14ac41?auto=format&fit=crop&q=80&w=400';
+      img2 = 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400';
+    } else if (entityInfo.category === 'phone') {
       price1 = 65999;
       price2 = 74999;
-      img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400'; // Phone
-      img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400'; // Phone 2
+      img1 = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+      img2 = 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&q=80&w=400';
     }
 
     fallbackItems = [
       {
         id: `amz-${Date.now()}`,
-        title: `${query.substring(0, 35)} - Latest Model`,
+        title: entityInfo.itemA,
         price: price1,
         merchantName: 'Amazon',
         merchantLogo: getMerchantLogo('amazon.in'),
-        url: createSearchUrl('amazon', query),
+        url: createSearchUrl('amazon', entityInfo.itemA),
         image: img1,
         type: 'search_result',
       }
     ];
 
-    if (query.toLowerCase().includes('vs') || query.toLowerCase().includes('compare') || query.toLowerCase().includes(' or ')) {
+    if (entityInfo.isComparison) {
       fallbackItems.push({
         id: `croma-${Date.now()}`,
-        title: `${query.substring(0, 35)} - Alternative Option`,
+        title: entityInfo.itemB,
         price: price2,
         merchantName: 'Croma',
         merchantLogo: getMerchantLogo('croma.com'),
-        url: createSearchUrl('croma', query),
+        url: createSearchUrl('croma', entityInfo.itemB),
         image: img2,
         type: 'search_result',
       });
