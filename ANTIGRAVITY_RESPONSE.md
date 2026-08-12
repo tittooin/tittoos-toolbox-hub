@@ -1,20 +1,19 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **Category Collision & Word Boundary Fix (`entityExtractor.ts`):**
-   - Fixed bug where `lower.includes('phone')` matched `computer headphones` (due to `'phone'` inside `'headphone'`).
-   - Reordered category detection so `audio` (`headphone`, `headphones`, `earbuds`, `tws`, `earphone`, `buds`, `headset`) is evaluated **FIRST** before `laptop` or `phone`.
-   - Generic query `"show me best computer headphones"` now cleanly resolves to `category = 'audio'` and maps to `Sony WH-CH520 Wireless Over-Ear Headphones`.
+1. **Nuked Hardcoded Mock Fallback Strings (`review-summary.ts`):**
+   - `"Premium Ergonomics: Lightweight design"` and `"Long Battery Endurance: Fast charging"` strings have been **PERMANENTLY DELETED** from default fallback engines.
+   - Dynamic fallbacks now strictly generate category-accurate specs (CUDA Cores, VRAM, TDP for GPUs; ANC, Sound Quality for Audio; CPU, RAM, SSD for Laptops; Camera, Display, SoC for Phones).
 
-2. **Category Guardrails Engine (`review-summary.ts`):**
-   - Injected strict System Prompt Guardrails before sending queries to Gemini / AI model:
-     - **AUDIO:** Strictly prohibits Camera, Megapixels, OIS, Telephoto Zoom, AMOLED Display, Screen, OS, or Phone savings. Forces focus ONLY on Sound Quality, Bass Drivers, ANC, Battery Playtime, and Mic Quality.
-     - **LAPTOP:** Strictly focuses on CPU, RAM, SSD, Display, and Battery.
-   - Updated `generateDynamicFallback` so `isCheaperQuery` generates category-specific headlines, key specs, and realistic savings (e.g., `Save ₹1,500 to ₹3,500` for Audio vs `Save ₹30,000 to ₹45,000` for Smartphones).
+2. **GPU & PC Components Category Integration (`entityExtractor.ts`, `search.ts`, `review-summary.ts`):**
+   - Added `gpu` category for graphics cards (NVIDIA, GeForce, RTX, GTX, Radeon, Arc).
+   - Query `"best nevidia graphic cards for coding"` now resolves to `category = 'gpu'`, mapping to `NVIDIA GeForce RTX 4070 Super 12GB` and `NVIDIA GeForce RTX 4060 Ti 16GB`.
+   - Card prices set to realistic component pricing (₹28,990 - ₹62,990).
+   - Card images set to high-resolution Desktop Graphics Card Unsplash photography (`photo-1591799264318` & `photo-1587202372775`).
 
-3. **Over-Ear Headphone Imagery & Pricing (`search.ts`):**
-   - Replaced 3.5mm wired/earphone photos with high-resolution Over-Ear Headphone Unsplash photography (`photo-1505740420928` & `photo-1546435770`).
-   - Mapped realistic headphone prices (₹1,999 - ₹3,990).
+3. **System Prompt Category Enforcement:**
+   - Injected `gpu` guardrails into LLM system prompt in `review-summary.ts`:
+     `CRITICAL CATEGORY GUARDRAIL: Target products are GRAPHICS CARDS / GPUs. Focus ONLY on VRAM size, CUDA Cores, DLSS 3.5, TDP Power Draw, 1440p/4K FPS, and AI / Deep Learning acceleration. NEVER mention Battery, Ergonomics, Display screens, Headphones, or Phone cameras!`
 
 4. **Monetization & Conversion Lock (LOCKED & VERIFIED):**
    - **Amazon Tag:** `axevora06-21` strictly attached across all Amazon Buy links.

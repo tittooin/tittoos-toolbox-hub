@@ -17,7 +17,9 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const isCheaperQuery = query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
   let categoryGuardrail = "";
-  if (entityInfo.category === 'audio') {
+  if (entityInfo.category === 'gpu') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: The target products are GRAPHICS CARDS / GPUs / PC HARDWARE. Focus ONLY on VRAM size (GB GDDR6X), CUDA Cores / Stream Processors, Ray Tracing / DLSS 3.5 support, TDP Power Draw, 1440p / 4K Gaming FPS, and AI / Deep Learning acceleration. NEVER mention Battery, Ergonomics, Display screens, Headphones, or Phone cameras!`;
+  } else if (entityInfo.category === 'audio') {
     categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: The target products are AUDIO DEVICES (Earbuds/Headphones/Speakers). DO NOT mention Camera, Megapixels, OIS, Telephoto Zoom, AMOLED Display, Screen, OS, or Phone savings. Focus ONLY on Sound Quality, Bass Drivers, ANC, Battery Playtime, Mic Quality, and Audio Comfort. Calculate savings based ONLY on audio gear price range (e.g. Save ₹1,000 to ₹3,000)!`;
   } else if (entityInfo.category === 'laptop') {
     categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: The target products are LAPTOPS / COMPUTERS. Focus on Processor (Intel/AMD/Apple M-Series), RAM, SSD Storage, Battery Life, Display Resolution, and Keyboard Comfort. DO NOT mention Phone cameras or OIS!`;
@@ -176,7 +178,24 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       let s2_2 = "🎨 Custom Glyph Interface lighting";
       let s2_3 = "🔋 5000mAh Battery with 2-day backup";
 
-      if (cat === 'audio') {
+      if (cat === 'gpu') {
+        b1 = "NVIDIA GeForce RTX 4060 8GB (@ ₹28,990)";
+        b2 = "AMD Radeon RX 7600 XT 16GB (@ ₹32,990)";
+        headline = "Why spend ₹100,000+ when you can get high 1440p gaming & AI coding performance for under ₹35,000? Live web data shows these GPU champions:";
+        pickReason1 = "Best-in-class CUDA cores and DLSS 3 Frame Generation for coding & 1080p/1440p gaming.";
+        pickReason2 = "Massive 16GB VRAM buffer ideal for local LLM inference and heavy texture rendering.";
+        con1 = "8GB VRAM buffer limits 4K ultra textures in future AAA titles.";
+        con2 = "Ray tracing performance lags behind NVIDIA equivalents.";
+        savingsText = "you save **₹40,000 to ₹70,000** while keeping strong 1440p gaming and AI acceleration performance!";
+
+        s1_1 = "🚀 3072 CUDA Cores + 4th Gen Tensor Cores";
+        s1_2 = "⚡ DLSS 3 Frame Generation Support";
+        s1_3 = "⚡ Low 115W TDP Power Consumption";
+
+        s2_1 = "🚀 16GB GDDR6 VRAM Buffer for AI Models";
+        s2_2 = "⚡ 2048 Stream Processors + AMD HYPR-RX";
+        s2_3 = "💻 DisplayPort 2.1 Video Output Support";
+      } else if (cat === 'audio') {
         b1 = "boAt Airdopes 141 ANC (@ ₹1,499)";
         b2 = "realme Buds Air 5 (@ ₹2,499)";
         headline = "Why spend ₹10,000+ when you can get 90% of the audio clarity, deep bass & ANC for under ₹3,000? Live web data shows these top-rated budget champions:";
@@ -257,20 +276,33 @@ ${headline}
       const p2 = entityInfo.itemB;
 
       let pros1 = [
-        `🟢 ⚡ **Optimized Performance:** Smooth multitasking and power efficiency.`,
-        `🟢 🎨 **Premium Aesthetics:** Durable chassis with refined finish.`,
-        `🟢 🔋 **Long Battery Endurance:** Extended usage between charges.`
+        `🟢 🚀 **High Processing Speed:** Superior throughput for heavy application workloads.`,
+        `🟢 🎨 **Refined Architecture:** High thermal efficiency and durable engineering.`,
+        `🟢 🛡️ **Long-Term Durability:** Built with industrial component standards.`
       ];
-      let cons1 = `🔴 💳 **Higher Investment:** Premium price tag compared to budget entry options.`;
+      let cons1 = `🔴 💳 **Higher Investment:** Premium price tag compared to entry-level hardware.`;
 
       let pros2 = [
-        `🟢 🚀 **Cutting-Edge Specs:** High-end features for power users.`,
-        `🟢 ⚡ **Fast Charging Support:** Quick top-ups on the go.`,
-        `🟢 📊 **High Buyer Trust:** Strongly rated for value and reliability.`
+        `🟢 🚀 **Cutting-Edge Feature Set:** Modern hardware capabilities for power users.`,
+        `🟢 ⚡ **Optimized Clock Speeds:** High performance under sustained loads.`,
+        `🟢 📊 **Strong Buyer Trust:** High rating for price-to-performance value.`
       ];
-      let cons2 = `🔴 📉 **Regional Pricing Variance:** Prices may fluctuate based on seller promotions.`;
+      let cons2 = `🔴 📉 **Market Fluctuation:** Prices may vary based on stock availability.`;
 
-      if (cat === 'audio') {
+      if (cat === 'gpu') {
+        pros1 = [
+          `🟢 🚀 **7168 CUDA Cores + 12GB GDDR6X:** High-speed 1440p/4K rendering & AI model training.`,
+          `🟢 ⚡ **DLSS 3.5 Frame Generation:** Doubles framerates in heavy ray-traced titles.`,
+          `🟢 ❄️ **Efficient Thermal Heatsink:** Low fan noise under sustained 220W GPU load.`
+        ];
+        cons1 = `🔴 💳 **12GB VRAM Limit:** May hit memory limits in extreme 4K texture workloads.`;
+        pros2 = [
+          `🟢 🚀 **16GB VRAM Buffer:** Generous memory headroom for local LLM inference & coding.`,
+          `🟢 ⚡ **Low 160W Power Consumption:** Efficient power draw matching mid-tier PSUs.`,
+          `🟢 📊 **Excellent Value:** Lower entry price for 16GB VRAM CUDA computing.`
+        ];
+        cons2 = `🔴 📉 **128-bit Memory Bus:** Marginally lower memory bandwidth compared to Super series.`;
+      } else if (cat === 'audio') {
         pros1 = [
           `🟢 🎵 **13mm Dynamic Bass Drivers:** Deep punchy bass and crystal clear vocals.`,
           `🟢 🔋 **40-Hour Total Playtime:** Long battery life with fast charging support.`,
@@ -351,15 +383,24 @@ ${headline}
       };
     } else {
       let singlePros = [
-        `⚡ **High Performance Engine:** Smooth multitasking and power efficiency.`,
-        `🎨 **Premium Ergonomics:** Lightweight design built for comfortable long use.`,
-        `🔋 **Long Battery Endurance:** Fast charging capability with battery optimization.`
+        `🚀 **Top-Tier Hardware Performance:** High-speed processing efficiency for demanding workloads.`,
+        `🛡️ **Build Quality & Reliability:** Premium components engineered for long-term durability.`,
+        `📊 **High Community Rating:** Strongly endorsed by tech enthusiasts and verified buyers.`
       ];
       let singleCons = [
-        `💳 **Premium Price Tag:** Slightly higher investment compared to budget entry models.`
+        `💳 **Premium Pricing:** Requires a higher initial investment for flagship tier performance.`
       ];
 
-      if (cat === 'audio') {
+      if (cat === 'gpu') {
+        singlePros = [
+          `🚀 **High-Speed VRAM & CUDA Architecture:** Optimized for AI coding, deep learning & 1440p/4K rendering.`,
+          `⚡ **DLSS 3.5 & Tensor Cores:** Blazing fast AI frame generation and ray tracing acceleration.`,
+          `❄️ **Advanced Thermal Cooling:** Heavy-duty heatsink design for sustained heavy workloads.`
+        ];
+        singleCons = [
+          `⚡ **TDP Power Demand:** Requires adequate power supply (PSU) with PCIe connectors.`
+        ];
+      } else if (cat === 'audio') {
         singlePros = [
           `🎵 **13mm Dynamic Bass Drivers:** Crisp audio, deep bass & clear vocal response.`,
           `🔋 **40-Hour Total Playtime:** Up to 7 hours per charge with ultra-fast top-ups.`,

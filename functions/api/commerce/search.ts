@@ -125,7 +125,14 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400';
 
     if (isCheaper) {
-      if (entityInfo.category === 'phone') {
+      if (entityInfo.category === 'gpu') {
+        title1 = "NVIDIA GeForce RTX 4060 8GB GDDR6";
+        title2 = "AMD Radeon RX 7600 XT 16GB";
+        price1 = 28990;
+        price2 = 32990;
+        img1 = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'phone') {
         title1 = "OnePlus 12R 5G (16GB RAM / 256GB)";
         title2 = "Nothing Phone (2a) 5G (12GB/256GB)";
         price1 = 38999;
@@ -148,7 +155,14 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
       }
     } else if (isTopRated) {
-      if (entityInfo.category === 'phone') {
+      if (entityInfo.category === 'gpu') {
+        title1 = "NVIDIA GeForce RTX 4090 24GB OC Edition";
+        title2 = "NVIDIA GeForce RTX 4080 Super 16GB";
+        price1 = 189900;
+        price2 = 104990;
+        img1 = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'phone') {
         title1 = "Google Pixel 8 Pro 5G (12GB/128GB)";
         title2 = "Apple iPhone 15 Pro Max 256GB";
         price1 = 79999;
@@ -171,7 +185,14 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
       }
     } else {
-      if (entityInfo.category === 'audio') {
+      if (entityInfo.category === 'gpu') {
+        title1 = "NVIDIA GeForce RTX 4070 Super 12GB";
+        title2 = "NVIDIA GeForce RTX 4060 Ti 16GB";
+        price1 = 62990;
+        price2 = 38990;
+        img1 = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'audio') {
         const isHeadphone = qLower.includes('headphone') || qLower.includes('headphones') || qLower.includes('headset');
         if (isHeadphone) {
           title1 = "Sony WH-CH520 Wireless Over-Ear Headphones";

@@ -2,7 +2,7 @@ export interface ExtractedEntity {
   isComparison: boolean;
   itemA: string;
   itemB: string;
-  category: 'phone' | 'audio' | 'laptop' | 'tech';
+  category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'tech';
 }
 
 export function extractEntities(rawQuery: string): ExtractedEntity {
@@ -33,13 +33,15 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
     itemA = sanitizeItemName(cleanQuery);
   }
 
-  // Category detection (Audio MUST be checked first to avoid 'phone' matching 'headphone' or 'computer' matching 'computer headphones')
+  // Category detection (GPU and Audio checked first to prevent keyword collisions)
   const lower = rawQuery.toLowerCase();
-  let category: 'phone' | 'audio' | 'laptop' | 'tech' = 'tech';
+  let category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'tech' = 'tech';
   
-  if (lower.includes('headphone') || lower.includes('headphones') || lower.includes('earbuds') || lower.includes('tws') || lower.includes('earphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('headset') || lower.includes('speaker')) {
+  if (lower.includes('graphic card') || lower.includes('graphics card') || lower.includes('gpu') || lower.includes('nvidia') || lower.includes('geforce') || lower.includes('rtx') || lower.includes('gtx') || lower.includes('radeon') || lower.includes('arc')) {
+    category = 'gpu';
+  } else if (lower.includes('headphone') || lower.includes('headphones') || lower.includes('earbuds') || lower.includes('tws') || lower.includes('earphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('headset') || lower.includes('speaker')) {
     category = 'audio';
-  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('notebook') || (lower.includes('computer') && !lower.includes('headphone')) || (lower.includes('pc') && !lower.includes('headphone'))) {
+  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('notebook') || (lower.includes('computer') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu')) || (lower.includes('pc') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu'))) {
     category = 'laptop';
   } else if (lower.includes('iphone') || lower.includes('samsung') || lower.includes('mobile') || lower.includes('pixel') || lower.includes('s24') || lower.includes('s23') || lower.includes('smartphone') || lower.includes('phone')) {
     category = 'phone';
@@ -53,6 +55,9 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
   } else if (itemALower.includes('computer headphones') || itemALower.includes('headphones') || itemALower.includes('headphone')) {
     itemA = 'Sony WH-CH520 Wireless Over-Ear Headphones';
     if (!itemB) itemB = 'boAt Rockerz 550 Bluetooth Headphones';
+  } else if (itemALower.includes('graphic card') || itemALower.includes('graphics card') || itemALower.includes('gpu') || itemALower.includes('nvidia') || itemALower.includes('nevidia')) {
+    itemA = 'NVIDIA GeForce RTX 4070 Super 12GB';
+    if (!itemB) itemB = 'NVIDIA GeForce RTX 4060 Ti 16GB';
   } else if (itemALower.includes('macbook air') || itemALower.includes('macbook deals') || itemALower.includes('macbook')) {
     itemA = 'Apple MacBook Air M3 (8GB/256GB)';
     if (!itemB && isComparison) itemB = 'Apple MacBook Air M2 (8GB/256GB)';
