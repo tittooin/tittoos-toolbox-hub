@@ -59,7 +59,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   }
 
   // Fallback: Use Gemini to generate realistic product items
-  const geminiApiKey = (env?.GEMINI_API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
+  const geminiApiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
   let fallbackItems: any[] = [];
 
   if (geminiApiKey) {
