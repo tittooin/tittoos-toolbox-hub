@@ -45,11 +45,9 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: R
       );
     }
 
-    const apiKey = getApiKey(env);
-
-    if (!apiKey) {
-      // Direct Amazon tag fallback if URL is Amazon India
-      if (url.includes('amazon.in')) {
+    // Direct Amazon tag enforcement for all Amazon India links
+    if (url.toLowerCase().includes('amazon.in') || url.toLowerCase().includes('amazon.com')) {
+      try {
         const urlObj = new URL(url);
         urlObj.searchParams.set('tag', 'axevora06-21');
         return new Response(
@@ -58,12 +56,18 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: R
             trackingUrl: urlObj.toString(),
             affiliated: true,
             originalUrl: url,
-            campaignName: 'Amazon India Direct',
+            campaignName: 'Amazon Direct Affiliate',
           }),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         );
+      } catch {
+        // Fallback if URL parsing fails
       }
+    }
 
+    const apiKey = getApiKey(env);
+
+    if (!apiKey) {
       return new Response(
         JSON.stringify({
           ok: true,
