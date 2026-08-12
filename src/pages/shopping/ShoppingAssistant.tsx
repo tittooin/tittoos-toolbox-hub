@@ -60,208 +60,69 @@ export default function ShoppingAssistant() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
-    const isUrl = content.trim().startsWith('http://') || content.trim().startsWith('https://');
-
     try {
-      if (isUrl) {
-        // Direct One-Link Product Intelligence Flow
-        const response = await fetch('/api/product-analysis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: content.trim(), comparisonLimit: 3, intent: 'BEST_OVERALL' }),
-          signal: abortControllerRef.current.signal
-        });
-        
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Failed to fetch product analysis');
-        
-        let assistantMessage: Message = {
-          id: uuidv4(),
-          role: 'assistant',
-          content: '',
-          products: [],
-        };
-        
-        if (data.status === 'FAILED') {
-           assistantMessage.content = data.warnings?.join(', ') || 'Failed to analyze this product URL.';
-        } else {
-           const targetData = data.productIntelligence?.productFacts;
-           let summaryContent = data.productIntelligence?.aiSummary || 
-             `Here is the analysis for **${targetData?.title || 'this product'}**.`;
-           
-           const targetProduct: Product = {
-             id: 'target',
-             name: targetData?.title || 'Unknown Product',
-             price: targetData?.price || 0,
-             originalPrice: targetData?.originalPrice,
-             discountPercentage: targetData?.discountPercentage,
-             currency: 'INR',
-             rating: 4.5,
-             reviewCount: 0,
-             imageUrl: targetData?.images?.[0] || '',
-             merchantId: data.productIntelligence?.merchant || 'unknown',
-             merchantName: data.productIntelligence?.merchant,
-             merchantLogoUrl: '',
-             dealUrl: data.productIntelligence?.resolvedUrl || content.trim(),
-             reasons: ["Target Product"],
-             aiScore: 90,
-             communityScore: 85,
-             deliveryEstimate: 'Check merchant',
-             returnPolicy: 'Check merchant'
-           };
-           
-           const comparableProducts = data.comparableDiscovery?.products?.map((p: any) => ({
-             id: p.id || uuidv4(),
-             name: p.title,
-             price: p.price,
-             originalPrice: p.originalPrice,
-             discountPercentage: p.discountPercentage,
-             currency: 'INR',
-             rating: p.rating || 4.0,
-             reviewCount: p.reviewCount || 0,
-             imageUrl: p.imageUrl || '',
-             merchantId: p.merchant,
-             merchantName: p.merchantName || p.merchant,
-             merchantLogoUrl: p.merchantLogoUrl || '',
-             dealUrl: p.affiliateUrl || p.merchantUrl || p.url,
-             reasons: p.matchReasons || ["Comparable Option"],
-             aiScore: 85,
-             communityScore: 80,
-             deliveryEstimate: p.deliveryInfo || 'Check merchant',
-             returnPolicy: p.returnPolicy || 'Check merchant'
-           })) || [];
-
-           assistantMessage.content = summaryContent;
-           assistantMessage.products = targetData ? [targetProduct, ...comparableProducts] : comparableProducts;
-           
-           if (data.recommendation?.decision) {
-             assistantMessage.shouldYouBuy = {
-               decision: data.recommendation.decision,
-               reason: data.recommendation.justification || 'Analyzed based on available market data.'
-             };
-           }
-           
-           assistantMessage.followUps = [
-             "What are the pros and cons?",
-             "Show me cheaper alternatives",
-             "Compare with top rated options"
-           ];
-        }
-        
-        setMessages(prev => [...prev, assistantMessage]);
-        setIsLoading(false);
-      } else {
-        // Original streaming chat flow
-        const response = await fetch('/api/shopping/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: [...messages, userMessage] }),
-          signal: abortControllerRef.current.signal
-        });
-
-
-      if (!response.ok) throw new Error('Network response was not ok');
+      // 1. Fetch Review Summary (AI insights)
+      const reviewRes = await fetch(`/api/commerce/review-summary?q=${encodeURIComponent(content.trim())}`, {
+        signal: abortControllerRef.current.signal
+      });
+      const reviewData = await reviewRes.json();
       
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No readable stream available');
-      
-      const decoder = new TextDecoder();
-      
+      // 2. Fetch Search Alternatives
+      const searchRes = await fetch(`/api/commerce/search?q=${encodeURIComponent(content.trim())}`, {
+        signal: abortControllerRef.current.signal
+      });
+      const searchData = await searchRes.json();
+
       let assistantMessage: Message = {
         id: uuidv4(),
         role: 'assistant',
         content: '',
         products: [],
       };
-      
+
+      if (reviewData.ok && reviewData.data) {
+        assistantMessage.content = `Here is the analysis for **${content.trim()}**.\n\n` + 
+          `**Consensus:** ${reviewData.data.consensusSummary}\n\n` +
+          `**Pros:**\n${reviewData.data.pros.map((p: string) => `- ${p}`).join('\n')}\n\n` +
+          `**Cons:**\n${reviewData.data.cons.map((c: string) => `- ${c}`).join('\n')}`;
+          
+        assistantMessage.shouldYouBuy = {
+          decision: reviewData.data.overallSentiment === "Positive" || reviewData.data.rating >= 4 ? "Yes" : "Consider Alternatives",
+          reason: `Based on a rating of ${reviewData.data.rating}/5 and user consensus.`
+        };
+      } else {
+        assistantMessage.content = `I found some options for **${content.trim()}**.`;
+      }
+
+      if (searchData.ok && searchData.items) {
+        assistantMessage.products = searchData.items.map((item: any) => ({
+          id: item.id || uuidv4(),
+          name: item.title,
+          price: typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0 : item.price || 0,
+          currency: 'INR',
+          rating: 4.5,
+          reviewCount: 0,
+          imageUrl: item.image || item.merchantLogo || '',
+          merchantId: item.merchantName?.toLowerCase() || 'unknown',
+          merchantName: item.merchantName || 'Store',
+          merchantLogoUrl: item.merchantLogo || '',
+          dealUrl: item.url, // URL is already tracked/affiliated via search.ts
+          reasons: ["Top Match"],
+          aiScore: 90,
+          communityScore: 85,
+          deliveryEstimate: 'Check merchant',
+          returnPolicy: 'Check merchant'
+        }));
+      }
+
+      assistantMessage.followUps = [
+        "What are the pros and cons?",
+        "Show me cheaper alternatives",
+        "Compare with top rated options"
+      ];
+
       setMessages(prev => [...prev, assistantMessage]);
-      setIsLoading(false); // Stop loading indicator since we start streaming
-
-      let done = false;
-      let buffer = '';
-
-      while (!done) {
-        const { value, done: isDone } = await reader.read();
-        done = isDone;
-        if (value) {
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() ?? ''; // Keep incomplete line in buffer
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const dataStr = line.slice(6);
-              if (dataStr === '[DONE]') continue;
-              
-              try {
-                const eventPayload = JSON.parse(dataStr);
-                const { event, data } = eventPayload;
-
-                setMessages(prev => {
-                  const updatedMessages = [...prev];
-                  const lastMsgIndex = updatedMessages.length - 1;
-                  const currentMsg = { ...updatedMessages[lastMsgIndex] };
-
-                  if (event === 'INIT') {
-                    currentMsg.id = data.messageId || currentMsg.id;
-                  } else if (event === 'AI_TEXT') {
-                    currentMsg.content += data;
-                  } else if (event === 'PRODUCTS') {
-                    currentMsg.products = data.map((p: any) => ({
-                      id: p.id,
-                      name: p.title,
-                      price: p.price,
-                      originalPrice: p.originalPrice,
-                      discountPercentage: p.discountPercentage,
-                      currency: p.currency ?? 'INR',
-                      rating: p.rating ?? 0,
-                      reviewCount: p.reviewCount ?? 0,
-                      imageUrl: p.imageUrl ?? '',
-                      merchantId: p.merchant,
-                      merchantName: p.merchantName || p.merchant,
-                      merchantLogoUrl: p.merchantLogoUrl || '',
-                      dealUrl: p.affiliateUrl ?? p.merchantUrl ?? '#',
-                      reasons: [],
-                      aiScore: 0,
-                      communityScore: 0,
-                      deliveryEstimate: p.deliveryInfo ?? 'Check merchant',
-                      returnPolicy: p.returnPolicy ?? 'Check merchant'
-                    }));
-                    if (data.length > 0) {
-                      currentMsg.merchants = [{
-                        id: data[0]?.merchant ?? 'merchant',
-                        name: data[0]?.merchant ?? 'View on Store',
-                        logoUrl: '',
-                        trustScore: 85,
-                        offers: [],
-                        isAffiliate: !!(data[0]?.affiliateUrl),
-                        supportRating: 'Standard',
-                        deliverySpeed: data[0]?.deliveryInfo ?? 'Standard'
-                      }];
-                    }
-                  } else if (event === 'COMPARISON') {
-                    if (data.bestDeal) {
-                      currentMsg.shouldYouBuy = {
-                        decision: 'Yes',
-                        reason: `Best deal found: ${data.bestDeal.title} at ₹${data.bestDeal.price?.toLocaleString('en-IN')} from ${data.bestDeal.merchant}`
-                      };
-                    }
-                  } else if (event === 'DONE') {
-                    // stream is finished
-                  }
-
-                  updatedMessages[lastMsgIndex] = currentMsg;
-                  return updatedMessages;
-                });
-
-              } catch (e) {
-                console.error("Error parsing SSE JSON", e);
-              }
-            }
-          }
-        }
-      }
-      }
+      setIsLoading(false);
 
     } catch (error: any) {
       if (error.name === 'AbortError') {
