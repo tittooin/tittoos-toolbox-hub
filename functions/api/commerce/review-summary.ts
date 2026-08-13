@@ -18,7 +18,9 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   let categoryGuardrail = "";
   if (entityInfo.category === 'finance') {
-    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are FINANCIAL PRODUCTS (Credit Cards, Loans, Bank Accounts). Focus ONLY on Joining Fee, Annual Fee, Reward Points Rate, Airport Lounge Access, Fuel Surcharge Waiver, Interest Rate, and Eligibility Criteria. NEVER mention Camera, Battery, RAM, Processor, Display, or Hardware terms!`;
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are FINANCIAL PRODUCTS (Credit Cards, Mutual Funds, SIP, Loans, Bank Accounts). Focus ONLY on Returns (1yr/3yr CAGR), Expense Ratio, NAV, Joining Fee, Annual Fee, Reward Points Rate, Airport Lounge Access, and Eligibility. NEVER mention Camera, Battery, RAM, Processor, Laptop, or Display terms!`;
+  } else if (entityInfo.category === 'monitor') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are DISPLAY MONITORS (Gaming/Office Screens). Focus ONLY on Refresh Rate (Hz), Panel Type (IPS/OLED/VA), Screen Size (inches), Resolution (FHD/2K/4K), Response Time (1ms), and DisplayPort/HDMI connectivity. DO NOT mention Laptop CPU, Battery, or Mobile Camera terms!`;
   } else if (entityInfo.category === 'travel') {
     categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are TRAVEL & BOOKINGS (Flights, Hotels, Buses, Packages). Focus ONLY on Transit Duration, Seater/Sleeper Comfort, Complimentary Meals, Baggage Allowance, Cancellation Policies, Location/Amenities, and Real Traveler Ratings. NEVER mention Tech, Hardware, or Battery terms!`;
   } else if (entityInfo.category === 'fashion') {

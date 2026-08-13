@@ -238,12 +238,35 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       }
     } else {
       if (entityInfo.category === 'finance') {
-        title1 = "HDFC Regalia Gold Credit Card";
-        title2 = "SBI Cashback Credit Card";
-        price1 = 2500;
-        price2 = 999;
-        img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
-        img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+        if (qLower.includes('sip') || qLower.includes('mutual fund')) {
+          title1 = "Nippon India Small Cap Fund (Direct-Growth)";
+          title2 = "Parag Parikh Flexi Cap Fund (Direct-Growth)";
+          price1 = 100;
+          price2 = 500;
+          img1 = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=400';
+          img2 = 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=400';
+        } else if (qLower.includes('axis')) {
+          title1 = "Axis Bank Magnus Credit Card";
+          title2 = "Axis Bank ATLAS Credit Card";
+          price1 = 12500;
+          price2 = 5000;
+          img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+          img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+        } else {
+          title1 = "HDFC Regalia Gold Credit Card";
+          title2 = "SBI Cashback Credit Card";
+          price1 = 2500;
+          price2 = 999;
+          img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+          img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+        }
+      } else if (entityInfo.category === 'monitor') {
+        title1 = "LG UltraGear 24-inch Full HD IPS Gaming Monitor (180Hz)";
+        title2 = "Samsung Odyssey G3 24-inch Gaming Monitor";
+        price1 = 11499;
+        price2 = 9999;
+        img1 = 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1585792180666-f7347c490ee2?auto=format&fit=crop&q=80&w=400';
       } else if (entityInfo.category === 'travel') {
         title1 = "MakeMyTrip Flight & Hotel Booking";
         title2 = "Goibibo Travel Packages";
@@ -292,10 +315,27 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     let mDomain2 = 'croma.com';
 
     if (entityInfo.category === 'finance') {
-      mName1 = 'HDFC Bank';
-      mDomain1 = 'hdfcbank.com';
-      mName2 = 'SBI Card';
-      mDomain2 = 'sbicard.com';
+      if (qLower.includes('sip') || qLower.includes('mutual fund')) {
+        mName1 = 'Groww';
+        mDomain1 = 'groww.in';
+        mName2 = 'Zerodha';
+        mDomain2 = 'zerodha.com';
+      } else if (title1.toLowerCase().includes('axis') || qLower.includes('axis')) {
+        mName1 = 'Axis Bank';
+        mDomain1 = 'axisbank.com';
+        mName2 = 'HDFC Bank';
+        mDomain2 = 'hdfcbank.com';
+      } else {
+        mName1 = 'HDFC Bank';
+        mDomain1 = 'hdfcbank.com';
+        mName2 = 'SBI Card';
+        mDomain2 = 'sbicard.com';
+      }
+    } else if (entityInfo.category === 'monitor') {
+      mName1 = 'Amazon';
+      mDomain1 = 'amazon.in';
+      mName2 = 'Flipkart';
+      mDomain2 = 'flipkart.com';
     } else if (entityInfo.category === 'travel') {
       mName1 = 'MakeMyTrip';
       mDomain1 = 'makemytrip.com';

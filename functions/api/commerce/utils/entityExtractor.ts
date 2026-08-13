@@ -2,7 +2,7 @@ export interface ExtractedEntity {
   isComparison: boolean;
   itemA: string;
   itemB: string;
-  category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'finance' | 'travel' | 'fashion' | 'services' | 'tech';
+  category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'finance' | 'travel' | 'fashion' | 'services' | 'monitor' | 'tech';
 }
 
 export function extractEntities(rawQuery: string): ExtractedEntity {
@@ -35,10 +35,14 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
 
   // Universal Category detection
   const lower = rawQuery.toLowerCase();
-  let category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'finance' | 'travel' | 'fashion' | 'services' | 'tech' = 'tech';
+  let category: 'phone' | 'audio' | 'laptop' | 'gpu' | 'finance' | 'travel' | 'fashion' | 'services' | 'monitor' | 'tech' = 'tech';
   
-  if (lower.includes('credit card') || lower.includes('debit card') || lower.includes('loan') || lower.includes('demat') || lower.includes('bank') || lower.includes('finance') || lower.includes('lounge access') || lower.includes('hdfc') || lower.includes('sbi card') || lower.includes('axis bank')) {
+  if (lower.includes('sip') || lower.includes('mutual fund') || lower.includes('investment') || lower.includes('nifty') || lower.includes('equity fund') || lower.includes('groww')) {
     category = 'finance';
+  } else if (lower.includes('credit card') || lower.includes('debit card') || lower.includes('loan') || lower.includes('demat') || lower.includes('bank') || lower.includes('finance') || lower.includes('lounge access') || lower.includes('hdfc') || lower.includes('sbi card') || lower.includes('axis')) {
+    category = 'finance';
+  } else if (lower.includes('monitor') || lower.includes('display screen') || lower.includes('lcd') || lower.includes('led monitor') || lower.includes('curved monitor')) {
+    category = 'monitor';
   } else if (lower.includes('flight') || lower.includes('hotel') || lower.includes('bus') || lower.includes('travel') || lower.includes('tour') || lower.includes('ticket') || lower.includes('stay') || lower.includes('resort')) {
     category = 'travel';
   } else if (lower.includes('fashion') || lower.includes('watch') || lower.includes('shoes') || lower.includes('shirt') || lower.includes('dress') || lower.includes('jewelry') || lower.includes('clothing')) {
@@ -49,7 +53,7 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
     category = 'gpu';
   } else if (lower.includes('headphone') || lower.includes('headphones') || lower.includes('earbuds') || lower.includes('tws') || lower.includes('earphone') || lower.includes('buds') || lower.includes('audio') || lower.includes('airpods') || lower.includes('headset') || lower.includes('speaker')) {
     category = 'audio';
-  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('notebook') || (lower.includes('computer') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu')) || (lower.includes('pc') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu'))) {
+  } else if (lower.includes('macbook') || lower.includes('laptop') || lower.includes('notebook') || (lower.includes('computer') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu') && !lower.includes('monitor')) || (lower.includes('pc') && !lower.includes('headphone') && !lower.includes('graphic') && !lower.includes('gpu') && !lower.includes('monitor'))) {
     category = 'laptop';
   } else if (lower.includes('iphone') || lower.includes('samsung') || lower.includes('mobile') || lower.includes('pixel') || lower.includes('s24') || lower.includes('s23') || lower.includes('smartphone') || lower.includes('phone')) {
     category = 'phone';
@@ -57,9 +61,18 @@ export function extractEntities(rawQuery: string): ExtractedEntity {
 
   // Final fallback polish for generic titles
   const itemALower = itemA.toLowerCase();
-  if (itemALower.includes('best credit card') || itemALower.includes('credit card') || itemALower.includes('lounge access')) {
+  if (itemALower.includes('sip') || itemALower.includes('mutual fund')) {
+    itemA = 'Nippon India Small Cap Fund (Direct-Growth)';
+    if (!itemB) itemB = 'Parag Parikh Flexi Cap Fund (Direct-Growth)';
+  } else if (itemALower.includes('axis bank magnus') || itemALower.includes('axis magnus')) {
+    itemA = 'Axis Bank Magnus Credit Card';
+    if (!itemB) itemB = 'HDFC Regalia Gold Credit Card';
+  } else if (itemALower.includes('best credit card') || itemALower.includes('credit card') || itemALower.includes('lounge access')) {
     itemA = 'HDFC Regalia Gold Credit Card';
     if (!itemB) itemB = 'SBI Cashback Credit Card';
+  } else if (itemALower.includes('lcd monitor') || itemALower.includes('monitor') || itemALower.includes('display monitor')) {
+    itemA = 'LG UltraGear 24-inch Full HD IPS Gaming Monitor (180Hz)';
+    if (!itemB) itemB = 'Samsung Odyssey G3 24-inch Gaming Monitor';
   } else if (itemALower.includes('flight') || itemALower.includes('bus') || itemALower.includes('hotel') || itemALower.includes('travel')) {
     itemA = 'MakeMyTrip Flight & Hotel Packages';
     if (!itemB) itemB = 'Goibibo Travel Deals';
