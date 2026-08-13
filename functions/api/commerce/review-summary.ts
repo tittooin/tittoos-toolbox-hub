@@ -1,67 +1,69 @@
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
   const url = new URL(request.url);
-  const query = url.searchParams.get('q') || 'Best products';
+  const query = url.searchParams.get('q') || 'Compare iPhone 15 and S24';
 
-  // Read verified secrets directly from env context
   const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
 
-  if (!geminiApiKey) {
-    console.error("[AXEVORA CRITICAL] GEMINI_API_KEY is missing from env context!");
-  }
-
   let reviewMarkdown = "";
+  let debugLog: string[] = [];
   let isComparison = query.toLowerCase().includes('compare') || query.toLowerCase().includes(' vs ') || query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
-  // 1. Primary: Try Gemini 2.5 Flash via REST API (Chief Shopping Officer & MBA Sales Strategist Persona)
+  // 1. Try Gemini 2.5 REST API
   if (geminiApiKey) {
     try {
+      debugLog.push("Attempting Gemini API Call (gemini-2.5-flash)...");
       const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+      
       const response = await fetch(geminiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are Axevora's Chief Shopping Officer & Senior MBA Sales Strategist. Provide an extremely persuasive, high-converting comparison/review for the query: "${query}". 
-              
-              Follow these expert guidelines:
-              1. PUNCHY HOOK: Start with an energetic 1-line verdict with emojis highlighting value, price-to-performance, and ROI.
-              2. SPEC-ACCURATE ROI: Match features ONLY to the category (e.g. Lounge Access & Rewards for Credit Cards; VRAM & CUDA for GPUs; Bass, Latency & Battery for Audio; CPU, RAM & SSD for Desktops/Laptops).
-              3. verified buyer consensus: Summarize customer sentiment based on Reddit/Amazon forums.
-              4. CLEAR BUYING ACTION: Give a direct, confident recommendation on how to maximize savings.
-              
-              Output strictly in clean, beautiful Markdown.`
+              text: `You are Axevora's Chief Shopping Officer & Senior MBA Sales Strategist. Provide an extremely persuasive, high-converting comparison/review for the query: "${query}". Output strictly in clean Markdown.`
             }]
           }]
         })
       });
 
       const data = await response.json() as any;
-      reviewMarkdown = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    } catch (err) {
-      console.error("[AXEVORA GEMINI FETCH ERROR]", err);
+      if (response.ok && data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        reviewMarkdown = data.candidates[0].content.parts[0].text;
+        debugLog.push("Gemini Success!");
+      } else {
+        const errPayload = JSON.stringify(data?.error || data);
+        debugLog.push(`Gemini Error API Status ${response.status}: ${errPayload}`);
+      }
+    } catch (e: any) {
+      debugLog.push(`Gemini Exception: ${e.message || String(e)}`);
     }
+  } else {
+    debugLog.push("Gemini Key NOT found in env.GEMINI_API_KEY");
   }
 
-  // 2. Secondary Failover: Cloudflare Workers AI (Guaranteed Backup)
+  // 2. Fallback to Cloudflare Workers AI
   if (!reviewMarkdown && env?.AI) {
     try {
+      debugLog.push("Attempting Cloudflare Workers AI (@cf/meta/llama-3-8b-instruct)...");
       const cfRes = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
         messages: [
-          { role: 'system', content: 'You are Axevora\'s Chief Shopping Officer & MBA Sales Strategist. Compare products and provide detailed, persuasive markdown reviews highlighting specifications, ROI, and verified customer consensus.' },
+          { role: 'system', content: 'You are Axevora AI Shopping Assistant. Compare products in clean markdown.' },
           { role: 'user', content: query }
         ]
       });
       reviewMarkdown = cfRes?.response || cfRes;
-    } catch (cfErr) {
-      console.error("[WORKERS AI ERROR]", cfErr);
+      debugLog.push("Workers AI Success!");
+    } catch (cfErr: any) {
+      debugLog.push(`Workers AI Exception: ${cfErr.message || String(cfErr)}`);
     }
+  } else if (!env?.AI) {
+    debugLog.push("env.AI Binding NOT attached in Cloudflare!");
   }
 
-  // 3. Absolute Fallback to prevent blank render
+  // If both failed, return actual DEBUG TRACE instead of fake fallback text
   if (!reviewMarkdown) {
-    reviewMarkdown = `### 🔍 Analysis for "${query}"\n\nWe could not retrieve live AI results at this moment. Please check your query or try again shortly.`;
+    reviewMarkdown = `⚠️ **DEBUG TRACE LOG:**\n\n` + debugLog.map(log => `- ${log}`).join('\n');
   }
 
   // Format response exactly as ShoppingAssistant.tsx expects
@@ -83,10 +85,11 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     metadata: {
       is_live_web_browsed: true,
       search_sources_used: ["Google Live Search", "Amazon India", "Flipkart", "Reddit R/IndiaTech"],
-      model_used: geminiApiKey && reviewMarkdown ? 'gemini-2.5-flash-rest' : 'workers-ai-llama-3'
+      model_used: geminiApiKey && !reviewMarkdown.startsWith('⚠️ **DEBUG TRACE LOG') ? 'gemini-2.5-flash-rest' : 'workers-ai-llama-3'
     }
   }), {
     status: 200,
     headers: { "Content-Type": "application/json" }
   });
 };
+export const onRequest = onRequestGet;
