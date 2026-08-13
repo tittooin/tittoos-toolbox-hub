@@ -1,24 +1,17 @@
 # AI Assistant Search & Comparison Pipeline Fix 🚀
 
 ## Bugs Fixed:
-1. **Universal Multi-Category Intent Classifier (`entityExtractor.ts`):**
-   - Expanded category detection beyond electronics to support:
-     - `FINANCE` (Credit Cards, Loans, Demat Accounts, Lounge Access)
-     - `TRAVEL` (Flights, Hotels, Buses, Tour Packages)
-     - `FASHION_LIFESTYLE` (Apparel, Watches, Shoes, Jewelry)
-     - `SERVICES` (Web Hosting, Cloud, VPN, Software)
-     - `GPU` (Graphics Cards, PC Hardware)
-     - `ELECTRONICS` (Smartphones, Laptops, Audio Gear)
+1. **Hybrid Triple-Layer Monetization Engine (`convertUrl.ts`):**
+   - Created `functions/api/commerce/utils/convertUrl.ts` implementing a 3-layer affiliate waterfall:
+     - **Layer 1 (Amazon Store):** Direct append `tag=axevora06-21` to Amazon India / US product links.
+     - **Layer 2 (EarnKaro / Affiliaters API):** Converts non-Amazon URLs via `https://ekaro-api.affiliaters.in/api/converter/public` using `env.EARNKARO_API_TOKEN` / `env.AFFILIATERS_API_KEY`.
+     - **Layer 3 (Cuelinks Fallback):** If EarnKaro API errors or rate limits occur, automatically falls back to Cuelinks `linksredirect.com` link converter.
 
-2. **Domain-Aware Dynamic LLM System Prompt & Guardrails (`review-summary.ts`):**
-   - Injected strict domain-specific System Instructions into Gemini / Workers AI:
-     - **FINANCE:** Focuses ONLY on Joining/Annual Fees, Reward Rates, Lounge Access, Fuel Waivers. Prohibits Camera/Battery/Hardware terms.
-     - **TRAVEL:** Focuses ONLY on Transit Time, Cancellation Policies, Room Amenities, Meals, Real Ratings. Prohibits Hardware/Tech terms.
-     - **GPU:** Focuses ONLY on VRAM, CUDA Cores, DLSS 3.5, TDP, 1440p/4K FPS. Prohibits Battery/Ergonomics/Phone terms.
+2. **Universal Merchant Integration (`search.ts`):**
+   - Integrated `convertToAffiliateUrl` into `search.ts` for both SerpAPI live shopping results and AI search fallback items across all store types (Flipkart, Croma, MakeMyTrip, Axis Bank, Goibibo, etc.).
 
-3. **Universal Store Link Engine (`search.ts` & `CuelinksService`):**
-   - **Amazon Items:** Enforces Amazon Tag `axevora06-21` across all product cards.
-   - **All Other Merchants:** Automatically converts URLs for Flipkart, Croma, MakeMyTrip, Axis Bank, Goibibo, etc., via Cuelinks `linksredirect.com` redirect wrapper.
+3. **Universal Multi-Category Intent Classifier (`entityExtractor.ts`):**
+   - Universal categories (`FINANCE`, `TRAVEL`, `FASHION`, `SERVICES`, `GPU`, `AUDIO`, `LAPTOP`, `PHONE`) maintained.
 
 4. **Follow-Up Synchronized State Updates (`ShoppingAssistant.tsx`):**
    - Clicking follow-up chips ("Show me cheaper alternatives", "Compare with top rated options") now fetches and synchronizes BOTH AI review text and product cards for the target category simultaneously.

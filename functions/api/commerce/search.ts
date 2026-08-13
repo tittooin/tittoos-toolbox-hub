@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { extractEntities } from './utils/entityExtractor';
+import { convertToAffiliateUrl } from './utils/convertUrl';
 
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
@@ -39,16 +40,16 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       if (res.ok) {
         const data = await res.json() as any;
         if (data.shopping_results && data.shopping_results.length > 0) {
-          const apiResults = data.shopping_results.slice(0, 5).map((item: any) => ({
+          const apiResults = await Promise.all(data.shopping_results.slice(0, 5).map(async (item: any) => ({
             id: item.product_id || `serp-${Math.random()}`,
             title: item.title,
             price: item.price,
             merchantName: item.source,
             merchantLogo: getMerchantLogo(`${item.source?.replace(/[^a-zA-Z0-9]/g, '')}.com`),
-            url: item.link,
+            url: await convertToAffiliateUrl(item.link || createSearchUrl(item.source || 'google', item.title), env),
             image: item.thumbnail,
             type: 'search_result',
-          }));
+          })));
           return new Response(JSON.stringify({ ok: true, source: 'serpapi', items: apiResults }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
@@ -289,15 +290,16 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   }
 
-  // Hardcode Safeguard Validation
-  fallbackItems = fallbackItems.map(item => {
+  // Hardcode Safeguard Validation & 3-Layer Monetization Conversion
+  fallbackItems = await Promise.all(fallbackItems.map(async item => {
     const isMobileQuery = query.toLowerCase().includes('iphone') || query.toLowerCase().includes('samsung');
     if (isMobileQuery && item.price < 10000) {
       item.price = item.price + 60000;
       item.image = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
     }
+    item.url = await convertToAffiliateUrl(item.url, env);
     return item;
-  });
+  }));
 
   return new Response(JSON.stringify({ ok: true, source: 'ai_fallback', items: fallbackItems }), {
     status: 200,
