@@ -1,21 +1,18 @@
-# AI Assistant Search & Comparison Pipeline Fix 🚀
+1. **Real-Time Web Search Asset Extractor & Dynamic Merchant Resolution (`search.ts`):**
+   - Fixed bug where `fallbackItems` defaulted merchant to `"Amazon"` and image to Unsplash Laptop.
+   - Dynamic Merchant Extractor now inspects query category:
+     - **Finance Queries (`category = 'finance'`):** Resolves merchant names dynamically to `HDFC Bank` (`hdfcbank.com`), `SBI Card` (`sbicard.com`), or `Axis Bank` (`axisbank.com`).
+     - **Travel Queries (`category = 'travel'`):** Resolves merchant names to `MakeMyTrip` (`makemytrip.com`) or `Goibibo` (`goibibo.com`).
+     - **Electronics & GPU:** Resolves to `Amazon`, `Croma`, or `Flipkart`.
+   - Card images dynamically map to domain-matched photography (Credit Cards photography for Finance, Flight/Hotel photography for Travel, GPU cards for PC Hardware).
 
-## Live Production Build & Verification Summary:
-1. **Hybrid Triple-Layer Monetization Engine (`convertUrl.ts` - ACTIVE LIVE):**
-   - **Layer 1 (Amazon Store):** Direct append `tag=axevora06-21` verified on all Amazon products.
-   - **Layer 2 (EarnKaro / Affiliaters API):** Live API token (`env.EARNKARO_API_TOKEN`) active for real-time link conversion via `https://ekaro-api.affiliaters.in/api/converter/public` across non-Amazon merchants (Flipkart, Myntra, Croma, MakeMyTrip, Axis Bank, Goibibo, etc.).
-   - **Layer 3 (Cuelinks Fallback):** Automatic fallback to `linksredirect.com` active if EarnKaro API rate-limits or times out.
-
-2. **Universal Merchant & Category Accuracy:**
-   - **Finance Queries ("Best Credit Card for Airport Lounge Access"):** Cards display real financial products (`HDFC Regalia Gold`, `SBI Cashback Card`) with Credit Card icons/images and Zero laptop/Amazon desync.
-   - **Travel Queries ("Flights / Hotel deals"):** Cards display MakeMyTrip & Goibibo travel deals with 3-Layer monetization wrapping.
-   - **Hardware / Audio Queries ("RTX 4070", "Computer Headphones"):** Specs strictly domain-accurate with zero battery/ergonomic mock leaks.
+2. **Universal Merchant Search URLs & 3-Layer Monetization (`createSearchUrl` & `convertUrl.ts`):**
+   - Added destination URL resolvers for `hdfcbank.com`, `sbicard.com`, `axisbank.com`, `makemytrip.com`, and `goibibo.com`.
+   - Every live destination URL passes through `convertUrl.ts` (Layer 1: Amazon Tag -> Layer 2: EarnKaro Bearer Token API -> Layer 3: Cuelinks Wrapper).
 
 3. **Status:**
-   - [x] Live EarnKaro Token Active (`env.EARNKARO_API_TOKEN`).
-   - [x] Amazon Tag `axevora06-21` Locked.
-   - [x] Cuelinks Layer 3 Fallback Verified.
-   - [x] Universal Multi-Category Detector Live.
-   - [x] Production Build Deployed.
+   - [x] Finance cards render `HDFC Bank` / `SBI Card` badges (Zero Amazon/Laptop desync).
+   - [x] Travel cards render `MakeMyTrip` / `Goibibo` badges.
+   - [x] Monetization 3-Layer Waterfall Active.
 
 Test the AI Assistant with "Compare iPhone 15 and Samsung S24" on live preview to see the magic! 🪄

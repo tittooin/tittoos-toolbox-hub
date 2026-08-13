@@ -20,16 +20,16 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const createSearchUrl = (store: string, q: string) => {
     const encoded = encodeURIComponent(q);
-    switch (store.toLowerCase()) {
-      case 'amazon':
-        return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
-      case 'croma':
-        return `https://www.croma.com/searchB?q=${encoded}%3A%3Achannel%3AOnline`;
-      case 'flipkart':
-        return `https://www.flipkart.com/search?q=${encoded}`;
-      default:
-        return `https://www.google.com/search?q=${encoded}+buy`;
-    }
+    const s = store.toLowerCase();
+    if (s.includes('amazon')) return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
+    if (s.includes('croma')) return `https://www.croma.com/searchB?q=${encoded}%3A%3Achannel%3AOnline`;
+    if (s.includes('flipkart')) return `https://www.flipkart.com/search?q=${encoded}`;
+    if (s.includes('hdfc')) return `https://www.hdfcbank.com/personal/pay/cards/credit-cards`;
+    if (s.includes('sbi')) return `https://www.sbicard.com/en/personal/credit-cards.page`;
+    if (s.includes('axis')) return `https://www.axisbank.com/retail/cards/credit-card`;
+    if (s.includes('makemytrip')) return `https://www.makemytrip.com/flights/`;
+    if (s.includes('goibibo')) return `https://www.goibibo.com/flights/`;
+    return `https://www.google.com/search?q=${encoded}+buy`;
   };
 
   // Attempt SerpAPI first
@@ -94,15 +94,38 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       
       if (Array.isArray(generatedData)) {
         fallbackItems = generatedData.map((item: any, idx: number) => {
-          const merchant = idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon');
+          let merchant = item.merchantName || (idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon'));
+          let merchantDomain = `${merchant.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
+          
+          if (entityInfo.category === 'finance') {
+            merchant = idx === 0 ? 'HDFC Bank' : (idx === 1 ? 'SBI Card' : 'Axis Bank');
+            merchantDomain = idx === 0 ? 'hdfcbank.com' : (idx === 1 ? 'sbicard.com' : 'axisbank.com');
+          } else if (entityInfo.category === 'travel') {
+            merchant = idx === 0 ? 'MakeMyTrip' : (idx === 1 ? 'Goibibo' : 'Yatra');
+            merchantDomain = idx === 0 ? 'makemytrip.com' : (idx === 1 ? 'goibibo.com' : 'yatra.com');
+          } else {
+            if (merchant.toLowerCase().includes('amazon')) merchantDomain = 'amazon.in';
+          }
+
+          let defaultImg = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+          if (entityInfo.category === 'finance') {
+            defaultImg = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+          } else if (entityInfo.category === 'travel') {
+            defaultImg = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
+          } else if (entityInfo.category === 'gpu') {
+            defaultImg = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
+          } else if (entityInfo.category === 'audio') {
+            defaultImg = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400';
+          }
+
           return {
             id: `ai-gen-${Date.now()}-${idx}`,
             title: item.title || (idx === 0 ? entityInfo.itemA : entityInfo.itemB),
-            price: item.price || 1999,
+            price: item.price || (entityInfo.category === 'finance' ? 1500 : 1999),
             merchantName: merchant,
-            merchantLogo: getMerchantLogo(`${merchant.toLowerCase()}.com`),
-            url: createSearchUrl(merchant.toLowerCase(), item.title || query),
-            image: item.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400',
+            merchantLogo: getMerchantLogo(merchantDomain),
+            url: createSearchUrl(merchant.toLowerCase().includes('amazon') ? 'amazon' : merchant.toLowerCase(), item.title || query),
+            image: item.image && !item.image.includes('placeholder') ? item.image : defaultImg,
             type: 'search_result',
           };
         });
@@ -263,14 +286,31 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       }
     }
 
+    let mName1 = 'Amazon';
+    let mDomain1 = 'amazon.in';
+    let mName2 = 'Croma';
+    let mDomain2 = 'croma.com';
+
+    if (entityInfo.category === 'finance') {
+      mName1 = 'HDFC Bank';
+      mDomain1 = 'hdfcbank.com';
+      mName2 = 'SBI Card';
+      mDomain2 = 'sbicard.com';
+    } else if (entityInfo.category === 'travel') {
+      mName1 = 'MakeMyTrip';
+      mDomain1 = 'makemytrip.com';
+      mName2 = 'Goibibo';
+      mDomain2 = 'goibibo.com';
+    }
+
     fallbackItems = [
       {
-        id: `amz-${Date.now()}`,
+        id: `m1-${Date.now()}`,
         title: title1,
         price: price1,
-        merchantName: 'Amazon',
-        merchantLogo: getMerchantLogo('amazon.in'),
-        url: createSearchUrl('amazon', title1),
+        merchantName: mName1,
+        merchantLogo: getMerchantLogo(mDomain1),
+        url: createSearchUrl(mName1.toLowerCase().includes('amazon') ? 'amazon' : mName1.toLowerCase(), title1),
         image: img1,
         type: 'search_result',
       }
@@ -278,12 +318,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
     if (entityInfo.isComparison || isCheaper || isTopRated) {
       fallbackItems.push({
-        id: `croma-${Date.now()}`,
+        id: `m2-${Date.now()}`,
         title: title2 || `${title1} Variant`,
         price: price2,
-        merchantName: 'Croma',
-        merchantLogo: getMerchantLogo('croma.com'),
-        url: createSearchUrl('croma', title2 || title1),
+        merchantName: mName2,
+        merchantLogo: getMerchantLogo(mDomain2),
+        url: createSearchUrl(mName2.toLowerCase().includes('croma') ? 'croma' : mName2.toLowerCase(), title2 || title1),
         image: img2,
         type: 'search_result',
       });
