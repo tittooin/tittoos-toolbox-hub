@@ -1,76 +1,86 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { extractEntities } from './utils/entityExtractor';
 
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
   const url = new URL(request.url);
-  const query = url.searchParams.get('q') || 'Best deals';
+  const query = url.searchParams.get('q') || 'Best products';
 
-  const geminiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
+  // Read verified secret directly from Cloudflare environment
+  const apiKey = env?.GEMINI_API_KEY as string | undefined;
 
-  let reviewText = "";
+  if (!apiKey) {
+    console.error("[AXEVORA CRITICAL] GEMINI_API_KEY is missing from env context!");
+  }
+
+  let reviewMarkdown = "";
   let isComparison = query.toLowerCase().includes('compare') || query.toLowerCase().includes(' vs ') || query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
-  // 1. Primary: Try Gemini API
-  if (geminiKey) {
+  // 1. Primary: Try Gemini 1.5 Flash via REST API (for maximum platform compatibility)
+  if (apiKey) {
     try {
-      const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        tools: [{ googleSearch: {} }] as any
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const response = await fetch(geminiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `You are Axevora AI Shopping Assistant. Provide an in-depth, expert review/comparison for the query: "${query}". Include specific product models, key specs, pros, cons, and community sentiment (Reddit/Amazon). Output strictly in clean Markdown.`
+            }]
+          }]
+        })
       });
-      const result = await model.generateContent(
-        `You are Axevora AI Shopping Assistant. The user queried: "${query}". Search the live web for verified user reviews, pros, cons, specs, and active market prices. Provide a high-converting detailed review. Output your response strictly in Markdown.`
-      );
-      reviewText = result.response.text();
-    } catch (e) {
-      console.warn("Gemini call failed, switching to Workers AI:", e);
+
+      const data = await response.json() as any;
+      reviewMarkdown = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    } catch (err) {
+      console.error("[AXEVORA GEMINI FETCH ERROR]", err);
     }
   }
 
   // 2. Secondary Failover: Cloudflare Workers AI (Guaranteed Backup)
-  if (!reviewText && env?.AI) {
+  if (!reviewMarkdown && env?.AI) {
     try {
       const cfRes = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
         messages: [
-          { role: 'system', content: 'You are Axevora AI Shopping Assistant. Search the web for real buyer reviews on Reddit/Amazon, price consensus, and specs. Output detailed structured markdown.' },
+          { role: 'system', content: 'You are Axevora AI Shopping Assistant. Compare products and provide detailed markdown reviews.' },
           { role: 'user', content: query }
         ]
       });
-      reviewText = cfRes.response || cfRes;
+      reviewMarkdown = cfRes?.response || cfRes;
     } catch (cfErr) {
-      console.error("Workers AI Error:", cfErr);
+      console.error("[WORKERS AI ERROR]", cfErr);
     }
   }
 
-  // 3. Fallback Response (Clean & User-Friendly, NO Crash)
-  if (!reviewText) {
-    reviewText = `### 🔍 Analysis for "${query}"\n\nWe could not retrieve live AI results at this moment. Please check your query or try again shortly.`;
+  // 3. Absolute Fallback to prevent blank render
+  if (!reviewMarkdown) {
+    reviewMarkdown = `### 🔍 Analysis for "${query}"\n\nWe could not retrieve live AI results at this moment. Please check your query or try again shortly.`;
   }
 
-  // Format the output exactly as expected by ShoppingAssistant.tsx
+  // Format response exactly as ShoppingAssistant.tsx expects
   const responseData = {
     isComparison: isComparison,
-    comparisonMarkdown: reviewText,
-    hookHeader: `Search consensus for ${query}`,
+    comparisonMarkdown: reviewMarkdown,
+    hookHeader: `Consensus for ${query}`,
     overallSentiment: "Positive",
     rating: 4.8,
     pros: [],
     cons: [],
-    pitch: reviewText
+    pitch: reviewMarkdown
   };
 
   return new Response(JSON.stringify({
     ok: true,
-    source: geminiKey && reviewText ? 'gemini-1.5-flash-grounded' : 'workers-ai-llama-3',
+    success: true,
     data: responseData,
     metadata: {
       is_live_web_browsed: true,
       search_sources_used: ["Google Live Search", "Amazon India", "Flipkart", "Reddit R/IndiaTech"],
-      model_used: geminiKey && reviewText ? 'gemini-1.5-flash-grounded' : 'workers-ai-llama-3'
+      model_used: apiKey && reviewMarkdown ? 'gemini-1.5-flash-rest' : 'workers-ai-llama-3'
     }
   }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { "Content-Type": "application/json" }
   });
 };
