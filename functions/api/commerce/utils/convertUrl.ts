@@ -13,14 +13,14 @@ export async function convertToAffiliateUrl(rawUrl: string, env?: Record<string,
     }
   }
 
-  // Layer 2: EarnKaro / Affiliaters API
-  const apiToken = (env?.EARNKARO_API_TOKEN || env?.AFFILIATERS_API_KEY || (typeof process !== 'undefined' ? process.env?.EARNKARO_API_TOKEN : undefined)) as string | undefined;
-  if (apiToken) {
+  // Layer 2: EarnKaro / Affiliaters API (Strictly env.EARNKARO_API_TOKEN)
+  const earnkaroToken = env?.EARNKARO_API_TOKEN as string | undefined;
+  if (earnkaroToken) {
     try {
       const response = await fetch('https://ekaro-api.affiliaters.in/api/converter/public', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiToken}`,
+          'Authorization': `Bearer ${earnkaroToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -40,8 +40,12 @@ export async function convertToAffiliateUrl(rawUrl: string, env?: Record<string,
     }
   }
 
-  // Layer 3: Cuelinks Fallback
-  const cuelinksPubId = (env?.CUELINKS_PUB_ID || '186358') as string;
+  // Layer 3: Cuelinks Fallback (Strictly env.CUELINKS_API_KEY)
+  const cuelinksApiKey = env?.CUELINKS_API_KEY as string | undefined;
   const encodedDestination = encodeURIComponent(rawUrl);
-  return `https://linksredirect.com/?pub_id=${cuelinksPubId}&subid=axevora&source=linkkit&url=${encodedDestination}`;
+  if (cuelinksApiKey) {
+    // If we have API key, convert via Cuelinks wrapper format or public tracking engine
+    return `https://linksredirect.com/?pub_id=186358&apikey=${cuelinksApiKey}&subid=axevora&source=linkkit&url=${encodedDestination}`;
+  }
+  return `https://linksredirect.com/?pub_id=186358&subid=axevora&source=linkkit&url=${encodedDestination}`;
 }

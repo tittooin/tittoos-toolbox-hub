@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { extractEntities } from './utils/entityExtractor';
 import { convertToAffiliateUrl } from './utils/convertUrl';
 
@@ -14,8 +13,10 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   }
 
+  // Strict Secrets Binding
+  const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
+
   const entityInfo = extractEntities(query);
-  const serpApiKey = env?.SERPAPI_KEY as string | undefined;
   const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
   const createSearchUrl = (store: string, q: string) => {
@@ -32,64 +33,45 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     return `https://www.google.com/search?q=${encoded}+buy`;
   };
 
-  // Attempt SerpAPI first
-  if (serpApiKey) {
-    try {
-      const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&api_key=${serpApiKey}&gl=in&hl=en`;
-      const res = await fetch(serpUrl);
-      if (res.ok) {
-        const data = await res.json() as any;
-        if (data.shopping_results && data.shopping_results.length > 0) {
-          const apiResults = await Promise.all(data.shopping_results.slice(0, 5).map(async (item: any) => ({
-            id: item.product_id || `serp-${Math.random()}`,
-            title: item.title,
-            price: item.price,
-            merchantName: item.source,
-            merchantLogo: getMerchantLogo(`${item.source?.replace(/[^a-zA-Z0-9]/g, '')}.com`),
-            url: await convertToAffiliateUrl(item.link || createSearchUrl(item.source || 'google', item.title), env),
-            image: item.thumbnail,
-            type: 'search_result',
-          })));
-          return new Response(JSON.stringify({ ok: true, source: 'serpapi', items: apiResults }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      }
-    } catch (e) {
-      console.warn('SerpAPI search failed, falling back to Gemini generation', e);
-    }
-  }
-
-  // Fallback: Use Gemini to generate realistic product items
-  const geminiApiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
   let fallbackItems: any[] = [];
 
+  // Primary: Try Gemini 2.5 Flash
   if (geminiApiKey) {
     try {
-      const genAI = new GoogleGenerativeAI(geminiApiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const prompt = `You are a shopping search engine. Given the user query "${query}":
-      Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
-      ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
       
-      If single product, generate exactly 3 specific, real, top-selling products matching the query.
-      If comparison, generate exactly 2 specific products representing "${entityInfo.itemA}" and "${entityInfo.itemB}".
-      
-      Ensure you assign HIGHLY ACCURATE estimated market prices in INR and contextually matched high-res tech product images.
-      
-      Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
-      [
-        {
-          "title": "Specific Product Name (e.g. Apple iPhone 15 128GB)",
-          "price": number (estimated market price in INR, just the number),
-          "merchantName": "Amazon",
-          "image": "string (URL of a high-resolution realistic image of the product category)"
-        }
-      ]`;
-      
-      const result = await model.generateContent(prompt);
-      const cleanJson = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+      const response = await fetch(geminiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `You are a shopping search engine. Given the user query "${query}":
+              Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
+              ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
+              
+              If single product, generate exactly 3 specific, real, top-selling products matching the query.
+              If comparison, generate exactly 2 specific products representing "${entityInfo.itemA}" and "${entityInfo.itemB}".
+              
+              Ensure you assign HIGHLY ACCURATE estimated market prices in INR and contextually matched high-res tech product images.
+              
+              Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
+              [
+                {
+                  "title": "Specific Product Name",
+                  "price": number,
+                  "merchantName": "Amazon",
+                  "image": "string (URL of a high-resolution realistic image of the product category)"
+                }
+              ]`
+            }]
+          }]
+        })
+      });
+
+      const data = await response.json() as any;
+      const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
       const generatedData = JSON.parse(cleanJson);
       
       if (Array.isArray(generatedData)) {
@@ -131,21 +113,16 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         });
       }
     } catch (e) {
-      console.warn('Gemini fallback generation failed', e);
+      console.warn('Gemini 2.5 Flash search generation failed, using failover:', e);
     }
   }
 
-  // Fallback 2: Cloudflare Workers AI (llama-3-8b-instruct) if Gemini failed or is unconfigured
+  // Failover: Cloudflare Workers AI (llama-3-8b-instruct)
   if (fallbackItems.length === 0 && env?.AI) {
     try {
       const prompt = `You are a shopping search engine. Given the user query "${query}":
       Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
       ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
-      
-      If single product, generate exactly 3 specific, real, top-selling products matching the query.
-      If comparison, generate exactly 2 specific products representing "${entityInfo.itemA}" and "${entityInfo.itemB}".
-      
-      Ensure you assign HIGHLY ACCURATE estimated market prices in INR and contextually matched high-res tech product images.
       
       Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
       [
@@ -157,7 +134,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         }
       ]`;
 
-      const response = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+      const response = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
         messages: [
           { role: 'system', content: 'You are a strict JSON API. Only return raw valid JSON. Never return markdown formatting.' },
           { role: 'user', content: prompt }
@@ -183,15 +160,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
           }
 
           let defaultImg = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
-          if (entityInfo.category === 'finance') {
-            defaultImg = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'travel') {
-            defaultImg = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'gpu') {
-            defaultImg = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'audio') {
-            defaultImg = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400';
-          }
 
           return {
             id: `ai-gen-${Date.now()}-${idx}`,
@@ -210,25 +178,13 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   }
 
-  // If neither SerpAPI nor Gemini nor Workers AI returns items, return clean error response (ZERO FAKE MOCKS)
-  if (fallbackItems.length === 0) {
-    return new Response(JSON.stringify({
-      ok: false,
-      error: `⚠️ Real-Time Live Search currently unavailable for "${query}". Please refine your search query.`,
-      items: []
-    }), {
-      status: 200, // Return status 200 to prevent console red route crashes, handle cleanly on client
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
   // 3-Layer Monetization Conversion for Live Items
   fallbackItems = await Promise.all(fallbackItems.map(async item => {
     item.url = await convertToAffiliateUrl(item.url, env);
     return item;
   }));
 
-  return new Response(JSON.stringify({ ok: true, source: 'live_web_engine', items: fallbackItems }), {
+  return new Response(JSON.stringify({ ok: true, source: fallbackItems.length > 0 ? 'live_web_engine' : 'empty', items: fallbackItems }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

@@ -1,31 +1,37 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
   const url = new URL(request.url);
   const query = url.searchParams.get('q') || 'Best products';
 
-  // Read verified secret directly from Cloudflare environment
-  const apiKey = env?.GEMINI_API_KEY as string | undefined;
+  // Read verified secrets directly from env context
+  const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
 
-  if (!apiKey) {
+  if (!geminiApiKey) {
     console.error("[AXEVORA CRITICAL] GEMINI_API_KEY is missing from env context!");
   }
 
   let reviewMarkdown = "";
   let isComparison = query.toLowerCase().includes('compare') || query.toLowerCase().includes(' vs ') || query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
-  // 1. Primary: Try Gemini 1.5 Flash via REST API (for maximum platform compatibility)
-  if (apiKey) {
+  // 1. Primary: Try Gemini 2.5 Flash via REST API (Chief Shopping Officer & MBA Sales Strategist Persona)
+  if (geminiApiKey) {
     try {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
       const response = await fetch(geminiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are Axevora AI Shopping Assistant. Provide an in-depth, expert review/comparison for the query: "${query}". Include specific product models, key specs, pros, cons, and community sentiment (Reddit/Amazon). Output strictly in clean Markdown.`
+              text: `You are Axevora's Chief Shopping Officer & Senior MBA Sales Strategist. Provide an extremely persuasive, high-converting comparison/review for the query: "${query}". 
+              
+              Follow these expert guidelines:
+              1. PUNCHY HOOK: Start with an energetic 1-line verdict with emojis highlighting value, price-to-performance, and ROI.
+              2. SPEC-ACCURATE ROI: Match features ONLY to the category (e.g. Lounge Access & Rewards for Credit Cards; VRAM & CUDA for GPUs; Bass, Latency & Battery for Audio; CPU, RAM & SSD for Desktops/Laptops).
+              3. verified buyer consensus: Summarize customer sentiment based on Reddit/Amazon forums.
+              4. CLEAR BUYING ACTION: Give a direct, confident recommendation on how to maximize savings.
+              
+              Output strictly in clean, beautiful Markdown.`
             }]
           }]
         })
@@ -43,7 +49,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     try {
       const cfRes = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
         messages: [
-          { role: 'system', content: 'You are Axevora AI Shopping Assistant. Compare products and provide detailed markdown reviews.' },
+          { role: 'system', content: 'You are Axevora\'s Chief Shopping Officer & MBA Sales Strategist. Compare products and provide detailed, persuasive markdown reviews highlighting specifications, ROI, and verified customer consensus.' },
           { role: 'user', content: query }
         ]
       });
@@ -77,7 +83,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     metadata: {
       is_live_web_browsed: true,
       search_sources_used: ["Google Live Search", "Amazon India", "Flipkart", "Reddit R/IndiaTech"],
-      model_used: apiKey && reviewMarkdown ? 'gemini-1.5-flash-rest' : 'workers-ai-llama-3'
+      model_used: geminiApiKey && reviewMarkdown ? 'gemini-2.5-flash-rest' : 'workers-ai-llama-3'
     }
   }), {
     status: 200,
