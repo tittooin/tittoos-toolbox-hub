@@ -7,8 +7,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     geminiKeyPresent: typeof envObj.GEMINI_API_KEY === 'string' && envObj.GEMINI_API_KEY.trim().length > 0,
     earnkaroTokenPresent: typeof envObj.EARNKARO_API_TOKEN === 'string' && envObj.EARNKARO_API_TOKEN.trim().length > 0,
     cuelinksKeyPresent: typeof envObj.CUELINKS_API_KEY === 'string' && envObj.CUELINKS_API_KEY.trim().length > 0,
-    aiBindingPresent: envObj.AI !== undefined && envObj.AI !== null,
-    envKeys: Object.keys(envObj).filter(k => !k.toLowerCase().includes('key') && !k.toLowerCase().includes('token') && !k.toLowerCase().includes('secret'))
+    aiBindingPresent: envObj.AI !== undefined && envObj.AI !== null
   }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }

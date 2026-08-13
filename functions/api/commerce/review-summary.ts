@@ -73,7 +73,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     comparisonMarkdown: reviewMarkdown,
     hookHeader: `Consensus for ${query}`,
     overallSentiment: "Positive",
-    rating: 4.8,
     pros: [],
     cons: [],
     pitch: reviewMarkdown

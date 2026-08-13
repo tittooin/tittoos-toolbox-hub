@@ -123,10 +123,12 @@ export default function ShoppingAssistant() {
           }
         }
           
-        assistantMessage.shouldYouBuy = {
-          decision: reviewData.data.overallSentiment === "Positive" || reviewData.data.rating >= 4 ? "Yes" : "Consider Alternatives",
-          reason: `Based on a rating of ${reviewData.data.rating || 4}/5 and user consensus.`
-        };
+        if (reviewData.data.rating) {
+          assistantMessage.shouldYouBuy = {
+            decision: reviewData.data.overallSentiment === "Positive" || reviewData.data.rating >= 4 ? "Yes" : "Consider Alternatives",
+            reason: `Based on a rating of ${reviewData.data.rating}/5 and user consensus.`
+          };
+        }
 
         if (reviewData.metadata?.search_sources_used) {
           assistantMessage.sources = reviewData.metadata.search_sources_used.map((s: string, idx: number) => ({
