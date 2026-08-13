@@ -17,7 +17,15 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   const isCheaperQuery = query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
 
   let categoryGuardrail = "";
-  if (entityInfo.category === 'gpu') {
+  if (entityInfo.category === 'finance') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are FINANCIAL PRODUCTS (Credit Cards, Loans, Bank Accounts). Focus ONLY on Joining Fee, Annual Fee, Reward Points Rate, Airport Lounge Access, Fuel Surcharge Waiver, Interest Rate, and Eligibility Criteria. NEVER mention Camera, Battery, RAM, Processor, Display, or Hardware terms!`;
+  } else if (entityInfo.category === 'travel') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are TRAVEL & BOOKINGS (Flights, Hotels, Buses, Packages). Focus ONLY on Transit Duration, Seater/Sleeper Comfort, Complimentary Meals, Baggage Allowance, Cancellation Policies, Location/Amenities, and Real Traveler Ratings. NEVER mention Tech, Hardware, or Battery terms!`;
+  } else if (entityInfo.category === 'fashion') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are FASHION & LIFESTYLE (Apparel, Watches, Shoes, Accessories). Focus ONLY on Material Quality, Fit & Size, Aesthetics, Durability, Brand Value, and Comfort. NEVER mention Electronic/Tech terms!`;
+  } else if (entityInfo.category === 'services') {
+    categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: Target products are DIGITAL SERVICES (Web Hosting, Cloud, Software, VPN, Subscriptions). Focus ONLY on Uptime, Bandwidth, Storage, Security, Support, and Subscription Pricing. NEVER mention Physical Hardware/Battery terms!`;
+  } else if (entityInfo.category === 'gpu') {
     categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: The target products are GRAPHICS CARDS / GPUs / PC HARDWARE. Focus ONLY on VRAM size (GB GDDR6X), CUDA Cores / Stream Processors, Ray Tracing / DLSS 3.5 support, TDP Power Draw, 1440p / 4K Gaming FPS, and AI / Deep Learning acceleration. NEVER mention Battery, Ergonomics, Display screens, Headphones, or Phone cameras!`;
   } else if (entityInfo.category === 'audio') {
     categoryGuardrail = `CRITICAL CATEGORY GUARDRAIL: The target products are AUDIO DEVICES (Earbuds/Headphones/Speakers). DO NOT mention Camera, Megapixels, OIS, Telephoto Zoom, AMOLED Display, Screen, OS, or Phone savings. Focus ONLY on Sound Quality, Bass Drivers, ANC, Battery Playtime, Mic Quality, and Audio Comfort. Calculate savings based ONLY on audio gear price range (e.g. Save ₹1,000 to ₹3,000)!`;
@@ -178,7 +186,41 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       let s2_2 = "🎨 Custom Glyph Interface lighting";
       let s2_3 = "🔋 5000mAh Battery with 2-day backup";
 
-      if (cat === 'gpu') {
+      if (cat === 'finance') {
+        b1 = "HDFC Regalia Gold Credit Card";
+        b2 = "SBI Cashback Credit Card";
+        headline = "Looking for high reward rates and complimentary airport lounge access? Live web data shows these top-rated financial cards:";
+        pickReason1 = "Unlimited 4X reward points on retail spends with complimentary domestic & international airport lounge access.";
+        pickReason2 = "Direct 5% cashback on all online shopping transactions without merchant restrictions.";
+        con1 = "Annual fee applies if annual spend milestone is not met.";
+        con2 = "Does not include complimentary airport lounge access.";
+        savingsText = "you maximize **₹12,000 to ₹30,000 yearly in cashbacks and travel rewards!**";
+
+        s1_1 = "💳 4X Reward Points on Spends";
+        s1_2 = "✈️ 12 Complimentary Airport Lounge Visits/yr";
+        s1_3 = "⛽ 1% Fuel Surcharge Waiver across India";
+
+        s2_1 = "💵 5% Cashback on All Online Shopping";
+        s2_2 = "💳 1% Cashback on Offline Retail Purchases";
+        s2_3 = "🔄 Zero Joining Fee on Promotional Approval";
+      } else if (cat === 'travel') {
+        b1 = "MakeMyTrip Flight & Hotel Combos";
+        b2 = "Goibibo Travel Special Deals";
+        headline = "Looking for budget-friendly travel bookings with flexible cancellation? Live web data shows these top choices:";
+        pickReason1 = "Instant discount codes + free date change coverage on domestic flight bookings.";
+        pickReason2 = "Zero booking fees and verified hotel stays with complimentary breakfast.";
+        con1 = "Peak season holiday surcharges may apply.";
+        con2 = "Non-refundable on instant last-minute deals.";
+        savingsText = "you save **₹3,000 to ₹8,000 per booking** with bundled travel discounts!";
+
+        s1_1 = "✈️ Instant Bank Cashback + Zero Cancellation Fee Add-on";
+        s1_2 = "🏨 Free Breakfast & Room Upgrade at Partner Hotels";
+        s1_3 = "🧳 15kg Extra Baggage Allowance Coupons";
+
+        s2_1 = "🚌 Volvo AC Sleeper Bus Discounts";
+        s2_2 = "🏨 24/7 Travel Assistance & Instant Refunds";
+        s2_3 = "💳 Extra 10% Off via Axis/HDFC Cards";
+      } else if (cat === 'gpu') {
         b1 = "NVIDIA GeForce RTX 4060 8GB (@ ₹28,990)";
         b2 = "AMD Radeon RX 7600 XT 16GB (@ ₹32,990)";
         headline = "Why spend ₹100,000+ when you can get high 1440p gaming & AI coding performance for under ₹35,000? Live web data shows these GPU champions:";
@@ -391,7 +433,25 @@ ${headline}
         `💳 **Premium Pricing:** Requires a higher initial investment for flagship tier performance.`
       ];
 
-      if (cat === 'gpu') {
+      if (cat === 'finance') {
+        singlePros = [
+          `💳 **High Reward Rate:** Earn up to 5% cashback or 4X reward points on daily spends.`,
+          `✈️ **Complimentary Lounge Access:** Premium domestic & international airport lounge visits.`,
+          `⛽ **Fuel Surcharge Waiver:** 1% surcharge waiver across fuel outlets nationwide.`
+        ];
+        singleCons = [
+          `💳 **Annual Fee Threshold:** Mandatory annual spend target to waive annual membership charges.`
+        ];
+      } else if (cat === 'travel') {
+        singlePros = [
+          `✈️ **Instant Booking Discounts:** Exclusive bank offers and zero convenience fee codes.`,
+          `🏨 **Verified Quality Stays:** Complimentary breakfast & room upgrade options at partner hotels.`,
+          `🧳 **Flexible Cancellation:** Hassle-free refund & free date change coverage.`
+        ];
+        singleCons = [
+          `📅 **Peak Season Surcharges:** Ticket & hotel prices fluctuate during holiday periods.`
+        ];
+      } else if (cat === 'gpu') {
         singlePros = [
           `🚀 **High-Speed VRAM & CUDA Architecture:** Optimized for AI coding, deep learning & 1440p/4K rendering.`,
           `⚡ **DLSS 3.5 & Tensor Cores:** Blazing fast AI frame generation and ray tracing acceleration.`,

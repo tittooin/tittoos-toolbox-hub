@@ -125,7 +125,21 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     let img2 = 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&q=80&w=400';
 
     if (isCheaper) {
-      if (entityInfo.category === 'gpu') {
+      if (entityInfo.category === 'finance') {
+        title1 = "HDFC Regalia Gold Credit Card";
+        title2 = "SBI Cashback Credit Card";
+        price1 = 2500;
+        price2 = 999;
+        img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'travel') {
+        title1 = "MakeMyTrip Flight & Hotel Packages";
+        title2 = "Goibibo Travel Bus & Hotel Deals";
+        price1 = 4999;
+        price2 = 1999;
+        img1 = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'gpu') {
         title1 = "NVIDIA GeForce RTX 4060 8GB GDDR6";
         title2 = "AMD Radeon RX 7600 XT 16GB";
         price1 = 28990;
@@ -155,7 +169,21 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
       }
     } else if (isTopRated) {
-      if (entityInfo.category === 'gpu') {
+      if (entityInfo.category === 'finance') {
+        title1 = "Axis Bank Magnus Credit Card";
+        title2 = "HDFC Diners Club Black Credit Card";
+        price1 = 12500;
+        price2 = 10000;
+        img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'travel') {
+        title1 = "Taj Hotels Luxury Stay Packages";
+        title2 = "Emirates First Class Flight Bookings";
+        price1 = 24999;
+        price2 = 89999;
+        img1 = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'gpu') {
         title1 = "NVIDIA GeForce RTX 4090 24GB OC Edition";
         title2 = "NVIDIA GeForce RTX 4080 Super 16GB";
         price1 = 189900;
@@ -185,7 +213,21 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         img2 = 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&q=80&w=400';
       }
     } else {
-      if (entityInfo.category === 'gpu') {
+      if (entityInfo.category === 'finance') {
+        title1 = "HDFC Regalia Gold Credit Card";
+        title2 = "SBI Cashback Credit Card";
+        price1 = 2500;
+        price2 = 999;
+        img1 = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'travel') {
+        title1 = "MakeMyTrip Flight & Hotel Booking";
+        title2 = "Goibibo Travel Packages";
+        price1 = 4999;
+        price2 = 2999;
+        img1 = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
+        img2 = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=400';
+      } else if (entityInfo.category === 'gpu') {
         title1 = "NVIDIA GeForce RTX 4070 Super 12GB";
         title2 = "NVIDIA GeForce RTX 4060 Ti 16GB";
         price1 = 62990;
