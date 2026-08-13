@@ -43,10 +43,11 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
   }
 
   // 2. Fallback to Cloudflare Workers AI
+  const FALLBACK_MODEL = '@cf/zai-org/glm-4.7-flash';
   if (!reviewMarkdown && env?.AI) {
     try {
-      debugLog.push("Attempting Cloudflare Workers AI (@cf/meta/llama-3-8b-instruct)...");
-      const cfRes = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
+      debugLog.push(`Attempting Cloudflare Workers AI (${FALLBACK_MODEL})...`);
+      const cfRes = await (env.AI as any).run(FALLBACK_MODEL, {
         messages: [
           { role: 'system', content: 'You are Axevora AI Shopping Assistant. Compare products in clean markdown.' },
           { role: 'user', content: query }

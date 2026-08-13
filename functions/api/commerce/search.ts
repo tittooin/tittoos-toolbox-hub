@@ -134,7 +134,8 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         }
       ]`;
 
-      const response = await (env.AI as any).run('@cf/meta/llama-3-8b-instruct', {
+      const FALLBACK_MODEL = '@cf/zai-org/glm-4.7-flash';
+      const response = await (env.AI as any).run(FALLBACK_MODEL, {
         messages: [
           { role: 'system', content: 'You are a strict JSON API. Only return raw valid JSON. Never return markdown formatting.' },
           { role: 'user', content: prompt }
