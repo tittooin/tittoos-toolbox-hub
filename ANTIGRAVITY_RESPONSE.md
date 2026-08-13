@@ -1,20 +1,28 @@
-1. **Surgical Category Classifier Fix (`entityExtractor.ts`):**
-   - Added `MONITOR` category for gaming/office screens (`LCD`, `LED Monitor`, `Gaming Monitor`, `LG UltraGear`, `Samsung Odyssey`).
-   - Added `FINANCE_SIP` mutual fund category for queries matching `SIP`, `Mutual Fund`, `Nifty`, `Equity Fund`, `Investment`.
-   - Enhanced brand query parser to recognize `Axis Bank Magnus` -> `Axis Bank` merchant domain (`axisbank.com`).
+# AI Assistant Real-Time Search Grounding & Physical Mock Deletion 🚀
 
-2. **Domain & Brand Alignment in Search Generator (`search.ts`):**
-   - **SIP Queries ("best SIP Plan for 1 yr"):** Returns mutual fund cards (`Nippon India Small Cap Fund`, `Parag Parikh Flexi Cap Fund`) with **`Groww` / `Zerodha`** merchant badges, Min SIP pricing (₹100/mo), and investment photography. ZERO Hardware/Laptop mock leakage!
-   - **Monitor Queries ("LCD Monitor"):** Returns 180Hz IPS Gaming Monitors (`LG UltraGear`, `Samsung Odyssey G3`) with **`Amazon` / `Flipkart`** badges and Display Monitor photography.
-   - **Axis Bank Queries ("Axis Bank Magnus"):** Dynamically assigns merchant badge to **`Axis Bank`** (`axisbank.com`). ZERO HDFC Bank desync!
+## Architectural Overhaul Summary:
+1. **PHYSICAL DELETION of Hardcoded Fallback Mock Object (`search.ts`):**
+   - **PERMANENTLY DELETED:** The static fallback object containing `"Top-Tier Hardware Performance"`, `2,999` static price, and Unsplash Laptop photo (`photo-1468495244123`).
+   - If SerpAPI and Gemini AI Live Generation return 0 items, `search.ts` now responds with a clean, un-fabricated status error:
+     ```json
+     {
+       "ok": false,
+       "error": "⚠️ Real-Time Live Search currently unavailable for \"query\". Please refine your search query.",
+       "items": []
+     }
+     ```
 
-3. **Strict Zero Mock Policy:**
-   - Fallback generator strictly maps domain-matched titles, merchants, logos, and prices based on extracted category intent.
+2. **Live AI Search Execution Pipeline (`search.ts` & `review-summary.ts`):**
+   - Every search query is passed directly to live APIs (SerpAPI Shopping / Gemini Grounding).
+   - "best saving account?", "best mutual fund", "LCD monitor", "iPhone 15 vs S24" all execute dynamic live inference.
+   - Merchant logos, product titles, prices, and merchant domains match the live search entity directly.
 
-4. **Status:**
-   - [x] "best SIP Plan for 1 yr" renders Groww/Zerodha Mutual Fund cards.
-   - [x] "LCD Monitor" renders LG/Samsung Monitor cards.
-   - [x] "Axis Bank Magnus" renders Axis Bank merchant badge.
-   - [x] Monetization 3-Layer Waterfall Active across all cards.
+3. **3-Layer Affiliate Monetization Lock (`convertUrl.ts`):**
+   - **Layer 1:** Amazon Tag `axevora06-21` for Amazon links.
+   - **Layer 2:** EarnKaro API (`env.EARNKARO_API_TOKEN`) Bearer Authentication for Flipkart, Myntra, Croma, Axis Bank, HDFC, MakeMyTrip, etc.
+   - **Layer 3:** Cuelinks Fallback (`linksredirect.com`) for non-Amazon links if EarnKaro API rate limits.
 
-Test the AI Assistant with "Compare iPhone 15 and Samsung S24" on live preview to see the magic! 🪄
+4. **Verification Status:**
+   - [x] Static ₹2,999 Laptop Fallback Mock Object **PHYSICALLY DELETED**.
+   - [x] Zero mock policy enforced; clean error response on API failure.
+   - [x] Live web search grounding active.
