@@ -13,9 +13,15 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   }
 
+  // Safely extract variables from Cloudflare context env
+  const apiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
+  
+  // Telemetry trace for debugging bindings in Cloudflare console
+  console.log("[AXEVORA TRACE] Gemini Key Present:", !!apiKey);
+  console.log("[AXEVORA TRACE] Workers AI Present:", !!env?.AI);
+
   const entityInfo = extractEntities(query);
   const isCheaperQuery = query.toLowerCase().includes('cheaper') || query.toLowerCase().includes('budget alternatives') || query.toLowerCase().includes('lower price');
-  const apiKey = (env?.GEMINI_API_KEY || env?.GEMINI_KEY || env?.GOOGLE_AI_KEY || env?.API_KEY || env?.VITE_GEMINI_API_KEY) as string | undefined;
 
   // ── DOMAIN-ACCURATE CATEGORY GUARDRAILS ──────────────────────────────────
   let categoryGuardrail = "";
@@ -206,7 +212,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   }
 
-  // Both providers failed — return clean 503, NEVER fabricate mock data
+  // Both providers failed — return clean 200 status with ok: false to prevent browser network crashes
   if (!parsedData) {
     console.error(`[REVIEW-SUMMARY] All AI providers failed for query: "${query}". Last error: ${lastError}`);
     return new Response(JSON.stringify({
@@ -215,7 +221,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       debug: lastError,
       items: []
     }), {
-      status: 503,
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   }
