@@ -92,11 +92,19 @@ Truthful fallback outputs the trace log detailing the missing config parameters 
 - [x] AXEVORA_IMPLEMENTATION_RESPONSE.md created/updated: **PASS**
 
 ## 22. Remaining Issues
-- **Cloudflare Console Environment Variables Mapping**: The secrets `GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, and `CUELINKS_API_KEY` along with the `AI` worker binding must be explicitly added to the specific environment/project configuration that is currently serving the production domain `axevora.com` inside the Cloudflare Dashboard, and then a clean deployment must be built to activate them in the Pages Functions runtime context.
+- **BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED**: The application codebase is verified and up to date, but the manual action is required on the Cloudflare Dashboard:
+  1. Go to **Cloudflare Pages** dashboard -> Select project **axevora-toolbox** (or active Pages deployment project).
+  2. Navigate to **Settings** -> **Environment variables** (under **Production** and **Preview**).
+  3. Add the exact environment secrets:
+     - `GEMINI_API_KEY`: [Gemini API Key Value]
+     - `EARNKARO_API_TOKEN`: [EarnKaro API Token Value]
+     - `CUELINKS_API_KEY`: [Cuelinks API Key Value]
+  4. Navigate to **Settings** -> **Functions** -> **Workers AI Bindings** and bind the name `AI` to enable Workers AI inference.
+  5. Go to **Deployments** and click **Retry deployment** or trigger a fresh production build to inject these bindings into the Pages Functions runtime context.
 
 ## 23. Commit/Deployment
 Committed code edits and pushed to target.
 
 ## 24. Final Status
-INCOMPLETE
+INCOMPLETE (BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED)
 
