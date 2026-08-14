@@ -42,12 +42,43 @@ export async function convertToAffiliateUrl(rawUrl: string, env?: Record<string,
   }
 
 
-  // Layer 3: Cuelinks Fallback (Supports env.CUELINKS_API_KEY, env.CUELINKS_TOKEN, or Publisher ID)
+  // Layer 3: Cuelinks Official V3 API Conversion with Token & Link Kit Fallback
   const cuelinksApiKey = (env?.CUELINKS_API_KEY || env?.CUELINKS_TOKEN || env?.CUELINKS_KEY) as string | undefined;
-  const encodedDestination = encodeURIComponent(rawUrl);
+  
   if (cuelinksApiKey && typeof cuelinksApiKey === 'string' && cuelinksApiKey.trim().length > 0) {
-    return `https://linksredirect.com/?pub_id=186358&apikey=${cuelinksApiKey.trim()}&subid=axevora&source=linkkit&url=${encodedDestination}`;
+    try {
+      const authHeader = cuelinksApiKey.startsWith('Token ') ? cuelinksApiKey.trim() : `Token ${cuelinksApiKey.trim()}`;
+      const response = await fetch('https://developers.cuelinks.com/pub_api/v3/links/convert', {
+        method: 'POST',
+        headers: {
+          'Authorization': authHeader,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          url: rawUrl,
+          subid: 'axevora_search'
+        })
+      });
+
+      if (response.ok) {
+        const resData = (await response.json()) as Record<string, unknown>;
+        const payload = (resData?.data || resData) as Record<string, unknown>;
+        const trackingUrl = payload?.tracking_url as string | undefined;
+        const affiliated = payload?.affiliated !== undefined ? Boolean(payload.affiliated) : true;
+
+        if (affiliated && trackingUrl && (trackingUrl.startsWith('http://') || trackingUrl.startsWith('https://'))) {
+          return trackingUrl;
+        }
+      }
+    } catch (err) {
+      console.warn('[MONETIZATION] Cuelinks V3 API convert failed, using Link Kit fallback:', err);
+    }
   }
+
+  // Layer 3 Fallback: Link Kit Public Publisher ID Wrapper
+  const encodedDestination = encodeURIComponent(rawUrl);
   return `https://linksredirect.com/?pub_id=186358&subid=axevora&source=linkkit&url=${encodedDestination}`;
 }
+
 
