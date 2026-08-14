@@ -144,8 +144,46 @@ Live HTTPS GET request to `https://axevora.com/api/commerce/diagnostic`:
 
 ---
 
-## 7. Final Monetization Status
-🎉 **THREE-LAYER MONETIZATION ENGINE IS FULLY VERIFIED, ACTIVE, AND REGRESSION-LOCKED ON `AXEVORA.COM`**.
+## 7. Monetization Engine Status: LOCKED 🔒
+**THREE-LAYER MONETIZATION ENGINE IS FULLY VERIFIED, ACTIVE, AND REGRESSION-LOCKED ON `AXEVORA.COM`**.
+No modifications will be made to the monetization layer during future tasks unless a regression is observed.
+
+---
+
+## 8. AI Infrastructure & Failover Architecture
+
+### A. Primary AI Engine: Google Gemini 2.5 Flash
+- **API Endpoint**: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
+- **Authentication**: `context.env.GEMINI_API_KEY` (Verified Present in Cloudflare Pages Production)
+- **Status**: **`PASS`** ✅
+
+### B. Secondary AI Engine: Cloudflare Workers AI (`@cf/zai-org/glm-4.7-flash`)
+- **Runtime Binding**: `context.env.AI` (Project: `tittoos-toolbox-hub` -> Settings -> Functions -> Workers AI Bindings)
+- **Binding Name**: `AI`
+- **Fallback Target Model**: `@cf/zai-org/glm-4.7-flash`
+- **Status**: **`PENDING DASHBOARD BINDING`** (Current runtime diagnostic shows `aiBindingPresent: false`)
+
+### C. True AI Failover Flow (Separation of Search vs Analysis)
+```
+User Product Query
+       │
+       ▼
+Search & Entity Extraction (Web / Product Database)
+       │
+       ▼
+Primary AI Analysis: Gemini 2.5 Flash
+       │
+       ├─► SUCCESS: Persuasive Review / Deal Normalization
+       │
+       └─► FAILURE (Quota / Timeout)
+              │
+              ▼
+           Workers AI Failover: @cf/zai-org/glm-4.7-flash
+              │
+              ▼
+           Deal Normalization & Comparison Output
+```
+
 
 
 
