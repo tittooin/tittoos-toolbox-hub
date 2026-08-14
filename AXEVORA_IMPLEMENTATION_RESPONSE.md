@@ -1,81 +1,100 @@
 # Axevora Implementation Response
 
-## 1. Task & Context
-Investigate and resolve runtime secret delivery issues (`GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, `CUELINKS_API_KEY`) and Workers AI (`env.AI`) bindings in Cloudflare production environment, centralize Workers AI fallback to active `@cf/zai-org/glm-4.7-flash`, audit hardcoded ratings/consensus, enforce a strict zero-mock policy, and document full tracing of commerce calls.
+## 1. Executive Summary & Critical Root Cause Finding
 
-## 2. Production Deployment Chain & Architecture Trace
+**THE ROOT CAUSE HAS BEEN IDENTIFIED CONCRETELY VIA LIVE CLOUDFLARE API INSPECTION:**
 
-### A. Deployment Mechanism
-- **Frontend & API Functions**: Deployed via **Cloudflare Pages** (with file-based routing via `functions/api/*`).
-- **Real-Time Live Chat**: Deployed via separate **Cloudflare Worker** (`workers/chat-server.js`) with Durable Objects on `chat.tittoosss.workers.dev`.
-- **Primary Domain**: `https://axevora.com/` maps to the **Cloudflare Pages** project (`axevora-toolbox`).
+Your Cloudflare account contains two distinct Pages projects connected to the same GitHub repository:
+1. **`tittoos-toolbox-hub`**:
+   - Domains: `tittoos-toolbox-hub.pages.dev` (Protected behind Cloudflare Access Login)
+   - Secrets Configured: `GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, `CUELINKS_API_KEY`, `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`
+2. **`tittoos-tool`** (**THE ACTIVE PRODUCTION PROJECT SERVING AXEVORA.COM**):
+   - Domains: `axevora.com`, `www.axevora.com`, `www.tittoos.online`, `tittoos-tool.pages.dev`
+   - Secrets Configured: **ONLY `TURNSTILE_SECRET_KEY`** (Missing `GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, `CUELINKS_API_KEY`, and Workers AI `AI` binding)
 
-### B. Current Repository Configuration (`wrangler.toml`)
-- The repository `wrangler.toml` targets `name = "chat"` and `main = "workers/chat-server.js"` with Durable Object class `ChatRoom`.
-- **Crucial Architectural Rule**: The root `wrangler.toml` does NOT control Cloudflare Pages Functions environment variables. Cloudflare Pages Functions receive their secrets (`GEMINI_API_KEY`, etc.) and bindings (`env.AI`) strictly from the **Cloudflare Pages Dashboard Settings** (`Settings` -> `Environment variables` and `Settings` -> `Functions`).
+---
 
-### C. Live Production Diagnostic Trace
-Live HTTPS GET request to `https://axevora.com/api/commerce/diagnostic`:
-```json
-{
-  "ok": true,
-  "geminiKeyPresent": false,
-  "earnkaroTokenPresent": false,
-  "cuelinksKeyPresent": false,
-  "aiBindingPresent": false
-}
+## 2. Hard Evidence from Live Production Inspection
+
+### A. Cloudflare Pages Project List (`wrangler pages project list`)
 ```
-**Evidence Finding**: The production runtime context (`context.env`) in the live Cloudflare Pages deployment does NOT have access to the dashboard secrets or Workers AI binding.
+┌────────────────────────┬──────────────────────────────────────────────────────────────────────────┬──────────────┐
+│ Project Name           │ Project Domains                                                          │ Git Provider │
+├────────────────────────┼──────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ tittoos-toolbox-hub    │ tittoos-toolbox-hub.pages.dev                                            │ Yes          │
+├────────────────────────┼──────────────────────────────────────────────────────────────────────────┼──────────────┤
+│ tittoos-tool           │ tittoos-tool.pages.dev, axevora.com, www.axevora.com, www.tittoos.online │ Yes          │
+└────────────────────────┴──────────────────────────────────────────────────────────────────────────┴──────────────┘
+```
 
-## 3. Root Cause Analysis
-1. **Secrets / Bindings Environment Mismatch or Stale Build in Cloudflare Pages**:
-   - Secrets may have been set only in **Preview** environment instead of **Production** environment.
-   - OR, secrets and Workers AI binding were added to the dashboard AFTER the last deployment, and Cloudflare Pages Functions require a **fresh build / deployment retry** to bake runtime bindings into the Pages worker bundle.
-2. **Dashboard Actions Outside Agent Local Boundary**:
-   - The agent has full control of Git, code, and Worker deployments via CLI (`wrangler deploy` for chat worker), but Cloudflare Pages project secrets dashboard is managed at the Cloudflare account level.
+### B. Secret Audit of `tittoos-toolbox-hub` (`wrangler pages secret list --project-name=tittoos-toolbox-hub`)
+```
+The "production" environment of Pages project "tittoos-toolbox-hub" has access to:
+  - CUELINKS_API_KEY: Value Encrypted
+  - EARNKARO_API_TOKEN: Value Encrypted
+  - GEMINI_API_KEY: Value Encrypted
+  - RESEND_API_KEY: Value Encrypted
+  - TURNSTILE_SECRET_KEY: Value Encrypted
+```
 
-## 4. Required Production Bindings (LOCKED Names)
-The production Pages Functions runtime requires:
-1. `GEMINI_API_KEY` (Secret String)
-2. `EARNKARO_API_TOKEN` (Secret String)
-3. `CUELINKS_API_KEY` (Secret String)
-4. `AI` (Cloudflare Workers AI Binding)
+### C. Secret Audit of `tittoos-tool` (`wrangler pages secret list --project-name=tittoos-tool`)
+```
+The "production" environment of Pages project "tittoos-tool" has access to:
+  - TURNSTILE_SECRET_KEY: Value Encrypted
+```
+*(Notice: `GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, and `CUELINKS_API_KEY` are completely absent in `tittoos-tool`)*.
 
-## 5. Exact Manual Actions Required in Cloudflare Dashboard
-The human operator must execute these exact steps in the Cloudflare Dashboard:
+---
 
-1. **Log in to Cloudflare Dashboard** -> Navigate to **Workers & Pages** -> Select the active Pages project (e.g., `axevora-toolbox` / `tittoos-toolbox-hub`).
-2. Go to **Settings** -> **Environment variables**:
-   - Ensure the variables are added under the **Production** tab (not just Preview):
-     - Variable Name: `GEMINI_API_KEY` | Value: *[Your Google AI Studio Gemini API Key]*
-     - Variable Name: `EARNKARO_API_TOKEN` | Value: *[Your EarnKaro Token]*
-     - Variable Name: `CUELINKS_API_KEY` | Value: *[Your Cuelinks API Key]*
+## 3. Why `axevora.com` Returns All `false`
+When requests hit `https://axevora.com/api/commerce/diagnostic`:
+1. Cloudflare routes `axevora.com` to the project **`tittoos-tool`**.
+2. **`tittoos-tool`** executes the Pages Function `functions/api/commerce/diagnostic.ts`.
+3. Its `context.env` contains only `TURNSTILE_SECRET_KEY`.
+4. Therefore:
+   - `geminiKeyPresent = false`
+   - `earnkaroTokenPresent = false`
+   - `cuelinksKeyPresent = false`
+   - `aiBindingPresent = false`
+
+You (or previous setup) added `GEMINI_API_KEY` to the **`tittoos-toolbox-hub`** project in Cloudflare Dashboard, but the custom domain `axevora.com` is attached to the **`tittoos-tool`** project!
+
+---
+
+## 4. Single-Action Permanent Resolution
+
+You have two clean ways to resolve this immediately:
+
+### Recommended Option A: Add Secrets & AI Binding to `tittoos-tool` Project in Cloudflare Dashboard
+
+1. Open **Cloudflare Dashboard** -> **Workers & Pages**.
+2. Click on the project **`tittoos-tool`** (the one that shows `axevora.com`).
+3. Navigate to **Settings** -> **Environment variables**:
+   - Add under **Production**:
+     - `GEMINI_API_KEY`: *[Your Gemini API Key]*
+     - `EARNKARO_API_TOKEN`: *[Your EarnKaro Token]*
+     - `CUELINKS_API_KEY`: *[Your Cuelinks API Key]*
    - Click **Save**.
-3. Go to **Settings** -> **Functions**:
-   - Scroll down to **Workers AI Bindings**.
-   - Click **Add binding**.
-   - Binding name: `AI` (must be exact uppercase `AI`).
+4. Navigate to **Settings** -> **Functions**:
+   - Scroll to **Workers AI Bindings**.
+   - Click **Add binding** -> Name: `AI`.
    - Click **Save**.
-4. Go to **Deployments** tab:
-   - Click on the latest Production deployment (`...` menu) -> Select **Retry deployment** (OR push a commit to trigger a fresh production build).
-   - *Note: In Cloudflare Pages, environment variable changes take effect ONLY on deployments built AFTER the variable was added.*
+5. Navigate to **Deployments**:
+   - Click **...** on latest Production deployment -> **Retry deployment** (or push a commit to trigger a build).
 
-## 6. Verification Plan Post-Configuration (Execution Gates)
+---
 
-- **GATE 1 — Runtime Diagnostic**:
-  `https://axevora.com/api/commerce/diagnostic` must return:
-  `geminiKeyPresent: true`, `earnkaroTokenPresent: true`, `cuelinksKeyPresent: true`, `aiBindingPresent: true`.
-- **GATE 2 — AI Invocation**:
-  Verify real Gemini 2.5 Flash invocation and Workers AI (`@cf/zai-org/glm-4.7-flash`) failover.
-- **GATE 3 — Retrieval & Intelligence**:
-  Verify real shopping queries ("Compare iPhone 15 and Samsung S24") without mock data.
-- **GATE 4 — Zero-Mock Rating Compliance**:
-  Verified: Static `4.8/5` rating has been purged from frontend and backend.
-- **GATE 5 — Three-Tier Monetization**:
-  Verify Amazon (`axevora06-21`), EarnKaro, and Cuelinks URL conversion pipelines.
+### Alternative Option B: Point `axevora.com` to `tittoos-toolbox-hub`
+If you intended for `tittoos-toolbox-hub` to be your main project:
+1. In Cloudflare Dashboard, go to **`tittoos-tool`** -> **Custom domains** -> Remove `axevora.com` and `www.axevora.com`.
+2. Go to **`tittoos-toolbox-hub`** -> **Custom domains** -> Add `axevora.com` and `www.axevora.com` (and remove the Cloudflare Access application policy if you want it publicly accessible).
 
-## 7. Status
-**BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED**
-(Codebase is clean, tested, and ready; awaiting Cloudflare Pages Dashboard environment variable injection and build retry by operator).
+---
+
+## 5. Status
+**BLOCKED — OPERATOR ACTION ON `tittoos-tool` PROJECT REQUIRED**
+
+Once the secrets and `AI` binding are configured on the **`tittoos-tool`** project, `https://axevora.com/api/commerce/diagnostic` will immediately return all `true` on next deployment, and we will proceed to Gate 2 (AI Invocations) and Gate 3 (Commerce Flow).
+
 
 
