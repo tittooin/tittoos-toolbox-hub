@@ -1,110 +1,81 @@
 # Axevora Implementation Response
 
-## 1. Task
+## 1. Task & Context
 Investigate and resolve runtime secret delivery issues (`GEMINI_API_KEY`, `EARNKARO_API_TOKEN`, `CUELINKS_API_KEY`) and Workers AI (`env.AI`) bindings in Cloudflare production environment, centralize Workers AI fallback to active `@cf/zai-org/glm-4.7-flash`, audit hardcoded ratings/consensus, enforce a strict zero-mock policy, and document full tracing of commerce calls.
 
-## 2. Initial Symptoms
-Diagnostic checks inside the live browser preview showed `geminiKeyPresent` and `aiBindingPresent` returning `false`/`undefined`. As a result, the live shopping engine failed back to debug trace outputs rather than live AI comparisons, while the UI displayed mock recommendations:
-- "Recommended to Buy Now"
-- "Based on a rating of 4.8/5 and user consensus."
+## 2. Production Deployment Chain & Architecture Trace
 
-## 3. Root Cause
-1. **Cloudflare Context/Deployment Stale**: The secrets dashboard in Cloudflare Pages was configured, but Pages Functions do not receive environment/binding updates until a new deployment/build is triggered in Cloudflare.
-2. **Fabricated Rating Fallbacks**: The frontend `ShoppingAssistant.tsx` fell back to rendering a hardcoded default rating of `4.8` when the commerce endpoints did not return a verified rating value.
-3. **Diagnostic Leak Risk**: The `/api/commerce/diagnostic` endpoint returned internal environment key lists.
+### A. Deployment Mechanism
+- **Frontend & API Functions**: Deployed via **Cloudflare Pages** (with file-based routing via `functions/api/*`).
+- **Real-Time Live Chat**: Deployed via separate **Cloudflare Worker** (`workers/chat-server.js`) with Durable Objects on `chat.tittoosss.workers.dev`.
+- **Primary Domain**: `https://axevora.com/` maps to the **Cloudflare Pages** project (`axevora-toolbox`).
 
-## 4. Runtime Investigation
-The diagnostic JSON payload showed active assets and SQLite database bindings but was missing variables and AI targets because a fresh build/deployment was not initialized.
+### B. Current Repository Configuration (`wrangler.toml`)
+- The repository `wrangler.toml` targets `name = "chat"` and `main = "workers/chat-server.js"` with Durable Object class `ChatRoom`.
+- **Crucial Architectural Rule**: The root `wrangler.toml` does NOT control Cloudflare Pages Functions environment variables. Cloudflare Pages Functions receive their secrets (`GEMINI_API_KEY`, etc.) and bindings (`env.AI`) strictly from the **Cloudflare Pages Dashboard Settings** (`Settings` -> `Environment variables` and `Settings` -> `Functions`).
 
-## 5. Cloudflare Changes
-Initiated code builds and deployments to inject the verified secrets dashboard bindings into the production Pages Functions runtime.
+### C. Live Production Diagnostic Trace
+Live HTTPS GET request to `https://axevora.com/api/commerce/diagnostic`:
+```json
+{
+  "ok": true,
+  "geminiKeyPresent": false,
+  "earnkaroTokenPresent": false,
+  "cuelinksKeyPresent": false,
+  "aiBindingPresent": false
+}
+```
+**Evidence Finding**: The production runtime context (`context.env`) in the live Cloudflare Pages deployment does NOT have access to the dashboard secrets or Workers AI binding.
 
-## 6. Files Inspected
-- [`functions/api/commerce/review-summary.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/review-summary.ts)
-- [`functions/api/commerce/search.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/search.ts)
-- [`src/pages/shopping/ShoppingAssistant.tsx`](file:///g:/axevora.com/tittoos-toolbox-hub/src/pages/shopping/ShoppingAssistant.tsx)
-- [`functions/api/commerce/diagnostic.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/diagnostic.ts)
+## 3. Root Cause Analysis
+1. **Secrets / Bindings Environment Mismatch or Stale Build in Cloudflare Pages**:
+   - Secrets may have been set only in **Preview** environment instead of **Production** environment.
+   - OR, secrets and Workers AI binding were added to the dashboard AFTER the last deployment, and Cloudflare Pages Functions require a **fresh build / deployment retry** to bake runtime bindings into the Pages worker bundle.
+2. **Dashboard Actions Outside Agent Local Boundary**:
+   - The agent has full control of Git, code, and Worker deployments via CLI (`wrangler deploy` for chat worker), but Cloudflare Pages project secrets dashboard is managed at the Cloudflare account level.
 
-## 7. Files Changed
-- [`functions/api/commerce/diagnostic.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/diagnostic.ts)
-- [`functions/api/commerce/review-summary.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/review-summary.ts)
-- [`src/pages/shopping/ShoppingAssistant.tsx`](file:///g:/axevora.com/tittoos-toolbox-hub/src/pages/shopping/ShoppingAssistant.tsx)
+## 4. Required Production Bindings (LOCKED Names)
+The production Pages Functions runtime requires:
+1. `GEMINI_API_KEY` (Secret String)
+2. `EARNKARO_API_TOKEN` (Secret String)
+3. `CUELINKS_API_KEY` (Secret String)
+4. `AI` (Cloudflare Workers AI Binding)
 
-## 8. Code Changes
-- **Diagnostic API Security Overhaul**: Updated the payload in `diagnostic.ts` to output only status booleans, completely stripping internal environment key lists.
-- **Frontend Zero-Mock Rating Condition**: Modified `ShoppingAssistant.tsx` to conditionally build the `shouldYouBuy` user consensus recommendation box *only* if the API returns a verified rating.
-- **Backend Zero-Mock Policy**: Removed the static `rating: 4.8` mock fallback from the responseData inside `review-summary.ts`.
+## 5. Exact Manual Actions Required in Cloudflare Dashboard
+The human operator must execute these exact steps in the Cloudflare Dashboard:
 
-## 9. AI Model / Failover Changes
-Fallback config is centralized and points to the non-deprecated, active model `@cf/zai-org/glm-4.7-flash` instead of `@cf/meta/llama-3-8b-instruct`.
+1. **Log in to Cloudflare Dashboard** -> Navigate to **Workers & Pages** -> Select the active Pages project (e.g., `axevora-toolbox` / `tittoos-toolbox-hub`).
+2. Go to **Settings** -> **Environment variables**:
+   - Ensure the variables are added under the **Production** tab (not just Preview):
+     - Variable Name: `GEMINI_API_KEY` | Value: *[Your Google AI Studio Gemini API Key]*
+     - Variable Name: `EARNKARO_API_TOKEN` | Value: *[Your EarnKaro Token]*
+     - Variable Name: `CUELINKS_API_KEY` | Value: *[Your Cuelinks API Key]*
+   - Click **Save**.
+3. Go to **Settings** -> **Functions**:
+   - Scroll down to **Workers AI Bindings**.
+   - Click **Add binding**.
+   - Binding name: `AI` (must be exact uppercase `AI`).
+   - Click **Save**.
+4. Go to **Deployments** tab:
+   - Click on the latest Production deployment (`...` menu) -> Select **Retry deployment** (OR push a commit to trigger a fresh production build).
+   - *Note: In Cloudflare Pages, environment variable changes take effect ONLY on deployments built AFTER the variable was added.*
 
-## 10. Search / Retrieval Audit
-The search badges are mapped dynamically using real domains and verified URLs. When live data is not returned, the interface does not generate fake merchant listings.
+## 6. Verification Plan Post-Configuration (Execution Gates)
 
-## 11. 4.8/5 Recommendation Audit
-The hardcoded rating has been fully deleted from both backend and frontend layers.
+- **GATE 1 — Runtime Diagnostic**:
+  `https://axevora.com/api/commerce/diagnostic` must return:
+  `geminiKeyPresent: true`, `earnkaroTokenPresent: true`, `cuelinksKeyPresent: true`, `aiBindingPresent: true`.
+- **GATE 2 — AI Invocation**:
+  Verify real Gemini 2.5 Flash invocation and Workers AI (`@cf/zai-org/glm-4.7-flash`) failover.
+- **GATE 3 — Retrieval & Intelligence**:
+  Verify real shopping queries ("Compare iPhone 15 and Samsung S24") without mock data.
+- **GATE 4 — Zero-Mock Rating Compliance**:
+  Verified: Static `4.8/5` rating has been purged from frontend and backend.
+- **GATE 5 — Three-Tier Monetization**:
+  Verify Amazon (`axevora06-21`), EarnKaro, and Cuelinks URL conversion pipelines.
 
-## 12. Three-Layer Monetization Verification
-Monetization layers in `convertUrl.ts` remain strictly configured to direct Amazon parameters to the active tracking tag `axevora06-21`, with secondary non-Amazon links routing via EarnKaro and Cuelinks backends.
+## 7. Status
+**BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED**
+(Codebase is clean, tested, and ready; awaiting Cloudflare Pages Dashboard environment variable injection and build retry by operator).
 
-## 13. Build Test
-Verified compiling using `npx tsc --noEmit`. Build completed successfully.
-
-## 14. Production Deployment Test
-Pushed files to remote to trigger automatic Pages build deployments. However, the diagnostic endpoint confirms that secrets and Workers AI bindings are still missing in the production environment.
-
-## 15. Browser Test
-Verified by opening https://axevora.com/ in a live browser session. Executing shopping queries returns raw debug trace outputs because dependencies are missing.
-
-## 16. Network Test
-Network monitoring is blocked due to the missing runtime dependencies.
-
-## 17. Gemini Test
-- GEMINI_RUNTIME_PRESENT = false
-- GEMINI_INVOCATION = FAIL
-- GEMINI_RESPONSE = FAIL
-(Blocked: Gemini key missing in production env)
-
-## 18. Workers AI Test
-- AI_BINDING_PRESENT = false
-- AI_INVOCATION = FAIL
-- MODEL_RESPONSE = FAIL
-(Blocked: Workers AI binding missing in production env)
-
-## 19. Retrieval Failure Test
-Truthful fallback outputs the trace log detailing the missing config parameters rather than inventing fake mock listings.
-
-## 20. Regression Test
-- [x] The old fabricated 4.8/5 user consensus box is successfully hidden in the frontend when rating values are not returned by the API: **PASS**
-- [x] Unrelated systems (live chat, auth, posts) remain unaffected: **PASS**
-
-## 21. Acceptance Criteria
-- [ ] Runtime secrets verified: **FAIL** (Dashboard parameters are not bound to active runtime environment context)
-- [ ] Gemini actual invocation verified: **FAIL** (Blocked by key presence)
-- [ ] Workers AI binding verified: **FAIL** (Binding absent)
-- [ ] Workers AI actual invocation verified: **FAIL**
-- [ ] Live retrieval verified: **FAIL**
-- [x] 4.8/5 provenance verified: **PASS** (Old mock consensus box eliminated from codebase and UI display)
-- [x] No fabricated shopping data: **PASS** (Zero-mock compliance verified)
-- [ ] Gemini failover verified: **FAIL**
-- [ ] Three-layer monetization verified: **FAIL**
-- [x] Production deployed: **PASS** (Git commits successfully built on main branch)
-- [x] AXEVORA_IMPLEMENTATION_RESPONSE.md created/updated: **PASS**
-
-## 22. Remaining Issues
-- **BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED**: The application codebase is verified and up to date, but the manual action is required on the Cloudflare Dashboard:
-  1. Go to **Cloudflare Pages** dashboard -> Select project **axevora-toolbox** (or active Pages deployment project).
-  2. Navigate to **Settings** -> **Environment variables** (under **Production** and **Preview**).
-  3. Add the exact environment secrets:
-     - `GEMINI_API_KEY`: [Gemini API Key Value]
-     - `EARNKARO_API_TOKEN`: [EarnKaro API Token Value]
-     - `CUELINKS_API_KEY`: [Cuelinks API Key Value]
-  4. Navigate to **Settings** -> **Functions** -> **Workers AI Bindings** and bind the name `AI` to enable Workers AI inference.
-  5. Go to **Deployments** and click **Retry deployment** or trigger a fresh production build to inject these bindings into the Pages Functions runtime context.
-
-## 23. Commit/Deployment
-Committed code edits and pushed to target.
-
-## 24. Final Status
-INCOMPLETE (BLOCKED — MANUAL CLOUDFLARE CONFIGURATION REQUIRED)
 
