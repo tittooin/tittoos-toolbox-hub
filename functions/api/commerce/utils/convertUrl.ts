@@ -31,8 +31,9 @@ export async function convertToAffiliateUrl(rawUrl: string, env?: Record<string,
 
       if (response.ok) {
         const resData = await response.json() as any;
-        if (resData && (resData.success === 1 || resData.status === 'success') && resData.data) {
-          return resData.data;
+        const converted = resData?.data;
+        if (typeof converted === 'string' && (converted.startsWith('http://') || converted.startsWith('https://'))) {
+          return converted;
         }
       }
     } catch (err) {
@@ -40,12 +41,13 @@ export async function convertToAffiliateUrl(rawUrl: string, env?: Record<string,
     }
   }
 
-  // Layer 3: Cuelinks Fallback (Strictly env.CUELINKS_API_KEY)
-  const cuelinksApiKey = env?.CUELINKS_API_KEY as string | undefined;
+
+  // Layer 3: Cuelinks Fallback (Supports env.CUELINKS_API_KEY, env.CUELINKS_TOKEN, or Publisher ID)
+  const cuelinksApiKey = (env?.CUELINKS_API_KEY || env?.CUELINKS_TOKEN || env?.CUELINKS_KEY) as string | undefined;
   const encodedDestination = encodeURIComponent(rawUrl);
-  if (cuelinksApiKey) {
-    // If we have API key, convert via Cuelinks wrapper format or public tracking engine
-    return `https://linksredirect.com/?pub_id=186358&apikey=${cuelinksApiKey}&subid=axevora&source=linkkit&url=${encodedDestination}`;
+  if (cuelinksApiKey && typeof cuelinksApiKey === 'string' && cuelinksApiKey.trim().length > 0) {
+    return `https://linksredirect.com/?pub_id=186358&apikey=${cuelinksApiKey.trim()}&subid=axevora&source=linkkit&url=${encodedDestination}`;
   }
   return `https://linksredirect.com/?pub_id=186358&subid=axevora&source=linkkit&url=${encodedDestination}`;
 }
+
