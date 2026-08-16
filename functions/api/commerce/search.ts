@@ -142,10 +142,13 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         ]
       });
 
-      const cleanJson = response.response.replace(/```json/g, '').replace(/```/g, '').trim();
+      const rawText = response?.choices?.[0]?.message?.content || response?.response || (typeof response === 'string' ? response : '');
+      const jsonMatch = rawText.match(/\[[\s\S]*\]/);
+      const cleanJson = jsonMatch ? jsonMatch[0] : rawText.replace(/```json/g, '').replace(/```/g, '').trim();
       const generatedData = JSON.parse(cleanJson);
       
       if (Array.isArray(generatedData)) {
+
         fallbackItems = generatedData.map((item: any, idx: number) => {
           let merchant = item.merchantName || (idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon'));
           let merchantDomain = `${merchant.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
