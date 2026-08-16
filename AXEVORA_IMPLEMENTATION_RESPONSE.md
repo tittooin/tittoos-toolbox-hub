@@ -539,6 +539,137 @@ Because `SERPAPI_KEY` is not present in runtime secrets:
 - The system **strictly refuses to fabricate prices, star ratings, or pretend search links are PDPs**.
 - It returns verified merchant directories (`urlType: "search"`, `price: 0`, `rating: null`) until a legitimate real retrieval key is configured.
 
+---
+
+## 28. Retrieval Provider Decision Pending
+
+- **Current Status**: **REAL PRODUCT RETRIEVAL = PENDING DECISION / CREDENTIAL CONFIGURATION**
+- **Action**: No automated provider installation, key requests, or code changes will take place until the provider selection is locked.
+- **Goal Target**:
+  ```
+  USER QUERY
+      │
+      ▼
+  REAL SHOPPING SEARCH (Provider TBD)
+      │
+      ▼
+  REAL PRODUCT (Title, Image, Specs)
+      │
+      ▼
+  REAL MERCHANT (Amazon, Croma, Flipkart, Reliance Digital, etc.)
+      │
+      ▼
+  REAL PRICE & CURRENCY (Verified INR amount)
+      │
+      ▼
+  REAL URL (PDP Link / Verified Search)
+      │
+      ▼
+  OPTIONAL METRICS (Real Ratings, Real Reviews, Stock)
+      │
+      ▼
+  RETRIEVAL TIMESTAMP (ISO 8601)
+      │
+      ▼
+  NORMALIZATION (ComparisonEngine)
+      │
+      ▼
+  BEST DEAL VALUE SCORING (Unbiased Price/Rating Weighting)
+      │
+      ▼
+  EXISTING THREE-LAYER MONETIZATION (Amazon Direct → EarnKaro → Cuelinks)
+  ```
+
+---
+
+## 29. Provider Requirements Matrix
+
+Any candidate real retrieval provider evaluated for Axevora must satisfy the following strict criteria:
+
+| Requirement | Priority | Evaluation Metric |
+|---|---|---|
+| **1. Product-Level Results** | `CRITICAL (P0)` | Returns individual SKU/product listings with specific title, image, and merchant pricing. |
+| **2. India Marketplace Support** | `CRITICAL (P0)` | Queries `gl=in` (Amazon.in, Flipkart, Croma, Tata CliQ, Reliance Digital). |
+| **3. Real Currency (INR)** | `CRITICAL (P0)` | Returns amounts strictly in Indian Rupee (`INR`) with explicit symbol/ISO code. |
+| **4. Real Merchant URLs** | `CRITICAL (P0)` | Direct merchant landing links (PDP or verified merchant category). |
+| **5. Real Grounded Prices** | `CRITICAL (P0)` | Zero AI estimation; prices must directly originate from merchant feed/scrape. |
+| **6. High-Res Thumbnails** | `HIGH (P1)` | Valid image URLs of the exact item (not generic category placeholders). |
+| **7. Ratings & Reviews** | `HIGH (P1)` | Real aggregated store ratings (1.0–5.0) and review counts (or explicit `null`). |
+| **8. Freshness & Real-Time Scrape** | `HIGH (P1)` | Live or short-TTL cached results with retrieval timestamps. |
+| **9. Cloudflare Workers Compatible** | `CRITICAL (P0)` | Standard HTTPS REST API callable from V8 edge runtime without Node native binaries. |
+| **10. Cost & Scalability** | `HIGH (P1)` | Sustainable free tier or predictable cost per 1,000 queries. |
+| **11. API SLA & Latency** | `HIGH (P1)` | Fast response times (< 2.5s) to preserve responsive UI conversational UX. |
+| **12. Zero Synthetic / Fake Data** | `CRITICAL (P0)` | Never synthesizes missing attributes as fake facts. |
+
+---
+
+## 30. Existing Connector Contract (`IMerchantConnector`)
+
+The engine already implements a clean, decoupled TypeScript interface:
+
+```typescript
+export interface IMerchantConnector {
+  name: string;
+  isAvailable(env: Env): boolean;
+  searchProducts(
+    query: string, 
+    env: Env, 
+    options?: ProductSearchOptions
+  ): Promise<MerchantConnectorResult>;
+}
+
+export interface MerchantConnectorResult {
+  products: NormalizedProduct[];
+  totalFound: number;
+  source: string;
+  fetchedAt: string;
+  error?: string;
+}
+
+export interface NormalizedProduct {
+  id: string;
+  title: string;
+  price: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  currency: string;
+  merchant: string;
+  merchantUrl: string;
+  affiliateUrl?: string;
+  imageUrl?: string;
+  rating?: number;
+  reviewCount?: number;
+  inStock?: boolean;
+  source: string;
+}
+```
+
+---
+
+## 31. Provider Integration Requirements (Plug-and-Play)
+
+When a provider is chosen, it plugs into the existing stack without touching core pipelines:
+
+1. **Implement `IMerchantConnector`**: Create a single file under `functions/api/shopping/providers/<Provider>Connector.ts`.
+2. **Register in `ProductIntelligenceEngine`**: Add the connector to the parallel fan-out array in `ProductIntelligenceEngine.ts`.
+3. **Automatic Normalization**: Converts raw API JSON into `NormalizedProduct[]`.
+4. **Automatic Comparison**: `ComparisonEngine.ts` ranks the products and picks the `bestDeal`.
+5. **Automatic Monetization**: `convertToAffiliateUrl()` decorates outgoing merchant URLs.
+6. **Zero Code Changes to**:
+   - Monetization engine (`convertUrl.ts`)
+   - AI summarization (`Gemini 2.5 Flash` / `Workers AI GLM-4.7-Flash`)
+   - Frontend UI contract (`ShoppingAssistant.tsx` / `ProductCard.tsx`)
+
+---
+
+## 32. Current Safe No-Provider State
+
+Until a real retrieval key is configured in Cloudflare Pages:
+- **Zero-Mock Policy Enforced**: Prices, stars, reviews, and fake PDP links are strictly disallowed.
+- **Frontend Safe Rendering**: `price: 0` items are rendered as directory links with *"Verified Merchant Listing"* badges; the frontend **never displays `₹0` as an actual product price**.
+- **Monetization Active**: All directory portals point to verified 3-layer affiliate tracking links.
+
+
 
 
 
