@@ -10,9 +10,11 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     earnkaroTokenPresent: Boolean(envObj.EARNKARO_API_TOKEN && String(envObj.EARNKARO_API_TOKEN).trim().length > 0),
     cuelinksKeyPresent: Boolean(cuelinksVal && String(cuelinksVal).trim().length > 0),
     aiBindingPresent: envObj.AI !== undefined && envObj.AI !== null,
+    serpapiConfigured: Boolean(envObj.SERPAPI_KEY && String(envObj.SERPAPI_KEY).trim().length > 0),
     deployedProject: "tittoos-toolbox-hub",
     envKeysPresent: Object.keys(envObj).filter(k => !k.startsWith('__'))
   }), {
+
 
     status: 200,
     headers: { 'Content-Type': 'application/json' }
