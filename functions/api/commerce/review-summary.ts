@@ -53,11 +53,13 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
           { role: 'user', content: query }
         ]
       });
-      reviewMarkdown = cfRes?.response || cfRes;
+      const extractedText = cfRes?.choices?.[0]?.message?.content || cfRes?.response || (typeof cfRes === 'string' ? cfRes : JSON.stringify(cfRes));
+      reviewMarkdown = extractedText;
       debugLog.push("Workers AI Success!");
     } catch (cfErr: any) {
       debugLog.push(`Workers AI Exception: ${cfErr.message || String(cfErr)}`);
     }
+
   } else if (!env?.AI) {
     debugLog.push("env.AI Binding NOT attached in Cloudflare!");
   }
