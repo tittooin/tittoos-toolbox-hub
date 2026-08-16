@@ -511,11 +511,34 @@ export interface Product {
 
 ---
 
-## 27. Remaining Gaps & Next Minimum Configuration
+## 27. Programmatic Credential Audit & Pluggable Provider Architecture
 
-1. **SERPAPI_KEY Activation**:
-   - To unlock Google Shopping deep product listings (individual PDP URLs, exact store prices, and real customer review scores), configure `SERPAPI_KEY` in Cloudflare Pages environment variables (`tittoos-toolbox-hub`).
-   - The moment `SERPAPI_KEY` is attached, `/api/commerce/search` will automatically flip `serpapiConfigured: true` and begin streaming live normalized product catalogs with algorithmic Best-Deal ranking.
+### A. Programmatic Cloudflare Pages Secret Discovery
+Using the authenticated Cloudflare OAuth CLI credentials for account `f3982bc650ed1b648935583b08a5f91c` (`tittoos-toolbox-hub`):
+- **Confirmed Present Environment Secrets**:
+  - `GEMINI_API_KEY` (secret_text)
+  - `EARNKARO_API_TOKEN` (secret_text)
+  - `CUELINKS_API_KEY` (secret_text)
+  - `RESEND_API_KEY` (secret_text)
+  - `TURNSTILE_SECRET_KEY` (secret_text)
+  - `VITE_TURNSTILE_SITEKEY` (plain_text)
+  - `AI` (Workers AI Binding `@cf/zai-org/glm-4.7-flash`)
+- **Credential State**:
+  - `SERPAPI_KEY`: **MISSING / NOT CONFIGURED**
+  - Alternative Shopping API Keys (`GOOGLE_SEARCH_KEY`, `DATA_API_KEY`): **NOT CONFIGURED**
+
+### B. Pluggable Architecture (Zero Hardcoding)
+Axevora is **NOT** tightly coupled or permanently hardcoded to SerpAPI:
+1. **`IMerchantConnector` Interface**: Abstract contract in `src/types/ai.ts` requiring `searchProducts(query, env, options) -> Promise<MerchantConnectorResult>`.
+2. **`ProductIntelligenceEngine`**: Parallel connector fan-out engine supporting any provider (Google Shopping, DataYuge, direct merchant feeds).
+3. **`ComparisonEngine`**: Provider-agnostic mathematical scoring engine operating purely on canonical `NormalizedProduct[]`.
+4. **Monetization Layer**: Completely decoupled downstream step (`convertToAffiliateUrl()`).
+
+### C. Zero-Mock Safe State Maintained
+Because `SERPAPI_KEY` is not present in runtime secrets:
+- The system **strictly refuses to fabricate prices, star ratings, or pretend search links are PDPs**.
+- It returns verified merchant directories (`urlType: "search"`, `price: 0`, `rating: null`) until a legitimate real retrieval key is configured.
+
 
 
 
