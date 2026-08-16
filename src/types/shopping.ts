@@ -5,19 +5,23 @@ export interface Product {
   originalPrice?: number;
   discountPercentage?: number;
   currency: string;
-  rating: number;
-  reviewCount: number;
+  rating?: number | null;
+  reviewCount?: number | null;
   imageUrl: string;
   merchantId: string;
   merchantName?: string;
   merchantLogoUrl?: string;
   dealUrl: string;
+  urlType?: 'product' | 'search';
   reasons: string[];
-  aiScore: number;
-  communityScore: number;
-  deliveryEstimate: string;
-  returnPolicy: string;
+  aiScore?: number;
+  communityScore?: number;
+  deliveryEstimate?: string;
+  returnPolicy?: string;
+  source?: string;
+  retrievedAt?: string;
 }
+
 
 export interface Merchant {
   id: string;

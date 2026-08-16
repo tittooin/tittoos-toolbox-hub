@@ -1,5 +1,8 @@
 import { extractEntities } from './utils/entityExtractor';
 import { convertToAffiliateUrl } from './utils/convertUrl';
+import { SerpAPIConnector } from '../shopping/providers/SerpAPIConnector';
+import { ComparisonEngine } from '../shopping/core/ComparisonEngine';
+import { NormalizedProduct, Env } from '../../../src/types/ai';
 
 export const onRequestGet = async (context: { request: Request; env?: Record<string, unknown> }) => {
   const { request, env } = context;
@@ -13,183 +16,120 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     });
   }
 
-  // Strict Secrets Binding
-  const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
-
-  const entityInfo = extractEntities(query);
+  const typedEnv = (env || {}) as unknown as Env;
+  const serpapi = new SerpAPIConnector();
   const getMerchantLogo = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
-  const createSearchUrl = (store: string, q: string) => {
-    const encoded = encodeURIComponent(q);
-    const s = store.toLowerCase();
-    if (s.includes('amazon')) return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
-    if (s.includes('croma')) return `https://www.croma.com/searchB?q=${encoded}%3A%3Achannel%3AOnline`;
-    if (s.includes('flipkart')) return `https://www.flipkart.com/search?q=${encoded}`;
-    if (s.includes('hdfc')) return `https://www.hdfcbank.com/personal/pay/cards/credit-cards`;
-    if (s.includes('sbi')) return `https://www.sbicard.com/en/personal/credit-cards.page`;
-    if (s.includes('axis')) return `https://www.axisbank.com/retail/cards/credit-card`;
-    if (s.includes('makemytrip')) return `https://www.makemytrip.com/flights/`;
-    if (s.includes('goibibo')) return `https://www.goibibo.com/flights/`;
-    return `https://www.google.com/search?q=${encoded}+buy`;
-  };
+  let verifiedOffers: NormalizedProduct[] = [];
+  let dataSource = 'none';
 
-  let fallbackItems: any[] = [];
-
-  // Primary: Try Gemini 2.5 Flash
-  if (geminiApiKey) {
+  // 1. PRIMARY: Real Shopping Search via SerpAPI Connector (if SERPAPI_KEY present)
+  if (serpapi.isAvailable(typedEnv)) {
     try {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
-      
-      const response = await fetch(geminiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `You are a shopping search engine. Given the user query "${query}":
-              Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
-              ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
-              
-              If single product, generate exactly 3 specific, real, top-selling products matching the query.
-              If comparison, generate exactly 2 specific products representing "${entityInfo.itemA}" and "${entityInfo.itemB}".
-              
-              Ensure you assign HIGHLY ACCURATE estimated market prices in INR and contextually matched high-res tech product images.
-              
-              Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
-              [
-                {
-                  "title": "Specific Product Name",
-                  "price": number,
-                  "merchantName": "Amazon",
-                  "image": "string (URL of a high-resolution realistic image of the product category)"
-                }
-              ]`
-            }]
-          }]
-        })
+      const serpResult = await serpapi.searchProducts(query, typedEnv, {
+        maxResults: 10,
+        country: 'in'
       });
 
-      const data = await response.json() as any;
-      const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-      const generatedData = JSON.parse(cleanJson);
-      
-      if (Array.isArray(generatedData)) {
-        fallbackItems = generatedData.map((item: any, idx: number) => {
-          let merchant = item.merchantName || (idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon'));
-          let merchantDomain = `${merchant.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
-          
-          if (entityInfo.category === 'finance') {
-            merchant = idx === 0 ? 'HDFC Bank' : (idx === 1 ? 'SBI Card' : 'Axis Bank');
-            merchantDomain = idx === 0 ? 'hdfcbank.com' : (idx === 1 ? 'sbicard.com' : 'axisbank.com');
-          } else if (entityInfo.category === 'travel') {
-            merchant = idx === 0 ? 'MakeMyTrip' : (idx === 1 ? 'Goibibo' : 'Yatra');
-            merchantDomain = idx === 0 ? 'makemytrip.com' : (idx === 1 ? 'goibibo.com' : 'yatra.com');
-          } else {
-            if (merchant.toLowerCase().includes('amazon')) merchantDomain = 'amazon.in';
-          }
-
-          let defaultImg = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
-          if (entityInfo.category === 'finance') {
-            defaultImg = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'travel') {
-            defaultImg = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'gpu') {
-            defaultImg = 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400';
-          } else if (entityInfo.category === 'audio') {
-            defaultImg = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400';
-          }
-
-          return {
-            id: `ai-gen-${Date.now()}-${idx}`,
-            title: item.title || (idx === 0 ? entityInfo.itemA : entityInfo.itemB),
-            price: item.price || (entityInfo.category === 'finance' ? 1500 : 1999),
-            merchantName: merchant,
-            merchantLogo: getMerchantLogo(merchantDomain),
-            url: createSearchUrl(merchant.toLowerCase().includes('amazon') ? 'amazon' : merchant.toLowerCase(), item.title || query),
-            image: item.image && !item.image.includes('placeholder') ? item.image : defaultImg,
-            type: 'search_result',
-          };
-        });
+      if (serpResult.products && serpResult.products.length > 0) {
+        verifiedOffers = serpResult.products;
+        dataSource = 'serpapi_live';
       }
-    } catch (e) {
-      console.warn('Gemini 2.5 Flash search generation failed, using failover:', e);
+    } catch (serpErr) {
+      console.warn('[SEARCH ENGINE] SerpAPI search failed, evaluating fallback:', serpErr);
     }
   }
 
-  // Failover: Cloudflare Workers AI (llama-3-8b-instruct)
-  if (fallbackItems.length === 0 && env?.AI) {
-    try {
-      const prompt = `You are a shopping search engine. Given the user query "${query}":
-      Is this a comparison? ${entityInfo.isComparison ? 'Yes' : 'No'}.
-      ${entityInfo.isComparison ? `Items: Card 1 = "${entityInfo.itemA}", Card 2 = "${entityInfo.itemB}"` : `Item = "${entityInfo.itemA}"`}
-      
-      Return ONLY a raw valid JSON array containing exactly these objects (no markdown, no code blocks):
-      [
-        {
-          "title": "Specific Product Name",
-          "price": number,
-          "merchantName": "Amazon",
-          "image": "string (URL of a high-resolution realistic image of the product category)"
-        }
-      ]`;
+  // 2. If Real External Search returned products, rank and normalize them
+  let finalItems: any[] = [];
 
-      const FALLBACK_MODEL = '@cf/zai-org/glm-4.7-flash';
-      const response = await (env.AI as any).run(FALLBACK_MODEL, {
-        messages: [
-          { role: 'system', content: 'You are a strict JSON API. Only return raw valid JSON. Never return markdown formatting.' },
-          { role: 'user', content: prompt }
-        ]
-      });
+  if (verifiedOffers.length > 0) {
+    // Run algorithmic comparison & best-deal scoring
+    const comparison = ComparisonEngine.compare(verifiedOffers);
+    const bestDealId = comparison.bestDeal?.id;
 
-      const rawText = response?.choices?.[0]?.message?.content || response?.response || (typeof response === 'string' ? response : '');
-      const jsonMatch = rawText.match(/\[[\s\S]*\]/);
-      const cleanJson = jsonMatch ? jsonMatch[0] : rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-      const generatedData = JSON.parse(cleanJson);
-      
-      if (Array.isArray(generatedData)) {
+    finalItems = comparison.products.map((item, idx) => {
+      const isBestDeal = item.id === bestDealId;
+      const merchantDomain = `${(item.merchant || 'merchant').toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
 
-        fallbackItems = generatedData.map((item: any, idx: number) => {
-          let merchant = item.merchantName || (idx === 1 ? 'Croma' : (idx === 2 ? 'Flipkart' : 'Amazon'));
-          let merchantDomain = `${merchant.toLowerCase().replace(/[^a-z0-9]/g, '')}.com`;
-          
-          if (entityInfo.category === 'finance') {
-            merchant = idx === 0 ? 'HDFC Bank' : (idx === 1 ? 'SBI Card' : 'Axis Bank');
-            merchantDomain = idx === 0 ? 'hdfcbank.com' : (idx === 1 ? 'sbicard.com' : 'axisbank.com');
-          } else if (entityInfo.category === 'travel') {
-            merchant = idx === 0 ? 'MakeMyTrip' : (idx === 1 ? 'Goibibo' : 'Yatra');
-            merchantDomain = idx === 0 ? 'makemytrip.com' : (idx === 1 ? 'goibibo.com' : 'yatra.com');
-          } else {
-            if (merchant.toLowerCase().includes('amazon')) merchantDomain = 'amazon.in';
-          }
+      return {
+        id: item.id || `offer-${idx}`,
+        title: item.title,
+        price: item.price,
+        originalPrice: item.originalPrice,
+        discountPercentage: item.discountPercent,
+        currency: item.currency || 'INR',
+        rating: item.rating !== undefined && item.rating !== null ? item.rating : null,
+        reviewCount: item.reviewCount !== undefined && item.reviewCount !== null ? item.reviewCount : null,
+        merchantName: item.merchant,
+        merchantLogo: getMerchantLogo(merchantDomain),
+        url: item.merchantUrl,
+        urlType: 'product',
+        image: item.imageUrl || getMerchantLogo(merchantDomain),
+        type: 'verified_offer',
+        reasons: isBestDeal ? ['🏆 Best Deal Choice'] : (idx === 0 ? ['Top Match'] : ['Verified Store Offer']),
+        source: 'google_shopping_serpapi',
+        retrievedAt: new Date().toISOString(),
+        inStock: item.inStock ?? true,
+      };
+    });
+  } else {
+    // 3. FALLBACK / UNCONNECTED PROVIDER STATE (AI Search Normalizer)
+    // When SERPAPI_KEY is not yet configured, construct clean search redirects without claiming fake PDP prices
+    const entityInfo = extractEntities(query);
+    const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
 
-          let defaultImg = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=400';
+    const createStoreUrl = (store: string, q: string) => {
+      const encoded = encodeURIComponent(q);
+      const s = store.toLowerCase();
+      if (s.includes('amazon')) return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
+      if (s.includes('croma')) return `https://www.croma.com/searchB?q=${encoded}%3A%3Achannel%3AOnline`;
+      if (s.includes('flipkart')) return `https://www.flipkart.com/search?q=${encoded}`;
+      return `https://www.google.com/search?q=${encoded}+buy`;
+    };
 
-          return {
-            id: `ai-gen-${Date.now()}-${idx}`,
-            title: item.title || (idx === 0 ? entityInfo.itemA : entityInfo.itemB),
-            price: item.price || (entityInfo.category === 'finance' ? 1500 : 1999),
-            merchantName: merchant,
-            merchantLogo: getMerchantLogo(merchantDomain),
-            url: createSearchUrl(merchant.toLowerCase().includes('amazon') ? 'amazon' : merchant.toLowerCase(), item.title || query),
-            image: item.image && !item.image.includes('placeholder') ? item.image : defaultImg,
-            type: 'search_result',
-          };
-        });
-      }
-    } catch (cfErr) {
-      console.error('[AI ENGINE] Cloudflare Workers AI Search Fallback failed:', cfErr);
-    }
+    // Construct verified merchant search portals without guessing ungrounded prices
+    const defaultStores = [
+      { name: 'Amazon', domain: 'amazon.in' },
+      { name: 'Flipkart', domain: 'flipkart.com' },
+      { name: 'Croma', domain: 'croma.com' }
+    ];
+
+    finalItems = defaultStores.map((store, idx) => ({
+      id: `store-search-${Date.now()}-${idx}`,
+      title: `${store.name} Live Deals for "${query}"`,
+      price: 0,
+      currency: 'INR',
+      rating: null,
+      reviewCount: null,
+      merchantName: store.name,
+      merchantLogo: getMerchantLogo(store.domain),
+      url: createStoreUrl(store.name, query),
+      urlType: 'search',
+      image: `https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=800`,
+      type: 'merchant_search',
+      reasons: ['Live Store Search'],
+      source: 'merchant_portal',
+      retrievedAt: new Date().toISOString()
+    }));
+    dataSource = 'merchant_search_directory';
   }
 
-  // 3-Layer Monetization Conversion for Live Items
-  fallbackItems = await Promise.all(fallbackItems.map(async item => {
+  // 4. LOCKED THREE-LAYER MONETIZATION ENRICHMENT
+  // Apply affiliate layers to all outbound links
+  finalItems = await Promise.all(finalItems.map(async item => {
     item.url = await convertToAffiliateUrl(item.url, env);
     return item;
   }));
 
-  return new Response(JSON.stringify({ ok: true, source: fallbackItems.length > 0 ? 'live_web_engine' : 'empty', items: fallbackItems }), {
+  return new Response(JSON.stringify({
+    ok: true,
+    source: dataSource,
+    items: finalItems,
+    serpapiConfigured: serpapi.isAvailable(typedEnv)
+  }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
 };
+

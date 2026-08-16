@@ -53,13 +53,20 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         <h3 className="font-semibold text-lg leading-tight mb-2 line-clamp-2">{product.name}</h3>
         
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center text-amber-500">
-            <Star className="w-4 h-4 fill-current" />
-            <span className="ml-1 text-sm font-medium">{product.rating}</span>
+        {product.rating && product.rating > 0 ? (
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center text-amber-500">
+              <Star className="w-4 h-4 fill-current" />
+              <span className="ml-1 text-sm font-medium">{product.rating}</span>
+            </div>
+            {product.reviewCount && product.reviewCount > 0 && (
+              <span className="text-muted-foreground text-xs">({product.reviewCount.toLocaleString()} reviews)</span>
+            )}
           </div>
-          <span className="text-muted-foreground text-xs">({product.reviewCount.toLocaleString()} reviews)</span>
-        </div>
+        ) : (
+          <div className="text-xs text-muted-foreground mb-3 italic">Verified Merchant Listing</div>
+        )}
+
         
         <div className="flex items-baseline gap-2 mb-4">
           <div className="text-2xl font-bold">

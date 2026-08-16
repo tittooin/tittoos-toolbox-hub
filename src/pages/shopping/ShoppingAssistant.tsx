@@ -151,33 +151,35 @@ export default function ShoppingAssistant() {
           assistantMessage.products = lastAssistantMsg.products;
         }
       } else if (searchData.ok && searchData.items) {
-        assistantMessage.products = searchData.items.map((item: any, idx: number) => {
-          const strHash = (item.title || '').split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-          const ratingVal = Number((4.3 + ((strHash + idx) % 5) * 0.1).toFixed(1));
-          const reviewsVal = 1250 + ((strHash + idx * 300) % 3500);
-
+        assistantMessage.products = searchData.items.map((item: any) => {
           return {
             id: item.id || uuidv4(),
             name: item.title,
             price: typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0 : item.price || 0,
-            currency: 'INR',
-            rating: item.rating || ratingVal,
-            reviewCount: item.reviewCount || reviewsVal,
-            imageUrl: item.image || item.merchantLogo || '',
-            merchantId: item.merchantName?.toLowerCase() || 'unknown',
-            merchantName: item.merchantName || 'Store',
-            merchantLogoUrl: item.merchantLogo || '',
-            dealUrl: item.url, // URL is already tracked/affiliated via search.ts
-            reasons: ["Top Match"],
-            aiScore: 88 + (idx % 8),
-            communityScore: 82 + (idx % 12),
-            deliveryEstimate: 'Check merchant',
-            returnPolicy: 'Check merchant'
+            originalPrice: item.originalPrice,
+            discountPercentage: item.discountPercentage,
+            currency: item.currency || 'INR',
+            rating: item.rating !== undefined && item.rating !== null ? Number(item.rating) : null,
+            reviewCount: item.reviewCount !== undefined && item.reviewCount !== null ? Number(item.reviewCount) : null,
+            imageUrl: item.image || item.imageUrl || item.merchantLogo || '',
+            merchantId: item.merchantName?.toLowerCase() || item.merchant?.toLowerCase() || 'store',
+            merchantName: item.merchantName || item.merchant || 'Store',
+            merchantLogoUrl: item.merchantLogo || item.merchantLogoUrl || '',
+            dealUrl: item.url || item.dealUrl || '#',
+            urlType: item.urlType || 'product',
+            reasons: item.reasons || ["Verified Offer"],
+            aiScore: item.aiScore || undefined,
+            communityScore: item.communityScore || undefined,
+            deliveryEstimate: item.deliveryEstimate || 'Check merchant',
+            returnPolicy: item.returnPolicy || 'Check merchant',
+            source: item.source,
+            retrievedAt: item.retrievedAt
           };
         });
       }
 
       assistantMessage.followUps = [
+
         "What are the pros and cons?",
         "Show me cheaper alternatives",
         "Compare with top rated options"
