@@ -662,12 +662,121 @@ When a provider is chosen, it plugs into the existing stack without touching cor
 
 ---
 
-## 32. Current Safe No-Provider State
+# ZERO-BUDGET REAL DEAL ENGINE STRATEGY
 
-Until a real retrieval key is configured in Cloudflare Pages:
-- **Zero-Mock Policy Enforced**: Prices, stars, reviews, and fake PDP links are strictly disallowed.
-- **Frontend Safe Rendering**: `price: 0` items are rendered as directory links with *"Verified Merchant Listing"* badges; the frontend **never displays `₹0` as an actual product price**.
-- **Monetization Active**: All directory portals point to verified 3-layer affiliate tracking links.
+## 33. Zero-Investment Architectural Policy
+
+In accordance with strict business constraints:
+- **No Paid APIs**: No SerpAPI, DataForSEO, DataYuge Paid, BrightData, Oxylabs, or any paid scraping proxy.
+- **No Automated Web Scraping**: Zero unauthorized Google scraping, CAPTCHA bypassing, or robots.txt violations.
+- **Zero Mock / Zero Fake Data**: LLMs (Gemini / Workers AI) are **strictly forbidden** from synthesizing product prices, discounts, stock, ratings, review counts, or SKU-level URLs.
+- **Architecture Priority**: **REAL GROUNDED DATA > MASS QUANTITY OF FAKE DATA**. A single verified merchant deal is infinitely superior to ten AI-invented prices.
+
+---
+
+## 34. Exploiting Cuelinks V3 Free Capabilities
+
+Cuelinks is **NOT** a live arbitrary SKU-level price comparison database, but it provides powerful free legitimate commercial signals:
+
+```
+                      CUELINKS V3 OFFICIAL API CAPABILITIES
+                                        │
+        ┌───────────────────────────────┼───────────────────────────────┐
+        ▼                               ▼                               ▼
+1. CAMPAIGN DISCOVERY           2. OFFERS & COUPONS             3. LINK KIT CONVERSION
+- Merchant domains / IDs        - Verified deal titles          - Product URL → Affiliate URL
+- Category tagging              - Coupon codes (e.g. SAVE20)    - Automated tracking parameters
+- EPC (Earnings Per Click)      - Validity / Expiry dates       - Fallback link redirection
+- Approval & active status      - Store deep links              - 100% Zero Cost
+```
+
+### Strategic Role of Cuelinks in Zero-Budget Engine:
+1. **Merchant & Category Discovery**: When a user queries a product (e.g. `"55 inch 4K TV"` or `"skincare"`), Cuelinks discovers active verified merchants (e.g. Croma, Reliance Digital, Samsung, Plum) eligible for commission.
+2. **Offers & Coupons Feed**: Real verified discount vouchers and promotional banners from merchants are fetched live via `/pub_api/v3/offers.json`.
+3. **Outbound Monetization**: Automatically enriches every outbound merchant URL via Layer 3.
+
+---
+
+## 35. Audit of Project Free Data Sources & Connectors
+
+| Component / Connector | Current File Path | Zero-Cost Status | Real Product Price Capable? |
+|---|---|---|---|
+| **Cuelinks API (V3)** | `functions/api/commerce/deals.ts` | **FREE / ACTIVE ✅** | **Deals & Coupons Only** (No live SKU price API) |
+| **Amazon PA-API Connector** | `functions/api/shopping/providers/AmazonConnector.ts` | **DEPRECATED / RETIRED ❌** | PA-API 5.0 retired May 2026; Creators API requires manual OAuth + sales threshold |
+| **SerpAPI Connector** | `functions/api/shopping/providers/SerpAPIConnector.ts` | **PAID / KEY MISSING ❌** | Not configured (Zero-budget policy) |
+| **ComparisonEngine** | `functions/api/shopping/core/ComparisonEngine.ts` | **ACTIVE ✅** | Mathematical comparator (Ready for any free feed) |
+| **ProductIntelligenceEngine** | `functions/api/shopping/core/ProductIntelligenceEngine.ts` | **ACTIVE ✅** | Parallel connector fan-out engine |
+| **Gemini 2.5 Flash** | `functions/api/commerce/review-summary.ts` | **FREE TIER ACTIVE ✅** | **Reasoning & Synthesis Only** (Forbidden from guessing prices) |
+| **Workers AI GLM-4.7-Flash**| Cloudflare Binding `AI` | **FREE TIER ACTIVE ✅** | **Edge Fallback Reasoning Only** (Forbidden from guessing prices) |
+
+---
+
+## 36. Zero-Budget User Query Execution Flow
+
+When a user asks: `"Best 55 inch 4K TV under ₹50000"`:
+
+```
+USER QUERY: "Best 55 inch 4K TV under ₹50000"
+    │
+    ▼
+1. MERCHANT DISCOVERY (Cuelinks Campaigns + Category Engine)
+   ├─ Discovers top verified merchants: Amazon India, Croma, Flipkart, Samsung Store
+   └─ Discovers active merchant deals & coupon codes
+    │
+    ▼
+2. REAL OFFERS & COUPONS RETRIEVAL (Cuelinks V3 API)
+   ├─ Filters valid non-expired coupons & promotional vouchers
+   └─ Attaches verified discount codes (e.g., "GET10", "FLAT500") with expiry timestamps
+    │
+    ▼
+3. SAFE PRICE PROVENANCE CHECK
+   ├─ Are live SKU-level scraped prices available from a legitimate free feed?
+   │  ├─ YES: Normalizes & passes real numeric prices to ComparisonEngine.
+   │  └─ NO: Sets `price: 0`, `rating: null`, `urlType: "search"`. Strictly displays "Live product pricing currently unavailable" without generating fake ₹47,999 numbers.
+    │
+    ▼
+4. UNBIASED VALUE / BEST DEAL RANKING
+   └─ Ranks verified offers based on coupon value, merchant reputation, and verified discounts.
+    │
+    ▼
+5. LOCKED THREE-LAYER MONETIZATION
+   └─ Amazon Direct (`tag=axevora06-21`) → EarnKaro (`bitli.in`) → Cuelinks LinkKit (`linksredirect.com`).
+```
+
+---
+
+## 37. Safe No-Data Mode & Frontend Price Safety
+
+To ensure trust and zero deception:
+1. **No Fake PDP Prices**: The engine never outputs AI-guessed numbers as ground truth.
+2. **Never Display `₹0`**: Frontend `ProductCard.tsx` checks if `price > 0`. If `price === 0`, it hides the price tag and displays:
+   > *"Live Store Deals & Verified Offers"*
+3. **Honest Availability Banner**: When no external pricing feed is attached, the assistant explicitly notes:
+   > *"Live individual product prices are currently unlinked. Below are verified store search portals and active merchant discount vouchers."*
+
+---
+
+## 38. Cloudflare Workers Free Tier Cost Controls
+
+To guarantee Axevora operates smoothly on Cloudflare Workers Free (100,000 requests/day, 50 subrequests/invocation):
+- **Aggressive In-Memory / Edge Caching**: Cuelinks campaigns and offers are cached with 15–30 minute TTLs.
+- **Single Subrequest Fan-out**: External calls are batched in parallel (`Promise.allSettled`).
+- **Zero Heavy Scraping Load**: No browser rendering or headless Chrome instances on Workers.
+
+---
+
+## 39. Definitive Status & Remaining Gap
+
+| Capability Area | Forensic Status | Operational Details |
+|---|---|---|
+| **Three-Layer Monetization Engine** | **`PASS (LOCKED 🔒)`** | Amazon Tag + EarnKaro + Cuelinks V3 active |
+| **Dual AI Reasoning (Gemini + Workers AI)**| **`PASS (LOCKED 🔒)`** | Bound to edge runtime; strictly constrained to reasoning |
+| **Cuelinks Merchant & Coupon Discovery** | **`PASS (ACTIVE ✅)`** | Live campaigns, category filters & active vouchers |
+| **Synthetic Data / Hallucinations** | **`PERMANENTLY ELIMINATED 🔒`** | Zero AI price guessing, zero hash ratings |
+| **Real Arbitrary SKU-Level Price Retrieval** | **`BLOCKED (ZERO-COST LIMITATION)`** | No legitimate free live product-price API currently exists in the market without paid licensing or scraping proxy. |
+
+### Future Activation Requirement:
+When business budget allows, attaching a single API key (`SERPAPI_KEY`, `DATAFORSEO_KEY`, or private merchant product feed) will instantly upgrade the pipeline from **Directory & Coupon Engine** to **Live Real-Time Price Comparison Engine** without altering any core architecture.
 
 
 
