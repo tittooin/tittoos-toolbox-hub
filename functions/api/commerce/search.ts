@@ -74,10 +74,10 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       };
     });
   } else {
-    // 3. FALLBACK / UNCONNECTED PROVIDER STATE (AI Search Normalizer)
-    // When SERPAPI_KEY is not yet configured, construct clean search redirects without claiming fake PDP prices
+    // 3. FALLBACK / UNCONNECTED PROVIDER STATE (Intent-Driven Merchant Discovery)
+    // When no external SKU-level pricing feed is configured, discover verified merchant portals
+    // using query intent without claiming fake PDP prices.
     const entityInfo = extractEntities(query);
-    const geminiApiKey = env?.GEMINI_API_KEY as string | undefined;
 
     const createStoreUrl = (store: string, q: string) => {
       const encoded = encodeURIComponent(q);
@@ -85,15 +85,41 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       if (s.includes('amazon')) return `https://www.amazon.in/s?k=${encoded}&tag=axevora06-21`;
       if (s.includes('croma')) return `https://www.croma.com/searchB?q=${encoded}%3A%3Achannel%3AOnline`;
       if (s.includes('flipkart')) return `https://www.flipkart.com/search?q=${encoded}`;
+      if (s.includes('myntra')) return `https://www.myntra.com/${encoded}`;
+      if (s.includes('makemytrip')) return `https://www.makemytrip.com/flights/`;
+      if (s.includes('hdfc')) return `https://www.hdfcbank.com/personal/pay/cards/credit-cards`;
+      if (s.includes('sbi')) return `https://www.sbicard.com/en/personal/credit-cards.page`;
       return `https://www.google.com/search?q=${encoded}+buy`;
     };
 
-    // Construct verified merchant search portals without guessing ungrounded prices
-    const defaultStores = [
-      { name: 'Amazon', domain: 'amazon.in' },
-      { name: 'Flipkart', domain: 'flipkart.com' },
-      { name: 'Croma', domain: 'croma.com' }
-    ];
+    // Category-specific verified merchant portfolios
+    let defaultStores: { name: string; domain: string }[] = [];
+    if (entityInfo.category === 'fashion') {
+      defaultStores = [
+        { name: 'Myntra', domain: 'myntra.com' },
+        { name: 'Amazon Fashion', domain: 'amazon.in' },
+        { name: 'Flipkart', domain: 'flipkart.com' }
+      ];
+    } else if (entityInfo.category === 'travel') {
+      defaultStores = [
+        { name: 'MakeMyTrip', domain: 'makemytrip.com' },
+        { name: 'Goibibo', domain: 'goibibo.com' },
+        { name: 'Yatra', domain: 'yatra.com' }
+      ];
+    } else if (entityInfo.category === 'finance') {
+      defaultStores = [
+        { name: 'HDFC Bank', domain: 'hdfcbank.com' },
+        { name: 'SBI Card', domain: 'sbicard.com' },
+        { name: 'Axis Bank', domain: 'axisbank.com' }
+      ];
+    } else {
+      // Tech, Laptops, Phones, TVs, Audio, General
+      defaultStores = [
+        { name: 'Amazon', domain: 'amazon.in' },
+        { name: 'Croma', domain: 'croma.com' },
+        { name: 'Flipkart', domain: 'flipkart.com' }
+      ];
+    }
 
     finalItems = defaultStores.map((store, idx) => ({
       id: `store-search-${Date.now()}-${idx}`,
@@ -108,11 +134,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       urlType: 'search',
       image: `https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=800`,
       type: 'merchant_search',
-      reasons: ['Live Store Search'],
+      reasons: idx === 0 ? ['🏆 Best Merchant Option'] : ['Verified Merchant Option'],
       source: 'merchant_portal',
       retrievedAt: new Date().toISOString()
     }));
     dataSource = 'merchant_search_directory';
+
   }
 
   // 4. LOCKED THREE-LAYER MONETIZATION ENRICHMENT

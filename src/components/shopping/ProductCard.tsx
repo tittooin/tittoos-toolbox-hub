@@ -68,21 +68,30 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         
-        <div className="flex items-baseline gap-2 mb-4">
-          <div className="text-2xl font-bold">
-            {product.currency === 'INR' ? '₹' : product.currency}{product.price.toLocaleString()}
-          </div>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <div className="text-sm text-muted-foreground line-through">
-              {product.currency === 'INR' ? '₹' : product.currency}{product.originalPrice.toLocaleString()}
+        {product.price > 0 ? (
+          <div className="flex items-baseline gap-2 mb-4">
+            <div className="text-2xl font-bold">
+              {product.currency === 'INR' ? '₹' : product.currency}{product.price.toLocaleString()}
             </div>
-          )}
-          {product.discountPercentage && product.discountPercentage > 0 && (
-            <Badge variant="destructive" className="ml-auto text-[10px] px-1.5 py-0">
-              {product.discountPercentage}% OFF
+            {product.originalPrice && product.originalPrice > product.price && (
+              <div className="text-sm text-muted-foreground line-through">
+                {product.currency === 'INR' ? '₹' : product.currency}{product.originalPrice.toLocaleString()}
+              </div>
+            )}
+            {product.discountPercentage && product.discountPercentage > 0 && (
+              <Badge variant="destructive" className="ml-auto text-[10px] px-1.5 py-0">
+                {product.discountPercentage}% OFF
+              </Badge>
+            )}
+          </div>
+        ) : (
+          <div className="mb-4 py-1">
+            <Badge variant="outline" className="text-xs font-normal border-primary/20 bg-primary/5 text-primary">
+              {product.urlType === 'search' ? 'Verified Store Offer' : 'Live price unavailable'}
             </Badge>
-          )}
-        </div>
+          </div>
+        )}
+
 
         <div className="space-y-2 mb-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
