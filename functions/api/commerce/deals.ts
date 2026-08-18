@@ -114,32 +114,6 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       return true;
     });
 
-    const getDealBannerImage = (category: string, title: string, merchant: string): string => {
-      const t = (title + ' ' + merchant + ' ' + category).toLowerCase();
-      if (t.includes('travel') || t.includes('klook') || t.includes('tokyo') || t.includes('osaka') || t.includes('pass') || t.includes('ferry') || t.includes('lagoon') || t.includes('skytree')) {
-        return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('laptop') || t.includes('croma') || t.includes('electronics') || t.includes('tv') || t.includes('mivi') || t.includes('audio') || t.includes('appsumo') || t.includes('ai tool')) {
-        return 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('beauty') || t.includes('skincare') || t.includes('quench') || t.includes('plum') || t.includes('teeth') || t.includes('perfora') || t.includes('smile') || t.includes('mouthwash')) {
-        return 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('sugar') || t.includes('ghee') || t.includes('dhoodhvale') || t.includes('digihaat') || t.includes('grocery') || t.includes('food') || t.includes('kapiva')) {
-        return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('levis') || t.includes('clothing') || t.includes('fashion') || t.includes('wear') || t.includes('trousseau')) {
-        return 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('protein') || t.includes('creatine') || t.includes('fuelone') || t.includes('hkvitals') || t.includes('nutrition') || t.includes('health') || t.includes('wellness')) {
-        return 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80';
-      }
-      if (t.includes('furniture') || t.includes('godrej')) {
-        return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80';
-      }
-      return 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80';
-    };
-
     const extractUrlFromTracking = (trackingUrl?: string): string => {
       if (!trackingUrl || typeof trackingUrl !== 'string') return '';
       try {
@@ -149,33 +123,28 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
           return urlParam.trim();
         }
       } catch {
-        // ignorable parse error
       }
       return '';
     };
 
     const getMerchantUrl = (merchantName: string, domain?: string, rawItem?: Record<string, unknown>): string => {
-      // 1. Upstream tracking_url search parameter 'url' (e.g. linksredirect.com/?cid=...&url=https%3A%2F%2F...)
       const fromTracking = extractUrlFromTracking((rawItem?.tracking_url || rawItem?.affiliate_url) as string | undefined);
       if (fromTracking) {
         return fromTracking;
       }
 
-      // 2. Upstream offer & campaign direct URL fields
       const campaignObj = rawItem?.campaign as Record<string, unknown> | undefined;
       const direct = (rawItem?.url || rawItem?.landing_page || rawItem?.link || rawItem?.store_url || rawItem?.campaign_url || rawItem?.target_url || campaignObj?.url || campaignObj?.landing_page) as string | undefined;
       if (direct && typeof direct === 'string' && direct.trim().length > 0 && direct.startsWith('http')) {
         return direct.trim();
       }
 
-      // 3. Upstream domain field from offer or associated campaign
       const upstreamDomain = (domain || rawItem?.domain || campaignObj?.domain) as string | undefined;
       if (upstreamDomain && typeof upstreamDomain === 'string' && upstreamDomain.includes('.')) {
         const cleanDomain = upstreamDomain.trim().toLowerCase();
         return cleanDomain.startsWith('http') ? cleanDomain : `https://${cleanDomain}`;
       }
 
-      // 4. Known partner store mappings derived from upstream merchantName
       const name = merchantName.toLowerCase().replace(/[^a-z0-9]/g, '');
       const knownUrls: Record<string, string> = {
         klook: 'https://www.klook.com',
@@ -206,7 +175,6 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       return knownUrls[name] || '';
     };
 
-    // Pre-build campaign destination URL map to resolve Offer -> Campaign relationships
     const campaignUrlMapByCampaignId = new Map<string, string>();
     const campaignUrlMapByName = new Map<string, string>();
 
@@ -218,9 +186,71 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       }
     });
 
+    const classifyUrl = (u: string): 'PRODUCT_PDP' | 'CATEGORY_PAGE' | 'SEARCH_PAGE' | 'STORE_HOME' | 'UNKNOWN' => {
+      if (!u) return 'UNKNOWN';
+      const clean = u.toLowerCase();
+      if (clean.includes('/p/') || clean.includes('/dp/') || clean.includes('/product/') || clean.includes('/item/')) return 'PRODUCT_PDP';
+      if (clean.includes('/c/') || clean.includes('/category/') || clean.includes('/collection/')) return 'CATEGORY_PAGE';
+      if (clean.includes('/search') || clean.includes('?q=') || clean.includes('?k=')) return 'SEARCH_PAGE';
+      try {
+        const parsed = new URL(u);
+        if (parsed.pathname === '/' || parsed.pathname === '') return 'STORE_HOME';
+      } catch {
+      }
+      return 'UNKNOWN';
+    };
+
+    const extractAdvertisedPrice = (title: string, desc: string, discountText: string) => {
+      const text = `${title} ${desc} ${discountText}`;
+      const finalPriceMatch = text.match(/(?:final\s+price|price|at|now|buy\s+at|just)\s*(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d+)?)/i);
+      if (finalPriceMatch) {
+        const num = parseFloat(finalPriceMatch[1].replace(/,/g, ''));
+        if (!isNaN(num) && num > 0) {
+          return { price: num, priceType: 'ADVERTISED_PRODUCT_PRICE' as const, confidence: 0.9 };
+        }
+      }
+      const startPriceMatch = text.match(/(?:starting\s+(?:at|from)|from)\s*(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d+)?)/i);
+      if (startPriceMatch) {
+        const num = parseFloat(startPriceMatch[1].replace(/,/g, ''));
+        if (!isNaN(num) && num > 0) {
+          return { price: num, priceType: 'STARTING_PRICE' as const, confidence: 0.75 };
+        }
+      }
+      const discountMatch = text.match(/(?:flat\s+)?(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d+)?)\s*(?:off|discount|cashback)/i);
+      if (discountMatch) {
+        const num = parseFloat(discountMatch[1].replace(/,/g, ''));
+        if (!isNaN(num) && num > 0) {
+          return { price: num, priceType: 'DISCOUNT_AMOUNT' as const, confidence: 0.85 };
+        }
+      }
+      const genericMatch = text.match(/(?:rs\.?|inr|₹)\s*([\d,]+(?:\.\d+)?)/i);
+      if (genericMatch) {
+        const num = parseFloat(genericMatch[1].replace(/,/g, ''));
+        if (!isNaN(num) && num > 0) {
+          return { price: num, priceType: 'ADVERTISED_PRODUCT_PRICE' as const, confidence: 0.6 };
+        }
+      }
+      return { price: 0, priceType: 'UNKNOWN' as const, confidence: 0 };
+    };
+
+    const extractEntitiesFromDeal = (title: string, desc: string, targetUrl: string) => {
+      const text = `${title} ${desc}`;
+      const ramMatch = text.match(/(\d+\s*GB)\s*RAM/i);
+      const storageMatch = text.match(/(\d+\s*(?:GB|TB))\s*(?:ROM|Storage|SSD|Internal)/i);
+      const sizeMatch = text.match(/(\d+(?:\.\d+)?\s*(?:inch|"))/i);
+      const resMatch = text.match(/(4K|8K|OLED|QLED|UHD|FHD)/i);
+      return {
+        RAM: ramMatch ? ramMatch[1].toUpperCase() : undefined,
+        storage: storageMatch ? storageMatch[1].toUpperCase() : undefined,
+        size: sizeMatch ? sizeMatch[1] : undefined,
+        resolution: resMatch ? resMatch[1].toUpperCase() : undefined,
+      };
+    };
+
     const normalizedOffers = validOffers.map((item: Record<string, unknown>, index: number) => {
       const merchant = ((item.campaign_name || item.merchant) as string) || 'Partner Store';
       const title = (item.title as string) || 'Featured Offer';
+      const description = ((item.description || item.terms || item.details) as string) || '';
       let category = 'Deals';
       const cats = item.categories as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(cats) && cats.length > 0 && cats[0]?.name) {
@@ -229,8 +259,6 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
         category = (item.category || item.category_name) as string;
       }
       const domain = (item.domain as string) || merchant.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
-
-      // Resolve destination URL with Offer -> Campaign fallback
       let targetUrl = getMerchantUrl(merchant, item.domain as string | undefined, item);
       if (!targetUrl && item.campaign_id) {
         targetUrl = campaignUrlMapByCampaignId.get(String(item.campaign_id)) || '';
@@ -238,25 +266,78 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       if (!targetUrl && merchant) {
         targetUrl = campaignUrlMapByName.get(merchant.toLowerCase().replace(/[^a-z0-9]/g, '')) || '';
       }
-
       const trackingUrl = ((item.tracking_url || item.affiliate_url) as string) || targetUrl;
-
+      const urlType = classifyUrl(targetUrl);
+      const couponCode = item.coupon_code ? String(item.coupon_code).trim() : (item.code ? String(item.code).trim() : undefined);
+      const discountText = (item.discount || item.discount_percentage || (item.percent_off ? `${item.percent_off}% OFF` : undefined) || 'Special Offer') as string;
+      const priceResult = extractAdvertisedPrice(title, description, discountText);
+      const entities = extractEntitiesFromDeal(title, description, targetUrl);
+      let dealType: 'PRODUCT_DEAL' | 'CATEGORY_DEAL' | 'STORE_DEAL' | 'COUPON_DEAL' | 'CAMPAIGN' = 'STORE_DEAL';
+      if (couponCode && couponCode.length > 0) {
+        dealType = 'COUPON_DEAL';
+      } else if (urlType === 'PRODUCT_PDP' || Boolean(entities.RAM || entities.storage || entities.size || entities.resolution)) {
+        dealType = 'PRODUCT_DEAL';
+      } else if (urlType === 'CATEGORY_PAGE' || urlType === 'SEARCH_PAGE' || /tvs|laptops|shoes|mobiles|headphones|air\s*fryers/i.test(title)) {
+        dealType = 'CATEGORY_DEAL';
+      } else {
+        dealType = 'STORE_DEAL';
+      }
+      const rawImage = (item.image_url || item.image || item.product_image) as string | undefined;
+      const isValidImage = rawImage && typeof rawImage === 'string' && rawImage.startsWith('http') && !rawImage.includes('Placeholder-Campaign');
+      let imageUrl: string | null = null;
+      let imageType: 'PRODUCT' | 'CATEGORY_PROMO' | 'MERCHANT' | 'NONE' = 'NONE';
+      let imageSource: 'CUELINKS_FEED' | 'MERCHANT_PDP' | 'MERCHANT_FEED' | 'EXISTING_CONNECTOR' | 'NONE' = 'NONE';
+      let imageVerification: 'EXACT' | 'UNVERIFIED' | 'NONE' = 'NONE';
+      if (dealType === 'PRODUCT_DEAL') {
+        if (isValidImage) {
+          imageUrl = rawImage;
+          imageType = 'PRODUCT';
+          imageSource = 'CUELINKS_FEED';
+          imageVerification = 'UNVERIFIED';
+        } else {
+          imageUrl = null;
+          imageType = 'NONE';
+          imageSource = 'NONE';
+          imageVerification = 'NONE';
+        }
+      } else if (dealType === 'CATEGORY_DEAL') {
+        if (isValidImage) {
+          imageUrl = rawImage;
+          imageType = 'CATEGORY_PROMO';
+          imageSource = 'CUELINKS_FEED';
+          imageVerification = 'UNVERIFIED';
+        }
+      }
       return {
         id: String(item.id || `cuelinks-offer-${index}`),
+        dealType,
         type: 'offer',
         title,
-        description: ((item.description || item.terms || item.details) as string) || '',
+        description,
         merchantName: merchant,
-        merchantLogo: (item.image_url || item.logo || item.banner_url) as string || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        bannerImage: (item.image_url || item.banner_url) as string || getDealBannerImage(category, title, merchant),
-        couponCode: item.coupon_code ? String(item.coupon_code).trim() : (item.code ? String(item.code).trim() : undefined),
-        discountText: (item.discount || item.discount_percentage || (item.percent_off ? `${item.percent_off}% OFF` : undefined) || 'Special Offer') as string,
+        merchantLogo: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        merchantLogoUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        imageUrl,
+        imageType,
+        imageSource,
+        imageVerification,
+        price: priceResult.price,
+        advertisedPrice: priceResult.price > 0 ? priceResult.price : null,
+        priceType: priceResult.priceType,
+        priceConfidence: priceResult.confidence,
+        verificationStatus: 'SOURCE_STATED' as const,
+        couponCode,
+        discountText,
         destinationUrl: targetUrl,
         trackingUrl,
+        dealUrl: trackingUrl,
+        urlType,
         affiliated: true,
         validUntil: (item.end_date || item.valid_till) as string | undefined,
         category,
+        extractedEntities: entities,
         source: 'cuelinks',
+        retrievedAt: new Date().toISOString(),
       };
     });
 
@@ -273,23 +354,36 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       const domain = (item.domain as string) || merchant.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
       const targetUrl = getMerchantUrl(merchant, item.domain as string | undefined, item);
       const trackingUrl = ((item.tracking_url || item.affiliate_url) as string) || targetUrl;
-
+      const urlType = classifyUrl(targetUrl);
       return {
         id: String(item.id || `cuelinks-campaign-${index}`),
+        dealType: 'CAMPAIGN' as const,
         type: 'campaign',
         title,
         description: (item.description as string) || `Explore top verified sales and offers at ${merchant}.`,
         merchantName: merchant,
-        merchantLogo: (item.image || item.logo) as string || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        bannerImage: (item.image || item.banner_url) as string || getDealBannerImage(category, title, merchant),
+        merchantLogo: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        merchantLogoUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        imageUrl: null,
+        imageType: 'MERCHANT' as const,
+        imageSource: 'NONE' as const,
+        imageVerification: 'NONE' as const,
+        price: 0,
+        advertisedPrice: null,
+        priceType: 'UNKNOWN' as const,
+        priceConfidence: 0,
+        verificationStatus: 'SOURCE_STATED' as const,
         couponCode: undefined,
         discountText: item.payout ? `${(item.payout_currency as string) || 'INR'} ${item.payout} Payout` : 'Featured Store',
         destinationUrl: targetUrl,
         trackingUrl,
+        dealUrl: trackingUrl,
+        urlType,
         affiliated: true,
         validUntil: undefined,
         category,
         source: 'cuelinks',
+        retrievedAt: new Date().toISOString(),
       };
     });
 
@@ -305,19 +399,14 @@ export const onRequestGet = async (context: { env?: Record<string, unknown> }) =
       }),
       { status: 200, headers: jsonHeaders }
     );
-  } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error('Cuelinks deals error:', errorMsg);
+  } catch (error) {
+    console.error('[CUELINKS DEALS API ERROR]', error);
     return new Response(
       JSON.stringify({
-        ok: true,
-        items: [],
-        source: 'none',
-        total: 0,
-        message: 'Deals service request error',
-        updatedAt: new Date().toISOString(),
+        ok: false,
+        error: error instanceof Error ? error.message : 'Unknown Cuelinks API error',
       }),
-      { status: 200, headers: jsonHeaders }
+      { status: 500, headers: jsonHeaders }
     );
   }
 };

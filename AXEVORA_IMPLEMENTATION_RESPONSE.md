@@ -528,6 +528,61 @@ FINAL FEASIBILITY STATUS
    - When `imageUrl` is `null` on a `PRODUCT_DEAL`, render an elegant, neutral dark-mode SVG placeholder with a shopping bag icon and the text *"Product Image Unavailable"*.
    - Never allow fallback to generic stock photography.
 
+---
+---
+
+# PART V — PHASE 1 IMPLEMENTATION: CUELINKS NORMALIZATION & IMAGE INTEGRITY
+
+## 1. Files Changed & Exact Behavior Modifications
+
+| File Path | Component Area | Modifications Implemented |
+|---|---|---|
+| [`src/types/shopping.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/src/types/shopping.ts) | Core Data Contracts | Extended `Product` interface with `dealType`, `priceType`, `priceConfidence`, `verificationStatus`, `imageType`, `imageSource`, `imageVerification`, `couponCode`, `validUntil`, `extractedEntities`, `destinationUrl`, `trackingUrl`. |
+| [`functions/api/commerce/deals.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/deals.ts) | Backend API | 1. **Completely removed `getDealBannerImage()`** Unsplash keyword generator.<br>2. Implemented strict deal classification (`PRODUCT_DEAL`, `CATEGORY_DEAL`, `STORE_DEAL`, `COUPON_DEAL`, `CAMPAIGN`).<br>3. Extracted advertised prices (`ADVERTISED_PRODUCT_PRICE`, `STARTING_PRICE`, `DISCOUNT_AMOUNT`).<br>4. Extracted product specs (RAM, Storage, Size, Resolution).<br>5. Preserved separate `destinationUrl` and `trackingUrl`.<br>6. For `PRODUCT_DEAL`, set `imageUrl: null` unless a legitimate product image CDN is supplied. |
+| [`functions/api/commerce/search.ts`](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/search.ts) | Backend Search Directory | 1. Removed hardcoded Unsplash image in merchant search fallback directory.<br>2. Set `image: null`, `imageUrl: null`, `imageType: 'MERCHANT'`, `dealType: 'STORE_DEAL'`.<br>3. Preserved 3-layer affiliate wrapping. |
+| [`src/components/shopping/ProductCard.tsx`](file:///g:/axevora.com/tittoos-toolbox-hub/src/components/shopping/ProductCard.tsx) | Frontend UI | 1. **Completely eliminated default Unsplash fallback** (`photo-1468495244123-6c6c332eeece`).<br>2. Rendered clean, neutral SVG placeholder (*"Product Image Unavailable"*) for `PRODUCT_DEAL` without image.<br>3. Added `referrerPolicy="no-referrer"` to prevent hotlink blocks.<br>4. Displayed explicit price semantics (*"Advertised Deal Price"*, *"Starting from"*, *"Price unavailable in offer"*).<br>5. **`₹0` is permanently prohibited from displaying.** |
+| [`src/pages/shopping/ShoppingAssistant.tsx`](file:///g:/axevora.com/tittoos-toolbox-hub/src/pages/shopping/ShoppingAssistant.tsx) | Frontend Controller | Updated item mapping to pass through all normalized deal fields (`dealType`, `priceType`, `verificationStatus`, `imageType`, `couponCode`, `extractedEntities`). |
+
+---
+
+## 2. Image Fallback & Provenance Verification
+
+- **For `PRODUCT_DEAL`**:
+  - If upstream exact image exists: rendered directly.
+  - If upstream exact image is missing: `imageUrl = null`, renders neutral dark-mode placeholder with `ImageOff` icon and *"Product Image Unavailable"*.
+  - **Zero generic Unsplash photos are rendered.**
+- **For `CATEGORY_DEAL`**:
+  - Legitimate category promotional artwork allowed (`imageType: 'CATEGORY_PROMO'`).
+- **For `STORE_DEAL` / `CAMPAIGN`**:
+  - Merchant logo allowed (`imageType: 'MERCHANT'`).
+
+---
+
+## 3. Price & Budget Semantics
+
+- **Advertised Price Labelling**:
+  - `PRODUCT_DEAL` with price: labelled *"Advertised Deal Price"* (`SOURCE_STATED`).
+  - `CATEGORY_DEAL` with starting price: labelled *"Starting from"*.
+  - Deals without price: labelled *"Price unavailable in offer"*.
+  - **`₹0` is NEVER displayed.**
+- **Budget Filtering Rule**:
+  - When `advertisedPrice == null`, budget status is `UNKNOWN` (not `OUT_OF_BUDGET`).
+
+---
+
+## 4. Verification & Testing Evidence
+
+### A. TypeScript Compilation Test
+- Command: `cmd.exe /c "npx tsc --noEmit"`
+- Result: **`0 Errors (PASS ✅)`**
+
+### B. Monetization Integrity Verification
+- Amazon Associate Tag: `axevora06-21` (Preserved ✅)
+- EarnKaro API: `bitli.in` converter (Preserved ✅)
+- Cuelinks LinkKit: Publisher ID `186358` / `linksredirect.com` (Preserved ✅)
+- Affiliate conversion order & neutrality: Completely untouched (Locked 🔒)
+
+
 
 
 

@@ -4,15 +4,27 @@ export interface Product {
   price: number;
   originalPrice?: number;
   discountPercentage?: number;
+  discountText?: string;
   currency: string;
   rating?: number | null;
   reviewCount?: number | null;
-  imageUrl: string;
+  imageUrl?: string | null;
+  imageType?: 'PRODUCT' | 'CATEGORY_PROMO' | 'MERCHANT' | 'NONE';
+  imageSource?: 'CUELINKS_FEED' | 'MERCHANT_PDP' | 'MERCHANT_FEED' | 'EXISTING_CONNECTOR' | 'NONE';
+  imageVerification?: 'EXACT' | 'UNVERIFIED' | 'NONE';
+  dealType?: 'PRODUCT_DEAL' | 'CATEGORY_DEAL' | 'STORE_DEAL' | 'COUPON_DEAL' | 'CAMPAIGN';
+  priceType?: 'ADVERTISED_PRODUCT_PRICE' | 'STARTING_PRICE' | 'DISCOUNT_AMOUNT' | 'BANK_DISCOUNT' | 'COUPON_DISCOUNT' | 'UNKNOWN';
+  priceConfidence?: number;
+  verificationStatus?: 'SOURCE_STATED' | 'SOURCE_VERIFIED' | 'LIVE_VERIFIED' | 'UNVERIFIED';
+  couponCode?: string;
+  validUntil?: string;
   merchantId: string;
   merchantName?: string;
   merchantLogoUrl?: string;
   dealUrl: string;
-  urlType?: 'product' | 'search';
+  destinationUrl?: string;
+  trackingUrl?: string;
+  urlType?: 'product' | 'search' | 'PRODUCT_PDP' | 'CATEGORY_PAGE' | 'SEARCH_PAGE' | 'STORE_HOME' | 'UNKNOWN';
   reasons: string[];
   aiScore?: number;
   communityScore?: number;
@@ -20,6 +32,14 @@ export interface Product {
   returnPolicy?: string;
   source?: string;
   retrievedAt?: string;
+  extractedEntities?: {
+    brand?: string;
+    model?: string;
+    variant?: string;
+    category?: string;
+    subcategory?: string;
+    specs?: Record<string, string>;
+  };
 }
 
 

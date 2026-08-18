@@ -158,14 +158,26 @@ export default function ShoppingAssistant() {
             price: typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0 : item.price || 0,
             originalPrice: item.originalPrice,
             discountPercentage: item.discountPercentage,
+            discountText: item.discountText,
             currency: item.currency || 'INR',
             rating: item.rating !== undefined && item.rating !== null ? Number(item.rating) : null,
             reviewCount: item.reviewCount !== undefined && item.reviewCount !== null ? Number(item.reviewCount) : null,
-            imageUrl: item.image || item.imageUrl || item.merchantLogo || '',
+            imageUrl: item.imageUrl !== undefined ? item.imageUrl : (item.image || null),
+            imageType: item.imageType || 'NONE',
+            imageSource: item.imageSource || 'NONE',
+            imageVerification: item.imageVerification || 'NONE',
+            dealType: item.dealType || (item.urlType === 'product' ? 'PRODUCT_DEAL' : 'STORE_DEAL'),
+            priceType: item.priceType || (item.price > 0 ? 'ADVERTISED_PRODUCT_PRICE' : 'UNKNOWN'),
+            priceConfidence: item.priceConfidence || 0,
+            verificationStatus: item.verificationStatus || 'SOURCE_STATED',
+            couponCode: item.couponCode,
+            validUntil: item.validUntil,
             merchantId: item.merchantName?.toLowerCase() || item.merchant?.toLowerCase() || 'store',
             merchantName: item.merchantName || item.merchant || 'Store',
             merchantLogoUrl: item.merchantLogo || item.merchantLogoUrl || '',
             dealUrl: item.url || item.dealUrl || '#',
+            destinationUrl: item.destinationUrl,
+            trackingUrl: item.trackingUrl,
             urlType: item.urlType || 'product',
             reasons: item.reasons || ["Verified Offer"],
             aiScore: item.aiScore || undefined,
@@ -173,7 +185,8 @@ export default function ShoppingAssistant() {
             deliveryEstimate: item.deliveryEstimate || 'Check merchant',
             returnPolicy: item.returnPolicy || 'Check merchant',
             source: item.source,
-            retrievedAt: item.retrievedAt
+            retrievedAt: item.retrievedAt,
+            extractedEntities: item.extractedEntities
           };
         });
       }
