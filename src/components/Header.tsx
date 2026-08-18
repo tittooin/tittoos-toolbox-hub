@@ -29,33 +29,21 @@ const Header = () => {
             <span className="text-xl font-extrabold tracking-tight text-primary">Axevora</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav id="primary-navigation" className="hidden lg:flex items-center space-x-6 text-sm font-medium">
-            <Link to="/" className="no-underline text-foreground hover:text-primary transition-colors">
-              Home
+          {/* Desktop Navigation — Four Ecosystem Pillars */}
+          <nav id="primary-navigation" className="hidden lg:flex items-center space-x-7 text-sm font-medium">
+            <Link to="/shopping" className="no-underline text-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-semibold group">
+              <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
+              Product Intelligence
             </Link>
             <Link to="/community" className="no-underline text-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-semibold group">
               <Users className="w-4 h-4 text-violet-500 group-hover:scale-110 transition-transform" />
               Community
-              <Badge className="bg-violet-600/10 text-violet-600 hover:bg-violet-600/20 border-none text-[10px] px-1.5 py-0 font-bold ml-0.5">NEW</Badge>
             </Link>
-            <Link to="/tools" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              All Tools
+            <Link to="/tools/pool-shooter" className="no-underline text-foreground hover:text-primary transition-colors font-semibold">
+              Games
             </Link>
-            <Link to="/deals" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              Deals
-            </Link>
-            <Link to="/workspace" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              Workspace
-            </Link>
-            <Link to="/creator-studio" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              Creator Studio
-            </Link>
-            <Link to="/categories" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              Categories
-            </Link>
-            <Link to="/blog" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              Blog
+            <Link to="/tools" className="no-underline text-foreground hover:text-primary transition-colors font-semibold">
+              Tools
             </Link>
 
             {/* Dropdown for Secondary Links */}
@@ -71,24 +59,23 @@ const Header = () => {
 
               {isMoreOpen && (
                 <div className="absolute right-0 mt-1 w-48 bg-card border border-border shadow-xl rounded-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <Link to="/submit-blog" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
-                    Submit Your Blog
+                  <Link to="/deals" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
+                    Store Deals & Offers
+                  </Link>
+                  <Link to="/workspace" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
+                    Workspace
+                  </Link>
+                  <Link to="/creator-studio" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
+                    Creator Studio
+                  </Link>
+                  <Link to="/blog" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
+                    Blog & Articles
                   </Link>
                   <Link to="/about" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
                     About Us
                   </Link>
                   <Link to="/contact" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
                     Contact Support
-                  </Link>
-                  <div className="my-1 border-t border-border/50"></div>
-                  <Link to="/privacy" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
-                    Privacy Policy
-                  </Link>
-                  <Link to="/terms" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
-                    Terms of Service
-                  </Link>
-                  <Link to="/attributions" className="block px-4 py-2 text-xs text-muted-foreground hover:text-primary hover:bg-accent/50 transition-colors" onClick={() => setIsMoreOpen(false)}>
-                    Attributions
                   </Link>
                 </div>
               )}
@@ -303,11 +290,15 @@ const Header = () => {
               )}
 
               <Link
-                to="/"
-                className="text-foreground hover:text-primary transition-colors py-1"
+                to="/shopping"
+                className="text-amber-600 font-bold hover:text-amber-700 transition-colors flex items-center justify-between py-1.5 px-3 bg-amber-500/10 rounded-lg border border-amber-500/20"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Home
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  Product Intelligence
+                </div>
+                <Badge className="bg-amber-600 text-white border-none text-[10px]">AI DEALS</Badge>
               </Link>
               <Link
                 to="/community"
@@ -318,39 +309,32 @@ const Header = () => {
                   <Users className="w-4 h-4 text-violet-600" />
                   Community Hub
                 </div>
-                <Badge className="bg-violet-600 text-white border-none text-[10px]">JOIN NOW</Badge>
+                <Badge className="bg-violet-600 text-white border-none text-[10px]">DISCUSS</Badge>
+              </Link>
+              <Link
+                to="/tools/pool-shooter"
+                className="text-foreground hover:text-primary font-semibold transition-colors py-1 px-3"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Games & Play
               </Link>
               <Link
                 to="/tools"
-                className="text-muted-foreground hover:text-primary transition-colors py-1"
+                className="text-foreground hover:text-primary font-semibold transition-colors py-1 px-3"
                 onClick={() => setIsMenuOpen(false)}
               >
-                All Tools
+                Productivity Tools
               </Link>
               <Link
                 to="/deals"
-                className="text-muted-foreground hover:text-primary transition-colors py-1"
+                className="text-muted-foreground hover:text-primary transition-colors py-1 px-3"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Deals & Offers
-              </Link>
-              <Link
-                to="/workspace"
-                className="text-muted-foreground hover:text-primary transition-colors py-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Workspace
-              </Link>
-              <Link
-                to="/creator-studio"
-                className="text-muted-foreground hover:text-primary transition-colors py-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Creator Studio
+                Store Deals & Offers
               </Link>
               <Link
                 to="/categories"
-                className="text-muted-foreground hover:text-primary transition-colors py-1"
+                className="text-muted-foreground hover:text-primary transition-colors py-1 px-3"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Categories

@@ -22,16 +22,15 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-red-500 rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
-                <span className="text-white font-bold text-sm">AX</span>
+              <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-md shrink-0">
+                <span className="font-bold text-primary-foreground text-base leading-none">A</span>
               </div>
-              <span className="text-xl font-bold">Axevora</span>
+              <span className="text-xl font-extrabold tracking-tight text-primary">Axevora</span>
             </div>
-            <p className="text-muted-foreground mb-4 max-w-md">
-              Your complete toolkit for online productivity. Access 35+ essential utilities
-              including converters, generators, analyzers, and editors - all in one place.
+            <p className="text-muted-foreground mb-4 text-xs leading-relaxed">
+              Discover smarter buying options, engage with the creator community, play arcade games, and access 120+ privacy-first web utilities — all in one ecosystem.
             </p>
             <div className="flex space-x-4">
               <button
@@ -51,7 +50,6 @@ const Footer = () => {
                       await navigator.clipboard.writeText(shareData.url);
                       toast.success('Link copied to clipboard');
                     } else {
-                      // Fallback: open mailto with default recipient
                       window.location.href = `mailto:admin@axevora.com?subject=${encodeURIComponent(shareData.title)}&body=${encodeURIComponent(shareData.url)}`;
                     }
                   } catch (e) {
@@ -59,24 +57,61 @@ const Footer = () => {
                   }
                 }}
               >
-                <Share2 className="h-5 w-5" />
-                <span className="text-sm">Share</span>
+                <Share2 className="h-4 w-4" />
+                <span className="text-xs font-semibold">Share Axevora</span>
               </button>
             </div>
           </div>
 
-          {/* Tools Links */}
+          {/* Ecosystem Pillars */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Popular Tools</h3>
-            <ul className="space-y-2">
+            <h3 className="text-sm font-bold tracking-wider uppercase text-foreground mb-4">Ecosystem Pillars</h3>
+            <ul className="space-y-2.5 text-xs">
+              <li>
+                <Link to="/shopping" className="text-muted-foreground hover:text-amber-500 font-semibold transition-colors">
+                  ⚡ Product Intelligence
+                </Link>
+              </li>
+              <li>
+                <Link to="/community" className="text-muted-foreground hover:text-violet-500 font-semibold transition-colors">
+                  👥 Creator & Deals Community
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/pool-shooter" className="text-muted-foreground hover:text-emerald-500 font-semibold transition-colors">
+                  🎮 Games & Arcade
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools" className="text-muted-foreground hover:text-primary font-semibold transition-colors">
+                  🛠️ Productivity Tools (120+)
+                </Link>
+              </li>
+              <li>
+                <Link to="/deals" className="text-muted-foreground hover:text-rose-500 font-semibold transition-colors">
+                  🏷️ Store Deals & Offers
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Popular Tools */}
+          <div>
+            <h3 className="text-sm font-bold tracking-wider uppercase text-foreground mb-4">Popular Tools</h3>
+            <ul className="space-y-2.5 text-xs">
               <li>
                 <Link to="/tools/pdf-converter" className="text-muted-foreground hover:text-foreground transition-colors">
                   PDF Converter
                 </Link>
               </li>
               <li>
+                <Link to="/tools/image-converter" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Image Converter & Editor
+                </Link>
+              </li>
+              <li>
                 <Link to="/tools/password-generator" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Password Generator
+                  Secure Password Generator
                 </Link>
               </li>
               <li>
@@ -85,35 +120,25 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/tools/color-picker" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Color Picker
-                </Link>
-              </li>
-              <li>
-                <Link to="/tools/text-analyzer" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Text Analyzer
+                <Link to="/tools/json-formatter" className="text-muted-foreground hover:text-foreground transition-colors">
+                  JSON Formatter & Validator
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Company & Legal */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="https://url.cloud.huawei.com/yL2FaqmrQc" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[#C71D23] transition-colors font-medium flex items-center gap-2">
-                  Huawei AppGallery
-                </a>
-              </li>
+            <h3 className="text-sm font-bold tracking-wider uppercase text-foreground mb-4">Company & Legal</h3>
+            <ul className="space-y-2.5 text-xs">
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About Us
+                  About Axevora
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Contact
+                  Contact Support
                 </Link>
               </li>
               <li>
@@ -128,12 +153,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Blog & Guides
+                  Blog & Articles
                 </Link>
               </li>
               <li>
-                <Link to="/attributions" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Attributions & Licensing
+                <Link to="/sitemap" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Sitemap
                 </Link>
               </li>
             </ul>

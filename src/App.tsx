@@ -278,6 +278,7 @@ const App = () => (
                 <Route path="/community/boards/:slug" element={<CommunityBoard />} />
                 <Route path="/community/boards/:slug/posts/:postId" element={<CommunityPost />} />
                 <Route path="/community/verify-email" element={<VerifyEmail />} />
+                <Route path="/shopping" element={<ShoppingAssistant />} />
                 <Route path="/ai" element={<ShoppingAssistant />} />
 
                 {/* Blog Category Pages */}

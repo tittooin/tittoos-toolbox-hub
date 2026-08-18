@@ -26,23 +26,23 @@ export default function ShoppingAssistant() {
   }, [messages, isLoading]);
 
   useEffect(() => {
-    // Check for URL parameter
+    // Check for query or URL parameter
     const params = new URLSearchParams(location.search);
-    const urlParam = params.get('url');
-    if (urlParam) {
-      // Clear parameter to avoid refetching on reload
-      navigate('/ai', { replace: true });
-      // Small timeout to allow initial render
+    const initialQuery = params.get('q') || params.get('query') || params.get('url');
+    if (initialQuery && initialQuery.trim().length > 0) {
+      const trimmed = initialQuery.trim();
+      // Replace location path without losing history
+      navigate(location.pathname, { replace: true });
       setTimeout(() => {
-        handleSendMessage(urlParam);
-      }, 500);
+        handleSendMessage(trimmed);
+      }, 300);
     }
 
     return () => {
       // Abort on unmount
       abortControllerRef.current?.abort();
     };
-  }, [location.search, navigate]);
+  }, [location.search, location.pathname, navigate]);
 
   const handleSendMessage = async (content: string) => {
     // Abort previous stream if active
