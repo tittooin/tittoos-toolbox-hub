@@ -582,6 +582,213 @@ FINAL FEASIBILITY STATUS
 - Cuelinks LinkKit: Publisher ID `186358` / `linksredirect.com` (Preserved ✅)
 - Affiliate conversion order & neutrality: Completely untouched (Locked 🔒)
 
+---
+
+# PART VI — AXEVORA HOMEPAGE FOUR-PILLAR REDESIGN
+
+## 1. Problem Statement
+
+The previous `src/pages/Index.tsx` (≈1015 lines) was a monolithic page that:
+- Embedded a full tools-search directory with live search filtering
+- Called `<CommerceSection />` API on every homepage load (shopping AI was invoked on page open)
+- Rendered `<HomepageCommunityFeed />` (live API calls at homepage mount)
+- Mixed tool catalog, community feed, and shopping results in one scrollable page
+- Communicated no clear product identity — looked like a random toolbox, not a 4-pillar ecosystem
+
+**Core UX & identity defect**: Axevora's product identity was invisible. Users could not understand what Axevora is at a glance.
+
+---
+
+## 2. Redesign Objective
+
+Redesign the homepage as an **ecosystem front door** — not a tool catalog page. The homepage must communicate that Axevora is **one integrated platform with four primary pillars**:
+
+| Pillar | Name | Canonical Route |
+|--------|------|-----------------|
+| 1 | Product Intelligence | `/shopping?q=...` |
+| 2 | Community | `/community` |
+| 3 | Games | `/tools/pool-shooter`, `/tools/2048`, `/tools/typing-speed`, `/tools/reaction-test` |
+| 4 | Productivity Tools | `/tools` |
+
+---
+
+## 3. Architecture Rules Applied
+
+| Rule | Status |
+|------|--------|
+| Homepage MUST NOT auto-call shopping AI API on mount | ✅ ENFORCED |
+| Hero search box navigates to `/shopping?q=...`, not inline render | ✅ ENFORCED |
+| No synthetic/mock community posts, users, games, prices, reviews | ✅ ENFORCED |
+| No ₹0 or fabricated pricing shown on homepage | ✅ ENFORCED |
+| Auth context reuses existing `/api/community/auth/me` | ✅ ENFORCED |
+| Three-Layer Monetization untouched | 🔒 LOCKED |
+| Workers AI GLM-4.7-Flash untouched | 🔒 LOCKED |
+| Gemini 2.5 Flash untouched | 🔒 LOCKED |
+| Phase 1 Cuelinks normalization + image integrity untouched | 🔒 LOCKED |
+
+---
+
+## 4. Files Modified
+
+### `src/pages/Index.tsx` — COMPLETE REWRITE
+- **Previous**: 1015 lines, monolithic, with embedded tool search, CommerceSection live calls, HomepageCommunityFeed live calls
+- **New**: 561 lines, clean 4-pillar gateway structure
+- **No API calls on mount** except one lightweight `/api/community/auth/me` for auth state (same as before)
+- **Structure**:
+  ```
+  Header (Top Navigation)
+  ↓ Hero / Product Intelligence Section
+    - Search input (form submission → /shopping?q=...)
+    - Natural language pill examples
+    - 4 capability cards: Discover, Compare, Understand, Save
+  ↓ Community Section (Pillar 2)
+    - Gateway CTA to /community
+    - Creator spotlight CTA (no fake users/posts)
+  ↓ Games Section (Pillar 3)
+    - Pool Bubbles → /tools/pool-shooter
+    - 2048 Puzzle → /tools/2048
+    - Typing Speed → /tools/typing-speed
+    - CTA to /tools (game catalog)
+  ↓ Productivity Tools Section (Pillar 4)
+    - PDF Suite → /tools/pdf-merge
+    - Media Suite → /tools/image-compress
+    - Dev Suite → /tools/json-formatter
+    - Security Suite → /tools/password-generator
+    - CTA to /tools
+  ↓ Footer (reorganized around Four Pillars)
+  ```
+
+### `src/components/Header.tsx` — REFACTORED
+- Navigation realigned to Four Ecosystem Pillars:
+  - **Product Intelligence** → `/shopping`
+  - **Community** → `/community`
+  - **Games** → dropdowns linking to individual game tools
+  - **Tools** → `/tools`
+- Desktop nav and mobile hamburger menu both updated
+- Auth state preserved (sign in / dashboard buttons)
+
+### `src/components/Footer.tsx` — REFACTORED
+- Columns reorganized into:
+  - **Ecosystem Pillars** (Product Intelligence, Community, Games, Tools)
+  - **Popular Tools** (quick links)
+  - **Company & Legal** (About, Privacy, Terms)
+
+### `src/App.tsx` — ROUTE ADDED
+```tsx
+// Canonical Product Intelligence route
+<Route path="/shopping" element={<ShoppingAssistant />} />
+// Preserved existing /ai route for backwards compatibility
+<Route path="/ai" element={<ShoppingAssistant />} />
+```
+
+### `src/pages/shopping/ShoppingAssistant.tsx` — QUERY PARAM SUPPORT ADDED
+- Now reads `?q=`, `?query=`, and `?url=` URL params on mount
+- Automatically populates query and triggers search when navigated from homepage hero
+
+---
+
+## 5. Key Technical Decisions
+
+### Decision 1: Search navigates — does not embed inline results
+```typescript
+// Homepage hero submit handler
+const handleSearchSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  const clean = searchQuery.trim();
+  if (!clean) return;
+  navigate(`/shopping?q=${encodeURIComponent(clean)}`);
+};
+```
+**Rationale**: Keeps homepage lightweight; product intelligence AI executes only on the dedicated `/shopping` page, not on every homepage load.
+
+### Decision 2: Auth via existing endpoint only
+```typescript
+useEffect(() => {
+  fetch('/api/community/auth/me')
+    .then(res => res.json())
+    .then(data => setIsAuthenticated(data?.authenticated ?? false))
+    .catch(() => setIsAuthenticated(false));
+}, []);
+```
+**Rationale**: Zero duplication of auth logic. Reuses the same endpoint as all other authenticated pages.
+
+### Decision 3: No mock community data
+- Community section renders only gateway CTAs and icons — no fake posts, no fake usernames, no fake avatars
+- Games section renders only route links and labels — no fabricated game scores or fake player counts
+
+### Decision 4: Natural language pill examples (query shortcuts)
+- `"Best gaming laptop under ₹60,000"` → navigates to `/shopping?q=...`
+- `"iPhone 15 128GB"` → navigates to `/shopping?q=...`
+- `"Best 55 inch 4K TV under ₹50,000"` → navigates to `/shopping?q=...`
+- No AI is called on click — pure navigation only
+
+---
+
+## 6. Performance Impact
+
+| Metric | Before (Old Index.tsx) | After (New Index.tsx) |
+|--------|------------------------|----------------------|
+| API calls on mount | 3–4 (auth + commerce + community) | 1 (auth only) |
+| Lines of code | ~1015 lines | ~561 lines |
+| Shopping AI triggered | Automatically on load | Only on query submit → /shopping |
+| Community feed API | Triggered on load | Not triggered on homepage |
+| Product image fetches | Multiple (Unsplash + deals) | None on homepage |
+
+---
+
+## 7. Verification Evidence
+
+### A. TypeScript Compilation
+```
+Command: npx tsc --noEmit
+Exit Code: 0
+Errors: 0 ✅
+```
+
+### B. Git Commit
+```
+Commit: 23abc62
+Message: feat(phase2a): four-pillar ecosystem homepage redesign
+Files changed: 5
+Insertions: 517
+Deletions: 961
+Branch: main → pushed to origin ✅
+```
+
+### C. Route Integrity Check (Confirmed in App.tsx)
+- `/` → `<Index />` (new four-pillar homepage) ✅
+- `/shopping` → `<ShoppingAssistant />` (canonical Product Intelligence route) ✅
+- `/ai` → `<ShoppingAssistant />` (preserved for backward compatibility) ✅
+- `/community` → `<Community />` ✅
+- `/tools` → `<Tools />` ✅
+- `/tools/pool-shooter` → `<PoolShooter />` ✅
+
+### D. Monetization Lock Verification
+- `functions/api/commerce/deals.ts`: UNTOUCHED ✅
+- `functions/api/commerce/search.ts`: UNTOUCHED ✅
+- Three-layer monetization order: Amazon → EarnKaro → Cuelinks (LOCKED ✅)
+- Phase 1 Cuelinks normalization and image integrity rules: UNTOUCHED ✅
+
+### E. Browser State (Observed)
+- Active tab at time of verification: `https://axevora.com/ai` — Shopping Assistant renders ✅
+- Browser quota exhausted before full automated test; manual verification pending next session
+
+---
+
+## 8. Phase 2A Status
+
+| Item | Status |
+|------|--------|
+| Homepage rewritten as four-pillar gateway | ✅ COMPLETE |
+| Header realigned to four pillars | ✅ COMPLETE |
+| Footer reorganized to four pillars | ✅ COMPLETE |
+| `/shopping` canonical route added | ✅ COMPLETE |
+| ShoppingAssistant reads `?q=` URL params | ✅ COMPLETE |
+| TypeScript 0 errors | ✅ PASS |
+| Git commit & push | ✅ `23abc62` |
+| Three-layer monetization preserved | 🔒 LOCKED |
+| Workers AI / Gemini untouched | 🔒 LOCKED |
+| Phase 1 Cuelinks work preserved | 🔒 LOCKED |
 
 
 
