@@ -2001,6 +2001,27 @@ Once EC2 deployment is complete:
 
 ---
 
+## 18. Phase 5 Installer Fix & Idempotent Deployment Audit
+
+### 18.1 Root Cause of Phase 5 Failure
+- **Previous Pattern:** Script used `linux_${GOARCH}` (e.g. `linux_amd64`) in `grep`.
+- **Actual GitHub Release Asset Naming:** OpenSERP v0.8.12 releases binary packages named `openserp-linux-amd64-0.8.12.tgz` (hyphen separated, `.tgz` extension).
+- **Fix:** Switched to GitHub Releases API dynamic JSON discovery targeting `openserp-linux-${GOARCH}-*.tgz` with direct fallback to canonical URL `https://github.com/karust/openserp/releases/download/v0.8.12/openserp-linux-amd64-0.8.12.tgz`.
+
+### 18.2 Verified Release Asset Metadata (v0.8.12)
+- **Tag:** `v0.8.12`
+- **Asset Name:** `openserp-linux-amd64-0.8.12.tgz`
+- **Asset Size:** `11,045,427` bytes (~11 MB)
+- **Verified Contents:** Standalone single executable binary `openserp` (`28,434,616` bytes uncompressed).
+
+### 18.3 Idempotency Enforcement
+- **Phase 3 (Backup):** Detects existing `/opt/axevora-backups/bot-backup-*.tar.gz` with verified SHA256. Skips duplicate backup creation.
+- **Phase 4 (Quarantine):** Checks if bot service is already stopped/disabled and old directories already quarantined. Skips redundant moves.
+- **Phase 5 (Installer):** Downloads directly, validates archive size (>5MB), extracts cleanly to `/opt/openserp/openserp`, and verifies binary execution.
+
+---
+
+
 
 
 

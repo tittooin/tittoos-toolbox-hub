@@ -140,132 +140,143 @@ done
 log "FORENSIC INVENTORY COMPLETE"
 
 # =============================================================================
-# PHASE 3: IDENTIFY AND BACKUP EXISTING BOT
+# PHASE 3: IDENTIFY AND BACKUP EXISTING BOT (IDEMPOTENT)
 # =============================================================================
-section "PHASE 3: BACKUP EXISTING BOT"
+section "PHASE 3: BACKUP EXISTING BOT (IDEMPOTENT)"
 
 mkdir -p "${BACKUP_DIR}"
-log "Backup directory: ${BACKUP_DIR}"
+EXISTING_BACKUP=$(ls -t /opt/axevora-backups/bot-backup-*.tar.gz 2>/dev/null | head -1 || true)
 
-# Identify the existing bot by inspecting services
-IDENTIFIED_BOT=""
-IDENTIFIED_BOT_TYPE=""
+if [ -n "$EXISTING_BACKUP" ] && [ -f "${EXISTING_BACKUP}.sha256" ] && sha256sum -c "${EXISTING_BACKUP}.sha256" >/dev/null 2>&1; then
+  log "Found existing verified backup: ${EXISTING_BACKUP}"
+  log "Skipping redundant backup creation (Idempotent PASS)"
+else
+  # Identify the existing bot by inspecting services
+  IDENTIFIED_BOT=""
+  IDENTIFIED_BOT_TYPE=""
 
-# Check for common bot patterns
-if systemctl is-active --quiet trading-bot 2>/dev/null; then
-  IDENTIFIED_BOT="trading-bot"
-  IDENTIFIED_BOT_TYPE="systemd"
-elif systemctl is-active --quiet bot 2>/dev/null; then
-  IDENTIFIED_BOT="bot"
-  IDENTIFIED_BOT_TYPE="systemd"
-elif systemctl is-active --quiet axevora-bot 2>/dev/null; then
-  IDENTIFIED_BOT="axevora-bot"
-  IDENTIFIED_BOT_TYPE="systemd"
-elif command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "online"; then
-  IDENTIFIED_BOT_TYPE="pm2"
-  IDENTIFIED_BOT=$(pm2 list --no-color | grep "online" | awk '{print $4}' | head -1)
-fi
+  if systemctl is-active --quiet trading-bot 2>/dev/null; then
+    IDENTIFIED_BOT="trading-bot"
+    IDENTIFIED_BOT_TYPE="systemd"
+  elif systemctl is-active --quiet bot 2>/dev/null; then
+    IDENTIFIED_BOT="bot"
+    IDENTIFIED_BOT_TYPE="systemd"
+  elif systemctl is-active --quiet axevora-bot 2>/dev/null; then
+    IDENTIFIED_BOT="axevora-bot"
+    IDENTIFIED_BOT_TYPE="systemd"
+  elif command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "online"; then
+    IDENTIFIED_BOT_TYPE="pm2"
+    IDENTIFIED_BOT=$(pm2 list --no-color | grep "online" | awk '{print $4}' | head -1)
+  fi
 
-log "Identified bot: ${IDENTIFIED_BOT:-NONE} (type: ${IDENTIFIED_BOT_TYPE:-unknown})"
+  log "Identified bot: ${IDENTIFIED_BOT:-NONE} (type: ${IDENTIFIED_BOT_TYPE:-unknown})"
 
-# Backup systemd service unit if found
-if [ -n "$IDENTIFIED_BOT" ] && [ "$IDENTIFIED_BOT_TYPE" = "systemd" ]; then
-  if [ -f "/etc/systemd/system/${IDENTIFIED_BOT}.service" ]; then
-    cp "/etc/systemd/system/${IDENTIFIED_BOT}.service" "${BACKUP_DIR}/"
-    log "Backed up systemd unit: ${IDENTIFIED_BOT}.service"
+  # Backup systemd service unit if found
+  if [ -n "$IDENTIFIED_BOT" ] && [ "$IDENTIFIED_BOT_TYPE" = "systemd" ]; then
+    if [ -f "/etc/systemd/system/${IDENTIFIED_BOT}.service" ]; then
+      cp "/etc/systemd/system/${IDENTIFIED_BOT}.service" "${BACKUP_DIR}/"
+      log "Backed up systemd unit: ${IDENTIFIED_BOT}.service"
+    fi
+  fi
+
+  # Backup /opt content (likely bot source)
+  for d in /opt/*/; do
+    if [ -d "$d" ] && [ "$d" != "${OPENSERP_INSTALL_DIR}/" ] && [[ "$d" != *"/axevora-backups/"* ]]; then
+      DIRNAME=$(basename "$d")
+      tar czf "${BACKUP_DIR}/${DIRNAME}-opt-backup.tar.gz" "$d" 2>/dev/null || warn "Could not archive $d"
+      log "Backed up: $d"
+    fi
+  done
+
+  # Backup nginx configs related to bot
+  if [ -d /etc/nginx/sites-available ]; then
+    cp -r /etc/nginx/sites-available "${BACKUP_DIR}/nginx-sites-available" 2>/dev/null || true
+  fi
+
+  # Backup PM2 config
+  if command -v pm2 >/dev/null 2>&1; then
+    pm2 save 2>/dev/null || true
+    if [ -f /root/.pm2/dump.pm2 ]; then
+      cp /root/.pm2/dump.pm2 "${BACKUP_DIR}/pm2-dump.pm2" 2>/dev/null || true
+    fi
+  fi
+
+  # Compress backup
+  tar czf "${BACKUP_DIR}.tar.gz" -C "$(dirname "${BACKUP_DIR}")" "$(basename "${BACKUP_DIR}")" 2>/dev/null || warn "Could not compress backup"
+
+  # Generate and verify SHA256 checksum of backup archive
+  if [ -f "${BACKUP_DIR}.tar.gz" ]; then
+    SHA256_HASH=$(sha256sum "${BACKUP_DIR}.tar.gz" | awk '{print $1}')
+    echo "${SHA256_HASH}  ${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
+    log "Backup archive created: ${BACKUP_DIR}.tar.gz"
+    log "Backup SHA256 Checksum: ${SHA256_HASH}"
+    
+    # Verify checksum immediately
+    if sha256sum -c "${BACKUP_DIR}.tar.gz.sha256" >/dev/null 2>&1; then
+      log "BACKUP VERIFICATION: PASS (SHA256 integrity confirmed)"
+    else
+      err "BACKUP VERIFICATION FAILED: Corrupted archive"
+      exit 1
+    fi
   fi
 fi
 
-# Backup /opt content (likely bot source)
-for d in /opt/*/; do
-  if [ -d "$d" ] && [ "$d" != "${OPENSERP_INSTALL_DIR}/" ]; then
-    DIRNAME=$(basename "$d")
-    tar czf "${BACKUP_DIR}/${DIRNAME}-opt-backup.tar.gz" "$d" 2>/dev/null || warn "Could not archive $d"
-    log "Backed up: $d"
-  fi
-done
-
-# Backup nginx configs related to bot
-if [ -d /etc/nginx/sites-available ]; then
-  cp -r /etc/nginx/sites-available "${BACKUP_DIR}/nginx-sites-available" 2>/dev/null || true
-fi
-
-# Backup PM2 config
-if command -v pm2 >/dev/null 2>&1; then
-  pm2 save 2>/dev/null || true
-  if [ -f /root/.pm2/dump.pm2 ]; then
-    cp /root/.pm2/dump.pm2 "${BACKUP_DIR}/pm2-dump.pm2" 2>/dev/null || true
-  fi
-fi
-
-# Compress backup
-tar czf "${BACKUP_DIR}.tar.gz" -C "$(dirname "${BACKUP_DIR}")" "$(basename "${BACKUP_DIR}")" 2>/dev/null || warn "Could not compress backup"
-
-# Generate and verify SHA256 checksum of backup archive
-if [ -f "${BACKUP_DIR}.tar.gz" ]; then
-  SHA256_HASH=$(sha256sum "${BACKUP_DIR}.tar.gz" | awk '{print $1}')
-  echo "${SHA256_HASH}  ${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
-  log "Backup archive created: ${BACKUP_DIR}.tar.gz"
-  log "Backup SHA256 Checksum: ${SHA256_HASH}"
-  
-  # Verify checksum immediately
-  if sha256sum -c "${BACKUP_DIR}.tar.gz.sha256" >/dev/null 2>&1; then
-    log "BACKUP VERIFICATION: PASS (SHA256 integrity confirmed)"
-  else
-    err "BACKUP VERIFICATION FAILED: Corrupted archive"
-    exit 1
-  fi
-fi
-
-log "BACKUP COMPLETE - DO NOT DELETE until OpenSERP is validated"
+log "BACKUP STATUS: SECURED"
 
 # =============================================================================
-# PHASE 4: REMOVE EXISTING BOT (with Quarantine preservation)
+# PHASE 4: REMOVE EXISTING BOT & QUARANTINE SOURCE (IDEMPOTENT)
 # =============================================================================
-section "PHASE 4: REMOVE EXISTING BOT & QUARANTINE SOURCE"
+section "PHASE 4: REMOVE EXISTING BOT & QUARANTINE SOURCE (IDEMPOTENT)"
 
 QUARANTINE_DIR="/opt/axevora-backups/quarantine-${TIMESTAMP}"
 mkdir -p "${QUARANTINE_DIR}"
 
-if [ -n "$IDENTIFIED_BOT" ] && [ "$IDENTIFIED_BOT_TYPE" = "systemd" ]; then
-  log "Stopping and disabling systemd service: ${IDENTIFIED_BOT}"
-  systemctl stop "$IDENTIFIED_BOT" 2>/dev/null || warn "Could not stop $IDENTIFIED_BOT"
-  systemctl disable "$IDENTIFIED_BOT" 2>/dev/null || warn "Could not disable $IDENTIFIED_BOT"
-  rm -f "/etc/systemd/system/${IDENTIFIED_BOT}.service"
-  systemctl daemon-reload
-  log "Removed systemd service: ${IDENTIFIED_BOT}"
-elif [ "$IDENTIFIED_BOT_TYPE" = "pm2" ] && [ -n "$IDENTIFIED_BOT" ]; then
-  log "Stopping PM2 process: ${IDENTIFIED_BOT}"
-  pm2 stop "$IDENTIFIED_BOT" 2>/dev/null || warn "Could not stop PM2 process"
-  pm2 delete "$IDENTIFIED_BOT" 2>/dev/null || warn "Could not delete PM2 process"
-  pm2 save
-  log "Removed PM2 process: ${IDENTIFIED_BOT}"
-else
-  log "No specific bot service identified to remove. Skipping auto-removal."
-  log "MANUAL ACTION: Review running processes above and stop/remove the existing bot manually."
-fi
-
-# Move old application directories to quarantine rather than deleting permanently
-for d in /opt/*/; do
-  if [ -d "$d" ] && [ "$d" != "${OPENSERP_INSTALL_DIR}/" ] && [[ "$d" != *"/axevora-backups/"* ]]; then
-    DIRNAME=$(basename "$d")
-    log "Quarantining source directory: $d -> ${QUARANTINE_DIR}/${DIRNAME}"
-    mv "$d" "${QUARANTINE_DIR}/" 2>/dev/null || warn "Could not quarantine $d"
+# Check and stop bot if active
+for bot_name in trading-bot bot axevora-bot; do
+  if systemctl is-active --quiet "$bot_name" 2>/dev/null; then
+    log "Stopping active systemd service: $bot_name"
+    systemctl stop "$bot_name" 2>/dev/null || true
+    systemctl disable "$bot_name" 2>/dev/null || true
+    rm -f "/etc/systemd/system/${bot_name}.service"
+    systemctl daemon-reload
+    log "Disabled and removed service: $bot_name"
   fi
 done
 
-log "Quarantined source location: ${QUARANTINE_DIR}"
-log "Verifying old bot port 3000/8000/4000 (common bot ports) are closed..."
-ss -tlnp | grep -E ':3000|:4000|:8000' | tee -a "$LOG_FILE" || log "No common bot ports found (good)"
+if command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "online"; then
+  log "Stopping active PM2 processes..."
+  pm2 stop all 2>/dev/null || true
+  pm2 delete all 2>/dev/null || true
+  pm2 save 2>/dev/null || true
+fi
+
+# Move any remaining unquarantined non-OpenSERP directories to quarantine
+QUARANTINED_COUNT=0
+for d in /opt/*/; do
+  if [ -d "$d" ] && [ "$d" != "${OPENSERP_INSTALL_DIR}/" ] && [[ "$d" != *"/axevora-backups/"* ]]; then
+    DIRNAME=$(basename "$d")
+    log "Quarantining unarchived directory: $d -> ${QUARANTINE_DIR}/${DIRNAME}"
+    mv "$d" "${QUARANTINE_DIR}/" 2>/dev/null || warn "Could not quarantine $d"
+    QUARANTINED_COUNT=$((QUARANTINED_COUNT + 1))
+  fi
+done
+
+if [ "$QUARANTINED_COUNT" -eq 0 ]; then
+  log "All old bot source directories already safely quarantined"
+  rmdir "${QUARANTINE_DIR}" 2>/dev/null || true
+fi
+
+log "Verifying common bot ports 3000/8000/4000 are closed..."
+ss -tlnp | grep -E ':3000|:4000|:8000' | tee -a "$LOG_FILE" || log "Common bot ports closed (good)"
 
 # =============================================================================
-# PHASE 5: INSTALL OPENSERP
+# PHASE 5: INSTALL OPENSERP (ROBUST GITHUB ASSET DISCOVERY)
 # =============================================================================
-section "PHASE 5: INSTALL OPENSERP"
+section "PHASE 5: INSTALL OPENSERP (ROBUST GITHUB ASSET DISCOVERY)"
 
 mkdir -p "${OPENSERP_INSTALL_DIR}"
 
-# Detect architecture for binary selection
+# Detect architecture for Go binary selection
 case "$ARCH" in
   x86_64)
     GOARCH="amd64"
@@ -273,8 +284,8 @@ case "$ARCH" in
   aarch64|arm64)
     GOARCH="arm64"
     ;;
-  armv7l)
-    GOARCH="arm"
+  i386|i686)
+    GOARCH="386"
     ;;
   *)
     GOARCH="amd64"
@@ -282,39 +293,101 @@ case "$ARCH" in
     ;;
 esac
 
-log "Architecture: ${ARCH} -> Go arch: ${GOARCH}"
-log "Downloading OpenSERP latest release..."
+log "Detected architecture: ${ARCH} -> Target Go arch: ${GOARCH}"
 
-# Get latest release URL
-RELEASE_URL=$(curl -s https://api.github.com/repos/karust/openserp/releases/latest \
-  | grep "browser_download_url" \
-  | grep "linux_${GOARCH}" \
-  | grep -v ".sha256" \
-  | cut -d '"' -f 4 | head -1)
+# Fetch release metadata from GitHub API
+log "Fetching OpenSERP release metadata from GitHub API..."
+RELEASE_JSON="/tmp/openserp_release.json"
+curl -sSL -H "User-Agent: Axevora-Deploy-Script" \
+  https://api.github.com/repos/karust/openserp/releases/latest > "$RELEASE_JSON" 2>/dev/null || true
 
-if [ -z "$RELEASE_URL" ]; then
-  warn "Could not find pre-built binary for ${GOARCH}. Trying amd64 fallback..."
-  RELEASE_URL=$(curl -s https://api.github.com/repos/karust/openserp/releases/latest \
-    | grep "browser_download_url" \
-    | grep "linux_amd64" \
-    | grep -v ".sha256" \
-    | cut -d '"' -f 4 | head -1)
+# If latest fails, fallback to specific tag v0.8.12
+if [ ! -s "$RELEASE_JSON" ] || grep -q "API rate limit exceeded" "$RELEASE_JSON" 2>/dev/null; then
+  warn "GitHub API rate limit or error; using direct v0.8.12 release tag metadata..."
+  curl -sSL -H "User-Agent: Axevora-Deploy-Script" \
+    https://api.github.com/repos/karust/openserp/releases/tags/v0.8.12 > "$RELEASE_JSON" 2>/dev/null || true
 fi
 
-OPENSERP_VERSION_TAG=$(curl -s https://api.github.com/repos/karust/openserp/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
-log "OpenSERP version: ${OPENSERP_VERSION_TAG}"
-log "Download URL: ${RELEASE_URL}"
+OPENSERP_VERSION_TAG=""
+ASSET_NAME=""
+DOWNLOAD_URL=""
 
-if [ -n "$RELEASE_URL" ]; then
-  curl -L -o "${OPENSERP_INSTALL_DIR}/openserp.tar.gz" "$RELEASE_URL"
-  cd "${OPENSERP_INSTALL_DIR}"
-  tar xzf openserp.tar.gz
-  chmod +x openserp 2>/dev/null || true
-  OPENSERP_BINARY="${OPENSERP_INSTALL_DIR}/openserp"
-  log "OpenSERP binary installed: ${OPENSERP_BINARY}"
+# Use Python3 if available for JSON parsing
+if command -v python3 >/dev/null 2>&1; then
+  PARSED_INFO=$(python3 -c "
+import json, sys
+try:
+    with open('$RELEASE_JSON', 'r') as f:
+        data = json.load(f)
+    tag = data.get('tag_name', 'v0.8.12')
+    target_prefix = 'openserp-linux-$GOARCH-'
+    selected = None
+    for a in data.get('assets', []):
+        name = a.get('name', '')
+        if name.startswith(target_prefix) and name.endswith('.tgz'):
+            selected = a
+            break
+    if selected:
+        print(f\"{tag}|{selected['name']}|{selected['browser_download_url']}\")
+    else:
+        print('NOT_FOUND')
+except Exception as e:
+    print('ERROR:' + str(e))
+" 2>/dev/null || echo "PYTHON_FAILED")
+
+  if [[ "$PARSED_INFO" == *"|"* ]]; then
+    OPENSERP_VERSION_TAG=$(echo "$PARSED_INFO" | cut -d '|' -f 1)
+    ASSET_NAME=$(echo "$PARSED_INFO" | cut -d '|' -f 2)
+    DOWNLOAD_URL=$(echo "$PARSED_INFO" | cut -d '|' -f 3)
+  fi
+fi
+
+# Fallback asset URL if Python was unavailable or API failed
+if [ -z "$DOWNLOAD_URL" ]; then
+  OPENSERP_VERSION_TAG="v0.8.12"
+  ASSET_NAME="openserp-linux-${GOARCH}-0.8.12.tgz"
+  DOWNLOAD_URL="https://github.com/karust/openserp/releases/download/${OPENSERP_VERSION_TAG}/${ASSET_NAME}"
+  log "Using canonical direct asset URL fallback: ${DOWNLOAD_URL}"
+fi
+
+log "OpenSERP Version: ${OPENSERP_VERSION_TAG}"
+log "Selected Release Asset: ${ASSET_NAME}"
+log "Download URL: ${DOWNLOAD_URL}"
+
+TEMP_TAR="/tmp/${ASSET_NAME}"
+log "Downloading OpenSERP binary archive to ${TEMP_TAR}..."
+
+# Download with curl following redirects (-L) and failing on error (-f)
+curl -fL -H "User-Agent: Axevora-Deploy-Script" \
+  -o "$TEMP_TAR" "$DOWNLOAD_URL"
+
+if [ ! -f "$TEMP_TAR" ] || [ "$(wc -c < "$TEMP_TAR" 2>/dev/null || echo 0)" -lt 5000000 ]; then
+  err "FAILED: Downloaded archive is missing or too small (<5MB)"
+  exit 1
+fi
+
+DOWNLOADED_SIZE=$(wc -c < "$TEMP_TAR")
+log "Download: SUCCESS (Size: ${DOWNLOADED_SIZE} bytes)"
+
+# Extract archive
+log "Extracting ${TEMP_TAR} into ${OPENSERP_INSTALL_DIR}..."
+tar -xzf "$TEMP_TAR" -C "${OPENSERP_INSTALL_DIR}"
+rm -f "$TEMP_TAR" "$RELEASE_JSON"
+
+OPENSERP_BINARY="${OPENSERP_INSTALL_DIR}/openserp"
+if [ ! -f "$OPENSERP_BINARY" ]; then
+  err "FAILED: Binary ${OPENSERP_BINARY} not found after extraction"
+  exit 1
+fi
+
+chmod +x "$OPENSERP_BINARY"
+
+# Verify binary execution
+log "Verifying binary execution..."
+if "$OPENSERP_BINARY" --help >/dev/null 2>&1 || "$OPENSERP_BINARY" version >/dev/null 2>&1; then
+  log "Binary: VALID (${OPENSERP_BINARY} is executable and functional)"
 else
-  err "FAILED: Could not find OpenSERP binary. Manual installation required."
-  err "Visit: https://github.com/karust/openserp/releases"
+  err "Binary verification failed for ${OPENSERP_BINARY}"
   exit 1
 fi
 
