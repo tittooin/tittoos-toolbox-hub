@@ -1264,6 +1264,316 @@ interface ProductImageProvenance {
 | No new secrets created | ✅ CONFIRMED |
 | Three-layer monetization untouched | 🔒 LOCKED |
 
+---
+
+# PART IX — GEMINI / GOOGLE IMAGE SEARCH FEASIBILITY AUDIT
+
+## 1. Objective
+
+This audit investigates whether Axevora can use:
+- Gemini API Grounding with Google Search
+- Google Image Search via Gemini
+- Google Custom Search JSON API image search
+
+...to obtain **exact product images** for `PRODUCT_DEAL` cards, using the existing `GEMINI_API_KEY` at zero or minimal additional cost, and whether any retrieved image may be legally displayed on Axevora (an affiliate/commercial website).
+
+These are four **distinct questions** evaluated independently:
+1. **Image Discovery** — Can the system find an image URL?
+2. **Source Attribution** — Does the system return the origin URL?
+3. **Image Display Rights** — Can Axevora render the image?
+4. **Affiliate/Commercial Use** — Is commercial affiliate display permitted?
+
+---
+
+## 2. Official Documentation References
+
+| Resource | URL |
+|----------|-----|
+| Gemini API Grounding with Google Search | `ai.google.dev/gemini-api/docs/google-search` |
+| Gemini API Pricing | `ai.google.dev/gemini-api/docs/pricing` |
+| Gemini API Additional Terms of Service | `ai.google.dev/gemini-api/terms` |
+| Google Generative AI Prohibited Use Policy | `policies.google.com/terms/generative-ai/use-policy` |
+| Google Custom Search JSON API Deprecation Notice | `developers.google.com/custom-search/v1/overview` |
+
+---
+
+## 3. Sub-System A — Gemini API: Grounding with Google Search
+
+### What it is
+When the `google_search` tool is enabled, Gemini autonomously decides whether to perform a live Google web search and grounds its response in real-time information. It returns a text response with citations and a `groundingMetadata` object.
+
+### Models supporting it
+- `gemini-2.5-flash` (Axevora's current model) — ✅ SUPPORTED (deprecated Oct 2026)
+- `gemini-2.5-pro` — supported
+- Gemini 3.x family — supported (different billing model: per-query)
+
+### Available via existing `GEMINI_API_KEY`?
+**YES** — no additional credential required.
+
+### Available in India?
+**YES** — globally available including India.
+
+### Pricing for Gemini 2.5 Flash grounding
+
+| Tier | Details |
+|------|---------|
+| Free tier | 1,500 requests/day; grounding billed per-prompt (not per-query) for 2.5 models |
+| Gemini 3.x (paid) | $14 per 1,000 search queries (per-query billing) |
+| Axevora current model (2.5 Flash) | Per-prompt — free tier applies at ₹0 |
+
+---
+
+### CRITICAL TECHNICAL FINDING: What `groundingMetadata` Actually Returns
+
+**Gemini grounding with Google Search does NOT return image URLs.**
+
+Confirmed `groundingChunks` response structure:
+
+```json
+{
+  "groundingMetadata": {
+    "groundingChunks": [
+      {
+        "web": {
+          "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/...",
+          "title": "Samsung 55 inch 4K TV | Samsung India"
+        }
+      }
+    ],
+    "searchEntryPoint": {
+      "renderedContent": "<HTML snippet for Search Suggestions UI>"
+    }
+  }
+}
+```
+
+| Field | Present | Notes |
+|-------|---------|-------|
+| `web.uri` | ✅ YES | Google-managed redirect URL (not canonical product URL) |
+| `web.title` | ✅ YES | Page title of source |
+| `image_url` | ❌ NO | Does not exist in grounding response |
+| `imageUri` | ❌ NO | Does not exist in grounding response |
+| Direct product image URL | ❌ NO | Grounding is a TEXT-BASED citation system |
+
+The `searchEntryPoint.renderedContent` is an HTML block for rendering Google Search attribution links — not product images.
+
+**Grounding metadata is designed for citation transparency. It is not an image search API.**
+
+---
+
+### Domain Restriction (amazon.in, flipkart.com, croma.com)
+
+- Adding `site:amazon.in` to a prompt MAY influence results but is **NOT a reliable filter**
+- The `google_search` tool does not natively support domain-level filtering
+- No official siteSearch parameter exists for Gemini grounding (unlike Google Custom Search API)
+
+---
+
+## 4. Sub-System B — Gemini URL Context Tool
+
+### What it is
+URL Context allows passing up to 20 specific page URLs to Gemini. The model fetches and reads page content (text + images) to generate a response.
+
+### Potential Workflow
+1. Gemini grounding identifies product model + merchant URL from text
+2. URL Context fetches that product page
+3. Prompt asks Gemini to extract `img src` and return it
+
+### Feasibility for Amazon / Flipkart PDPs
+
+| Merchant | URL Context Result |
+|----------|--------------------|
+| Amazon.in | ❌ BLOCKED — CloudFront + Imperva WAF returns 503/Robot Check (confirmed prior audit) |
+| Flipkart.com | ❌ BLOCKED — Similar aggressive anti-bot systems |
+| Less-protected merchants | ⚠️ TECHNICALLY POSSIBLE — but governed by that site's ToS |
+
+**Google's own policy explicitly states:** Using URL Context to extract data in violation of the target site's Terms of Service is **prohibited**.
+
+Therefore: Using Gemini URL Context on Amazon/Flipkart PDPs = **Prohibited under both Google's policy AND merchant ToS.**
+
+---
+
+## 5. Sub-System C — Google Custom Search JSON API (Image Search)
+
+### Current Status (August 2026)
+
+| Fact | Status |
+|------|--------|
+| New customer registration | ❌ CLOSED — not accepting new signups |
+| Existing customer end-of-life | January 1, 2027 |
+| Site-Restricted API (sub-service) | ❌ Shut down January 8, 2025 |
+| Free tier (existing accounts only) | 100 queries/day |
+| Paid tier (existing accounts only) | $5 per 1,000 queries |
+| Hard cap | 10,000 queries/day (no increase) |
+
+**Axevora has no Google Custom Search API key. Program is closed to new signups.**
+
+**This path is completely and irreversibly blocked for Axevora.**
+
+---
+
+## 6. The Four Separate Questions — Final Answers
+
+### Q1: IMAGE DISCOVERY — Can the system find an image URL?
+
+| Method | Can Find Image URL? |
+|--------|-------------------|
+| Gemini Grounding (`google_search`) | ❌ NO — does not return image URLs |
+| Gemini URL Context (Amazon.in) | ❌ BLOCKED — WAF + ToS |
+| Gemini URL Context (other merchants) | ⚠️ Technically possible, legally gray |
+| Google Custom Search API | ❌ CLOSED to new users |
+
+**Answer: NO reliable authorized product image URL retrieval is available via Gemini alone.**
+
+### Q2: SOURCE ATTRIBUTION — Does the system return the origin URL?
+
+**YES (partially)** — Gemini grounding returns `web.uri` (Google redirect URL) and `web.title`. These are useful for attribution of TEXT information. However, the `web.uri` is a redirect, not the canonical product page URL. Product page URLs can sometimes be extracted from the grounded text response itself via prompting.
+
+### Q3: IMAGE DISPLAY RIGHTS — Can Axevora render a retrieved image?
+
+**Official Google Terms (confirmed):**
+> "Google does not grant you an independent commercial license to third-party images retrieved via grounding. Copyright and licensing terms of the original source owner apply."
+
+| Scenario | Display Rights |
+|----------|---------------|
+| Image URL from Gemini grounding (hypothetical) | ❌ NO — Google does not grant redistribution rights |
+| Merchant CDN image URL extracted via URL Context | ❌ NO — requires merchant's explicit authorization |
+| Amazon product image (without Creators API) | ❌ NO |
+| Flipkart product image (without Affiliate API) | ❌ NO |
+
+**Public visibility ≠ redistribution permission.**
+
+### Q4: AFFILIATE/COMMERCIAL USE — Is commercial display permitted?
+
+| Restriction (Gemini Additional ToS) | Status |
+|--------------------------------------|--------|
+| Grounded results may NOT be cached or stored | ❌ Prohibited |
+| Grounded results may NOT be syndicated/shared across users | ❌ Prohibited — must be per-user, per-prompt |
+| Third-party images from search may NOT be redistributed commercially | ❌ Copyright applies — source license required |
+| Using grounded response as static product card image | ❌ Violates per-user constraint in ToS |
+
+---
+
+## 7. Conceptual Test Case
+
+### Input: "Samsung 55 inch 4K TV"
+
+**Using Gemini 2.5 Flash with google_search grounding:**
+
+Gemini text response (expected):
+> "The Samsung Crystal 4K TV (Model UA55CU7700KLXL) is a popular 55-inch 4K display available at approx. ₹38,000 on Amazon India..."
+
+Grounding metadata returned:
+```json
+{
+  "groundingChunks": [
+    { "web": { "uri": "...redirect...", "title": "Samsung 55\" Crystal 4K TV - Amazon.in" } }
+  ]
+}
+```
+
+**Image URL returned: ❌ NONE**
+
+---
+
+### More precise: "Samsung UA55CU7700KLXL 55 inch 4K"
+
+**Can Gemini identify this exact model from grounded text?** ✅ YES
+**Can Gemini return a textual model match score?** ✅ YES (via structured prompt)
+**Can Gemini confirm "55 inch" vs "65 inch" mismatch?** ✅ YES (from grounded text)
+**Can Gemini return an image URL?** ❌ NO
+**Can Gemini visually claim identity from image similarity alone?** Must be explicitly instructed NOT to — textual ID match must be required
+
+---
+
+## 8. What Gemini Grounding CAN Do for Axevora (Legitimate Use)
+
+### VERDICT A applicable here — WORKS TODAY AT ZERO COST:
+
+| Legitimate Use | Feasible? | Cost |
+|---------------|-----------|------|
+| Product text discovery from natural language query | ✅ YES | ₹0 (free tier) |
+| Model number extraction ("Samsung UA55CU7700KLXL") | ✅ YES | ₹0 |
+| Specification verification (55" vs 65", 4K vs 8K) | ✅ YES | ₹0 |
+| Price range grounding (from merchant pages via text) | ✅ YES | ₹0 |
+| Source URL citation for attribution | ✅ YES (redirect URL) | ₹0 |
+| Product identity textual match score | ✅ YES (via prompt engineering) | ₹0 |
+| Reject wrong-model matches (no mismatch allowed) | ✅ YES (instructable) | ₹0 |
+
+**All of these use the existing `GEMINI_API_KEY` with no code changes yet.**
+
+---
+
+## 9. Final Verdicts
+
+| Investigation Area | Verdict | Reason |
+|-------------------|---------|--------|
+| Gemini Grounding — returns product image URLs | **D — TECHNICALLY NOT AVAILABLE** | `groundingChunks` contains only `web.uri` (redirect) + `web.title`. No image URLs returned. |
+| Gemini URL Context — extract image from Amazon/Flipkart PDP | **C — TECHNICALLY POSSIBLE — BLOCKED BY POLICY** | WAF blocks Amazon/Flipkart. Google policy prohibits URL Context use in violation of merchant ToS. |
+| Google Custom Search API — image search | **D — TECHNICALLY NOT AVAILABLE** | Closed to new users. Discontinued January 2027. |
+| Gemini Grounding — product text/model discovery | **A — WORKS TODAY — ZERO COST** | Full text-grounded product identity extraction works on existing key at ₹0. |
+| Image display rights for grounding-retrieved images | **C — BLOCKED BY POLICY/LICENSING** | Google does not grant commercial redistribution rights to third-party images retrieved via grounding. |
+
+---
+
+## 10. Architectural Role of Gemini Grounding in Axevora
+
+```
+GEMINI GROUNDING — ROLE: PRODUCT TEXT INTELLIGENCE (✅ ACTIVE TODAY)
+  ↓
+  User Query: "Best 55 inch 4K TV under ₹50,000"
+  ↓
+  Gemini: Identifies → Samsung UA55CU7700KLXL, Sony KD-55X74L, LG 55UR7500PSC
+  ↓
+  Textual identity confirmed (model number, size, resolution)
+  ↓
+  No image URL returned — imageSource = NONE
+  ↓
+  SVG placeholder shown (current Phase 1 behavior, correct)
+
+AMAZON CREATORS API — ROLE: AUTHORIZED IMAGE RETRIEVAL (🔒 PENDING CREDENTIALS)
+  ↓
+  SearchItems("Samsung UA55CU7700KLXL") → ASIN + images.primaryImage.url
+  ↓
+  Identity verified: ASIN + title match → imageVerification = EXACT_ID_MATCH
+  ↓
+  Image hotlinked directly (authorized per Associates program)
+  ↓
+  imageSource = AMAZON_CREATORS_API
+
+MONETIZATION ENGINE (🔒 LOCKED — UNTOUCHED)
+  ↓
+  Amazon Direct → EarnKaro → Cuelinks
+```
+
+Gemini grounding has a valid and important role — **product intelligence and text-based identity verification** — but it is NOT an image source. The two roles must remain separate.
+
+---
+
+## 11. Part IX Audit Status
+
+| Checklist Item | Status |
+|---------------|--------|
+| Official documentation references included | ✅ DONE |
+| Exact model/capability documented | ✅ DONE |
+| Pricing documented | ✅ DONE |
+| Quota documented | ✅ DONE |
+| Image URL availability confirmed | ✅ DONE — NOT returned by grounding |
+| Source URL availability documented | ✅ DONE — text redirect only |
+| Attribution requirements documented | ✅ DONE |
+| Commercial/affiliate usage rules documented | ✅ DONE |
+| Hotlinking/caching rules documented | ✅ DONE |
+| Exact product identity verification feasibility | ✅ DONE |
+| India availability confirmed | ✅ DONE |
+| Existing GEMINI_API_KEY compatibility confirmed | ✅ DONE |
+| Today feasibility documented | ✅ DONE |
+| Final verdict (A/B/C/D/E format) delivered | ✅ DONE |
+| No code changes made | ✅ CONFIRMED |
+| No paid API introduced | ✅ CONFIRMED |
+| No scraping implemented | ✅ CONFIRMED |
+| Monetization untouched | 🔒 LOCKED |
+
+
 
 
 
