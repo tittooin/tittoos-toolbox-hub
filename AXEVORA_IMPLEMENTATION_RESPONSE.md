@@ -1588,34 +1588,41 @@ Gemini grounding has a valid and important role — **product intelligence and t
 
 ---
 
-## 2. MANUAL ACTION REQUIRED — SSH KEY
+## 2. MANUAL ACTION REQUIRED — AWS ACCESS STRATEGY
 
 ```
-BLOCKED: Cannot SSH to axevora-trade without the EC2 key pair (.pem file).
+STATUS: BLOCKED (AWS authentication is unavailable in the current Antigravity environment)
 
-WHAT IS MISSING:
-- No AWS CLI configured on this machine
-- No ~/.ssh directory found
-- No .pem or .ppk file found on C: or G: drives
+ENVIRONMENT AUDIT:
+- AWS CLI: NOT INSTALLED / NOT IN PATH
+- AWS Toolkit: NOT FOUND
+- AWS Credentials / SSO: NOT CONFIGURED
+- Local .pem / .ppk key: NOT PRESENT
 
-WHAT YOU MUST DO (exactly one of):
-OPTION A: Direct SSH
-  1. Locate your axevora-trade EC2 key pair .pem file
-  2. Run: ssh -i /path/to/axevora-trade.pem ubuntu@<EC2_PUBLIC_IP>
-  3. Copy the deploy script: scp -i /path/to/key.pem scripts/ec2-openserp-deploy.sh ubuntu@<EC2_PUBLIC_IP>:~/
-  4. Run: sudo bash ~/ec2-openserp-deploy.sh
+CORRECTION ON KEY PAIRS:
+Existing EC2 key pair private keys (.pem) CANNOT be re-downloaded from AWS Console after initial creation. 
+Do NOT attempt to re-download .pem from AWS Console.
 
-OPTION B: AWS Systems Manager (SSM) if enabled on instance
-  1. aws ssm start-session --target i-<instance-id> --region ap-south-1
+PREFERRED ACCESS STRATEGY (IN ORDER OF PRIORITY):
 
-OPTION C: AWS Console
-  1. Go to EC2 Console > axevora-trade > Connect > EC2 Instance Connect
-  2. Copy/paste the deploy script content
+1. PRIMARY: EC2 Instance Connect (No .pem / No SSH port exposure required)
+   - AWS Console -> EC2 -> Instances -> axevora-trade -> Connect
+   - Select "EC2 Instance Connect" (Browser-based SSH connection)
+   - Click "Connect" to open a live browser terminal
+
+2. ALTERNATIVE: AWS Systems Manager (SSM) Session Manager
+   - If SSM Agent & IAM role (AmazonSSMManagedInstanceCore) exist on instance:
+   - AWS Console -> EC2 -> Instances -> axevora-trade -> Connect -> Session Manager
+   - Click "Connect" to start a secure shell session
+
+3. FALLBACK: Local SSH Key (Only if already saved on your local system)
+   - ssh -i /local/path/to/axevora-trade.pem ubuntu@<CURRENT_EC2_PUBLIC_IP>
+
+NETWORK ARCHITECTURE NOTE:
+- Instance has no Elastic IP (Public IP is dynamic and temporary).
+- DO NOT hardcode or depend on Public IP in production.
+- Production connectivity will use Cloudflare Tunnel -> localhost:7000 (OpenSERP).
 ```
-
-> [!CAUTION]
-> The EC2 public IP address of `axevora-trade` is also unknown from this machine. You must retrieve it from AWS Console → EC2 → Instances → axevora-trade → Public IPv4 address.
-
 ---
 
 ## 3. Initial EC2 State (Unknown — Requires SSH)
@@ -1877,30 +1884,36 @@ All 3 new files pass TypeScript check with zero errors. No existing files modifi
 - ✅ TypeScript: 0 errors (`tsc --noEmit`)
 - ✅ Committed and pushed: `e54e5f7` → main
 
-### BLOCKED (requires SSH access to EC2)
+### BLOCKED (requires EC2 shell session via AWS Console / SSM / SSH)
 
 ```
 MANUAL ACTION REQUIRED
 
-WHAT: SSH to axevora-trade EC2 instance and run the deploy script
-WHY: No SSH key or AWS CLI is available on this machine
-WHERE TO GET KEY: AWS Console → EC2 → Key Pairs → download axevora-trade key
+WHAT: Access axevora-trade EC2 instance and execute the deployment script.
+WHY: Current Antigravity environment me AWS credentials / CLI / SSH keys configure nahi hain.
 
-COMMANDS TO RUN AFTER SSH ACCESS:
-  # Copy deploy script to EC2:
-  scp -i axevora-trade.pem \
-    scripts/ec2-openserp-deploy.sh \
-    ubuntu@<EC2_PUBLIC_IP>:~/
+HOW TO CONNECT (CHOOSE ONE):
 
-  # SSH into EC2:
-  ssh -i axevora-trade.pem ubuntu@<EC2_PUBLIC_IP>
+METHOD 1 (RECOMMENDED - ZERO SETUP): EC2 Instance Connect
+  1. Open AWS Console -> EC2 -> Instances -> axevora-trade
+  2. Click "Connect" -> Select "EC2 Instance Connect" -> Click "Connect" (Opens browser terminal)
+  3. Terminal me deploy script run karo:
+     curl -sSL https://raw.githubusercontent.com/tittooin/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh | sudo bash
 
-  # Run deploy script on EC2:
-  sudo bash ~/ec2-openserp-deploy.sh
+METHOD 2: AWS Systems Manager (SSM) Session Manager
+  1. AWS Console -> EC2 -> Instances -> axevora-trade -> Connect -> Session Manager -> Connect
+  2. Same command run karo:
+     curl -sSL https://raw.githubusercontent.com/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh | sudo bash
 
-  # After script completes, add secrets to Cloudflare:
-  wrangler secret put OPENSERP_ENDPOINT
-  wrangler secret put OPENSERP_SECRET_KEY
+METHOD 3: Local SSH (Agar .pem key tumhare local machine par already saved hai)
+  1. ssh -i /path/to/axevora-trade.pem ubuntu@<CURRENT_EC2_PUBLIC_IP>
+  2. sudo bash scripts/ec2-openserp-deploy.sh
+
+AFTER DEPLOYMENT SCRIPT RUNS:
+  Deploy script output me generated OPENSERP_SECRET_KEY print hoga.
+  Uske baad Cloudflare me secrets add karne hain:
+    wrangler secret put OPENSERP_ENDPOINT
+    wrangler secret put OPENSERP_SECRET_KEY
 ```
 
 ---
