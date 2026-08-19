@@ -434,13 +434,15 @@ if ! command -v nginx >/dev/null 2>&1; then
 fi
 
 # Generate a shared secret for Axevora <-> OpenSERP authentication
-# This secret must also be stored in Cloudflare as OPENSERP_SECRET_KEY
+# Stored securely with chmod 600; NOT written into persistent deploy logs
 OPENSERP_SECRET=$(openssl rand -hex 32)
 echo "$OPENSERP_SECRET" > "${OPENSERP_INSTALL_DIR}/.secret"
 chmod 600 "${OPENSERP_INSTALL_DIR}/.secret"
-log "Generated OPENSERP_SECRET_KEY (SAVE THIS):"
-log "OPENSERP_SECRET_KEY: ${OPENSERP_SECRET}"
-log "IMPORTANT: Add this to Cloudflare Worker secrets as OPENSERP_SECRET_KEY"
+log "OPENSERP_SECRET_KEY generated and saved to ${OPENSERP_INSTALL_DIR}/.secret (chmod 600)"
+echo "---------------------------------------------------------------"
+echo "[SECURE OUTPUT] OPENSERP_SECRET_KEY: ${OPENSERP_SECRET}"
+echo "Add this key to Cloudflare: wrangler secret put OPENSERP_SECRET_KEY"
+echo "---------------------------------------------------------------"
 
 cat > "/etc/nginx/sites-available/${NGINX_SITE_NAME}" << NGINXEOF
 # Axevora OpenSERP Reverse Proxy

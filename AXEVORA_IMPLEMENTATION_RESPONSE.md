@@ -1897,20 +1897,24 @@ HOW TO CONNECT (CHOOSE ONE):
 METHOD 1 (RECOMMENDED - ZERO SETUP): EC2 Instance Connect
   1. Open AWS Console -> EC2 -> Instances -> axevora-trade
   2. Click "Connect" -> Select "EC2 Instance Connect" -> Click "Connect" (Opens browser terminal)
-  3. Terminal me deploy script run karo:
-     curl -sSL https://raw.githubusercontent.com/tittooin/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh | sudo bash
+  3. Terminal me secure download + inspect + run karo:
+     curl -fL https://raw.githubusercontent.com/tittooin/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh -o /tmp/ec2-openserp-deploy.sh
+     less /tmp/ec2-openserp-deploy.sh
+     sudo bash /tmp/ec2-openserp-deploy.sh
 
 METHOD 2: AWS Systems Manager (SSM) Session Manager
   1. AWS Console -> EC2 -> Instances -> axevora-trade -> Connect -> Session Manager -> Connect
-  2. Same command run karo:
-     curl -sSL https://raw.githubusercontent.com/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh | sudo bash
+  2. Same secure inspection workflow:
+     curl -fL https://raw.githubusercontent.com/tittooin/tittoos-toolbox-hub/main/scripts/ec2-openserp-deploy.sh -o /tmp/ec2-openserp-deploy.sh
+     less /tmp/ec2-openserp-deploy.sh
+     sudo bash /tmp/ec2-openserp-deploy.sh
 
 METHOD 3: Local SSH (Agar .pem key tumhare local machine par already saved hai)
   1. ssh -i /path/to/axevora-trade.pem ubuntu@<CURRENT_EC2_PUBLIC_IP>
   2. sudo bash scripts/ec2-openserp-deploy.sh
 
 AFTER DEPLOYMENT SCRIPT RUNS:
-  Deploy script output me generated OPENSERP_SECRET_KEY print hoga.
+  Deploy script terminal stdout me generated OPENSERP_SECRET_KEY print hoga (log files me secret nahi likha jayega).
   Uske baad Cloudflare me secrets add karne hain:
     wrangler secret put OPENSERP_ENDPOINT
     wrangler secret put OPENSERP_SECRET_KEY
