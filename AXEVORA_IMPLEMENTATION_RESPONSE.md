@@ -1970,6 +1970,33 @@ Once EC2 deployment is complete:
 |--------|---------|---------|
 | `6ef7ee4` | docsPartIXGeminiImageSearchAudit | Part IX Gemini Image Search audit |
 | `e54e5f7` | featOpenSERPProviderEC2ImageDiscovery | OpenSERPProvider, image-search endpoint, EC2 deploy script |
+| `1ece559` | docsUpdatePartXAWSStrategyAndCorrection | AWS Strategy & EC2 Instance Connect priority |
+
+---
+
+## 17. User-Authorized Bot Replacement Protocol & Safety Sequence
+
+### 17.1 Formal Authorization
+- User has explicitly confirmed that the existing bot/application on `axevora-trade` EC2 is non-functional/useless and authorized its complete replacement with the Axevora OpenSERP Image Discovery engine.
+
+### 17.2 14-Step Safe Replacement Sequence
+1. **Read-only Forensic Inventory:** Log all running processes (`ps aux`), open ports (`ss -tlnp`), services (`systemctl`), PM2, Docker, cron, and application directories to `/var/log/axevora-openserp-deploy-<timestamp>.log`.
+2. **Bot Identification:** Detect specific service units (`trading-bot`, `bot`, `axevora-bot`, PM2).
+3. **Comprehensive Backup:** Archive `/opt/*` source code, systemd service units, and Nginx configurations to `/opt/axevora-backups/bot-backup-<timestamp>.tar.gz`.
+4. **SHA256 Checksum Generation:** Compute SHA256 hash of the backup archive and save to `.sha256` file.
+5. **Backup Integrity Verification:** Run `sha256sum -c` to verify that the archive is uncorrupted before any modification.
+6. **Graceful Stop & Disable:** Stop and disable the bot service from auto-restart.
+7. **Service Unit Cleanup:** Remove old unit file and reload systemd daemon.
+8. **Source Quarantine:** Move old application directories to `/opt/axevora-backups/quarantine-<timestamp>/` (no immediate permanent deletion).
+9. **OpenSERP Native Deployment:** Install official Go binary to `/opt/openserp/openserp`, binding to `127.0.0.1:7000`.
+10. **Engine Configuration:** Initial setup uses **Bing Image Search only** with `workers=1`, `max_concurrent=2` (DuckDuckGo and Google disabled initially for minimal t2.micro RAM footprint).
+11. **Health Verification:** Test direct `127.0.0.1:7000/health` and Nginx reverse proxy `localhost:8080/healthz`.
+12. **Real Image Search Tests:** Run 5 product queries (iPhone 15, Samsung 55" 4K TV, OnePlus Nord, Sony WH-1000XM5, merchant query).
+13. **Cloudflare Integration:** Link Cloudflare Pages Functions to EC2 via Cloudflare Tunnel / Nginx proxy with `X-Axevora-Secret` authentication.
+14. **Quarantine Retention:** Quarantined source code retained until full production verification is confirmed.
+
+---
+
 
 
 

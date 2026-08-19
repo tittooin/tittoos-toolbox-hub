@@ -199,14 +199,33 @@ if command -v pm2 >/dev/null 2>&1; then
 fi
 
 # Compress backup
-tar czf "${BACKUP_DIR}.tar.gz" "${BACKUP_DIR}" 2>/dev/null || warn "Could not compress backup"
-log "Backup archive: ${BACKUP_DIR}.tar.gz"
+tar czf "${BACKUP_DIR}.tar.gz" -C "$(dirname "${BACKUP_DIR}")" "$(basename "${BACKUP_DIR}")" 2>/dev/null || warn "Could not compress backup"
+
+# Generate and verify SHA256 checksum of backup archive
+if [ -f "${BACKUP_DIR}.tar.gz" ]; then
+  SHA256_HASH=$(sha256sum "${BACKUP_DIR}.tar.gz" | awk '{print $1}')
+  echo "${SHA256_HASH}  ${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
+  log "Backup archive created: ${BACKUP_DIR}.tar.gz"
+  log "Backup SHA256 Checksum: ${SHA256_HASH}"
+  
+  # Verify checksum immediately
+  if sha256sum -c "${BACKUP_DIR}.tar.gz.sha256" >/dev/null 2>&1; then
+    log "BACKUP VERIFICATION: PASS (SHA256 integrity confirmed)"
+  else
+    err "BACKUP VERIFICATION FAILED: Corrupted archive"
+    exit 1
+  fi
+fi
+
 log "BACKUP COMPLETE - DO NOT DELETE until OpenSERP is validated"
 
 # =============================================================================
-# PHASE 4: REMOVE EXISTING BOT (after backup)
+# PHASE 4: REMOVE EXISTING BOT (with Quarantine preservation)
 # =============================================================================
-section "PHASE 4: REMOVE EXISTING BOT"
+section "PHASE 4: REMOVE EXISTING BOT & QUARANTINE SOURCE"
+
+QUARANTINE_DIR="/opt/axevora-backups/quarantine-${TIMESTAMP}"
+mkdir -p "${QUARANTINE_DIR}"
 
 if [ -n "$IDENTIFIED_BOT" ] && [ "$IDENTIFIED_BOT_TYPE" = "systemd" ]; then
   log "Stopping and disabling systemd service: ${IDENTIFIED_BOT}"
@@ -226,6 +245,16 @@ else
   log "MANUAL ACTION: Review running processes above and stop/remove the existing bot manually."
 fi
 
+# Move old application directories to quarantine rather than deleting permanently
+for d in /opt/*/; do
+  if [ -d "$d" ] && [ "$d" != "${OPENSERP_INSTALL_DIR}/" ] && [[ "$d" != *"/axevora-backups/"* ]]; then
+    DIRNAME=$(basename "$d")
+    log "Quarantining source directory: $d -> ${QUARANTINE_DIR}/${DIRNAME}"
+    mv "$d" "${QUARANTINE_DIR}/" 2>/dev/null || warn "Could not quarantine $d"
+  fi
+done
+
+log "Quarantined source location: ${QUARANTINE_DIR}"
 log "Verifying old bot port 3000/8000/4000 (common bot ports) are closed..."
 ss -tlnp | grep -E ':3000|:4000|:8000' | tee -a "$LOG_FILE" || log "No common bot ports found (good)"
 
@@ -326,14 +355,14 @@ browser:
   timeout: 30000        # 30s timeout per search
   max_instances: 1      # Single browser instance on t2.micro
 
-# Search engines -- use lightweight engines
+# Search engines -- use Bing Image Search initially (lightweight)
 engines:
   - name: "bing"
     enabled: true
   - name: "duckduckgo"
-    enabled: true
+    enabled: false     # Multi-engine disabled initially
   - name: "google"
-    enabled: false      # Google may block/challenge on t2.micro IP
+    enabled: false     # Google disabled initially to prevent CAPTCHA/bot challenges
 
 # Logging
 log:
