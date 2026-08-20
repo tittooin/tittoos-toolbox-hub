@@ -86,20 +86,18 @@ export default function ShoppingAssistant() {
         }
       }
 
-      // 1. Fetch Review Summary (AI insights)
-      const reviewRes = await fetch(`/api/commerce/review-summary?q=${encodeURIComponent(reviewContext)}`, {
-        signal: abortControllerRef.current.signal
-      });
-      const reviewData = await reviewRes.json();
-      
-      // 2. Fetch Search Alternatives (only if not pros and cons chip)
-      let searchData: any = { ok: false, items: [] };
-      if (!isProsConsChip) {
-        const searchRes = await fetch(`/api/commerce/search?q=${encodeURIComponent(searchQuery)}`, {
+      // 1. Fetch Review Summary and Search Alternatives in Parallel
+      const [reviewSettled, searchSettled] = await Promise.allSettled([
+        fetch(`/api/commerce/review-summary?q=${encodeURIComponent(reviewContext)}`, {
           signal: abortControllerRef.current.signal
-        });
-        searchData = await searchRes.json();
-      }
+        }).then(r => r.json()).catch(() => ({ ok: false })),
+        !isProsConsChip ? fetch(`/api/commerce/search?q=${encodeURIComponent(searchQuery)}`, {
+          signal: abortControllerRef.current.signal
+        }).then(r => r.json()).catch(() => ({ ok: false, items: [] })) : Promise.resolve({ ok: false, items: [] })
+      ]);
+
+      const reviewData = (reviewSettled.status === 'fulfilled' ? reviewSettled.value : { ok: false }) as any;
+      const searchData = (searchSettled.status === 'fulfilled' ? searchSettled.value : { ok: false, items: [] }) as any;
 
       let assistantMessage: Message = {
         id: uuidv4(),
