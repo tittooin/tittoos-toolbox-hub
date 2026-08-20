@@ -152,6 +152,7 @@ export default function ShoppingAssistant() {
         }
       } else if (searchData.ok && searchData.items) {
         assistantMessage.products = searchData.items.map((item: any) => {
+          const resolvedImageUrl = item.imageUrl !== undefined ? item.imageUrl : (item.image || null);
           return {
             id: item.id || uuidv4(),
             name: item.title,
@@ -162,11 +163,16 @@ export default function ShoppingAssistant() {
             currency: item.currency || 'INR',
             rating: item.rating !== undefined && item.rating !== null ? Number(item.rating) : null,
             reviewCount: item.reviewCount !== undefined && item.reviewCount !== null ? Number(item.reviewCount) : null,
-            imageUrl: item.imageUrl !== undefined ? item.imageUrl : (item.image || null),
-            imageType: item.imageType || 'NONE',
-            imageSource: item.imageSource || 'NONE',
+            imageUrl: resolvedImageUrl,
+            imageThumbnailUrl: item.imageThumbnailUrl || null,
+            imageSourceDomain: item.imageSourceDomain || null,
+            imageMatchScore: item.imageMatchScore || null,
+            imageMatchReason: item.imageMatchReason || null,
+            imageUsageBasis: item.imageUsageBasis || null,
+            imageType: item.imageType || (resolvedImageUrl ? 'PRODUCT' : 'NONE'),
+            imageSource: item.imageSource || (resolvedImageUrl ? 'OPENSERP' : 'NONE'),
             imageVerification: item.imageVerification || 'NONE',
-            dealType: item.dealType || (item.urlType === 'product' ? 'PRODUCT_DEAL' : 'STORE_DEAL'),
+            dealType: item.dealType || (resolvedImageUrl ? 'PRODUCT_DEAL' : (item.urlType === 'product' ? 'PRODUCT_DEAL' : 'STORE_DEAL')),
             priceType: item.priceType || (item.price > 0 ? 'ADVERTISED_PRODUCT_PRICE' : 'UNKNOWN'),
             priceConfidence: item.priceConfidence || 0,
             verificationStatus: item.verificationStatus || 'SOURCE_STATED',
@@ -178,7 +184,7 @@ export default function ShoppingAssistant() {
             dealUrl: item.url || item.dealUrl || '#',
             destinationUrl: item.destinationUrl,
             trackingUrl: item.trackingUrl,
-            urlType: item.urlType || 'product',
+            urlType: item.urlType || (resolvedImageUrl ? 'product' : 'search'),
             reasons: item.reasons || ["Verified Offer"],
             aiScore: item.aiScore || undefined,
             communityScore: item.communityScore || undefined,
@@ -189,6 +195,39 @@ export default function ShoppingAssistant() {
             extractedEntities: item.extractedEntities
           };
         });
+
+        // Dynamic Progressive Image Enrichment if backend hadn't returned imageUrl
+        const needsImage = assistantMessage.products.some((p: Product) => !p.imageUrl);
+        if (needsImage) {
+          const msgId = assistantMessage.id;
+          fetch(`/api/commerce/image-search?q=${encodeURIComponent(trimmedContent)}`)
+            .then(res => res.json())
+            .then((imgData: any) => {
+              if (imgData.ok && imgData.verifiedCandidate && imgData.verifiedCandidate.imageUrl) {
+                const candidate = imgData.verifiedCandidate;
+                setMessages(prev => prev.map(m => {
+                  if (m.id !== msgId || !m.products) return m;
+                  return {
+                    ...m,
+                    products: m.products.map(prod => ({
+                      ...prod,
+                      imageUrl: prod.imageUrl || candidate.imageUrl,
+                      imageThumbnailUrl: prod.imageThumbnailUrl || candidate.thumbnailUrl,
+                      imageSourceDomain: prod.imageSourceDomain || candidate.sourceDomain,
+                      imageMatchScore: prod.imageMatchScore || candidate.productMatchScore,
+                      imageMatchReason: prod.imageMatchReason || candidate.productMatchReason,
+                      imageUsageBasis: prod.imageUsageBasis || candidate.usageBasis,
+                      imageType: 'PRODUCT' as const,
+                      imageSource: 'OPENSERP' as const,
+                      imageVerification: candidate.productMatchScore,
+                      dealType: 'PRODUCT_DEAL' as const,
+                    }))
+                  };
+                }));
+              }
+            })
+            .catch(e => console.warn('[ShoppingAssistant] Progressive image search notice:', e));
+        }
       }
 
       assistantMessage.followUps = [

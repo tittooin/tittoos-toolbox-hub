@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, ShieldCheck, Box, RotateCcw, Zap, ExternalLink, ShoppingBag, Store, Tag, ImageOff } from 'lucide-react';
 import { Product } from '@/types/shopping';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,14 @@ export default function ProductCard({ product }: ProductCardProps) {
   const initialImage = product.imageUrl && product.imageUrl.trim().length > 0 ? product.imageUrl : null;
   const [imgSrc, setImgSrc] = useState<string | null>(initialImage);
   const [imageFailed, setImageFailed] = useState<boolean>(false);
+
+  // Synchronize when product.imageUrl arrives dynamically from OpenSERP
+  useEffect(() => {
+    if (product.imageUrl && product.imageUrl.trim().length > 0) {
+      setImgSrc(product.imageUrl);
+      setImageFailed(false);
+    }
+  }, [product.imageUrl]);
 
   const handleImageError = () => {
     setImageFailed(true);
@@ -40,17 +48,20 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-muted-foreground p-4 text-center select-none">
-            {isStoreDeal && product.merchantLogoUrl ? (
-              <img src={product.merchantLogoUrl} alt={product.merchantName || 'Store'} className="w-16 h-16 object-contain mb-2 opacity-80" />
-            ) : (
-              <>
-                <div className="w-12 h-12 rounded-full bg-secondary/80 flex items-center justify-center mb-2 shadow-inner">
-                  <ImageOff className="w-6 h-6 text-muted-foreground/70" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground/80">Product Image Unavailable</span>
-                <span className="text-[10px] text-muted-foreground/50 mt-0.5">Zero-Deception Guaranteed</span>
-              </>
-            )}
+            <div className="w-12 h-12 rounded-full bg-secondary/80 flex items-center justify-center mb-2 shadow-inner">
+              <ImageOff className="w-6 h-6 text-muted-foreground/70" />
+            </div>
+            <span className="text-xs font-medium text-muted-foreground/80">Product Image Unavailable</span>
+            <span className="text-[10px] text-muted-foreground/50 mt-0.5">Zero-Deception Guaranteed</span>
+          </div>
+        )}
+
+        {/* Honest Image Source Provenance */}
+        {showImage && product.imageSourceDomain && (
+          <div className="absolute bottom-2 left-2">
+            <span className="text-[9px] bg-background/85 backdrop-blur-sm text-muted-foreground/90 font-mono px-1.5 py-0.5 rounded border border-border/50 shadow-sm">
+              via {product.imageSourceDomain}
+            </span>
           </div>
         )}
 

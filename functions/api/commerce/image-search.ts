@@ -57,8 +57,11 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const searchPromise = (async (): Promise<Response> => {
     try {
-      const endpointVal = typedEnv.OPENSERP_ENDPOINT || 'http://13.233.13.190';
-      const secretVal = typedEnv.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const CURRENT_EC2_SECRET = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const endpointVal = (typedEnv.OPENSERP_ENDPOINT || 'http://13.233.13.190').trim();
+      const secretVal = (typedEnv.OPENSERP_SECRET_KEY && typedEnv.OPENSERP_SECRET_KEY.trim().startsWith('4898'))
+        ? typedEnv.OPENSERP_SECRET_KEY.trim()
+        : CURRENT_EC2_SECRET;
 
       const result = await provider.searchImages(identity, {
         OPENSERP_ENDPOINT: endpointVal,
@@ -78,7 +81,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
       });
     } catch (error) {
       console.error('[image-search] Unexpected error:', error);
-      // FAILURE HANDLING: Return safe empty response -- product card still renders without image
       return jsonResp({
         ok: true,
         query,
@@ -90,7 +92,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         discoveredAt: new Date().toISOString(),
       });
     } finally {
-      // Clean up dedup entry after 10 seconds
       setTimeout(() => pendingRequests.delete(cacheKey), 10_000);
     }
   })();

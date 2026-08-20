@@ -9,9 +9,14 @@ export interface Product {
   rating?: number | null;
   reviewCount?: number | null;
   imageUrl?: string | null;
+  imageThumbnailUrl?: string | null;
+  imageSourceDomain?: string | null;
+  imageMatchScore?: string | null;
+  imageMatchReason?: string | null;
+  imageUsageBasis?: string | null;
   imageType?: 'PRODUCT' | 'CATEGORY_PROMO' | 'MERCHANT' | 'NONE';
-  imageSource?: 'CUELINKS_FEED' | 'MERCHANT_PDP' | 'MERCHANT_FEED' | 'EXISTING_CONNECTOR' | 'NONE';
-  imageVerification?: 'EXACT' | 'UNVERIFIED' | 'NONE';
+  imageSource?: 'CUELINKS_FEED' | 'MERCHANT_PDP' | 'MERCHANT_FEED' | 'EXISTING_CONNECTOR' | 'OPENSERP' | 'NONE';
+  imageVerification?: 'EXACT' | 'EXACT_ID_MATCH' | 'STRONG_METADATA_MATCH' | 'UNVERIFIED' | 'NONE';
   dealType?: 'PRODUCT_DEAL' | 'CATEGORY_DEAL' | 'STORE_DEAL' | 'COUPON_DEAL' | 'CAMPAIGN';
   priceType?: 'ADVERTISED_PRODUCT_PRICE' | 'STARTING_PRICE' | 'DISCOUNT_AMOUNT' | 'BANK_DISCOUNT' | 'COUPON_DISCOUNT' | 'UNKNOWN';
   priceConfidence?: number;
