@@ -463,13 +463,13 @@ StartLimitBurst=3
 Type=simple
 User=ubuntu
 WorkingDirectory=${OPENSERP_INSTALL_DIR}
-ExecStart=${OPENSERP_INSTALL_DIR}/openserp serve -a 127.0.0.1 -p 7000
+ExecStart=${OPENSERP_INSTALL_DIR}/openserp serve -a 127.0.0.1 -p 7000 -r
 Restart=on-failure
 RestartSec=10
 
-# Resource limits for t2.micro (systemd cgroups v2)
-MemoryMax=256M
-CPUQuota=50%
+# Resource limits for t2.micro (raw HTTP mode uses < 40MB)
+MemoryMax=512M
+CPUQuota=75%
 
 # Logging
 StandardOutput=journal
