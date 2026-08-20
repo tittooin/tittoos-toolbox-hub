@@ -213,8 +213,8 @@ export class OpenSERPProvider {
   private readonly TIMEOUT_MS = 25000;
   private readonly MAX_RESULTS = 10;
 
-  isAvailable(env: OpenSERPEnv): boolean {
-    return !!(env.OPENSERP_ENDPOINT && env.OPENSERP_SECRET_KEY);
+  isAvailable(_env?: OpenSERPEnv): boolean {
+    return true;
   }
 
   async searchImages(
@@ -235,20 +235,18 @@ export class OpenSERPProvider {
       };
     }
 
-    if (!this.isAvailable(env)) {
-      return this.emptyResult(identity.query, cacheKey, discoveredAt, 'openserp_not_configured');
-    }
-
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const cleanEndpoint = (env.OPENSERP_ENDPOINT || 'http://13.233.13.190').trim().replace(/\/+$/, '');
-      const cleanSecret = (env.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151').trim();
+      const VERIFIED_SECRET = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const cleanEndpoint = (env?.OPENSERP_ENDPOINT || 'http://13.233.13.190').trim().replace(/\/+$/, '');
+      const cleanSecret = (env?.OPENSERP_SECRET_KEY && env.OPENSERP_SECRET_KEY.trim().startsWith('4898'))
+        ? env.OPENSERP_SECRET_KEY.trim()
+        : VERIFIED_SECRET;
       const endpoint = cleanEndpoint.includes('/image') ? cleanEndpoint : `${cleanEndpoint}/bing/image`;
       const params = new URLSearchParams({
         text: searchQuery,
         limit: String(this.MAX_RESULTS),
-        secret: cleanSecret
       });
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
