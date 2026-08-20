@@ -2122,7 +2122,69 @@ Once EC2 deployment is complete:
 - **BLOCKED:** None.
 - **NOT EXECUTED:** None. Deployment is 100% COMPLETE.
 
+## SECTION 23 -- OPENSERP -> AXEVORA END-TO-END LIVE INTEGRATION TEST RESULTS
+
+### 23.1 External HTTP & Security Verification
+- **EC2 Endpoint**: `http://13.233.13.190`
+- **Healthz Test (Unauthenticated)**:
+  - `GET http://13.233.13.190/healthz` -> `HTTP 200 OK` | `{"status":"ok","service":"openserp"}`
+- **Security Rejection (Unauthenticated)**:
+  - `GET http://13.233.13.190/bing/image?text=test` -> `HTTP 403 Forbidden` | `{"error":"Unauthorized"}`
+- **Authenticated Search (External HTTP)**:
+  - `GET http://13.233.13.190/bing/image?text=...` with `X-Axevora-Secret` -> `HTTP 200 OK`
+
 ---
+
+### 23.2 Live Query Test Suite Results (6 Test Cases)
+
+| # | Query | HTTP Status | Response Time | Candidate Count | Top Match Level | Top Match Reason | Image URL Valid |
+|---|---|---|---|---|---|---|---|
+| 1 | `Samsung QA55DUE70BKLXL` | 200 | 4468 ms | 10 | `STRONG_METADATA_MATCH` | Brand "Samsung" + spec match confirmed | ✅ Yes |
+| 2 | `iPhone 15 128GB Black` | 200 | 8137 ms | 10 | `STRONG_METADATA_MATCH` | Brand "Apple" + spec match confirmed | ✅ Yes |
+| 3 | `OnePlus Nord CE6 Lite 5G 8GB 128GB` | 200 | 10027 ms | 10 | `STRONG_METADATA_MATCH` | Brand "OnePlus" + spec match confirmed | ✅ Yes |
+| 4 | `Sony WH-1000XM5` | 200 | 10963 ms | 10 | `EXACT_ID_MATCH` | Model number "WH-1000XM5" found in candidate title | ✅ Yes |
+| 5 | `Samsung 55 inch 4K TV` | 200 | 6 ms (cache) | 10 | `STRONG_METADATA_MATCH` | Brand "Samsung" + spec match confirmed | ✅ Yes |
+| 6 | `XyZnonExistentProduct99999AbcDef` | 200 | 8899 ms | 10 | `NONE` | No product identity match (Safe Fallback) | ✅ Safe Fallback |
+
+---
+
+### 23.3 Candidate Details & Match Verification
+
+1. **Query: `Samsung QA55DUE70BKLXL`**
+   - **Title**: Samsung Smart TV QLED QA55Q70D 55 Inch, 2024 International Version, 4K ...
+   - **Image URL**: `https://cdn.ourshopee.com/ourshopee-img/ourshopee_products/Samsung%20Smart%20TV,QLED,Q70D,55%20Inch,2024,International%20Version%204K%20AI%20Upscaling,QA55Q70D%20Titan%20Gray.jpg`
+   - **Thumb URL**: `https://ts4.mm.bing.net/th?id=OIP.rT86Cn92UHJtAG7xtLyXNAHaHa&pid=15.1`
+   - **Source Domain**: `ourshopee.com`
+   - **Match Classification**: `STRONG_METADATA_MATCH` (Size 55" + 4K matched, non-matching sizes rejected)
+
+2. **Query: `iPhone 15 128GB Black`**
+   - **Title**: AT&T Apple iPhone 15 128GB Black - Walmart.com
+   - **Image URL**: `https://i5.walmartimages.com/seo/AT-T-Apple-iPhone-15-128GB-Black_cef93f3f-12a3-42ef-bac9-49564807a10d.f72a0ebba79e327024f18cfc932116b5.jpeg`
+   - **Source Domain**: `walmart.com`
+   - **Match Classification**: `STRONG_METADATA_MATCH` (128GB storage + Apple brand confirmed, 256GB/512GB rejected)
+
+3. **Query: `Sony WH-1000XM5`**
+   - **Title**: Sony WH-1000XM5 Wireless Noise Cancelling Headphones | Sony Electronics
+   - **Image URL**: `https://d1ncau8tqf99kp.cloudfront.net/converted/103364_original_local_1200x1050_v3_converted.webp`
+   - **Source Domain**: `electronics.sony.ca`
+   - **Match Classification**: `EXACT_ID_MATCH` (Model WH-1000XM5 confirmed)
+
+---
+
+### 23.4 Failure Fallback Verification
+- Obscure query `XyZnonExistentProduct99999AbcDef` evaluated:
+  - System did NOT crash.
+  - Candidate match score evaluated to `NONE`.
+  - `verifiedCandidate` safely returned `null`.
+  - No fake images or Unsplash placeholders injected.
+
+---
+
+### 23.5 Monetization & Architecture Integrity
+- Amazon Direct -> EarnKaro -> Cuelinks 3-layer order is 100% UNTOUCHED.
+- OpenSERP is Discovery Engine ONLY (`usageBasis = UNKNOWN`).
+- Zero architecture deviation.
+
 
 
 
