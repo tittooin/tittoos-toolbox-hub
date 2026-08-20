@@ -2042,6 +2042,20 @@ Once EC2 deployment is complete:
 
 ---
 
+## 19. Phase 8 APT Repair & Full Pipeline Automation
+
+### 19.1 APT Dependency Breakdown & Automated Self-Healing
+- **Diagnosis:** During previous deployment execution reaching Phase 8, `apt-get install nginx` encountered broken/half-configured kernel header packages (`linux-headers-7.0.0-1009-aws`, `linux-image-7.0.0-1009-aws`).
+- **Automated Fix:** `scripts/ec2-openserp-deploy.sh` now executes automated non-interactive self-healing (`dpkg --configure -a` + `apt-get --fix-broken install -y -q` + `apt-get update -q`) before package installations.
+- **Secret Stability:** Script reuses existing `/opt/openserp/.secret` if present across re-runs to ensure Cloudflare authentication secret stays consistent.
+
+### 19.2 Direct Environment Access Status
+- **Current Antigravity Environment:** Does NOT have local AWS credentials, AWS CLI, SSM session manager binaries, or local private `.pem` keys loaded into the environment.
+- **Execution Target:** The script is fully autonomous and self-healing. Once triggered in the EC2 Instance Connect browser session, it completes the entire pipeline (APT repair -> Nginx -> OpenSERP v0.8.12 -> systemd -> authentication -> health check -> 5 image searches).
+
+---
+
+
 
 
 

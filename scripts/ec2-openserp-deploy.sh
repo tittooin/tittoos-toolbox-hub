@@ -497,21 +497,35 @@ else
 fi
 
 # =============================================================================
-# PHASE 8: NGINX REVERSE PROXY WITH AUTHENTICATION
+# PHASE 8: NGINX REVERSE PROXY WITH AUTHENTICATION (APT SELF-HEALING)
 # =============================================================================
-section "PHASE 8: NGINX REVERSE PROXY"
+section "PHASE 8: NGINX REVERSE PROXY WITH AUTHENTICATION"
 
 if ! command -v nginx >/dev/null 2>&1; then
-  log "Installing nginx..."
-  apt-get update -q && apt-get install -y -q nginx
+  log "Installing nginx with automated APT dependency healing..."
+  DEBIAN_FRONTEND=noninteractive dpkg --configure -a 2>/dev/null || true
+  DEBIAN_FRONTEND=noninteractive apt-get --fix-broken install -y -q 2>/dev/null || true
+  DEBIAN_FRONTEND=noninteractive apt-get update -q 2>/dev/null || true
+  
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -q nginx || {
+    warn "Initial nginx install failed, running aggressive dpkg & apt-get repair..."
+    DEBIAN_FRONTEND=noninteractive apt-get --fix-broken install -y -q
+    DEBIAN_FRONTEND=noninteractive apt-get install -y -q nginx
+  }
 fi
 
-# Generate a shared secret for Axevora <-> OpenSERP authentication
+# Generate or reuse shared secret for Axevora <-> OpenSERP authentication
 # Stored securely with chmod 600; NOT written into persistent deploy logs
-OPENSERP_SECRET=$(openssl rand -hex 32)
-echo "$OPENSERP_SECRET" > "${OPENSERP_INSTALL_DIR}/.secret"
-chmod 600 "${OPENSERP_INSTALL_DIR}/.secret"
-log "OPENSERP_SECRET_KEY generated and saved to ${OPENSERP_INSTALL_DIR}/.secret (chmod 600)"
+if [ -f "${OPENSERP_INSTALL_DIR}/.secret" ] && [ -s "${OPENSERP_INSTALL_DIR}/.secret" ]; then
+  OPENSERP_SECRET=$(cat "${OPENSERP_INSTALL_DIR}/.secret")
+  log "Reusing existing OPENSERP_SECRET_KEY from ${OPENSERP_INSTALL_DIR}/.secret"
+else
+  OPENSERP_SECRET=$(openssl rand -hex 32)
+  echo "$OPENSERP_SECRET" > "${OPENSERP_INSTALL_DIR}/.secret"
+  chmod 600 "${OPENSERP_INSTALL_DIR}/.secret"
+  log "OPENSERP_SECRET_KEY generated and saved to ${OPENSERP_INSTALL_DIR}/.secret (chmod 600)"
+fi
+
 echo "---------------------------------------------------------------"
 echo "[SECURE OUTPUT] OPENSERP_SECRET_KEY: ${OPENSERP_SECRET}"
 echo "Add this key to Cloudflare: wrangler secret put OPENSERP_SECRET_KEY"
