@@ -467,8 +467,8 @@ ExecStart=${OPENSERP_INSTALL_DIR}/openserp serve -a 127.0.0.1 -p 7000
 Restart=on-failure
 RestartSec=10
 
-# Resource limits for t2.micro
-MemoryLimit=256M
+# Resource limits for t2.micro (systemd cgroups v2)
+MemoryMax=256M
 CPUQuota=50%
 
 # Logging
