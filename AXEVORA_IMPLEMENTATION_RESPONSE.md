@@ -2185,6 +2185,55 @@ Once EC2 deployment is complete:
 - OpenSERP is Discovery Engine ONLY (`usageBasis = UNKNOWN`).
 - Zero architecture deviation.
 
+---
+
+## SECTION 24 -- OPEN SERP PRODUCT CARD INTEGRATION FIX
+
+### 24.1 Root Cause Analysis
+1. **Merchant Logo Collision in Thumbnail**: In `ProductCard.tsx`, the placeholder fallback was conditionally rendering `product.merchantLogoUrl` in the 192px thumbnail area for store deals when `imageUrl` was missing.
+2. **Missing Image Enrichment in Commerce Search**: `functions/api/commerce/search.ts` was generating merchant store links without calling `OpenSERPProvider.searchImages()` to discover and attach candidate image URLs.
+3. **Frontend Dynamic State Desync**: `ShoppingAssistant.tsx` did not have client-side dynamic progressive image enrichment, and `ProductCard.tsx` did not have a `useEffect` hook to update `imgSrc` when `product.imageUrl` arrived dynamically.
+4. **AI Summary Timeout Hang**: `functions/api/commerce/review-summary.ts` had no timeout for Gemini/Workers AI, causing the UI to wait rather than immediately rendering product cards.
+
+---
+
+### 24.2 Files Changed
+- [ProductCard.tsx](file:///g:/axevora.com/tittoos-toolbox-hub/src/components/shopping/ProductCard.tsx): Removed merchant logo from product thumbnail area, synchronized `imgSrc` with `useEffect`, added image provenance badge `via {domain}`.
+- [ShoppingAssistant.tsx](file:///g:/axevora.com/tittoos-toolbox-hub/src/pages/shopping/ShoppingAssistant.tsx): Added concurrent fetch via `Promise.allSettled`, mapped OpenSERP provenance fields, added progressive client-side image search enrichment.
+- [search.ts](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/search.ts): Integrated `parseProductIdentityFromQuery()` and `OpenSERPProvider.searchImages()`, attaching `imageUrl`, `imageThumbnailUrl`, `imageSourceDomain`, `imageMatchScore` to all deal items.
+- [review-summary.ts](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/review-summary.ts): Added 4000ms strict timeout and instant fallback.
+- [shopping.ts](file:///g:/axevora.com/tittoos-toolbox-hub/src/types/shopping.ts): Added OpenSERP provenance fields (`imageThumbnailUrl`, `imageSourceDomain`, `imageMatchScore`, `imageMatchReason`, `imageUsageBasis`).
+- [image-search.ts](file:///g:/axevora.com/tittoos-toolbox-hub/functions/api/commerce/image-search.ts): Added clean secret resolution.
+
+---
+
+### 24.3 Data Mapping: Before vs After
+
+| Field | Before | After |
+|---|---|---|
+| `product.imageUrl` | `null` | `verifiedCandidate.imageUrl` (or `null` if unverified) |
+| `product.imageSourceDomain` | Not mapped | `verifiedCandidate.sourceDomain` (e.g. `walmart.com`, `ourshopee.com`) |
+| `product.imageMatchScore` | Not mapped | `EXACT_ID_MATCH` / `STRONG_METADATA_MATCH` |
+| `Thumbnail Area (Image Available)` | N/A | High-res Product Image with `via {sourceDomain}` badge |
+| `Thumbnail Area (Image Unavailable)` | Merchant Logo (`merchantLogoUrl`) ❌ | Neutral "Product Image Unavailable" (`ImageOff` icon) ✅ |
+| `Merchant Logo` | Occupied 192px thumbnail area ❌ | Confined exclusively to small 12px merchant badge ✅ |
+
+---
+
+### 24.4 Browser Verification Results
+- **Screenshot 1 (`iPhone 15 128GB Black`)**: Verified via browser subagent. Zero merchant logos in thumbnail area; neutral placeholder rendered with "Zero-Deception Guaranteed"; merchant badges intact at top.
+- **Screenshot 2 (`Samsung QA55DUE70BKLXL`)**: Verified via browser subagent. Zero merchant logos in thumbnail area; neutral placeholder rendered with "Zero-Deception Guaranteed".
+- **Artifacts Saved**:
+  - `iphone_15_results_1787236806709.png`
+  - `samsung_tv_results_1787236819552.png`
+
+---
+
+### 24.5 Monetization & Affiliate Safety
+- Amazon Direct -> EarnKaro -> Cuelinks 3-layer order is 100% UNTOUCHED.
+- OpenSERP is Discovery Engine ONLY (`usageBasis = UNKNOWN`).
+- Zero affiliate URL modification.
+
 
 
 
