@@ -447,6 +447,7 @@ log "Config written: ${OPENSERP_INSTALL_DIR}/config.yaml"
 log "T2.MICRO CONSTRAINT: workers=1, max_concurrent=2, single browser instance"
 
 # =============================================================================
+# =============================================================================
 # PHASE 7: SYSTEMD SERVICE
 # =============================================================================
 section "PHASE 7: CREATE SYSTEMD SERVICE"
@@ -462,7 +463,7 @@ StartLimitBurst=3
 Type=simple
 User=ubuntu
 WorkingDirectory=${OPENSERP_INSTALL_DIR}
-ExecStart=${OPENSERP_INSTALL_DIR}/openserp server --config ${OPENSERP_INSTALL_DIR}/config.yaml
+ExecStart=${OPENSERP_INSTALL_DIR}/openserp serve -a 127.0.0.1 -p 7000
 Restart=on-failure
 RestartSec=10
 
@@ -485,7 +486,7 @@ SERVICEEOF
 
 systemctl daemon-reload
 systemctl enable "${OPENSERP_SERVICE}"
-systemctl start "${OPENSERP_SERVICE}"
+systemctl restart "${OPENSERP_SERVICE}"
 sleep 5
 
 if systemctl is-active --quiet "${OPENSERP_SERVICE}"; then
@@ -540,26 +541,28 @@ server {
     listen ${NGINX_LISTEN_PORT} default_server;
     server_name _;
 
-    # Reject requests without correct secret header
-    if (\$http_x_axevora_secret != "${OPENSERP_SECRET}") {
-        return 403 '{"error":"Unauthorized"}';
+    # Health check endpoint (exempt from auth -- internal monitoring)
+    location = /healthz {
+        add_header Content-Type application/json;
+        return 200 '{"status":"ok","service":"openserp"}';
     }
 
+    # Protected OpenSERP proxy
     location / {
+        if (\$http_x_axevora_secret != "${OPENSERP_SECRET}") {
+            return 403 '{"error":"Unauthorized"}';
+        }
+
+        # Convenience alias for generic image endpoint
+        rewrite ^/image$ /bing/image break;
+
         proxy_pass http://${OPENSERP_BIND}:${OPENSERP_PORT};
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_read_timeout 35s;
         proxy_connect_timeout 10s;
-        # Remove the auth header before forwarding to OpenSERP
         proxy_set_header X-Axevora-Secret "";
-    }
-
-    # Health check endpoint (no auth required -- internal use)
-    location /healthz {
-        add_header Content-Type application/json;
-        return 200 '{"status":"ok","service":"openserp"}';
     }
 }
 NGINXEOF
@@ -606,8 +609,9 @@ test_image_search() {
   local LABEL="$2"
   log "--- Test: ${LABEL} ---"
   log "Query: ${QUERY}"
+  ENCODED_QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('${QUERY}'))" 2>/dev/null || echo "${QUERY// /+}")
   RESULT=$(curl -s --max-time 15 -H "X-Axevora-Secret: ${OPENSERP_SECRET}" \
-    "http://localhost:${NGINX_LISTEN_PORT}/image?q=$(python3 -c "import urllib.parse; print(urllib.parse.quote('${QUERY}'))" 2>/dev/null || echo "${QUERY// /+}")" \
+    "http://localhost:${NGINX_LISTEN_PORT}/bing/image?text=${ENCODED_QUERY}" \
     2>&1)
   log "Response: ${RESULT}"
   echo "---"
@@ -620,10 +624,10 @@ test_image_search "OnePlus Nord CE6 Lite 5G 8GB 128GB" "Test 4: OnePlus"
 test_image_search "Sony WH-1000XM5" "Test 5: Sony Headphones"
 
 # Test mega endpoint if available
-log "--- Test: Mega Image Search ---"
-MEGA_RESULT=$(curl -s --max-time 20 -H "X-Axevora-Secret: ${OPENSERP_SECRET}" \
-  "http://localhost:${NGINX_LISTEN_PORT}/mega/image?q=Samsung+55+4K+TV" 2>&1)
-log "Mega result: ${MEGA_RESULT}"
+log "--- Test: Direct Bing Search ---"
+BING_RESULT=$(curl -s --max-time 20 -H "X-Axevora-Secret: ${OPENSERP_SECRET}" \
+  "http://localhost:${NGINX_LISTEN_PORT}/bing/search?text=Samsung+55+4K+TV" 2>&1)
+log "Bing web result: ${BING_RESULT}"
 
 # =============================================================================
 # PHASE 11: RESOURCE CHECK AFTER DEPLOYMENT

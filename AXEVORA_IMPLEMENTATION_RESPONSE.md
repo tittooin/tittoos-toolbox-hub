@@ -2055,6 +2055,22 @@ Once EC2 deployment is complete:
 
 ---
 
+## 20. OpenSERP Service Command & Nginx Routing Fix
+
+### 20.1 Root Cause of 502 Bad Gateway
+- **Systemd ExecStart Command:** OpenSERP CLI uses `openserp serve -a 127.0.0.1 -p 7000` to start the HTTP daemon (the subcommand `server` was invalid and caused immediate process exit).
+- **Nginx Auth Scoping:** The `X-Axevora-Secret` check was relocated inside `location /` so that `/healthz` is accessible without authentication for internal uptime monitoring.
+- **API Endpoint Mapping:** OpenSERP v0.8.12 serves images at `/bing/image?text=...`. Nginx now proxies `/image` as a rewrite alias to `/bing/image`, and `OpenSERPProvider.ts` directly targets `/bing/image?text=...`.
+
+### 20.2 Status Breakdown
+- **IMPLEMENTED:** Systemd command corrected to `serve -a 127.0.0.1 -p 7000`, Nginx config updated with location scoping, OpenSERPProvider updated to call `/bing/image?text=...`.
+- **VERIFIED:** TypeScript build clean (0 errors), bash syntax clean (0 errors).
+- **BLOCKED:** Remote execution on EC2 instance `axevora-trade` (pending re-run in EC2 Instance Connect).
+- **NOT EXECUTED:** Live OpenSERP service has not yet been restarted on EC2.
+
+---
+
+
 
 
 

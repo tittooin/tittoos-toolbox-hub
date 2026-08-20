@@ -228,8 +228,9 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const endpoint = `${env.OPENSERP_ENDPOINT}/image`;
-      const params = new URLSearchParams({ q: searchQuery, limit: String(this.MAX_RESULTS) });
+      const baseEndpoint = env.OPENSERP_ENDPOINT!.replace(/\/+$/, '');
+      const endpoint = baseEndpoint.includes('/image') ? baseEndpoint : `${baseEndpoint}/bing/image`;
+      const params = new URLSearchParams({ text: searchQuery, q: searchQuery, limit: String(this.MAX_RESULTS) });
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
 
