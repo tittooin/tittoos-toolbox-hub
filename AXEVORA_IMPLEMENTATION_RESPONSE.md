@@ -2017,9 +2017,31 @@ Once EC2 deployment is complete:
 ### 18.3 Idempotency Enforcement
 - **Phase 3 (Backup):** Detects existing `/opt/axevora-backups/bot-backup-*.tar.gz` with verified SHA256. Skips duplicate backup creation.
 - **Phase 4 (Quarantine):** Checks if bot service is already stopped/disabled and old directories already quarantined. Skips redundant moves.
-- **Phase 5 (Installer):** Downloads directly, validates archive size (>5MB), extracts cleanly to `/opt/openserp/openserp`, and verifies binary execution.
+### 18.4 Status Breakdown
+
+#### IMPLEMENTED
+- Phase 5 installer rewritten in `scripts/ec2-openserp-deploy.sh` with GitHub Releases API dynamic JSON asset resolution for `openserp-linux-${GOARCH}-*.tgz`.
+- Canonical fallback URL added: `https://github.com/karust/openserp/releases/download/v0.8.12/openserp-linux-amd64-0.8.12.tgz`.
+- Download integrity check (>5MB) and binary execution validation (`--help` / `version`) implemented.
+- Phase 3 & Phase 4 idempotency logic implemented (skips duplicate backups and redundant quarantine moves on re-run).
+
+#### VERIFIED
+- **GitHub API metadata:** Confirmed `v0.8.12` release assets contain `openserp-linux-amd64-0.8.12.tgz` (11,045,427 bytes).
+- **Tarball structure:** Verified `openserp-linux-amd64-0.8.12.tgz` contains the standalone executable binary `openserp` (28,434,616 bytes).
+- **Shell syntax validation:** `bash -n scripts/ec2-openserp-deploy.sh` passed clean (0 syntax errors).
+- **TypeScript build:** `npx tsc --noEmit` passed clean (0 errors).
+- **Git Commit:** `fe4465c` committed and pushed to `main` (branch up-to-date with `origin/main`).
+
+#### BLOCKED
+- Remote execution on EC2 instance `axevora-trade` (requires manual session via EC2 Instance Connect).
+
+#### NOT EXECUTED
+- **EC2 Deployment:** The updated deployment script has NOT been executed on the EC2 instance yet.
+- **Live OpenSERP Service:** OpenSERP is NOT yet live, NOT running on EC2, and real search tests have NOT been run on EC2 yet.
+- No live production claims are made until EC2 execution and health tests actually pass.
 
 ---
+
 
 
 
