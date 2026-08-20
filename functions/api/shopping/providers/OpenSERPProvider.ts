@@ -238,7 +238,7 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const cleanEndpoint = 'http://13.233.13.190';
+      const cleanEndpoint = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com';
       const cleanSecret = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
       const endpoint = `${cleanEndpoint}/bing/image`;
       const params = new URLSearchParams({

@@ -57,7 +57,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const searchPromise = (async (): Promise<Response> => {
     try {
-      const endpointVal = 'http://13.233.13.190';
+      const endpointVal = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com';
       const secretVal = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
 
       const result = await provider.searchImages(identity, {
@@ -65,7 +65,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         OPENSERP_SECRET_KEY: secretVal,
       });
 
-      const debugEndpoint = 'http://13.233.13.190/bing/image';
+      const debugEndpoint = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com/bing/image';
       const debugSecret = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
       let directEc2Status = 0;
       let directEc2Body = '';

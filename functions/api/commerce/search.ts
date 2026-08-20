@@ -94,7 +94,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   // 2. Parallel OpenSERP Image Discovery
   const identity = parseProductIdentityFromQuery(query);
-  const endpointVal = 'http://13.233.13.190';
+  const endpointVal = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com';
   const secretVal = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
 
   const openSERPProvider = new OpenSERPProvider();
