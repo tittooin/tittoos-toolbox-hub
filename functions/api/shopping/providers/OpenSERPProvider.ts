@@ -210,7 +210,7 @@ export function matchImageToProduct(
  * 4. On failure: returns imageUnavailable gracefully -- product card still works
  */
 export class OpenSERPProvider {
-  private readonly TIMEOUT_MS = 8000;
+  private readonly TIMEOUT_MS = 25000;
   private readonly MAX_RESULTS = 10;
 
   isAvailable(env: OpenSERPEnv): boolean {

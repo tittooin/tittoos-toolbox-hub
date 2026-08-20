@@ -57,9 +57,12 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const searchPromise = (async (): Promise<Response> => {
     try {
+      const endpointVal = typedEnv.OPENSERP_ENDPOINT || 'http://13.233.13.190';
+      const secretVal = typedEnv.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+
       const result = await provider.searchImages(identity, {
-        OPENSERP_ENDPOINT: typedEnv.OPENSERP_ENDPOINT,
-        OPENSERP_SECRET_KEY: typedEnv.OPENSERP_SECRET_KEY,
+        OPENSERP_ENDPOINT: endpointVal,
+        OPENSERP_SECRET_KEY: secretVal,
       });
 
       return jsonResp({
