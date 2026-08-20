@@ -71,10 +71,21 @@ export interface OpenSERPEnv {
 export interface OpenSERPImageResult {
   url?: string;
   thumb_url?: string;
+  image?: {
+    url?: string;
+    thumbnail?: string;
+    width?: number;
+    height?: number;
+  };
   title?: string;
-  source?: string;
+  source?: string | {
+    page_url?: string;
+    domain?: string;
+    title?: string;
+  };
   engine?: string;
   position?: number;
+  rank?: number;
   width?: number;
   height?: number;
 }
@@ -127,8 +138,11 @@ export function matchImageToProduct(
   candidate: OpenSERPImageResult
 ): { level: ImageMatchLevel; reason: string } {
   const candidateTitle = (candidate.title || '').toLowerCase();
-  const candidateSource = (candidate.source || candidate.url || '').toLowerCase();
-  const combined = `${candidateTitle} ${candidateSource}`;
+  const rawSource = typeof candidate.source === 'object' && candidate.source
+    ? `${candidate.source.domain || ''} ${candidate.source.page_url || ''}`
+    : (candidate.source || '');
+  const rawImgUrl = candidate.image?.url || candidate.url || '';
+  const combined = `${candidateTitle} ${rawSource} ${rawImgUrl}`.toLowerCase();
 
   // REJECTION: Size conflict
   if (identity.sizeInch) {
@@ -261,23 +275,30 @@ export class OpenSERPProvider {
       }
 
       const candidates: NormalizedImageCandidate[] = data.results
-        .filter(r => r.url && r.url.startsWith('http'))
         .map((r, idx) => {
+          const imgUrl = r.image?.url || r.url || null;
+          const thumbUrl = r.image?.thumbnail || r.thumb_url || null;
+          const sourceUrl = typeof r.source === 'object' && r.source ? (r.source.page_url || null) : (r.source || null);
+          const sourceDomain = typeof r.source === 'object' && r.source && r.source.domain
+            ? r.source.domain
+            : this.extractDomain(sourceUrl || imgUrl || '');
+
           const match = matchImageToProduct(identity, r);
           return {
-            imageUrl: r.url || null,
-            thumbnailUrl: r.thumb_url || null,
-            sourceUrl: r.source || null,
-            sourceDomain: this.extractDomain(r.source || r.url || ''),
-            sourceEngine: r.engine || 'unknown',
+            imageUrl: imgUrl,
+            thumbnailUrl: thumbUrl,
+            sourceUrl,
+            sourceDomain,
+            sourceEngine: r.engine || 'bing',
             title: r.title || null,
             productMatchScore: match.level,
             productMatchReason: match.reason,
             discoveredAt,
             usageBasis: 'UNKNOWN' as UsageBasis,
-            position: r.position ?? (idx + 1),
+            position: r.rank ?? r.position ?? (idx + 1),
           };
-        });
+        })
+        .filter(c => c.imageUrl && c.imageUrl.startsWith('http'));
 
       const verifiedCandidate =
         candidates.find(c => c.productMatchScore === 'EXACT_ID_MATCH') ||

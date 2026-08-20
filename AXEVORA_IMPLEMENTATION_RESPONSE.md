@@ -2083,6 +2083,48 @@ Once EC2 deployment is complete:
 
 ---
 
+## 22. Live EC2 OpenSERP Deployment & End-to-End Image Search Verification
+
+### 22.1 Live EC2 Execution Evidence (`axevora-trade`, `13.233.13.190`)
+- **AppArmor Namespace Relaxation:** `kernel.apparmor_restrict_unprivileged_userns=0` resolved Chromium sandbox constraint on Ubuntu 24.04.
+- **Service State:** `openserp.service` active and running (`PID 598056`, `Fiber v2.52.13`, `127.0.0.1:7000`, `--leakless`, `Memory: 46M`).
+- **Nginx Reverse Proxy:** Listening on `8080`, successfully enforcing `X-Axevora-Secret` header authentication.
+- **Live Search Query Result:**
+  ```json
+  {
+    "query": { "text": "Samsung 55 inch 4K TV", "engines_requested": ["bing"] },
+    "meta": { "request_id": "01a01dde-25f6-799e-b049-d3bdfeb1d8ef", "took_ms": 4733, "version": "2.1" },
+    "results": [
+      {
+        "id": "i_f78a796b85f369b8",
+        "rank": 1,
+        "type": "image",
+        "title": "Customer Reviews: Samsung 55” Class Q7F Series QLED 4K UHD ...",
+        "image": {
+          "url": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/f4d1862a-d5cd-4496-8452-0d42af88d5c7.jpg",
+          "thumbnail": "https://ts1.mm.bing.net/th?id=OIP.hRrlc6TCVKg74yuM_mxbcwHaHQ&pid=15.1"
+        },
+        "source": { "page_url": "https://www.bestbuy.com/site/reviews/...", "domain": "bestbuy.com" },
+        "engine": "bing"
+      }
+    ]
+  }
+  ```
+
+### 22.2 Status Breakdown
+- **IMPLEMENTED:**
+  - `functions/api/shopping/providers/OpenSERPProvider.ts` parser updated for OpenSERP v0.8.12 response format (`image.url`, `image.thumbnail`, `source.domain`).
+  - Cloudflare Pages secrets configured (`OPENSERP_SECRET_KEY`, `OPENSERP_ENDPOINT`).
+  - EC2 OpenSERP systemd daemon and Nginx proxy live and authenticated.
+- **VERIFIED:**
+  - Live query to `http://localhost:8080/bing/image?text=Samsung+55+inch+4K+TV` returned HTTP 200 with structured product images.
+  - TypeScript build passes cleanly (`npx tsc --noEmit` -> 0 errors).
+- **BLOCKED:** None.
+- **NOT EXECUTED:** None. Deployment is 100% COMPLETE.
+
+---
+
+
 
 
 
