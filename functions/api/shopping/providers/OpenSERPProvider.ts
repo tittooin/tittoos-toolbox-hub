@@ -265,7 +265,7 @@ export class OpenSERPProvider {
 
       if (!response.ok) {
         console.warn(`[OpenSERPProvider] HTTP ${response.status} for: ${searchQuery}`);
-        return this.emptyResult(identity.query, cacheKey, discoveredAt, 'openserp_http_error');
+        return this.emptyResult(identity.query, cacheKey, discoveredAt, `openserp_http_${response.status}`);
       }
 
       const data = await response.json() as OpenSERPImageResponse;
