@@ -238,12 +238,9 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const VERIFIED_SECRET = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
-      const cleanEndpoint = (env?.OPENSERP_ENDPOINT || 'http://13.233.13.190').trim().replace(/\/+$/, '');
-      const cleanSecret = (env?.OPENSERP_SECRET_KEY && env.OPENSERP_SECRET_KEY.trim().startsWith('4898'))
-        ? env.OPENSERP_SECRET_KEY.trim()
-        : VERIFIED_SECRET;
-      const endpoint = cleanEndpoint.includes('/image') ? cleanEndpoint : `${cleanEndpoint}/bing/image`;
+      const cleanEndpoint = 'http://13.233.13.190';
+      const cleanSecret = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const endpoint = `${cleanEndpoint}/bing/image`;
       const params = new URLSearchParams({
         text: searchQuery,
         limit: String(this.MAX_RESULTS),
