@@ -538,7 +538,9 @@ cat > "/etc/nginx/sites-available/${NGINX_SITE_NAME}" << NGINXEOF
 # DO NOT enable public access on port 7000
 
 server {
-    listen ${NGINX_LISTEN_PORT} default_server;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    listen ${NGINX_LISTEN_PORT};
     server_name _;
 
     # Health check endpoint (exempt from auth -- internal monitoring)
@@ -560,16 +562,17 @@ server {
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_read_timeout 35s;
+        proxy_read_timeout 60s;
         proxy_connect_timeout 10s;
         proxy_set_header X-Axevora-Secret "";
     }
 }
 NGINXEOF
 
+rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 ln -sf "/etc/nginx/sites-available/${NGINX_SITE_NAME}" "/etc/nginx/sites-enabled/${NGINX_SITE_NAME}" 2>/dev/null || true
 nginx -t && systemctl reload nginx
-log "Nginx configured on port ${NGINX_LISTEN_PORT} (internal)"
+log "Nginx configured on port 80 and ${NGINX_LISTEN_PORT} with X-Axevora-Secret authentication"
 
 # =============================================================================
 # PHASE 9: HEALTH TESTS
