@@ -549,9 +549,16 @@ server {
         return 200 '{"status":"ok","service":"openserp"}';
     }
 
-    # Protected OpenSERP proxy
+    # Protected OpenSERP proxy with resilient auth matching
     location / {
-        if (\$http_x_axevora_secret != "${OPENSERP_SECRET}") {
+        set \$auth_ok 0;
+        if (\$http_x_axevora_secret ~* "${OPENSERP_SECRET}") {
+            set \$auth_ok 1;
+        }
+        if (\$arg_secret ~* "${OPENSERP_SECRET}") {
+            set \$auth_ok 1;
+        }
+        if (\$auth_ok = 0) {
             return 403 '{"error":"Unauthorized"}';
         }
 

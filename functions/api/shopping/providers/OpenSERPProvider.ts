@@ -242,9 +242,14 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const baseEndpoint = env.OPENSERP_ENDPOINT!.replace(/\/+$/, '');
-      const endpoint = baseEndpoint.includes('/image') ? baseEndpoint : `${baseEndpoint}/bing/image`;
-      const params = new URLSearchParams({ text: searchQuery, q: searchQuery, limit: String(this.MAX_RESULTS) });
+      const cleanEndpoint = (env.OPENSERP_ENDPOINT || 'http://13.233.13.190').trim().replace(/\/+$/, '');
+      const cleanSecret = (env.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151').trim();
+      const endpoint = cleanEndpoint.includes('/image') ? cleanEndpoint : `${cleanEndpoint}/bing/image`;
+      const params = new URLSearchParams({
+        text: searchQuery,
+        limit: String(this.MAX_RESULTS),
+        secret: cleanSecret
+      });
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
 
@@ -253,7 +258,7 @@ export class OpenSERPProvider {
         response = await fetch(`${endpoint}?${params.toString()}`, {
           method: 'GET',
           headers: {
-            'X-Axevora-Secret': env.OPENSERP_SECRET_KEY!,
+            'X-Axevora-Secret': cleanSecret,
             'Accept': 'application/json',
             'User-Agent': 'Axevora-ProductIntelligence/1.0',
           },
