@@ -2070,6 +2070,20 @@ Once EC2 deployment is complete:
 
 ---
 
+## 21. Cloudflare Pages Secrets Configuration
+
+### 21.1 Secrets Uploaded to Cloudflare Pages (`tittoos-toolbox-hub` / `axevora.com`)
+- **`OPENSERP_SECRET_KEY`:** Uploaded successfully to Cloudflare Pages production environment.
+- **`OPENSERP_ENDPOINT`:** Uploaded successfully (`http://13.233.13.190:8080`).
+
+### 21.2 Status Breakdown
+- **IMPLEMENTED:** Cloudflare Worker & Pages environment secrets configured via authenticated Wrangler CLI.
+- **VERIFIED:** Wrangler Pages secret upload confirmation received (`✨ Success! Uploaded secret OPENSERP_SECRET_KEY`, `✨ Success! Uploaded secret OPENSERP_ENDPOINT`).
+- **NEXT STEP:** Run the updated one-shot deploy command on EC2 to activate the `openserp serve` daemon and complete live search verification.
+
+---
+
+
 
 
 
