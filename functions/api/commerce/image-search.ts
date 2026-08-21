@@ -57,7 +57,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const searchPromise = (async (): Promise<Response> => {
     try {
-      const endpointVal = typedEnv.OPENSERP_ENDPOINT || 'http://openserp.axevora.com';
+      const endpointVal = 'http://openserp.axevora.com';
       const secretVal = typedEnv.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
 
       const result = await provider.searchImages(identity, {

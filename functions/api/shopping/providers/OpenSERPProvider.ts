@@ -270,7 +270,7 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const cleanEndpoint = env?.OPENSERP_ENDPOINT || 'http://openserp.axevora.com';
+      const cleanEndpoint = 'http://openserp.axevora.com';
       const cleanSecret = env?.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
       const endpoint = `${cleanEndpoint}/bing/image`;
       const params = new URLSearchParams({
