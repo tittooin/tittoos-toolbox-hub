@@ -2234,6 +2234,49 @@ Once EC2 deployment is complete:
 - OpenSERP is Discovery Engine ONLY (`usageBasis = UNKNOWN`).
 - Zero affiliate URL modification.
 
+---
+
+## 25. Complete Product Intelligence + Comparison + Affiliate Discovery Sprint (Verified Live)
+
+### 25.1 Executive Summary & Core Rules
+All 19 sprints of the comprehensive Product Intelligence and Discovery overhaul have been executed, deployed to Cloudflare Pages, and verified in the live browser:
+1. **Zero Product Fabrication (Rule #1)**: No fake product models, specs, or prices are manufactured for broad/budget queries. Concrete product cards only generate when supported by real source data.
+2. **Product-Specific Image Discovery (Rule #2 & #3)**: OpenSERP is queried per normalized product identity (`Apple iPhone 15 128GB Black`), never as a generic query-image generator.
+3. **Exact Spec Matching & Anti-Stock Filters (Rule #4)**: Stock photo domains (`dreamstime.com`, `shutterstock.com`, `freepik.com`, `unsplash.com`, etc.) and spec conflicts (RAM, storage, screen size) are strictly rejected.
+4. **Duplicate-Image Protection (Rule #5)**: Different products are strictly barred from sharing the same image URL.
+5. **Product Deal vs Store Deal (Rule #6)**: Exact products are cleanly labeled `PRODUCT_DEAL` with clean product names, while broad searches are clearly labeled `STORE_DEAL`.
+6. **Sprint 5 ProductCard Hierarchy**: 1. Product Image / Neutral Placeholder $\rightarrow$ 2. Brand & Merchant Badge $\rightarrow$ 3. Clean Product Name $\rightarrow$ 4. Key Spec Pills $\rightarrow$ 5. Price Integrity $\rightarrow$ 6. Verification Status $\rightarrow$ 7. Why This Product $\rightarrow$ 8. Primary CTA (`View Deal`).
+7. **Sprint 8-11 Expert Comparison & Sales Copy**: Intent-aware expert buying insights, comparison markdown table, and honest trade-off breakdowns for cheaper alternatives.
+8. **Monetization Engine Untouched**: 3-layer affiliate tracking (`Amazon Direct Tag` $\rightarrow$ `EarnKaro` $\rightarrow$ `Cuelinks`) remains 100% active and untouched.
+
+---
+
+### 25.2 Production API 7-Query Test Matrix
+
+| # | Query | Deal Type | Image Status | Match Score & Provenance | Result |
+|---|---|---|---|---|---|
+| 1 | `Samsung QA55DUE70BKLXL` | `PRODUCT_DEAL` | Neutral Placeholder | Honest unverified candidate fallback | Zero-deception active |
+| 2 | `Samsung 55 inch 4K TV` | `PRODUCT_DEAL` | Live Image Loaded | `STRONG_METADATA_MATCH` via `bestbuy.com` | Real Samsung 55" 4K TV |
+| 3 | `iPhone 15 128GB Black` | `PRODUCT_DEAL` | Live Image Loaded | `EXACT_ID_MATCH` via `walmart.com` | Real iPhone 15 Black |
+| 4 | `Sony WH-1000XM5` | `PRODUCT_DEAL` | Neutral Placeholder | Strict candidate filter active | Safe neutral fallback |
+| 5 | `OnePlus Nord CE6 Lite 5G 8GB 128GB` | `PRODUCT_DEAL` | Live Image Loaded | `EXACT_ID_MATCH` via `lowyat.net` | Real OnePlus device |
+| 6 | `best gaming laptop under 60000` | `STORE_DEAL` | Neutral Placeholder (`NULL`) | Broad category query | Zero fake laptop models, Zero duplicate images |
+| 7 | `cheaper alternatives for gaming laptop` | `STORE_DEAL` | Neutral Placeholder (`NULL`) | Broad budget query | Clean Store Offer cards, Zero image cross-pollution |
+
+---
+
+### 25.3 Live Browser Verification Artifacts
+- **Screenshot 1 (`iPhone 15 128GB Black`)**: `iphone15_full_1787289176629.png`
+  - Real Apple iPhone 15 image loaded inside ProductCard thumbnail area.
+  - Spec pills: `128GB Storage • Black`.
+  - Brand header `Apple`, `Product Deal` badge, `Advertised` badge, and `View Deal` CTA.
+- **Screenshot 2 (`best gaming laptop under 60000`)**: `gaming_laptop_full_1787289202277.png`
+  - Rendered `STORE OFFER` cards for Amazon, Croma, Flipkart.
+  - Clean neutral placeholders (`Product Image Unavailable - Zero-Deception Guaranteed`).
+  - Zero duplicate generic stock images across cards.
+  - Rich **Best Gaming Laptops Under Budget Guide** with GPU, RAM, cooling, and display criteria.
+
+
 
 
 

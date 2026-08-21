@@ -84,21 +84,17 @@ export function parseProductIdentityDetailed(q: string): ExtractedProductDetail 
   // Format clean product title if exact product
   let cleanProductName = cleanQ;
   if (isExactProduct) {
-    const titleParts: string[] = [];
-    if (brand) titleParts.push(brand);
-    if (modelNumber && !cleanQ.toLowerCase().includes(modelNumber.toLowerCase())) {
-      titleParts.push(modelNumber);
+    let coreName = cleanQ
+      .replace(/^(buy|find|search for|price of|deals for)\s+/i, '')
+      .replace(/\b(deals|offers|price|online in india|buy)\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (brand && !coreName.toLowerCase().startsWith(brand.toLowerCase())) {
+      cleanProductName = `${brand} ${coreName}`.trim();
     } else {
-      // Clean query text of generic suffixes
-      let coreName = cleanQ
-        .replace(/^(buy|find|search for|price of|deals for)\s+/i, '')
-        .replace(/\b(deals|offers|price|online in india|buy)\b/gi, '')
-        .trim();
-      titleParts.push(coreName);
+      cleanProductName = coreName;
     }
-    if (storage && !titleParts.join(' ').toUpperCase().includes(storage)) titleParts.push(`(${storage})`);
-    if (color && !titleParts.join(' ').toLowerCase().includes(color.toLowerCase())) titleParts.push(color);
-    cleanProductName = titleParts.join(' ').replace(/\s+/g, ' ').trim();
   }
 
   const specsList: string[] = [];
@@ -323,6 +319,17 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         imageVerification: cardMatchScore || ('NONE' as const),
         dealType: cardDealType,
         type: isProduct ? 'verified_offer' : 'merchant_search',
+        extractedEntities: {
+          brand: detail.brand,
+          model: detail.modelNumber,
+          specs: {
+            ...(detail.sizeInch ? { display: `${detail.sizeInch}" Display` } : {}),
+            ...(detail.resolution ? { resolution: detail.resolution } : {}),
+            ...(detail.storage ? { storage: detail.storage } : {}),
+            ...(detail.ram ? { ram: detail.ram } : {}),
+            ...(detail.color ? { color: detail.color } : {})
+          }
+        },
         reasons: isProduct
           ? (idx === 0 ? ['🏆 Top Merchant Option', detail.specsSummary || 'Verified Spec Match'] : ['Verified Store Listing', detail.specsSummary || 'Live Catalog'])
           : (idx === 0 ? ['🏆 Best Store Option'] : ['Store Directory']),
