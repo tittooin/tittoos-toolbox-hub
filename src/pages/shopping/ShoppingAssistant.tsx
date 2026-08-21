@@ -194,11 +194,12 @@ export default function ShoppingAssistant() {
           };
         });
 
-        // Dynamic Progressive Image Enrichment if backend hadn't returned imageUrl
-        const needsImage = assistantMessage.products.some((p: Product) => !p.imageUrl);
-        if (needsImage) {
+        // Progressive Image Enrichment ONLY for exact PRODUCT_DEAL items lacking images
+        const productDealsNeedingImage = assistantMessage.products.filter((p: Product) => p.dealType === 'PRODUCT_DEAL' && !p.imageUrl);
+        if (productDealsNeedingImage.length > 0) {
           const msgId = assistantMessage.id;
-          fetch(`/api/commerce/image-search?q=${encodeURIComponent(trimmedContent)}`)
+          const targetProduct = productDealsNeedingImage[0];
+          fetch(`/api/commerce/image-search?q=${encodeURIComponent(targetProduct.name)}`)
             .then(res => res.json())
             .then((imgData: any) => {
               if (imgData.ok && imgData.verifiedCandidate && imgData.verifiedCandidate.imageUrl) {
@@ -207,19 +208,23 @@ export default function ShoppingAssistant() {
                   if (m.id !== msgId || !m.products) return m;
                   return {
                     ...m,
-                    products: m.products.map(prod => ({
-                      ...prod,
-                      imageUrl: prod.imageUrl || candidate.imageUrl,
-                      imageThumbnailUrl: prod.imageThumbnailUrl || candidate.thumbnailUrl,
-                      imageSourceDomain: prod.imageSourceDomain || candidate.sourceDomain,
-                      imageMatchScore: prod.imageMatchScore || candidate.productMatchScore,
-                      imageMatchReason: prod.imageMatchReason || candidate.productMatchReason,
-                      imageUsageBasis: prod.imageUsageBasis || candidate.usageBasis,
-                      imageType: 'PRODUCT' as const,
-                      imageSource: 'OPENSERP' as const,
-                      imageVerification: candidate.productMatchScore,
-                      dealType: 'PRODUCT_DEAL' as const,
-                    }))
+                    products: m.products.map(prod => {
+                      if (prod.dealType === 'PRODUCT_DEAL' && !prod.imageUrl && prod.name === targetProduct.name) {
+                        return {
+                          ...prod,
+                          imageUrl: candidate.imageUrl,
+                          imageThumbnailUrl: candidate.thumbnailUrl,
+                          imageSourceDomain: candidate.sourceDomain,
+                          imageMatchScore: candidate.productMatchScore,
+                          imageMatchReason: candidate.productMatchReason,
+                          imageUsageBasis: candidate.usageBasis,
+                          imageType: 'PRODUCT' as const,
+                          imageSource: 'OPENSERP' as const,
+                          imageVerification: candidate.productMatchScore,
+                        };
+                      }
+                      return prod;
+                    })
                   };
                 }));
               }

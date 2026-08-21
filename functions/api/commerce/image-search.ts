@@ -57,31 +57,13 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
 
   const searchPromise = (async (): Promise<Response> => {
     try {
-      const endpointVal = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com';
-      const secretVal = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const endpointVal = typedEnv.OPENSERP_ENDPOINT || 'http://openserp.axevora.com';
+      const secretVal = typedEnv.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
 
       const result = await provider.searchImages(identity, {
         OPENSERP_ENDPOINT: endpointVal,
         OPENSERP_SECRET_KEY: secretVal,
       });
-
-      const debugEndpoint = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com/bing/image';
-      const debugSecret = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
-      let directEc2Status = 0;
-      let directEc2Body = '';
-      try {
-        const ec2Test = await fetch(`${debugEndpoint}?text=iPhone+15`, {
-          headers: {
-            'X-Axevora-Secret': debugSecret,
-            'Accept': 'application/json',
-            'User-Agent': 'Axevora-ProductIntelligence/1.0'
-          }
-        });
-        directEc2Status = ec2Test.status;
-        directEc2Body = await ec2Test.text();
-      } catch (ec2Err: any) {
-        directEc2Body = `EC2 Fetch Error: ${ec2Err.message || String(ec2Err)}`;
-      }
 
       return jsonResp({
         ok: true,
@@ -92,12 +74,6 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
         totalCandidates: result.totalCandidates,
         cacheKey: result.cacheKey,
         source: result.source,
-        debug: {
-          directEc2Status,
-          directEc2BodyPreview: directEc2Body.slice(0, 500),
-          envSecretPresent: !!typedEnv.OPENSERP_SECRET_KEY,
-          envEndpointPresent: !!typedEnv.OPENSERP_ENDPOINT
-        },
         discoveredAt: result.discoveredAt,
       });
     } catch (error) {

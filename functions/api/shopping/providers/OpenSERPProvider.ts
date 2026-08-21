@@ -144,9 +144,34 @@ export function matchImageToProduct(
   const rawImgUrl = candidate.image?.url || candidate.url || '';
   const combined = `${candidateTitle} ${rawSource} ${rawImgUrl}`.toLowerCase();
 
-  // REJECTION: Size conflict
+  // 1. REJECTION: Stock photo domains & generic artwork
+  const stockDomains = [
+    'dreamstime.com', 'shutterstock.com', 'istockphoto.com', 'unsplash.com',
+    'freepik.com', 'alamy.com', 'gettyimages.com', 'vecteezy.com',
+    'depositphotos.com', '123rf.com', 'stock.adobe.com', 'vectorstock.com',
+    'pngwing.com', 'pngtree.com', 'cleanpng.com', 'flaticon.com', 'pixabay.com'
+  ];
+  for (const sd of stockDomains) {
+    if (combined.includes(sd)) {
+      return { level: 'NONE', reason: `Rejected stock/generic photo provider (${sd})` };
+    }
+  }
+
+  // 2. REJECTION: Stock photo & query-intent keywords in image title/URL
+  const stockKeywords = [
+    'stock photo', 'royalty free', 'vector illustration', 'clipart', 'vector art',
+    'generic icon', 'concept illustration', 'background template', 'wallpaper',
+    'discount sign', 'cheap price banner', 'sale badge'
+  ];
+  for (const sk of stockKeywords) {
+    if (candidateTitle.includes(sk) || rawImgUrl.includes(sk.replace(/\s+/g, '-'))) {
+      return { level: 'NONE', reason: `Rejected generic stock concept image ("${sk}")` };
+    }
+  }
+
+  // 3. REJECTION: Size conflict (e.g. requested 55", candidate mentions 65" or 43")
   if (identity.sizeInch) {
-    const otherSizes = ['32', '40', '43', '50', '58', '65', '75', '85'].filter(s => s !== identity.sizeInch);
+    const otherSizes = ['24', '27', '32', '40', '43', '50', '58', '65', '75', '85'].filter(s => s !== identity.sizeInch);
     for (const otherSize of otherSizes) {
       if (new RegExp(`\\b${otherSize}[\\s-]?(?:inch|")`, 'i').test(candidateTitle)) {
         return { level: 'NONE', reason: `Size conflict: requested ${identity.sizeInch}" but candidate mentions ${otherSize}"` };
@@ -154,11 +179,14 @@ export function matchImageToProduct(
     }
   }
 
-  // REJECTION: Storage conflict
+  // 4. REJECTION: Storage conflict (e.g. requested 128GB, candidate mentions 256GB or 512GB)
   if (identity.storage) {
     const storageMap: Record<string, string[]> = {
-      '64gb': ['128gb', '256gb', '512gb'], '128gb': ['64gb', '256gb', '512gb'],
-      '256gb': ['64gb', '128gb', '512gb'], '512gb': ['64gb', '128gb', '256gb'],
+      '64gb': ['128gb', '256gb', '512gb', '1tb'],
+      '128gb': ['64gb', '256gb', '512gb', '1tb'],
+      '256gb': ['64gb', '128gb', '512gb', '1tb'],
+      '512gb': ['64gb', '128gb', '256gb', '1tb'],
+      '1tb': ['128gb', '256gb', '512gb'],
     };
     const reqStorage = identity.storage.toLowerCase().replace(/\s/g, '');
     for (const cs of (storageMap[reqStorage] || [])) {
@@ -168,33 +196,43 @@ export function matchImageToProduct(
     }
   }
 
+  // 5. REJECTION: RAM conflict (e.g. requested 8GB RAM, candidate mentions 16GB)
+  if (identity.ram) {
+    const reqRam = identity.ram.toLowerCase().replace(/\s/g, '');
+    const ramMap: Record<string, string[]> = {
+      '8gb': ['16gb', '32gb', '64gb'],
+      '16gb': ['8gb', '32gb', '64gb'],
+      '32gb': ['8gb', '16gb', '64gb'],
+    };
+    for (const cr of (ramMap[reqRam] || [])) {
+      if (combined.includes(cr) && !combined.includes(reqRam)) {
+        return { level: 'NONE', reason: `RAM conflict: requested ${identity.ram} but candidate mentions ${cr}` };
+      }
+    }
+  }
+
   // EXACT ID MATCH: Model number in title
   if (identity.modelNumber) {
     const modelLower = identity.modelNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
     const titleNorm = candidateTitle.replace(/[^a-z0-9]/g, '');
-    if (modelLower.length >= 6 && titleNorm.includes(modelLower)) {
+    if (modelLower.length >= 5 && titleNorm.includes(modelLower)) {
       return { level: 'EXACT_ID_MATCH', reason: `Model number "${identity.modelNumber}" found in candidate title` };
     }
   }
 
-  // STRONG METADATA MATCH: Brand + at least one spec
+  // STRONG METADATA MATCH: Brand + at least one specific verified spec
   const brandFound = !!(identity.brand && combined.includes(identity.brand.toLowerCase()));
   const sizeFound = !!(identity.sizeInch && combined.includes(identity.sizeInch));
   const resFound = !!(identity.resolution && combined.includes((identity.resolution || '').toLowerCase()));
   const storageFound = !!(identity.storage && combined.includes((identity.storage || '').toLowerCase().replace(/\s/g, '')));
+  const ramFound = !!(identity.ram && combined.includes((identity.ram || '').toLowerCase().replace(/\s/g, '')));
 
-  if (brandFound && (sizeFound || resFound || storageFound)) {
-    return { level: 'STRONG_METADATA_MATCH', reason: `Brand "${identity.brand}" + spec match confirmed` };
+  if (brandFound && (sizeFound || resFound || storageFound || ramFound)) {
+    return { level: 'STRONG_METADATA_MATCH', reason: `Brand "${identity.brand}" + verified spec match confirmed` };
   }
 
   if (brandFound) {
-    return { level: 'UNVERIFIED', reason: `Brand "${identity.brand}" found but model/spec not confirmed` };
-  }
-
-  const queryWords = identity.query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-  const matchedWords = queryWords.filter(word => combined.includes(word));
-  if (matchedWords.length >= 2) {
-    return { level: 'UNVERIFIED', reason: `Partial keyword match (${matchedWords.join(', ')}) -- model not confirmed` };
+    return { level: 'UNVERIFIED', reason: `Brand "${identity.brand}" found but exact model/spec not confirmed` };
   }
 
   return { level: 'NONE', reason: 'No product identity match found in candidate' };
@@ -202,12 +240,6 @@ export function matchImageToProduct(
 
 /**
  * ImageDiscoveryProvider: OpenSERP implementation.
- *
- * CONSTRAINTS:
- * 1. Does NOT modify monetization -- Amazon/EarnKaro/Cuelinks unchanged
- * 2. All returned images: usageBasis = 'UNKNOWN' -- no commercial license
- * 3. Only EXACT_ID_MATCH or STRONG_METADATA_MATCH accepted as verifiedCandidate
- * 4. On failure: returns imageUnavailable gracefully -- product card still works
  */
 export class OpenSERPProvider {
   private readonly TIMEOUT_MS = 25000;
@@ -238,8 +270,8 @@ export class OpenSERPProvider {
     const searchQuery = buildImageSearchQuery(identity);
 
     try {
-      const cleanEndpoint = 'http://ec2-13-233-13-190.ap-south-1.compute.amazonaws.com';
-      const cleanSecret = '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
+      const cleanEndpoint = env?.OPENSERP_ENDPOINT || 'http://openserp.axevora.com';
+      const cleanSecret = env?.OPENSERP_SECRET_KEY || '4898152b30d4b9e309ca1e7ff3cb544b2228fc052086193609188d2aeb6b7151';
       const endpoint = `${cleanEndpoint}/bing/image`;
       const params = new URLSearchParams({
         text: searchQuery,

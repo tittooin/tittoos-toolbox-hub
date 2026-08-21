@@ -44,16 +44,29 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     }
   }
 
-  // 2. Default high-quality summary if AI is slow or unavailable
+  // 2. Intent-Aware Expert Summary if AI is slow or unavailable
   if (!reviewMarkdown) {
-    reviewMarkdown = `### Best Verified Deals for ${query}\n\nHere are the top live merchant offers and verified deals currently available for **${query}**. Compare prices, check merchant ratings, and grab the best verified deal below.`;
+    const qLower = query.toLowerCase();
+    if (qLower.includes('laptop') || qLower.includes('gaming')) {
+      reviewMarkdown = `### Best Gaming Laptops Under Budget Guide\n\nWhen choosing a gaming laptop in this price bracket, prioritize:\n- **Graphics Card (GPU)**: Dedicated NVIDIA RTX 3050 (or GTX 1650) for stable 1080p gaming.\n- **Memory & Storage**: Minimum 16GB DDR4/DDR5 RAM and 512GB NVMe SSD for fast load times.\n- **Display**: 144Hz high-refresh rate IPS panel for smooth gameplay.\n- **Thermals**: Dual-fan cooling architecture to prevent thermal throttling.\n\nCompare verified merchant offers below for live pricing and stock availability.`;
+    } else if (qLower.includes('55') || qLower.includes('tv') || qLower.includes('4k')) {
+      reviewMarkdown = `### 55-Inch 4K Smart TVs Buying Guide\n\nFor a 55-inch 4K UHD Smart TV, look for:\n- **Display Quality**: Real 4K resolution (3840x2160) with HDR10+ / Dolby Vision support.\n- **Audio**: Minimum 20W–30W Dolby Audio / Atmos speakers.\n- **Smart OS**: Google TV or Tizen with seamless OTT app support and dual-band Wi-Fi.\n- **Connectivity**: Minimum 3 HDMI ports with eARC for soundbar integration.`;
+    } else if (qLower.includes('iphone') || qLower.includes('phone') || qLower.includes('mobile') || qLower.includes('s24')) {
+      reviewMarkdown = `### Verified Smartphone Buying Insights\n\nKey criteria for smartphone comparison:\n- **Performance**: High-efficiency flagship/mid-range chipset with 5G connectivity.\n- **Camera**: Primary sensor with Optical Image Stabilization (OIS) and 4K video recording.\n- **Battery & Charging**: All-day battery backup with fast charging support.\n- **Longevity**: Guaranteed multi-year OS updates and premium build quality.`;
+    } else if (qLower.includes('headphone') || qLower.includes('wh-1000') || qLower.includes('earbuds') || qLower.includes('audio')) {
+      reviewMarkdown = `### Premium Audio & Noise Cancellation Guide\n\nKey features to check:\n- **Active Noise Cancellation (ANC)**: Adaptive multi-microphone ambient noise reduction.\n- **Audio Codecs**: LDAC / AAC support for high-resolution lossless streaming.\n- **Comfort & Battery**: Plush ear cushions with 30+ hours playback and fast USB-C charging.\n- **Connectivity**: Multipoint Bluetooth pairing for seamless laptop and mobile switching.`;
+    } else if (qLower.includes('cheaper') || qLower.includes('budget alternatives')) {
+      reviewMarkdown = `### Value & Budget Alternatives Breakdown\n\nWhen exploring budget-friendly alternatives, assess the main trade-offs:\n- **Core Specs**: Identify if lower cost comes from a previous-gen CPU/GPU or lower base RAM/storage.\n- **Build Materials**: Check for polycarbonate chassis vs aluminum bodies.\n- **Value Sweetspot**: Choose options that retain 80–90% of primary performance at a 20–30% lower cost.`;
+    } else {
+      reviewMarkdown = `### Verified Shopping Insights for ${query}\n\nHere are the top merchant offers and verified listings for **${query}**. Compare store options, specifications, and live deals below.`;
+    }
   }
 
   // Format response exactly as ShoppingAssistant.tsx expects
   const responseData = {
     isComparison: isComparison,
     comparisonMarkdown: reviewMarkdown,
-    hookHeader: `Consensus for ${query}`,
+    hookHeader: `Expert Analysis for ${query}`,
     overallSentiment: "Positive",
     pros: [],
     cons: [],
