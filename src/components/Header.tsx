@@ -31,9 +31,9 @@ const Header = () => {
 
           {/* Desktop Navigation — Four Ecosystem Pillars */}
           <nav id="primary-navigation" className="hidden lg:flex items-center space-x-7 text-sm font-medium">
-            <Link to="/shopping" className="no-underline text-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-semibold group">
+            <Link to="/shopping" className="no-underline text-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-bold group">
               <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
-              Product Intelligence
+              Shopping
             </Link>
             <Link to="/community" className="no-underline text-foreground hover:text-primary transition-colors flex items-center gap-1.5 font-semibold group">
               <Users className="w-4 h-4 text-violet-500 group-hover:scale-110 transition-transform" />
@@ -296,9 +296,9 @@ const Header = () => {
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-600" />
-                  Product Intelligence
+                  Shopping Pillar
                 </div>
-                <Badge className="bg-amber-600 text-white border-none text-[10px]">AI DEALS</Badge>
+                <Badge className="bg-amber-600 text-white border-none text-[10px]">PILLAR 01</Badge>
               </Link>
               <Link
                 to="/community"

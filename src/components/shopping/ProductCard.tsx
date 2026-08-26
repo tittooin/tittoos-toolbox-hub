@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Star, ShieldCheck, Box, RotateCcw, Zap, ExternalLink, ShoppingBag, Store, Tag, ImageOff } from 'lucide-react';
+import { Star, ShieldCheck, Box, RotateCcw, Zap, ExternalLink, ShoppingBag, Store, Tag, ImageOff, Sparkles, Plus, Check, ArrowRight } from 'lucide-react';
 import { Product } from '@/types/shopping';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 interface ProductCardProps {
   product: Product;
+  isComparing?: boolean;
+  onToggleCompare?: (product: Product) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, isComparing = false, onToggleCompare }: ProductCardProps) {
   // Determine legitimate initial image
   const initialImage = product.imageUrl && product.imageUrl.trim().length > 0 ? product.imageUrl : null;
   const [imgSrc, setImgSrc] = useState<string | null>(initialImage);
   const [imageFailed, setImageFailed] = useState<boolean>(false);
 
-  // Synchronize when product.imageUrl arrives dynamically from OpenSERP
+  // Synchronize when product.imageUrl arrives dynamically
   useEffect(() => {
     if (product.imageUrl && product.imageUrl.trim().length > 0) {
       setImgSrc(product.imageUrl);
@@ -29,7 +31,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const isProductDeal = product.dealType === 'PRODUCT_DEAL' || (!product.dealType && product.urlType === 'product');
   const isCategoryDeal = product.dealType === 'CATEGORY_DEAL';
-  const isStoreDeal = product.dealType === 'STORE_DEAL' || product.dealType === 'CAMPAIGN';
   const isCouponDeal = product.dealType === 'COUPON_DEAL' || Boolean(product.couponCode);
 
   const showImage = Boolean(imgSrc && !imageFailed);
@@ -44,17 +45,24 @@ export default function ProductCard({ product }: ProductCardProps) {
     });
   }
 
+  // Calculate score display
+  const rawScore = product.aiScore || 8.8;
+  const displayScore = rawScore > 10 ? (rawScore / 10).toFixed(1) : rawScore.toFixed(1);
+
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className={`group flex flex-col rounded-2xl border transition-all duration-200 overflow-hidden bg-card ${
+      isComparing ? 'border-primary ring-2 ring-primary/20 shadow-md' : 'border-border/80 hover:border-primary/40 hover:shadow-lg'
+    }`}>
       {/* 1. PRODUCT IMAGE / NEUTRAL PLACEHOLDER */}
-      <div className="relative h-48 bg-muted/40 w-full flex items-center justify-center overflow-hidden border-b border-border/50">
+      <div className="relative h-48 bg-muted/30 w-full flex items-center justify-center overflow-hidden border-b border-border/40">
         {showImage ? (
           <img 
             src={imgSrc!} 
             alt={product.name}
             onError={handleImageError}
             referrerPolicy="no-referrer"
-            className="w-full h-full object-contain p-2 transition-transform hover:scale-105 duration-500"
+            loading="lazy"
+            className="w-full h-full object-contain p-3 transition-transform group-hover:scale-105 duration-300"
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-muted-foreground p-4 text-center select-none">
@@ -75,25 +83,27 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        {/* Top Floating Badges */}
-        <div className="absolute top-2 right-2 flex gap-1">
+        {/* Top Badges */}
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+          {/* Axevora Score Badge */}
+          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/95 backdrop-blur-sm border border-amber-500/30 text-amber-600 dark:text-amber-400 font-extrabold text-[11px] shadow-sm">
+            <Sparkles className="w-3 h-3 text-amber-500" />
+            <span>{displayScore}/10</span>
+          </div>
+        </div>
+
+        <div className="absolute top-2.5 right-2.5 flex gap-1">
           {product.dealType && (
-            <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-semibold text-[10px] border-primary/20 text-primary uppercase tracking-wider">
+            <Badge variant="secondary" className="bg-background/95 backdrop-blur-sm font-bold text-[10px] border-primary/20 text-primary uppercase tracking-wider">
               {isProductDeal ? 'Product Deal' :
                isCategoryDeal ? 'Category Sale' :
                isCouponDeal ? 'Coupon Deal' : 'Store Offer'}
             </Badge>
           )}
-          {product.verificationStatus && (
-            <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm font-medium text-[10px] text-muted-foreground">
-              {product.verificationStatus === 'LIVE_VERIFIED' ? 'Live Verified' :
-               product.verificationStatus === 'SOURCE_STATED' ? 'Advertised' : 'Verified Merchant'}
-            </Badge>
-          )}
         </div>
       </div>
       
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-4 sm:p-5 flex flex-col flex-1">
         {/* 2. MERCHANT IDENTIFIER & BRAND */}
         <div className="flex justify-between items-center mb-2">
           <Badge variant="outline" className="bg-background text-xs font-medium flex items-center gap-1.5 px-2 py-0.5 border-primary/20">
@@ -106,7 +116,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Badge>
 
           {product.extractedEntities?.brand && (
-            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {product.extractedEntities.brand}
             </span>
           )}
@@ -119,50 +129,32 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         {/* 3. PRODUCT NAME */}
-        <h3 className="font-bold text-base leading-snug mb-2 line-clamp-2 text-foreground" title={product.name}>
+        <h3 className="font-bold text-sm sm:text-base leading-snug mb-2 line-clamp-2 text-foreground group-hover:text-primary transition-colors" title={product.name}>
           {product.name}
         </h3>
 
         {/* 4. KEY SPECS PILLS */}
         {specList.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
-            {specList.map((spec, i) => (
-              <span key={i} className="inline-flex items-center text-[10px] bg-secondary/60 text-secondary-foreground font-medium px-1.5 py-0.5 rounded border border-border/40">
+            {specList.slice(0, 4).map((spec, i) => (
+              <span key={i} className="inline-flex items-center text-[10px] bg-secondary/70 text-secondary-foreground font-medium px-2 py-0.5 rounded-md border border-border/50">
                 {spec}
               </span>
             ))}
-          </div>
-        )}
-        
-        {/* Rating / Review Count */}
-        {product.rating && product.rating > 0 ? (
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center text-amber-500">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span className="ml-1 text-xs font-medium">{product.rating}</span>
-            </div>
-            {product.reviewCount && product.reviewCount > 0 && (
-              <span className="text-muted-foreground text-[11px]">({product.reviewCount.toLocaleString()} reviews)</span>
-            )}
-          </div>
-        ) : (
-          <div className="text-[11px] text-muted-foreground mb-2 flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-            <span>{isProductDeal ? 'Verified Product Identity' : 'Verified Merchant Portal'}</span>
           </div>
         )}
 
         {/* 5. PRICE INTEGRITY */}
         {product.price > 0 ? (
           <div className="flex flex-col mb-3">
-            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mb-0.5">
+            <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mb-0.5">
               {product.priceType === 'STARTING_PRICE' ? 'Starting from' :
                product.priceType === 'ADVERTISED_PRODUCT_PRICE' ? 'Advertised Deal Price' :
                product.priceType === 'DISCOUNT_AMOUNT' ? 'Discount Offer' :
                isProductDeal ? 'Advertised Deal Price' : 'Verified Store Price'}
             </span>
             <div className="flex items-baseline gap-2">
-              <div className="text-xl font-extrabold text-foreground">
+              <div className="text-xl font-extrabold text-foreground tracking-tight">
                 {product.currency === 'INR' ? '₹' : product.currency}{product.price.toLocaleString()}
               </div>
               {product.originalPrice && product.originalPrice > product.price && (
@@ -171,13 +163,8 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
               )}
               {product.discountPercentage && product.discountPercentage > 0 && (
-                <Badge variant="destructive" className="ml-auto text-[10px] px-1.5 py-0">
+                <Badge variant="destructive" className="ml-auto text-[10px] font-bold px-1.5 py-0">
                   {product.discountPercentage}% OFF
-                </Badge>
-              )}
-              {!product.discountPercentage && product.discountText && (
-                <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-primary/20">
-                  {product.discountText}
                 </Badge>
               )}
             </div>
@@ -189,41 +176,52 @@ export default function ProductCard({ product }: ProductCardProps) {
                isCategoryDeal ? 'Category Sale & Offers' :
                isCouponDeal ? 'Store Coupon Offer' : 'Live Store Directory'}
             </Badge>
-            {product.discountText && (
-              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                {product.discountText}
-              </span>
-            )}
           </div>
         )}
 
         {/* 6. WHY THIS PRODUCT / HIGHLIGHTS */}
         {product.reasons && product.reasons.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {product.reasons.slice(0, 2).map((reason, i) => (
-              <span key={i} className="inline-flex items-center rounded bg-primary/5 text-primary border border-primary/15 px-1.5 py-0.5 text-[10px] font-medium">
-                {reason}
-              </span>
-            ))}
+          <div className="space-y-1 mb-4 text-xs text-muted-foreground">
+            <p className="line-clamp-2 italic leading-relaxed">
+              "{product.reasons[0]}"
+            </p>
           </div>
         )}
 
-        {/* 7. CTA BUTTONS */}
-        <div className="mt-auto space-y-1.5 pt-1">
-          <Button className="w-full gap-2 font-bold shadow-sm" size="default" asChild>
+        {/* 7. CTA BUTTONS & COMPARE TRIGGER */}
+        <div className="mt-auto pt-2 space-y-2">
+          <Button className="w-full gap-2 font-bold shadow-md rounded-xl h-10 bg-primary hover:bg-primary/90 text-primary-foreground" size="default" asChild>
             <a href={product.dealUrl} target="_blank" rel="noopener noreferrer">
-              <ShoppingBag className="w-4 h-4" /> {isProductDeal ? 'View Deal' : 'Open Store'}
+              <ShoppingBag className="w-4 h-4" /> {isProductDeal ? 'View Best Deal' : 'Open Store'}
             </a>
           </Button>
-          <div className="grid grid-cols-2 gap-1.5">
-            <Button variant="outline" className="w-full gap-1 text-[11px] h-8" asChild>
-              <a href={product.dealUrl} target="_blank" rel="noopener noreferrer">
-                {isProductDeal ? 'Product Details' : 'Store Portal'} <ExternalLink className="w-2.5 h-2.5" />
-              </a>
-            </Button>
-            <Button variant="secondary" className="w-full gap-1 text-[11px] h-8 truncate" asChild>
-              <a href={product.dealUrl} target="_blank" rel="noopener noreferrer">
-                {product.merchantName || product.merchantId.charAt(0).toUpperCase() + product.merchantId.slice(1)}
+
+          <div className="flex items-center gap-2">
+            {onToggleCompare && (
+              <Button
+                type="button"
+                variant={isComparing ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => onToggleCompare(product)}
+                className={`flex-1 rounded-xl text-xs font-semibold h-8.5 transition-colors ${
+                  isComparing ? 'bg-primary/10 text-primary border-primary/30' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {isComparing ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 mr-1 text-primary" /> Comparing
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Compare
+                  </>
+                )}
+              </Button>
+            )}
+
+            <Button variant="ghost" size="sm" className="rounded-xl text-xs font-semibold h-8.5 text-muted-foreground hover:text-foreground" asChild>
+              <a href={product.dealUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                Store <ExternalLink className="w-3 h-3" />
               </a>
             </Button>
           </div>

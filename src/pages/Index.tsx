@@ -170,17 +170,42 @@ export default function Index() {
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
               <div>
                 <div className="text-xs font-bold tracking-wider uppercase text-amber-600 dark:text-amber-400 mb-2">
-                  Pillar 01 • Product Intelligence
+                  Pillar 01 • Axevora Shopping & Product Intelligence
                 </div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
                   How Axevora Empowers Your Buying Decisions
                 </h2>
               </div>
-              <Button asChild variant="outline" className="rounded-xl font-bold border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 self-start md:self-auto">
+              <Button asChild size="lg" className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md self-start md:self-auto">
                 <Link to="/shopping">
-                  Explore Product Intelligence <ArrowRight className="w-4 h-4 ml-1.5" />
+                  Open Shopping Pillar <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Link>
               </Button>
+            </div>
+
+            {/* Quick Category Discovery Strip */}
+            <div className="mb-10 p-4 rounded-2xl bg-background/90 border border-border/70 flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
+              <span className="text-xs font-bold text-muted-foreground whitespace-nowrap">Today's Categories:</span>
+              <div className="flex items-center gap-2">
+                {[
+                  { name: "Tablets", path: "/shopping?category=tablets" },
+                  { name: "Laptops", path: "/shopping?category=laptops" },
+                  { name: "Phones", path: "/shopping?category=phones" },
+                  { name: "4K TVs", path: "/shopping?category=tvs" },
+                  { name: "Audio & ANC", path: "/shopping?category=audio" }
+                ].map((c) => (
+                  <Link
+                    key={c.name}
+                    to={c.path}
+                    className="px-3.5 py-1.5 rounded-xl bg-secondary/60 hover:bg-primary hover:text-primary-foreground border border-border/50 text-xs font-semibold whitespace-nowrap transition-colors"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
+              <Link to="/shopping" className="text-xs font-bold text-primary flex items-center gap-1 whitespace-nowrap hover:underline ml-auto">
+                View All Curated Picks <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
