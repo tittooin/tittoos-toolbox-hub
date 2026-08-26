@@ -37,6 +37,18 @@ export interface Product {
   returnPolicy?: string;
   source?: string;
   retrievedAt?: string;
+  canonicalProductId?: string;
+  canonicalImage?: string | null;
+  canonicalImageSource?: string | null;
+  merchantOffers?: Array<{
+    merchantName: string;
+    merchantLogoUrl?: string;
+    price: number;
+    originalPrice?: number;
+    discountPercentage?: number;
+    dealUrl: string;
+    inStock: boolean;
+  }>;
   extractedEntities?: {
     brand?: string;
     model?: string;

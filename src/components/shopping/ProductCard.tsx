@@ -11,18 +11,21 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, isComparing = false, onToggleCompare }: ProductCardProps) {
-  // Determine legitimate initial image
-  const initialImage = product.imageUrl && product.imageUrl.trim().length > 0 ? product.imageUrl : null;
+  // Determine legitimate canonical product image
+  const initialImage = (product.canonicalImage && product.canonicalImage.trim().length > 0)
+    ? product.canonicalImage
+    : (product.imageUrl && product.imageUrl.trim().length > 0 ? product.imageUrl : null);
   const [imgSrc, setImgSrc] = useState<string | null>(initialImage);
   const [imageFailed, setImageFailed] = useState<boolean>(false);
 
-  // Synchronize when product.imageUrl arrives dynamically
+  // Synchronize when product.canonicalImage or product.imageUrl arrives dynamically
   useEffect(() => {
-    if (product.imageUrl && product.imageUrl.trim().length > 0) {
-      setImgSrc(product.imageUrl);
+    const validImg = product.canonicalImage || product.imageUrl;
+    if (validImg && validImg.trim().length > 0) {
+      setImgSrc(validImg);
       setImageFailed(false);
     }
-  }, [product.imageUrl]);
+  }, [product.canonicalImage, product.imageUrl]);
 
   const handleImageError = () => {
     setImageFailed(true);

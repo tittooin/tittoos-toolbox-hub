@@ -64,6 +64,7 @@ export default function ShoppingAssistant() {
           Object.entries(data.categories).forEach(([catKey, prods]: [string, any]) => {
             formatted[catKey] = prods.map((p: any) => ({
               id: p.id,
+              canonicalProductId: p.canonicalProductId,
               name: p.name,
               price: p.price,
               originalPrice: p.originalPrice,
@@ -72,6 +73,8 @@ export default function ShoppingAssistant() {
               rating: p.rating || 4.4,
               reviewCount: p.reviewCount || 1200,
               imageUrl: p.imageUrl,
+              canonicalImage: p.canonicalImage || p.imageUrl,
+              canonicalImageSource: p.imageSourceDomain,
               imageSourceDomain: p.imageSourceDomain,
               dealType: 'PRODUCT_DEAL',
               merchantId: p.merchantName?.toLowerCase() || 'merchant',
@@ -80,6 +83,7 @@ export default function ShoppingAssistant() {
               dealUrl: p.dealUrl,
               reasons: [p.whyWeLikeIt, p.bestFor].filter(Boolean),
               aiScore: p.axevoraScore || 8.8,
+              merchantOffers: p.merchantOffers,
               extractedEntities: {
                 brand: p.brand,
                 model: p.model,
