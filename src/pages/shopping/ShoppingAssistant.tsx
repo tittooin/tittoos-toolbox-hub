@@ -431,16 +431,19 @@ export default function ShoppingAssistant() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 2. AI ACTIVE SEARCH VIEW (When user runs a search query)                  */}
+        {/* 2. AI ACTIVE SEARCH VIEW (When user runs an AI search query)             */}
         {/* ========================================================================= */}
-        {aiSearchResult && (
+        {aiSearchResult ? (
           <section className="py-10 px-4 bg-muted/20 border-b border-border/50 animate-in fade-in duration-300">
-            <div className="container mx-auto max-w-6xl space-y-6">
-              <div className="flex items-center justify-between">
+            <div className="container mx-auto max-w-6xl space-y-8">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/50">
                 <div>
-                  <div className="text-xs font-bold text-primary uppercase tracking-wider mb-1">AI Product Intelligence</div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                    Results for "{aiSearchResult.query}"
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-2">
+                    <Sparkles className="w-3.5 h-3.5" /> AI Product Intelligence
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                    {aiSearchResult.analysis?.title || `Results for "${aiSearchResult.query}"`}
                   </h2>
                 </div>
                 <Button
@@ -449,105 +452,186 @@ export default function ShoppingAssistant() {
                   onClick={() => {
                     setAiSearchResult(null);
                     setSearchQuery('');
+                    navigate('/shopping');
                   }}
-                  className="rounded-xl text-xs font-semibold"
+                  className="rounded-xl text-xs font-semibold self-start sm:self-auto border-border/80 hover:bg-muted"
                 >
-                  <X className="w-3.5 h-3.5 mr-1" /> Clear Search
+                  <X className="w-3.5 h-3.5 mr-1.5" /> Clear Search
                 </Button>
               </div>
 
-              {/* Expert Analysis Breakdown if available */}
+              {/* Single Structured Expert Analysis Block */}
               {aiSearchResult.analysis && (
-                <div className="p-5 sm:p-6 bg-card border border-border/80 rounded-2xl shadow-sm space-y-4">
-                  {aiSearchResult.analysis.hookHeader && (
-                    <h3 className="text-base font-bold text-foreground">{aiSearchResult.analysis.hookHeader}</h3>
-                  )}
-                  {aiSearchResult.analysis.pitch && (
-                    <p className="text-sm text-muted-foreground leading-relaxed">{aiSearchResult.analysis.pitch}</p>
-                  )}
-                  {aiSearchResult.analysis.comparisonMarkdown && (
-                    <div className="text-xs sm:text-sm text-muted-foreground prose dark:prose-invert max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans text-xs bg-muted/40 p-4 rounded-xl border border-border/40 overflow-x-auto">
-                        {aiSearchResult.analysis.comparisonMarkdown}
-                      </pre>
+                <div className="p-6 sm:p-8 bg-card border border-border/80 rounded-2xl shadow-sm space-y-6">
+                  {/* Verdict */}
+                  {aiSearchResult.analysis.verdict && (
+                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-foreground text-sm sm:text-base leading-relaxed">
+                      <div className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4" /> Expert Buying Verdict
+                      </div>
+                      <p className="font-medium text-foreground/90">{aiSearchResult.analysis.verdict}</p>
                     </div>
                   )}
+
+                  {/* Key Purchase Checkpoints */}
+                  {aiSearchResult.analysis.keyCheckpoints && aiSearchResult.analysis.keyCheckpoints.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Key Purchase Checkpoints</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {aiSearchResult.analysis.keyCheckpoints.map((point, idx) => (
+                          <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/40 border border-border/40 text-xs sm:text-sm text-foreground/80">
+                            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[11px] shrink-0 mt-0.5">
+                              {idx + 1}
+                            </span>
+                            <span>{point}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Best For & Budget Insight Footer */}
+                  <div className="pt-4 border-t border-border/40 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    {aiSearchResult.analysis.bestFor && (
+                      <div>
+                        <span className="text-muted-foreground font-semibold block mb-0.5">Recommended For:</span>
+                        <span className="font-bold text-foreground">{aiSearchResult.analysis.bestFor}</span>
+                      </div>
+                    )}
+                    {aiSearchResult.analysis.budgetInsight && (
+                      <div>
+                        <span className="text-muted-foreground font-semibold block mb-0.5">Budget Note:</span>
+                        <span className="text-muted-foreground">{aiSearchResult.analysis.budgetInsight}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
-              {/* Discovered Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {aiSearchResult.products.map((prod) => (
-                  <ProductCard
-                    key={prod.id}
-                    product={prod}
-                    isComparing={comparedProducts.some(p => p.id === prod.id)}
-                    onToggleCompare={handleToggleCompare}
-                  />
-                ))}
+              {/* Recommendations Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                    Verified Product Recommendations
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                      {aiSearchResult.products.length} Found
+                    </span>
+                  </h3>
+                </div>
+
+                {aiSearchResult.products.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {aiSearchResult.products.map((prod) => (
+                      <ProductCard
+                        key={prod.id}
+                        product={prod}
+                        isComparing={comparedProducts.some(p => p.id === prod.id)}
+                        onToggleCompare={handleToggleCompare}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 sm:p-12 text-center bg-card border border-border/80 rounded-2xl space-y-4">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold">
+                      !
+                    </div>
+                    <h4 className="text-base font-bold text-foreground">
+                      No trustworthy products verified under this budget constraint
+                    </h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
+                      Axevora adheres to strict verification standards. We do not recommend sub-standard products or unverified merchants.
+                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => {
+                          setAiSearchResult(null);
+                          setSearchQuery('');
+                          navigate('/shopping');
+                        }}
+                        className="rounded-xl text-xs font-semibold"
+                      >
+                        Browse Today's Curated Picks
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSearchQuery('Best tablet for study');
+                          executeAiSearch('Best tablet for study');
+                        }}
+                        className="rounded-xl text-xs font-semibold"
+                      >
+                        Try Broader Search
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
-        )}
+        ) : (
+          <>
+            {/* ========================================================================= */}
+            {/* 3. CATEGORY SWITCHER & DAILY ARCHIVE SELECTOR                              */}
+            {/* ========================================================================= */}
+            <section className="py-4 px-4 border-b border-border/40 bg-card/70 sticky top-16 z-30 backdrop-blur-md">
+              <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                {/* Category Tabs */}
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full md:w-auto">
+                  {SHOPPING_CATEGORIES.map((cat) => {
+                    const isActive = activeCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => handleCategorySwitch(cat.id)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground shadow-md'
+                            : 'bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground border border-border/50'
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    );
+                  })}
+                </div>
 
-        {/* ========================================================================= */}
-        {/* 3. CATEGORY SWITCHER & DAILY ARCHIVE SELECTOR                              */}
-        {/* ========================================================================= */}
-        <section className="py-4 px-4 border-b border-border/40 bg-card/70 sticky top-16 z-30 backdrop-blur-md">
-          <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            {/* Category Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full md:w-auto">
-              {SHOPPING_CATEGORIES.map((cat) => {
-                const isActive = activeCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => handleCategorySwitch(cat.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
-                      isActive
-                        ? 'bg-primary text-primary-foreground shadow-md'
-                        : 'bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground border border-border/50'
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                );
-              })}
-            </div>
+                {/* Daily Archive Date Selector */}
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs self-stretch md:self-auto shrink-0">
+                  <span className="text-muted-foreground font-semibold flex items-center gap-1 text-[11px]">
+                    <History className="w-3.5 h-3.5 text-amber-500" /> Snapshot:
+                  </span>
+                  {archiveDates.map((item) => {
+                    const isSelected = selectedDate === item.dateStr;
+                    return (
+                      <button
+                        key={item.dateStr}
+                        onClick={() => setSelectedDate(item.dateStr)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all border ${
+                          isSelected
+                            ? 'bg-amber-500 text-white border-amber-600 shadow-sm font-bold'
+                            : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
 
-            {/* Daily Archive Date Selector */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs self-stretch md:self-auto shrink-0">
-              <span className="text-muted-foreground font-semibold flex items-center gap-1 text-[11px]">
-                <History className="w-3.5 h-3.5 text-amber-500" /> Snapshot:
-              </span>
-              {archiveDates.map((item) => {
-                const isSelected = selectedDate === item.dateStr;
-                return (
-                  <button
-                    key={item.dateStr}
-                    onClick={() => setSelectedDate(item.dateStr)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all border ${
-                      isSelected
-                        ? 'bg-amber-500 text-white border-amber-600 shadow-sm font-bold'
-                        : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 4. REFERENCE UX LISTING EXPERIENCE: FILTERS, TOP PICKS & PRODUCT GRID    */}
-        {/* ========================================================================= */}
-        <section className="py-8 md:py-12 px-4 bg-background">
-          <div className="container mx-auto max-w-6xl space-y-8">
-            {/* Category Headline & Highlights Banner */}
-            <div className="bg-gradient-to-r from-amber-500/10 via-primary/5 to-violet-500/10 border border-border/80 rounded-2xl p-6 sm:p-8">
-              <div className="max-w-3xl space-y-3">
+            {/* ========================================================================= */}
+            {/* 4. REFERENCE UX LISTING EXPERIENCE: FILTERS, TOP PICKS & PRODUCT GRID    */}
+            {/* ========================================================================= */}
+            <section className="py-8 md:py-12 px-4 bg-background">
+              <div className="container mx-auto max-w-6xl space-y-8">
+                {/* Category Headline & Highlights Banner */}
+                <div className="bg-gradient-to-r from-amber-500/10 via-primary/5 to-violet-500/10 border border-border/80 rounded-2xl p-6 sm:p-8">
+                  <div className="max-w-3xl space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                   <Sparkles className="w-3.5 h-3.5" /> Curated Daily Category Guide • {selectedDate}
                 </div>
@@ -711,6 +795,8 @@ export default function ShoppingAssistant() {
             )}
           </div>
         </section>
+        </>
+        )}
 
         {/* ========================================================================= */}
         {/* 5. FLOATING COMPARISON TRAY (When 1+ products selected)                   */}
