@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
   Search, Sparkles, SlidersHorizontal, ArrowUpDown, Filter, X,
-  ShoppingBag, ShieldCheck, ChevronRight, Check, ArrowRight,
+  ShoppingBag, ShieldCheck, ChevronRight, Check, CheckCircle2, ArrowRight,
   Tablet, Laptop, Smartphone, Tv, Headphones, Camera, Layers,
   ExternalLink, MessageSquare, Plus, RefreshCw, Star, Calendar, History
 } from 'lucide-react';
