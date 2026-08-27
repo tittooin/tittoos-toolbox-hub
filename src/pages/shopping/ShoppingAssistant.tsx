@@ -5,7 +5,7 @@ import {
   Search, Sparkles, SlidersHorizontal, ArrowUpDown, Filter, X,
   ShoppingBag, ShieldCheck, ChevronRight, Check, ArrowRight,
   Tablet, Laptop, Smartphone, Tv, Headphones, Camera, Layers,
-  ExternalLink, MessageSquare, Plus, RefreshCw, Star
+  ExternalLink, MessageSquare, Plus, RefreshCw, Star, Calendar, History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,50 @@ import { ProductCompareModal } from '@/components/shopping/ProductCompareModal';
 import { Product, Message } from '@/types/shopping';
 import { SHOPPING_CATEGORIES, POPULAR_SHOPPING_SEARCHES, CategoryTaxonomy } from '@/data/shoppingTaxonomy';
 import { calculateAxevoraScore } from '@/utils/axevoraScore';
-import { v4 as uuidv4 } from 'uuid';
+
+/**
+ * Get current date in IST (Asia/Kolkata) as YYYY-MM-DD
+ */
+function getTodayIST(): string {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  return formatter.format(new Date());
+}
+
+/**
+ * Generate last 5 days list in IST for Daily Archive navigation
+ */
+function getRecentArchiveDates(): { dateStr: string; label: string }[] {
+  const dates: { dateStr: string; label: string }[] = [];
+  const now = new Date();
+  
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+    const dateStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(d);
+
+    const formattedLabel = new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: 'numeric',
+      month: 'short'
+    }).format(d);
+
+    let label = formattedLabel;
+    if (i === 0) label = `Today (${formattedLabel})`;
+    else if (i === 1) label = `Yesterday (${formattedLabel})`;
+
+    dates.push({ dateStr, label });
+  }
+  return dates;
+}
 
 export default function ShoppingAssistant() {
   const location = useLocation();
@@ -26,7 +69,8 @@ export default function ShoppingAssistant() {
   // Search & Navigation State
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('tablets');
-  const [selectedBudget, setSelectedBudget] = useState<{ min?: number; max?: number } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayIST());
+  const [selectedBudget, setSelectedBudget] = useState<{ label?: string; min?: number; max?: number } | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
   const [selectedUseCase, setSelectedUseCase] = useState<string | null>(null);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
@@ -54,9 +98,12 @@ export default function ShoppingAssistant() {
     products: Product[];
   } | null>(null);
 
-  // Fetch Daily Curated Catalog on Mount
+  const archiveDates = useMemo(() => getRecentArchiveDates(), []);
+
+  // Fetch Daily Curated Catalog when selectedDate changes
   useEffect(() => {
-    fetch('/api/commerce/daily-catalog?category=all')
+    setIsCatalogLoading(true);
+    fetch(`/api/commerce/daily-catalog?category=all&date=${selectedDate}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.ok && data.categories) {
@@ -101,16 +148,22 @@ export default function ShoppingAssistant() {
       .finally(() => {
         setIsCatalogLoading(false);
       });
-  }, []);
+  }, [selectedDate]);
 
   // Handle URL Query parameters
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const q = params.get('q') || params.get('query');
     const cat = params.get('category');
+    const dateParam = params.get('date');
+
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      setSelectedDate(dateParam);
+    }
 
     if (cat && SHOPPING_CATEGORIES.some(c => c.id === cat.toLowerCase())) {
       setActiveCategory(cat.toLowerCase());
+      clearAllFilters();
     }
 
     if (q && q.trim().length > 0) {
@@ -183,15 +236,60 @@ export default function ShoppingAssistant() {
     setComparedProducts(prev => prev.filter(p => p.id !== productId));
   };
 
+  // Switch category and isolate filters
+  const handleCategorySwitch = (catId: string) => {
+    setActiveCategory(catId);
+    clearAllFilters();
+  };
+
   // Get current active taxonomy
   const currentTaxonomy = useMemo(() => {
     return SHOPPING_CATEGORIES.find(c => c.id === activeCategory) || SHOPPING_CATEGORIES[0];
   }, [activeCategory]);
 
+  // Current category raw list (10 daily products)
+  const currentCategoryRawList = useMemo(() => {
+    return dailyCatalog[activeCategory] || [];
+  }, [dailyCatalog, activeCategory]);
+
+  // Dynamic filter count calculations
+  const filterCounts = useMemo(() => {
+    const raw = currentCategoryRawList;
+    const budgetMap: Record<string, number> = {};
+    const useCaseMap: Record<string, number> = {};
+    const featureMap: Record<string, number> = {};
+
+    currentTaxonomy.budgetRanges.forEach(b => {
+      budgetMap[b.label] = raw.filter(p => {
+        if (b.max !== undefined && b.min !== undefined) return p.price >= b.min && p.price <= b.max;
+        if (b.max !== undefined) return p.price <= b.max;
+        if (b.min !== undefined) return p.price >= b.min;
+        return true;
+      }).length;
+    });
+
+    currentTaxonomy.useCases.forEach(u => {
+      const term = u.label.toLowerCase();
+      useCaseMap[u.label] = raw.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        (p.reasons || []).some(r => r.toLowerCase().includes(term))
+      ).length;
+    });
+
+    currentTaxonomy.features.forEach(f => {
+      const term = f.label.toLowerCase();
+      featureMap[f.label] = raw.filter(p => {
+        const specs = Object.values(p.extractedEntities?.specs || {}).join(' ').toLowerCase();
+        return specs.includes(term) || p.name.toLowerCase().includes(term);
+      }).length;
+    });
+
+    return { budgetMap, useCaseMap, featureMap };
+  }, [currentCategoryRawList, currentTaxonomy]);
+
   // Filtered & Sorted Catalog Products for current Category View
   const displayedCategoryProducts = useMemo(() => {
-    const rawList = dailyCatalog[activeCategory] || [];
-    let filtered = [...rawList];
+    let filtered = [...currentCategoryRawList];
 
     // Budget Filter
     if (selectedBudget) {
@@ -237,7 +335,7 @@ export default function ShoppingAssistant() {
     });
 
     return filtered;
-  }, [dailyCatalog, activeCategory, selectedBudget, selectedBrand, selectedUseCase, selectedFeature, sortBy]);
+  }, [currentCategoryRawList, selectedBudget, selectedBrand, selectedUseCase, selectedFeature, sortBy]);
 
   const clearAllFilters = () => {
     setSelectedBudget(null);
@@ -251,10 +349,10 @@ export default function ShoppingAssistant() {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans flex flex-col selection:bg-primary/20">
       <Helmet>
-        <title>Axevora Shopping — AI Product Intelligence & Price Discovery</title>
+        <title>Axevora Shopping — Daily Curated Products & AI Intelligence</title>
         <meta
           name="description"
-          content="Find the best tablets, laptops, phones, TVs, and audio gear. Axevora compares verified merchant offers with zero AI price deception."
+          content="Explore today's 50 hand-picked tech products across Tablets, Laptops, Phones, TVs, and Audio. Verified daily snapshots with zero price deception."
         />
         <link rel="canonical" href="https://axevora.com/shopping" />
       </Helmet>
@@ -269,15 +367,15 @@ export default function ShoppingAssistant() {
           <div className="container mx-auto max-w-5xl text-center space-y-5">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wide">
               <Sparkles className="w-3.5 h-3.5" />
-              Axevora Shopping Pillar
+              Axevora Daily Curated Tech Hub
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground">
-              Find Smarter. <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-primary to-violet-500">Decide Faster.</span>
+              Daily Top 50 Tech. <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-primary to-violet-500">Zero Guesswork.</span>
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Tell Axevora what you need in natural language. We analyze specs, compare merchant offers, and score every product objectively.
+              10 hand-curated, verified products per category updated every day at midnight IST. Real canonical photos, authentic specs, and honest trade-offs.
             </p>
 
             {/* Search Input Box */}
@@ -393,20 +491,18 @@ export default function ShoppingAssistant() {
         )}
 
         {/* ========================================================================= */}
-        {/* 3. CATEGORY SWITCHER & NAVIGATION                                         */}
+        {/* 3. CATEGORY SWITCHER & DAILY ARCHIVE SELECTOR                              */}
         {/* ========================================================================= */}
-        <section className="py-6 px-4 border-b border-border/40 bg-card/50 sticky top-16 z-30 backdrop-blur-md">
-          <div className="container mx-auto max-w-6xl">
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+        <section className="py-4 px-4 border-b border-border/40 bg-card/70 sticky top-16 z-30 backdrop-blur-md">
+          <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            {/* Category Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 w-full md:w-auto">
               {SHOPPING_CATEGORIES.map((cat) => {
                 const isActive = activeCategory === cat.id;
                 return (
                   <button
                     key={cat.id}
-                    onClick={() => {
-                      setActiveCategory(cat.id);
-                      clearAllFilters();
-                    }}
+                    onClick={() => handleCategorySwitch(cat.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${
                       isActive
                         ? 'bg-primary text-primary-foreground shadow-md'
@@ -418,47 +514,77 @@ export default function ShoppingAssistant() {
                 );
               })}
             </div>
+
+            {/* Daily Archive Date Selector */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs self-stretch md:self-auto shrink-0">
+              <span className="text-muted-foreground font-semibold flex items-center gap-1 text-[11px]">
+                <History className="w-3.5 h-3.5 text-amber-500" /> Snapshot:
+              </span>
+              {archiveDates.map((item) => {
+                const isSelected = selectedDate === item.dateStr;
+                return (
+                  <button
+                    key={item.dateStr}
+                    onClick={() => setSelectedDate(item.dateStr)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all border ${
+                      isSelected
+                        ? 'bg-amber-500 text-white border-amber-600 shadow-sm font-bold'
+                        : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
         {/* 4. REFERENCE UX LISTING EXPERIENCE: FILTERS, TOP PICKS & PRODUCT GRID    */}
         {/* ========================================================================= */}
-        <section className="py-10 md:py-14 px-4 bg-background">
+        <section className="py-8 md:py-12 px-4 bg-background">
           <div className="container mx-auto max-w-6xl space-y-8">
             {/* Category Headline & Highlights Banner */}
             <div className="bg-gradient-to-r from-amber-500/10 via-primary/5 to-violet-500/10 border border-border/80 rounded-2xl p-6 sm:p-8">
               <div className="max-w-3xl space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                  <Sparkles className="w-3.5 h-3.5" /> Curated Daily Category Guide
+                  <Sparkles className="w-3.5 h-3.5" /> Curated Daily Category Guide • {selectedDate}
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                   {currentTaxonomy.heroHeadline}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  {currentTaxonomy.description} Ranked by our deterministic Axevora Score and source-stated live availability.
+                  {currentTaxonomy.description} Exactly 10 canonical products curated for today in IST timezone.
                 </p>
               </div>
 
-              {/* Quick Jump Buttons (By Budget, Use Case, Feature) */}
+              {/* Quick Jump Buttons with Dynamic Counts */}
               <div className="mt-6 pt-6 border-t border-border/50 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 {/* By Budget */}
                 <div>
                   <span className="font-bold text-foreground block mb-2">By Budget:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {currentTaxonomy.budgetRanges.map((b, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedBudget(selectedBudget?.max === b.max ? null : b)}
-                        className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
-                          selectedBudget?.max === b.max
-                            ? 'bg-primary text-primary-foreground border-primary font-bold'
-                            : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
-                        }`}
-                      >
-                        {b.label}
-                      </button>
-                    ))}
+                    {currentTaxonomy.budgetRanges.map((b, i) => {
+                      const count = filterCounts.budgetMap[b.label] || 0;
+                      const isSelected = selectedBudget?.label === b.label;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedBudget(isSelected ? null : { ...b, label: b.label })}
+                          className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary font-bold'
+                              : count > 0
+                                ? 'bg-background hover:bg-muted text-muted-foreground border-border/60'
+                                : 'bg-muted/30 text-muted-foreground/40 border-border/30 cursor-not-allowed'
+                          }`}
+                          disabled={count === 0 && !isSelected}
+                        >
+                          {b.label} <span className="opacity-70 text-[10px]">({count})</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -466,19 +592,26 @@ export default function ShoppingAssistant() {
                 <div>
                   <span className="font-bold text-foreground block mb-2">By Use Case:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {currentTaxonomy.useCases.slice(0, 4).map((u, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedUseCase(selectedUseCase === u.label ? null : u.label)}
-                        className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
-                          selectedUseCase === u.label
-                            ? 'bg-primary text-primary-foreground border-primary font-bold'
-                            : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
-                        }`}
-                      >
-                        {u.label}
-                      </button>
-                    ))}
+                    {currentTaxonomy.useCases.slice(0, 4).map((u, i) => {
+                      const count = filterCounts.useCaseMap[u.label] || 0;
+                      const isSelected = selectedUseCase === u.label;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedUseCase(isSelected ? null : u.label)}
+                          className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary font-bold'
+                              : count > 0
+                                ? 'bg-background hover:bg-muted text-muted-foreground border-border/60'
+                                : 'bg-muted/30 text-muted-foreground/40 border-border/30 cursor-not-allowed'
+                          }`}
+                          disabled={count === 0 && !isSelected}
+                        >
+                          {u.label} <span className="opacity-70 text-[10px]">({count})</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -486,19 +619,26 @@ export default function ShoppingAssistant() {
                 <div>
                   <span className="font-bold text-foreground block mb-2">By Feature:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {currentTaxonomy.features.slice(0, 4).map((f, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedFeature(selectedFeature === f.label ? null : f.label)}
-                        className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
-                          selectedFeature === f.label
-                            ? 'bg-primary text-primary-foreground border-primary font-bold'
-                            : 'bg-background hover:bg-muted text-muted-foreground border-border/60'
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
+                    {currentTaxonomy.features.slice(0, 4).map((f, i) => {
+                      const count = filterCounts.featureMap[f.label] || 0;
+                      const isSelected = selectedFeature === f.label;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => setSelectedFeature(isSelected ? null : f.label)}
+                          className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-colors ${
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary font-bold'
+                              : count > 0
+                                ? 'bg-background hover:bg-muted text-muted-foreground border-border/60'
+                                : 'bg-muted/30 text-muted-foreground/40 border-border/30 cursor-not-allowed'
+                          }`}
+                          disabled={count === 0 && !isSelected}
+                        >
+                          {f.label} <span className="opacity-70 text-[10px]">({count})</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -542,7 +682,7 @@ export default function ShoppingAssistant() {
             {/* Product Cards Grid */}
             {isCatalogLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((n) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                   <div key={n} className="h-96 rounded-2xl bg-muted/40 animate-pulse border border-border/40" />
                 ))}
               </div>
@@ -562,7 +702,7 @@ export default function ShoppingAssistant() {
                 <ShoppingBag className="w-10 h-10 mx-auto text-muted-foreground" />
                 <h3 className="text-base font-bold text-foreground">No products match your exact filters</h3>
                 <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                  Try clearing some filters or searching for the specific product in the search box above.
+                  Try clearing some filters or switching to another daily snapshot.
                 </p>
                 <Button onClick={clearAllFilters} variant="outline" size="sm" className="rounded-xl font-bold text-xs mt-2">
                   Reset All Filters
