@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
   Search, Sparkles, SlidersHorizontal, ArrowUpDown, Filter, X,
-  ShoppingBag, ShieldCheck, ChevronRight, Check, CheckCircle2, ArrowRight,
+  ShoppingBag, ShieldCheck, ChevronRight, Check, CheckCircle, ArrowRight,
   Tablet, Laptop, Smartphone, Tv, Headphones, Camera, Layers,
   ExternalLink, MessageSquare, Plus, RefreshCw, Star, Calendar, History
 } from 'lucide-react';
@@ -467,7 +467,7 @@ export default function ShoppingAssistant() {
                   {aiSearchResult.analysis.verdict && (
                     <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-foreground text-sm sm:text-base leading-relaxed">
                       <div className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide mb-1 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4" /> Expert Buying Verdict
+                        <CheckCircle className="w-4 h-4" /> Expert Buying Verdict
                       </div>
                       <p className="font-medium text-foreground/90">{aiSearchResult.analysis.verdict}</p>
                     </div>
