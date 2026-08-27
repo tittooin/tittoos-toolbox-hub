@@ -196,7 +196,7 @@ export const onRequestGet = async (context: { request: Request; env?: Record<str
     let rankBadge = p.badge;
     if (!rankBadge) {
       if (idx === 0) rankBadge = 'Best Overall';
-      else if (idx === 1 && p.price < (topRanked?.[0]?.product?.price || p.price)) rankBadge = 'Best Value';
+      else if (idx === 1 && p.price < (scoredProducts[0]?.product?.price || p.price)) rankBadge = 'Best Value';
       else if (idx === 2) rankBadge = 'Top Recommendation';
     }
 
