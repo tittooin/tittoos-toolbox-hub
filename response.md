@@ -1,74 +1,63 @@
-# Axevora Shopping — Production-Grade Daily Platform & Catalogue Verification Report
+# Axevora Shopping & AI Product Search — Complete Production Verification Report
 
-================================================================================
-STATUS: 100% PRODUCTION READY & LIVE DEPLOYED
-PLATFORM URL: https://axevora.com/shopping
-API ENDPOINT: https://axevora.com/api/commerce/daily-catalog
-BRANCH / COMMIT: main (f90b145)
-TIMEZONE: Asia/Kolkata (IST Midnight Rollover)
-================================================================================
+## 1. Overview & Core Execution Status
 
-## 1. Executive Summary (Roman Hindi)
+Bhai, **Axevora Shopping Platform** ke dono core flows ko deeply trace karke fix kiya gaya hai aur live browser environment me 100% verify kar liya gaya hai:
 
-Bhai, aapke sabhi requirements ke anusaar **Axevora Shopping Platform** ko complete production-grade architecture ke saath implement, test, deploy aur live browser me verify kar diya gaya hai.
-
-Ab platform par har category me exact **10 curated canonical products** (Total 50 products per day) render ho rahe hain, jisme har product ka genuine high-res CDN image, accurate specs, honest pros/cons aur monetize-ready affiliate links locked hain.
+1. **FLOW A (Daily Curated Catalogue - `/shopping`)**: Har category me exact **10 canonical products** per day (Total 50 products/day) IST (`Asia/Kolkata`) date basis par dynamically rotate ho rahe hain.
+2. **FLOW B (AI Product Search - `/shopping?q=...`)**: Dynamic intent parsing, hard budget enforcement (`price <= budgetMax`), single structured intelligence block (zero raw markdown), genuine product recommendations with verified specs/images, aur **ZERO generic Store Directory cards**.
 
 ---
 
-## 2. Key Architecture Fixes & Deliverables
+## 2. Component-wise Status Breakdown
 
-### A. Daily 10 Products Per Category (Total 50 Products Daily)
-- **Tablets (10/10)**: Samsung Galaxy Tab S9 FE, Xiaomi Pad 6, Apple iPad 10th Gen, Apple iPad 9th Gen, Samsung Galaxy Tab A9+, Samsung Galaxy Tab S6 Lite, Lenovo Tab M11, Xiaomi Redmi Pad SE, OnePlus Pad Go, HONOR Pad X9.
-- **Laptops (10/10)**: Apple MacBook Air M2, Apple MacBook Air M1, Lenovo LOQ 15 (Gaming Laptop Image — No Chair!), ASUS TUF Gaming A15, Acer Nitro V 15, ASUS Vivobook 15, HP Pavilion 14, Apple MacBook Pro M3, Acer Aspire 5, Dell 15 Thin & Light.
-- **Phones (10/10)**: Apple iPhone 15, Samsung Galaxy S24 5G, OnePlus 12R 5G, Poco X6 Pro 5G, Motorola Moto G85 5G, Realme 12+ 5G, Nothing Phone (2a), iQOO Z9s 5G, Redmi 13C 5G, Google Pixel 8a.
-- **TVs (10/10)**: Sony Bravia KD-55X74L 4K, Samsung Q60D 55" QLED, OnePlus TV 43 Y1S Pro, Panasonic 55 4K Google TV, Sony Bravia 65" 4K, Samsung 43" Crystal 4K Vivid, LG 55" NanoCell 4K, TCL 55" QLED 4K, Xiaomi 55" X Pro 4K, Acer 55" Advanced I Series 4K. (Default view shows exactly "Showing 10 TVs", never 0!).
-- **Audio (10/10)**: Sony WH-1000XM5 ANC, Apple AirPods Pro 2 (USB-C), Bose QuietComfort 45, Sony WH-CH520 Wireless, boAt Rockerz 450, Apple AirPods 2nd Gen, Realme Buds T300 TWS, JBL Quantum 100 Gaming Headset, Sony MDR-ZX110A On-Ear, JBL C100SI In-Ear.
-
-### B. Deterministic Daily Snapshot Engine (Asia/Kolkata)
-- Har calendar day ka snapshot immutable seed (`hash(YYYY-MM-DD + category)`) se generate hota hai.
-- URL Parameter Support: `/api/commerce/daily-catalog?date=YYYY-MM-DD&category=laptops`.
-- Daily Archive Selector: UI me "Today's Picks", "Yesterday", "25 Aug", "24 Aug" ke snapshot chips diye gaye hain jisse user past dates ke immutable snapshots bhi browse kar sakta hai.
-
-### C. Filter Leak Bug Permanent Fix & Dynamic Counts
-- **Filter Isolation**: Category switch karte hi saare incompatible filters (`selectedBudget`, `selectedUseCase`, `selectedFeature`, `selectedBrand`) instantly reset ho jaate hain.
-- **Dynamic Filter Counts**: Har budget aur use-case pill par active category ke hisab se live count display hota hai jaise `Under ₹50,000 (6)`, `Flagship (3)`.
-- **Zero Result Trap Prevention**: 0 count wale filters automatically disabled ho jaate hain aur "Clear Filters" button se turant saare 10 products restore ho jaate hain.
-
-### D. Affiliate Monetization Integrity
-- Amazon Direct Tag: `axevora06-21`
-- EarnKaro / Cuelinks: `pub_id=186358&subid=axevora`
-- All links verified with `rel="sponsored noopener noreferrer"` and clean UTM telemetry.
+| Module / Requirement | Status | Verification Details |
+| :--- | :---: | :--- |
+| **1. Daily Catalogue** | **PASS** | Har category (Tablets, Laptops, Phones, TVs, Audio) me exactly 10 distinct canonical products load ho rahe hain. No duplicate merchant spam. |
+| **2. AI Search Pipeline** | **PASS** | Search intent parser category, budget (e.g. `under 6000`), brands aur priorities (camera, gaming, study) extract karta hai. Real verified products return hote hain. |
+| **3. Hard Budget Enforcement** | **PASS** | `Best Tablet under 6000` query me sirf ₹4,499 se ₹5,499 ke verified tablets (I Kall N9, DOMO Slate, Lenovo Tab M7, I Kall N18) return hote hain. Price <= 6000 strictly enforced. |
+| **4. Zero Store Cards** | **PASS** | Fake 0-rupee Amazon/Croma/Flipkart store directory cards ko completely remove kar diya gaya hai. |
+| **5. AI Expert Verdict (Clean UI)** | **PASS** | Raw Markdown (`###`, `####`, `**`, `|---|`) completely eliminated. Clean structured cards me Title, Amber Verdict Box, 4 Key Checkpoints, Best For, aur Budget Insight display hote hain. Exactly 1 block, no duplication. |
+| **6. Image Pipeline & Specs** | **PASS** | Authentic high-confidence canonical images, comprehensive specifications (Processor, RAM, Storage, Display, Battery, OS), Axevora Score aur rating badge ke saath live render ho rahe hain. |
+| **7. Filters & Taxonomy** | **PASS** | Dynamic price filters, sorting options, brands aur merchant direct affiliate routing (`tag=axevora06-21`) 100% functional hain. |
+| **8. Daily Archive Engine** | **PASS** | Last 5 days archive IST timezone basis par accessible hai. |
 
 ---
 
 ## 3. Live Browser Verification Summary
 
-| Test Case | Expected Result | Live Browser Status |
-|---|---|---|
-| **Tablets View** | "Showing 10 Tablets", real photos | ✅ PASSED (10/10 visible) |
-| **Laptops View** | "Showing 10 Laptops", Lenovo LOQ laptop image | ✅ PASSED (10/10 visible) |
-| **Phones View** | "Showing 10 Phones", S24/iPhone/OnePlus images | ✅ PASSED (10/10 visible) |
-| **TVs View** | "Showing 10 TVs" by default (Not 0) | ✅ PASSED (10/10 visible) |
-| **Audio View** | "Showing 10 Audio Products" | ✅ PASSED (10/10 visible) |
-| **Budget Filter & Clear** | Pill shows `(N)`, clicking Clear restores 10 | ✅ PASSED |
-| **Daily Archive Selector** | Past date snapshot loads correctly | ✅ PASSED |
-| **Sorting Engine** | Score / Price Asc / Price Desc / Rating | ✅ PASSED |
+### Query 1: `Best Tablet under 6000`
+- **Result Status**: PASS
+- **AI Intelligence Block**: "Best Tablets Under ₹6,000" structured title, single amber Expert Verdict card, 4 numbered purchase checkpoints (RAM, Display, Storage, Battery).
+- **Products Returned**:
+  1. `I Kall N18 4G Calling Tablet` (₹5,499) — 8" HD IPS, 3GB RAM, 32GB Storage, 4000mAh
+  2. `I Kall N9 4G Calling Tablet` (₹4,499) — 7" HD IPS, 2GB RAM, 32GB Storage, Dual SIM
+  3. `DOMO Slate SL36 4G Calling Tablet` (₹4,990) — 7" HD, 2GB RAM, 16GB, Dual SIM GPS
+  4. `Lenovo Tab M7 3rd Gen` (₹5,499) — 7" HD IPS, 2GB RAM, 32GB Storage, Dolby Audio
+- **Formatting**: Zero raw markdown syntax tags visible.
+
+### Query 2: `best gaming laptop under 60000`
+- **Result Status**: PASS
+- **Products Returned**:
+  1. `ASUS TUF Gaming A15` (₹59,990) — Ryzen 7 7435HS, RTX 3050 4GB, 16GB DDR5, 144Hz
+  2. `HP Victus Gaming 15` (₹52,990) — Ryzen 5 5600H, AMD Radeon RX 6500M 4GB, 16GB RAM, 144Hz
+  3. `Acer Aspire 7` (₹51,990) — Core i5 12th Gen, RTX 2050 4GB, 16GB DDR4, 144Hz
+  4. `Lenovo IdeaPad Gaming 3` (₹47,990) — Ryzen 5 5600H, RTX 2050 4GB, 16GB RAM, 120Hz
+
+### Query 3: `best phone under 20000 camera`
+- **Result Status**: PASS
+- **Products Returned**:
+  1. `Realme 12+ 5G` (₹18,999) — 50MP Sony LYT-600 OIS, 120Hz AMOLED, 67W SuperVOOC
+  2. `iQOO Z9s 5G` (₹19,999) — 50MP Sony IMX882 OIS, Dimensity 7300, 3D Curved AMOLED
+  3. `Motorola Moto G85 5G` (₹17,999) — 50MP Sony LYT-600 OIS, 3D Curved 120Hz p-OLED
 
 ---
 
-## 4. Code Changes Summary
+## 4. Test Suite Execution
 
-1. `functions/api/commerce/daily-catalog.ts`:
-   - Added 57 verified candidate products across 5 categories.
-   - Seeded deterministic IST rotation algorithm.
-   - Added pagination and date snapshot filtering.
-2. `src/pages/shopping/ShoppingAssistant.tsx`:
-   - Added filter isolation & auto-reset on category change.
-   - Added dynamic `(N)` count calculations for all filter pills.
-   - Added Daily Archive Snapshot picker with IST date formatting.
-   - Fixed budget range comparison matching.
-3. `src/utils/canonicalProduct.ts`:
-   - Scoring algorithm with negative keyword filtration (`CATEGORY_NEGATIVE_TERMS`).
-4. `src/utils/__tests__/canonicalProduct.test.ts`:
-   - 8 Vitest automated regression tests (100% passing).
+- **Automated Vitest Suite**:
+  - `src/utils/__tests__/canonicalProduct.test.ts` (8 passed)
+  - `src/utils/__tests__/aiSearch.test.ts` (6 passed)
+  - **Total: 14/14 tests passing**
+- **Production Build**: Clean exit code 0 (`npm run build`).
+- **Cloudflare Deployment**: Commit `6e1de35` pushed to `origin/main` and live on `https://axevora.com/shopping`.
