@@ -333,7 +333,7 @@ export default function Games() {
             {/* Quick feature pill highlights */}
             <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
               <Badge variant="outline" className="px-3 py-1 text-xs font-medium border-border/80 bg-card/50">
-                <Flame className="w-3 h-3 text-amber-500 mr-1.5" /> 8 Instant Games
+                <Flame className="w-3 h-3 text-amber-500 mr-1.5" /> {allGameTools.length} Instant Games
               </Badge>
               <Badge variant="outline" className="px-3 py-1 text-xs font-medium border-border/80 bg-card/50">
                 <Zap className="w-3 h-3 text-emerald-500 mr-1.5" /> Zero Installation
