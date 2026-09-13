@@ -185,6 +185,12 @@ const WhackAMole = lazy(() => import("./pages/tools/WhackAMole"));
 const ColorReaction = lazy(() => import("./pages/tools/ColorReaction"));
 const SimonMemory = lazy(() => import("./pages/tools/SimonMemory"));
 const SequenceMemory = lazy(() => import("./pages/tools/SequenceMemory"));
+const ChessGame = lazy(() => import("./pages/tools/ChessGame"));
+const EightBallPool = lazy(() => import("./pages/tools/EightBallPool"));
+const LudoGame = lazy(() => import("./pages/tools/LudoGame"));
+const SolitaireGame = lazy(() => import("./pages/tools/SolitaireGame"));
+const SpadesGame = lazy(() => import("./pages/tools/SpadesGame"));
+const CheckersGame = lazy(() => import("./pages/tools/CheckersGame"));
 
 // AI Social Media Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
@@ -465,6 +471,12 @@ const App = () => (
                 <Route path="/tools/color-reaction" element={<ColorReaction />} />
                 <Route path="/tools/simon-memory" element={<SimonMemory />} />
                 <Route path="/tools/sequence-memory" element={<SequenceMemory />} />
+                <Route path="/tools/chess" element={<ChessGame />} />
+                <Route path="/tools/8-ball-pool" element={<EightBallPool />} />
+                <Route path="/tools/ludo" element={<LudoGame />} />
+                <Route path="/tools/solitaire" element={<SolitaireGame />} />
+                <Route path="/tools/spades" element={<SpadesGame />} />
+                <Route path="/tools/checkers" element={<CheckersGame />} />
 
                 {/* Apps Support Pages */}
                 <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />

@@ -216,6 +216,72 @@ const GAME_METADATA: Record<string, GameMeta> = {
       badgeBg: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
       hoverBorder: "hover:border-violet-500/50"
     }
+  },
+  "chess-game": {
+    category: "Board & Classic",
+    badge: "STRATEGY CLASSIC",
+    colorScheme: {
+      bg: "bg-amber-600/10",
+      text: "text-amber-600 dark:text-amber-400",
+      border: "border-amber-600/20",
+      badgeBg: "bg-amber-600/20 text-amber-600 dark:text-amber-400",
+      hoverBorder: "hover:border-amber-600/50"
+    }
+  },
+  "8-ball-pool": {
+    category: "Board & Classic",
+    badge: "CUE SPORTS",
+    colorScheme: {
+      bg: "bg-blue-600/10",
+      text: "text-blue-600 dark:text-blue-400",
+      border: "border-blue-600/20",
+      badgeBg: "bg-blue-600/20 text-blue-600 dark:text-blue-400",
+      hoverBorder: "hover:border-blue-600/50"
+    }
+  },
+  "ludo-game": {
+    category: "Board & Classic",
+    badge: "FAMILY CLASSIC",
+    colorScheme: {
+      bg: "bg-rose-500/10",
+      text: "text-rose-600 dark:text-rose-400",
+      border: "border-rose-500/20",
+      badgeBg: "bg-rose-500/20 text-rose-600 dark:text-rose-400",
+      hoverBorder: "hover:border-rose-500/50"
+    }
+  },
+  "solitaire-game": {
+    category: "Board & Classic",
+    badge: "CARD PATIENCE",
+    colorScheme: {
+      bg: "bg-indigo-500/10",
+      text: "text-indigo-600 dark:text-indigo-400",
+      border: "border-indigo-500/20",
+      badgeBg: "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400",
+      hoverBorder: "hover:border-indigo-500/50"
+    }
+  },
+  "spades-game": {
+    category: "Board & Classic",
+    badge: "TRICK TAKING",
+    colorScheme: {
+      bg: "bg-purple-600/10",
+      text: "text-purple-600 dark:text-purple-400",
+      border: "border-purple-600/20",
+      badgeBg: "bg-purple-600/20 text-purple-600 dark:text-purple-400",
+      hoverBorder: "hover:border-purple-600/50"
+    }
+  },
+  "checkers-game": {
+    category: "Board & Classic",
+    badge: "ENGLISH DRAUGHTS",
+    colorScheme: {
+      bg: "bg-emerald-600/10",
+      text: "text-emerald-600 dark:text-emerald-400",
+      border: "border-emerald-600/20",
+      badgeBg: "bg-emerald-600/20 text-emerald-600 dark:text-emerald-400",
+      hoverBorder: "hover:border-emerald-600/50"
+    }
   }
 };
 
@@ -224,7 +290,8 @@ const CATEGORIES = [
   "Arcade & Casual",
   "Puzzle & Logic",
   "Speed & Reflex",
-  "Brain & Memory"
+  "Brain & Memory",
+  "Board & Classic"
 ] as const;
 
 export default function Games() {
@@ -288,20 +355,20 @@ export default function Games() {
   return (
     <div className="min-h-screen bg-background flex flex-col selection:bg-emerald-500/20">
       <Helmet>
-        <title>Free Online Games Hub - Play Instant Browser Games | Axevora</title>
+        <title>Free Online Games Hub - Play 22 Instant Browser Games | Axevora</title>
         <meta
           name="description"
-          content="Explore Axevora Games Hub: play free browser games online with zero installation. Enjoy arcade pool shooter, 2048 puzzle, memory match, typing test, and brain challenges."
+          content="Explore Axevora Games Hub: play 22 free browser games online with zero installation. Enjoy Chess, 8 Ball Pool, Ludo, Solitaire, Spades, Checkers, 2048, and arcade classics."
         />
         <meta
           name="keywords"
-          content="free online games, browser games, pool bubble shooter, 2048 game, memory match game, typing speed test, click speed test, reaction time test, number flow, brain games"
+          content="free online games, browser games, chess online, 8 ball pool online, ludo online, solitaire online, spades card game, checkers online, 2048 game, pool bubble shooter, brain games"
         />
         <link rel="canonical" href="https://axevora.com/games" />
-        <meta property="og:title" content="Axevora Games Hub - Free Browser Games & Brain Arcade" />
+        <meta property="og:title" content="Axevora Games Hub - Free Browser Games & Board Arcade" />
         <meta
           property="og:description"
-          content="Play lightweight, installation-free online games. Arcade, puzzle, reflex, and memory challenges."
+          content="Play 22 lightweight, installation-free online games: Chess, 8 Ball Pool, Ludo, Solitaire, Spades, Checkers, and reflex challenges."
         />
         <meta property="og:url" content="https://axevora.com/games" />
         <meta property="og:type" content="website" />
