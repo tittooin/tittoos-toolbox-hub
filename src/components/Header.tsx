@@ -39,7 +39,7 @@ const Header = () => {
               <Users className="w-4 h-4 text-violet-500 group-hover:scale-110 transition-transform" />
               Community
             </Link>
-            <Link to="/tools/pool-shooter" className="no-underline text-foreground hover:text-primary transition-colors font-semibold">
+            <Link to="/games" className="no-underline text-foreground hover:text-primary transition-colors font-semibold">
               Games
             </Link>
             <Link to="/tools" className="no-underline text-foreground hover:text-primary transition-colors font-semibold">
@@ -312,7 +312,7 @@ const Header = () => {
                 <Badge className="bg-violet-600 text-white border-none text-[10px]">DISCUSS</Badge>
               </Link>
               <Link
-                to="/tools/pool-shooter"
+                to="/games"
                 className="text-foreground hover:text-primary font-semibold transition-colors py-1 px-3"
                 onClick={() => setIsMenuOpen(false)}
               >

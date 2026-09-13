@@ -36,6 +36,7 @@ const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const ShoppingAssistant = lazy(() => import("./pages/shopping/ShoppingAssistant"));
 const CommunityProfile = lazy(() => import("./pages/CommunityProfile"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const Games = lazy(() => import("./pages/Games"));
 
 // Blog Categories
 const AnalyzersCategoryPage = lazy(() => import("./pages/blog-posts/analyzers-category"));
@@ -176,6 +177,14 @@ const ClickSpeedTest = lazy(() => import("./pages/tools/ClickSpeedTest"));
 const ReactionTimeTest = lazy(() => import("./pages/tools/ReactionTimeTest"));
 const MemoryMatchGame = lazy(() => import("./pages/tools/MemoryMatchGame"));
 const MathSpeedChallenge = lazy(() => import("./pages/tools/MathSpeedChallenge"));
+const Snake = lazy(() => import("./pages/tools/Snake"));
+const SkyHopper = lazy(() => import("./pages/tools/SkyHopper"));
+const Minesweeper = lazy(() => import("./pages/tools/Minesweeper"));
+const SudokuGame = lazy(() => import("./pages/tools/SudokuGame"));
+const WhackAMole = lazy(() => import("./pages/tools/WhackAMole"));
+const ColorReaction = lazy(() => import("./pages/tools/ColorReaction"));
+const SimonMemory = lazy(() => import("./pages/tools/SimonMemory"));
+const SequenceMemory = lazy(() => import("./pages/tools/SequenceMemory"));
 
 // AI Social Media Tools
 const AICaptionGenerator = lazy(() => import("./pages/tools/AICaptionGenerator"));
@@ -256,6 +265,7 @@ const App = () => (
               <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
                 <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/games" element={<Games />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
@@ -447,6 +457,14 @@ const App = () => (
                 <Route path="/tools/reaction-time-test" element={<ReactionTimeTest mode="game" />} />
                 <Route path="/tools/memory-match-game" element={<MemoryMatchGame mode="game" />} />
                 <Route path="/tools/math-speed-challenge" element={<MathSpeedChallenge mode="game" />} />
+                <Route path="/tools/snake" element={<Snake />} />
+                <Route path="/tools/sky-hopper" element={<SkyHopper />} />
+                <Route path="/tools/minesweeper" element={<Minesweeper />} />
+                <Route path="/tools/sudoku" element={<SudokuGame />} />
+                <Route path="/tools/whack-a-mole" element={<WhackAMole />} />
+                <Route path="/tools/color-reaction" element={<ColorReaction />} />
+                <Route path="/tools/simon-memory" element={<SimonMemory />} />
+                <Route path="/tools/sequence-memory" element={<SequenceMemory />} />
 
                 {/* Apps Support Pages */}
                 <Route path="/apps/neon-block-puzzle/privacy" element={<NeonBlockPuzzlePrivacy />} />

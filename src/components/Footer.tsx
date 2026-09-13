@@ -78,7 +78,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/tools/pool-shooter" className="text-muted-foreground hover:text-emerald-500 font-semibold transition-colors">
+                <Link to="/games" className="text-muted-foreground hover:text-emerald-500 font-semibold transition-colors">
                   🎮 Games & Arcade
                 </Link>
               </li>

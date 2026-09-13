@@ -384,7 +384,7 @@ export default function Index() {
               </div>
 
               <Button asChild variant="outline" className="rounded-xl font-bold border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 self-start md:self-auto">
-                <Link to="/tools/pool-shooter">
+                <Link to="/games">
                   Explore All Games <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Link>
               </Button>
