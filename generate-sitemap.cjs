@@ -13,7 +13,7 @@ const authorsDataFile = path.join(__dirname, "src", "data", "authors.ts");
 function extractRoutesFromApp() {
   try {
     const content = fs.readFileSync(appFile, "utf8");
-    const routeRegex = /path\s*=\s*["'`](\/[^"]+?)["'`]/g;
+    const routeRegex = /path\s*=\s*["'`](\/[^"']+?)["'`]/g;
     const redirectAliases = new Set([
       "/tools/merge-pdf",
       "/tools/split-pdf",
@@ -21,6 +21,8 @@ function extractRoutesFromApp() {
       "/all-tools",
       "/tools/base64-encoder"
     ]);
+    const routes = [];
+    let match;
     while ((match = routeRegex.exec(content)) !== null) {
       const p = match[1];
       if (!p || p === "*" || p.includes(":")) continue;
@@ -31,7 +33,8 @@ function extractRoutesFromApp() {
       routes.push(p);
     }
     return routes;
-  } catch {
+  } catch (err) {
+    console.error("extractRoutesFromApp error:", err);
     return [];
   }
 }
@@ -39,7 +42,7 @@ function extractRoutesFromApp() {
 function extractToolPaths() {
   try {
     const content = fs.readFileSync(toolsDataFile, "utf8");
-    const regex = /path\s*:\s*["'`](\/tools\/[^"'`]+)["'`]/g;
+    const regex = /path\s*:\s*["'`](\/tools\/[^"'`]+|\/[^"'`]+-online)["'`]/g;
     const paths = [];
     let m;
     while ((m = regex.exec(content)) !== null) {
@@ -70,7 +73,7 @@ function extractBlogSlugRoutes() {
     let m;
     while ((m = slugRegex.exec(content)) !== null) {
       const slug = m[1];
-      if (slug && slug.length > 0) {
+      if (slug && slug.length > 0 && slug !== "string;") {
         routes.push(`/blog/${slug}`);
       }
     }
@@ -125,10 +128,17 @@ function includeDownloaderRoutes() {
 }
 
 const staticPaths = [
+  "/",
   "/categories",
   "/about",
   "/contact",
   "/tools",
+  "/games",
+  "/shopping",
+  "/community",
+  "/deals",
+  "/workspace",
+  "/creator-studio",
   "/privacy",
   "/terms",
   "/blog",
@@ -150,15 +160,17 @@ const uniquePaths = new Set();
 for (const p of collected) {
   if (!p || p === "*") continue;
   if (!shouldIncludeDownloaders && p.includes("downloader")) continue;
-  uniquePaths.add(p.replace(/\/+$/, ""));
+  const cleaned = p.replace(/\/+$/, "").replace(/^\/+/, "");
+  uniquePaths.add(cleaned);
 }
+
+// Remove empty string (root) from entries since root is added explicitly
+uniquePaths.delete("");
 
 const entries = Array.from(uniquePaths)
   .sort()
   .map((p) => {
-    // Ensure NO Trailing Slash (Cloudflare/Clean URLs)
-    const normalized = p.replace(/^\//, "").replace(/\/$/, "");
-    return `<url><loc>${baseUrl}${normalized}</loc></url>`;
+    return `<url><loc>${baseUrl}${p}</loc></url>`;
   })
   .join("\n");
 
@@ -166,4 +178,5 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://w
 
 const outputPath = path.join(__dirname, "public", "sitemap.xml");
 fs.writeFileSync(outputPath, sitemap);
-console.log(`✅ Sitemap generated at ${outputPath} with ${uniquePaths.size} routes.`);
+console.log(`✅ Sitemap generated at ${outputPath} with ${uniquePaths.size + 1} total routes.`);
+
