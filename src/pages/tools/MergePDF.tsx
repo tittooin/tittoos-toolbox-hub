@@ -316,7 +316,7 @@ const MergePDF = () => {
                     By combining files, you create a cohesive narrative. A job application becomes a portfolio. A scattered receipt collection becomes an expense report. Merging files ensures that your document is read in the exact order you intended, without the risk of a page being lost or skipped.
                 </p>
                 <p className="mb-6">
-                    Need to separate pages instead? Use our <a href="/tools/split-pdf" className="text-blue-600 font-medium hover:underline">Split PDF Tool</a> to extract specific pages before merging.
+                    Need to separate pages instead? Use our <a href="/split-pdf-online" className="text-blue-600 font-medium hover:underline">Split PDF Tool</a> to extract specific pages before merging.
                 </p>
 
                 <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100 flex items-center">
@@ -413,7 +413,7 @@ const MergePDF = () => {
                             </span>
                         </summary>
                         <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                            <p>Merging many files naturally increases size. You can reduce the final size significantly using our <a href="/tools/compress-pdf" className="text-blue-600 underline">Compress PDF Tool</a>.</p>
+                            <p>Merging many files naturally increases size. You can reduce the final size significantly using our <a href="/compress-pdf-online" className="text-blue-600 underline">Compress PDF Tool</a>.</p>
                         </div>
                     </details>
                 </div>

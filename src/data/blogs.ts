@@ -478,14 +478,14 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>Graphic design software (like Illustrator or Photoshop) often saves "editing capabilities" inside the PDF. This means layers, history, and raw data are included, even if you can't see them.</p>
 
       <h2>How to Fix It (The Easy Way)</h2>
-      <p>You don't need to rebuild your document. The fastest solution is to use a <a href="/tools/compress-pdf">PDF Compressor</a>. Here is what it does:</p>
+      <p>You don't need to rebuild your document. The fastest solution is to use a <a href="/compress-pdf-online">PDF Compressor</a>. Here is what it does:</p>
       <ul>
         <li><strong>Downsamples Images:</strong> Reduces image resolution to standard screen density (72-144 DPI).</li>
         <li><strong>Strips Metadata:</strong> Removes hidden layers and unnecessary data.</li>
         <li><strong>Subsets Fonts:</strong> Keeps only the characters you actually used, not the whole alphabet.</li>
       </ul>
 
-      <p>Try it now: <a href="/tools/compress-pdf">Compress your PDF</a> and see how much space you save. It is not uncommon to see reductions of 80-90%!</p>
+      <p>Try it now: <a href="/compress-pdf-online">Compress your PDF</a> and see how much space you save. It is not uncommon to see reductions of 80-90%!</p>
     `
   },
   {
@@ -602,7 +602,7 @@ export const DEFAULT_BLOG_POSTS: BlogPost[] = [
       <p>Regular expressions are powerful but notoriously difficult to get right on the first try. An online tester (like the ones built into many of our text tools) helps you visualize matches before you deploy the code.</p>
 
       <h2>3. Base64 Encoder/Decoder</h2>
-      <p>For moving binary data (like images) over text-based protocols, Base64 is king. Using an <a href="/tools/base64-encoder">online encoder</a> is faster than writing a script for one-off tasks.</p>
+      <p>For moving binary data (like images) over text-based protocols, Base64 is king. Using an <a href="/tools/base64-converter">online encoder</a> is faster than writing a script for one-off tasks.</p>
 
       <h2>4. SQL Formatter</h2>
       <p>Inherited a legacy codebase with one massive line of SQL? A <a href="/tools/sql-formatter">SQL Formatter</a> instantly makes it readable, helping you understand the query logic in seconds.</p>

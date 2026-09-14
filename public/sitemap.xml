@@ -2,10 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://axevora.com/</loc></url>
 <url><loc>https://axevora.com/about</loc></url>
-<url><loc>https://axevora.com/ai</loc></url>
-<url><loc>https://axevora.com/apps/2048-saga-jewel-puzzle/privacy</loc></url>
-<url><loc>https://axevora.com/apps/neon-block-puzzle/privacy</loc></url>
-<url><loc>https://axevora.com/attributions</loc></url>
 <url><loc>https://axevora.com/author/axevora-team</loc></url>
 <url><loc>https://axevora.com/author/digital-workflow-specialist</loc></url>
 <url><loc>https://axevora.com/author/security-expert</loc></url>
@@ -42,34 +38,14 @@
 <url><loc>https://axevora.com/blog/what-is-exif-data-guide</loc></url>
 <url><loc>https://axevora.com/blog/why-is-my-pdf-so-big-compression-guide</loc></url>
 <url><loc>https://axevora.com/categories</loc></url>
-<url><loc>https://axevora.com/community</loc></url>
-<url><loc>https://axevora.com/community/profile</loc></url>
-<url><loc>https://axevora.com/community/verify-email</loc></url>
-<url><loc>https://axevora.com/compress-pdf-online</loc></url>
 <url><loc>https://axevora.com/contact</loc></url>
-<url><loc>https://axevora.com/creator-studio</loc></url>
-<url><loc>https://axevora.com/deals</loc></url>
-<url><loc>https://axevora.com/deals/categories</loc></url>
-<url><loc>https://axevora.com/deals/trending</loc></url>
-<url><loc>https://axevora.com/earn</loc></url>
-<url><loc>https://axevora.com/games</loc></url>
-<url><loc>https://axevora.com/marketplace/templates</loc></url>
-<url><loc>https://axevora.com/merge-pdf-online</loc></url>
 <url><loc>https://axevora.com/privacy</loc></url>
-<url><loc>https://axevora.com/promo</loc></url>
-<url><loc>https://axevora.com/promo/poster</loc></url>
-<url><loc>https://axevora.com/promo/video-shorts-poster</loc></url>
-<url><loc>https://axevora.com/shopping</loc></url>
-<url><loc>https://axevora.com/sitemap</loc></url>
-<url><loc>https://axevora.com/split-pdf-online</loc></url>
-<url><loc>https://axevora.com/submit-blog</loc></url>
 <url><loc>https://axevora.com/terms</loc></url>
 <url><loc>https://axevora.com/tools</loc></url>
 <url><loc>https://axevora.com/tools/2048-game</loc></url>
 <url><loc>https://axevora.com/tools/8-ball-pool</loc></url>
 <url><loc>https://axevora.com/tools/age-calculator</loc></url>
 <url><loc>https://axevora.com/tools/ai-bio-generator</loc></url>
-<url><loc>https://axevora.com/tools/ai-blog-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-caption-generator</loc></url>
 <url><loc>https://axevora.com/tools/ai-command-center</loc></url>
 <url><loc>https://axevora.com/tools/ai-hashtag-generator</loc></url>
@@ -91,6 +67,7 @@
 <url><loc>https://axevora.com/tools/battle-lab</loc></url>
 <url><loc>https://axevora.com/tools/bmi-calculator</loc></url>
 <url><loc>https://axevora.com/tools/calculator</loc></url>
+<url><loc>https://axevora.com/tools/calorie-calculator</loc></url>
 <url><loc>https://axevora.com/tools/chat-with-pdf</loc></url>
 <url><loc>https://axevora.com/tools/checkers</loc></url>
 <url><loc>https://axevora.com/tools/chess</loc></url>
@@ -115,6 +92,7 @@
 <url><loc>https://axevora.com/tools/image-converter</loc></url>
 <url><loc>https://axevora.com/tools/image-resizer</loc></url>
 <url><loc>https://axevora.com/tools/internet-speed-test</loc></url>
+<url><loc>https://axevora.com/tools/investment-calculator</loc></url>
 <url><loc>https://axevora.com/tools/ip-address-lookup</loc></url>
 <url><loc>https://axevora.com/tools/jpg-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/json-editor</loc></url>
@@ -142,9 +120,7 @@
 <url><loc>https://axevora.com/tools/pdf-study-notes</loc></url>
 <url><loc>https://axevora.com/tools/pdf-summarizer</loc></url>
 <url><loc>https://axevora.com/tools/pdf-text-extractor</loc></url>
-<url><loc>https://axevora.com/tools/pdf-to-epub</loc></url>
 <url><loc>https://axevora.com/tools/pdf-to-excel</loc></url>
-<url><loc>https://axevora.com/tools/pdf-to-image</loc></url>
 <url><loc>https://axevora.com/tools/pdf-to-jpg</loc></url>
 <url><loc>https://axevora.com/tools/pdf-to-png</loc></url>
 <url><loc>https://axevora.com/tools/pdf-to-ppt</loc></url>
@@ -197,5 +173,4 @@
 <url><loc>https://axevora.com/tools/word-to-pdf</loc></url>
 <url><loc>https://axevora.com/tools/xml-formatter</loc></url>
 <url><loc>https://axevora.com/tools/xml-validator</loc></url>
-<url><loc>https://axevora.com/workspace</loc></url>
 </urlset>

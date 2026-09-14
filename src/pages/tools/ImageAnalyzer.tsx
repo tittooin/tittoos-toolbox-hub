@@ -308,7 +308,7 @@ const ImageAnalyzer = () => {
                 </span>
               </summary>
               <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                <p>No, this is purely for analysis. If you need to compress or resize images, check out our <a href="/tools/image-converter" className="text-blue-600 hover:underline">Image Converter</a> and <a href="/tools/compress-pdf" className="text-blue-600 hover:underline">Compression Tools</a>.</p>
+                <p>No, this is purely for analysis. If you need to compress or resize images, check out our <a href="/tools/image-converter" className="text-blue-600 hover:underline">Image Converter</a> and <a href="/compress-pdf-online" className="text-blue-600 hover:underline">Compression Tools</a>.</p>
               </div>
             </details>
 

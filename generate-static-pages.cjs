@@ -15,11 +15,17 @@ function extractRoutesFromApp() {
     try {
         const content = fs.readFileSync(appFile, "utf8");
         const routeRegex = /path\s*=\s*["'`](\/[^"]+?)["'`]/g;
-        const routes = [];
-        let match;
+        const redirectAliases = new Set([
+            "/tools/merge-pdf",
+            "/tools/split-pdf",
+            "/tools/compress-pdf",
+            "/all-tools",
+            "/tools/base64-encoder"
+        ]);
         while ((match = routeRegex.exec(content)) !== null) {
             const p = match[1];
             if (!p || p === "*" || p.includes(":")) continue;
+            if (redirectAliases.has(p)) continue;
             if (p.startsWith("/admin")) continue;
             routes.push(p);
         }

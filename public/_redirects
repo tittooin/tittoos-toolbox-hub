@@ -6,4 +6,9 @@
 /.well-known/app-ads.txt /app-ads.txt 200
 /assets/* 404
 /api/* /api/:splat 200
+/tools/merge-pdf /merge-pdf-online 301
+/tools/split-pdf /split-pdf-online 301
+/tools/compress-pdf /compress-pdf-online 301
+/all-tools /tools 301
+/tools/base64-encoder /tools/base64-converter 301
 /* /index.html 200

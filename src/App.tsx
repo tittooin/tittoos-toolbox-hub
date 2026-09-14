@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Suspense, lazy, useEffect } from "react";
 import SimpleErrorBoundary from "./components/SimpleErrorBoundary";
@@ -121,6 +121,8 @@ const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculat
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const LoanCalculator = lazy(() => import("./pages/tools/LoanCalculator"));
 const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
+const InvestmentCalculator = lazy(() => import("./pages/tools/InvestmentCalculator"));
+const CalorieCalculator = lazy(() => import("./pages/tools/CalorieCalculator"));
 
 // Formatters
 const JSONFormatter = lazy(() => import("./pages/tools/JSONFormatter"));
@@ -266,6 +268,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <LegacyHashRedirect />
           <AuthProvider>
             <SimpleErrorBoundary>
               <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
@@ -383,6 +386,8 @@ const App = () => (
                 <Route path="/tools/bmi-calculator" element={<BMICalculator mode="calc" />} />
                 <Route path="/tools/loan-calculator" element={<LoanCalculator mode="calc" />} />
                 <Route path="/tools/age-calculator" element={<AgeCalculator mode="calc" />} />
+                <Route path="/tools/investment-calculator" element={<InvestmentCalculator />} />
+                <Route path="/tools/calorie-calculator" element={<CalorieCalculator />} />
 
                 {/* Formatters */}
                 <Route path="/tools/json-formatter" element={<JSONFormatter mode="formatter" />} />
@@ -510,6 +515,13 @@ const App = () => (
                 {/* Commerce Engine Admin Routes */}
                 <Route path="/admin/commerce" element={<AdminRouteGuard><CommerceDashboard /></AdminRouteGuard>} />
                 <Route path="/admin/commerce/publish" element={<AdminRouteGuard><CommercePublisher /></AdminRouteGuard>} />
+
+                {/* Legacy / Alias Clean Redirects */}
+                <Route path="/tools/merge-pdf" element={<Navigate to="/merge-pdf-online" replace />} />
+                <Route path="/tools/split-pdf" element={<Navigate to="/split-pdf-online" replace />} />
+                <Route path="/tools/compress-pdf" element={<Navigate to="/compress-pdf-online" replace />} />
+                <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
+                <Route path="/tools/base64-encoder" element={<Navigate to="/tools/base64-converter" replace />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

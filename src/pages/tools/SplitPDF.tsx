@@ -486,7 +486,7 @@ w - 6 h - 6 rounded - full flex items - center justify - center transition - col
                                     </span>
                                 </summary>
                                 <div className="text-gray-600 dark:text-gray-400 mt-4 group-open:animate-fadeIn leading-relaxed">
-                                    <p>Absolutely. Use our <a href="/tools/merge-pdf" className="text-orange-600 hover:underline">Merge PDF</a> tool to combine any PDF files back into a single document.</p>
+                                    <p>Absolutely. Use our <a href="/merge-pdf-online" className="text-orange-600 hover:underline">Merge PDF</a> tool to combine any PDF files back into a single document.</p>
                                 </div>
                             </details>
                         </div>
@@ -499,7 +499,7 @@ w - 6 h - 6 rounded - full flex items - center justify - center transition - col
                                     Split PDF Now
                                 </Button>
                                 <Button variant="outline" asChild className="rounded-full">
-                                    <a href="/tools/merge-pdf">Merge PDFs</a>
+                                    <a href="/merge-pdf-online">Merge PDFs</a>
                                 </Button>
                             </div>
                         </div>

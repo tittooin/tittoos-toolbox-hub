@@ -244,8 +244,8 @@ const LoremGenerator = () => {
         </p>
         <ul className="list-disc pl-6 space-y-2 mb-8 text-pink-600">
           <li><a href="/tools/pdf-converter" className="hover:underline">Convert files to PDF</a></li>
-          <li><a href="/tools/merge-pdf" className="hover:underline">Merge multiple mockups</a></li>
-          <li><a href="/tools/compress-pdf" className="hover:underline">Compress large design files</a></li>
+          <li><a href="/merge-pdf-online" className="hover:underline">Merge multiple mockups</a></li>
+          <li><a href="/compress-pdf-online" className="hover:underline">Compress large design files</a></li>
         </ul>
 
         <h2 className="text-3xl font-bold mt-16 mb-6 text-gray-900 dark:text-gray-100">FAQ</h2>

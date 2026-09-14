@@ -11,7 +11,7 @@ import {
   Eye, UserCircle, RotateCw, Trash2, Stamp, Move, FileSpreadsheet, Presentation, Keyboard, Gamepad2, MousePointer2, MessageSquare, BookOpen, GraduationCap, FileQuestion, Book,
   AppWindow, Utensils, Apple, Target, Users, Heart, Radio, ShoppingBag,
   Bomb, Rocket, Layers,
-  Crown, CircleDot, Dices, Spade, Grid3X3
+  Crown, CircleDot, Dices, Spade, Grid3X3, Flame
 } from "lucide-react";
 
 export const allCategories = [
@@ -1564,6 +1564,87 @@ export const allTools = [
       {
         question: "Does it account for Leap Years?",
         answer: "Yes, our algorithm correctly accounts for all leap years (every 4 years) when calculating your total days alive."
+      }
+    ]
+  },
+  {
+    id: "investment-calculator",
+    name: "Investment Calculator",
+    subheading: "Compound Interest & SIP Growth Planner",
+    description: "Calculate compound interest, investment returns, and wealth growth for lumpsum deposits and monthly SIP contributions with complete yearly breakdowns.",
+    keywords: ["investment calculator", "compound interest calculator", "sip calculator", "wealth planner", "mutual fund return calculator", "finance calculator"],
+    category: "calculator",
+    icon: TrendingUp,
+    path: "/tools/investment-calculator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Compound Interest & Investment Wealth Planner</h2>
+        <p>Investing systematically is the single most powerful strategy for building enduring long-term wealth. Our <strong>Investment Calculator</strong> enables you to model your financial future by combining initial lump sum deposits with disciplined monthly contributions.</p>
+        
+        <h3>Understanding Compounding Growth</h3>
+        <p>Albert Einstein famously called compound interest the eighth wonder of the world. By earning returns on both your principal and previous earnings, your portfolio accelerates over time.</p>
+      </article>
+    `,
+    howToUse: [
+      "Enter your starting initial investment capital.",
+      "Input your regular monthly contribution (SIP).",
+      "Specify your expected annualized rate of return (e.g., 8% - 10%).",
+      "Set your investment time horizon in years.",
+      "Review the projected future value, total invested, and wealth gained breakdown."
+    ],
+    benefits: [
+      "Simulate lumpsum and dollar-cost averaging (SIP) simultaneously.",
+      "Visual principal vs compound return distribution.",
+      "Detailed year-by-year amortization schedule.",
+      "100% private in-browser calculation with zero server logging."
+    ],
+    faqs: [
+      {
+        question: "What is compound frequency?",
+        answer: "Compound frequency is how often interest is calculated and added back to your balance. Monthly compounding is standard for most retail investment accounts."
+      },
+      {
+        question: "What is a realistic expected return?",
+        answer: "Broad equity index funds like the S&P 500 have historically returned 8-10% annually before inflation over 20+ year holding periods."
+      }
+    ]
+  },
+  {
+    id: "calorie-calculator",
+    name: "Calorie Calculator",
+    subheading: "Daily Caloric Needs & TDEE Planner",
+    description: "Determine your daily maintenance calories, BMR, and targeted caloric intakes for fat loss or muscle building using the clinical Mifflin-St Jeor formula.",
+    keywords: ["calorie calculator", "tdee calculator", "bmr calculator", "daily calorie needs", "weight loss calories", "macros calculator"],
+    category: "calculator",
+    icon: Flame,
+    path: "/tools/calorie-calculator",
+    longDescription: `
+      <article className="prose prose-lg max-w-none">
+        <h2>Calculate Your Basal Metabolic Rate (BMR) and Daily TDEE</h2>
+        <p>Whether your goal is burning body fat, maintaining peak athletic conditioning, or adding lean muscle mass, understanding your <strong>Total Daily Energy Expenditure (TDEE)</strong> provides the exact nutritional roadmap you need.</p>
+      </article>
+    `,
+    howToUse: [
+      "Choose your preferred unit system (Metric or Imperial).",
+      "Select your biological sex and enter your current age.",
+      "Input your height and current body weight.",
+      "Select your typical weekly physical activity level.",
+      "View your maintenance calories and targets for fat loss or muscle gain."
+    ],
+    benefits: [
+      "Clinical Mifflin-St Jeor metabolic calculation standard.",
+      "Custom targets for mild loss, standard fat loss, and muscle bulking.",
+      "Balanced macronutrient split recommendations (Protein, Carbs, Fats).",
+      "Works in both Metric and Imperial measurement standards."
+    ],
+    faqs: [
+      {
+        question: "What is the difference between BMR and TDEE?",
+        answer: "BMR is the baseline energy burned at total rest, while TDEE accounts for your daily movement, occupational activity, and workouts."
+      },
+      {
+        question: "How large should my calorie deficit be for fat loss?",
+        answer: "A moderate deficit of 500 calories per day produces approximately 1 pound (0.5 kg) of sustainable fat loss per week."
       }
     ]
   },

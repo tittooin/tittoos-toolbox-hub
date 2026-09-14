@@ -221,7 +221,7 @@ const MobileIndex = () => {
           <span className="text-[10px] font-bold">Live Deals</span>
         </button>
 
-        <Link to="/all-tools" className="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors">
+        <Link to="/tools" className="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors">
           <Star className="w-5 h-5" />
           <span className="text-[10px] font-bold">All Tools</span>
         </Link>

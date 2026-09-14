@@ -350,7 +350,7 @@ const CompressPDF = () => {
                                     Compress PDF Now
                                 </Button>
                                 <Button variant="outline" asChild className="rounded-full">
-                                    <a href="/tools/merge-pdf">Merge PDFs</a>
+                                    <a href="/merge-pdf-online">Merge PDFs</a>
                                 </Button>
                             </div>
                         </div>
